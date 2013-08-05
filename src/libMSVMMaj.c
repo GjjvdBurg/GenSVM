@@ -226,7 +226,7 @@ void main_loop(struct Model *model, struct Data *data)
 		Lbar = L;
 		L = get_msvmmaj_loss(model, data, ZV);
 
-		if (it%1 == 0)
+		if (it%500 == 0)
 			info("iter = %li, L = %15.16f, Lbar = %15.16f, reldiff = %15.16f\n",
 					it, L, Lbar, (Lbar - L)/L);
 		it++;
@@ -253,7 +253,6 @@ void main_loop(struct Model *model, struct Data *data)
 	free(ZAZ);
 	free(ZAZV);
 	free(ZAZVT);
-
 }
 
 void step_doubling(struct Model *model)

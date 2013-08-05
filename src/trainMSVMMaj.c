@@ -12,13 +12,14 @@ void exit_with_help()
 	printf("This is MSVMMaj, version %1.1f\n\n", VERSION);
 	printf("Usage: trainMSVMMaj [options] training_data_file [output_file]\n");
 	printf("Options:\n");
-	printf("-p p-value : set the value of p in the lp norm (1.0 <= p <= 2.0)\n");
-	printf("-l lambda : set the value of lambda (lambda > 0)\n");
+	printf("-c folds : perform cross validation with given number of folds\n");
 	printf("-e epsilon : set the value of the stopping criterion\n");
-	printf("-k kappa : set the value of kappa used in the Huber hinge\n");
-	printf("-r rho : choose the weigth specification (1 = unit, 2 = group)\n");
-	printf("-q : quiet mode (no output)\n");
 	printf("-h | -help : print this help.\n");
+	printf("-k kappa : set the value of kappa used in the Huber hinge\n");
+	printf("-l lambda : set the value of lambda (lambda > 0)\n");
+	printf("-p p-value : set the value of p in the lp norm (1.0 <= p <= 2.0)\n");
+	printf("-q : quiet mode (no output)\n");
+	printf("-r rho : choose the weigth specification (1 = unit, 2 = group)\n");
 
 	exit(0);
 }
@@ -31,9 +32,6 @@ int main(int argc, char **argv)
 {
 	char input_filename[MAX_LINE_LENGTH];
 	struct Model *model = Malloc(struct Model, 1);
-	model->n = 0;
-	model->K = 0;
-	model->m = 0;
 	struct Data *data = Malloc(struct Data, 1);
 
 	if (argc < MINARGS || check_argv(argc, argv, "-help") || check_argv_eq(argc, argv, "-h") ) {
@@ -109,13 +107,4 @@ void parse_command_line(int argc, char **argv, char *input_filename, struct Mode
 
 	strcpy(input_filename, argv[i]);
 }
-
-
-
-
-
-
-
-
-
 
