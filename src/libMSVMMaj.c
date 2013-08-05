@@ -154,8 +154,8 @@ double get_msvmmaj_loss(struct Model *model, struct Data *data, double *ZV)
 			value = matrix_get(model->H, K, i, j);
 			value = pow(value, model->p);
 			value *= matrix_get(model->R, K, i, j);
+			rowvalue += value;
 		}
-		rowvalue += value;
 		rowvalue = pow(rowvalue, 1.0/(model->p));
 		rowvalue *= model->rho[i];
 		loss += rowvalue;
@@ -215,10 +215,11 @@ void main_loop(struct Model *model, struct Data *data)
 	info("\tkappa = %f\n", model->kappa);
 	info("\tp = %f\n", model->p);
 	info("\tlambda = %15.16f\n", model->lambda);
+	info("\tepsilon = %g\n", model->epsilon);
 	info("\n");
 
-	info("Z:\n");
-	print_matrix(data->Z, n, m+1);
+	//info("Z:\n");
+	//print_matrix(data->Z, n, m+1);
 
 	//info("Generating simplex\n");
 	simplex_gen(model->K, model->U);
@@ -237,9 +238,10 @@ void main_loop(struct Model *model, struct Data *data)
 	//info("Getting initial loss\n");	
 	L = get_msvmmaj_loss(model, data, ZV);
 	Lbar = L + 2.0*model->epsilon*L;
-
+	info("Initial loss: %15.16f\n", L);
 	while ((it < MAX_ITER) && (Lbar - L)/L > model->epsilon)
 	{
+		/*
 		info("################## Before %i ################\n", it);
 		info("V:\n");
 		print_matrix(model->V, m+1, K-1);
@@ -259,12 +261,12 @@ void main_loop(struct Model *model, struct Data *data)
 		print_matrix(A, n, 1);
 		info("B:\n");
 		print_matrix(B, n, K-1);
-
+		*/
 		// ensure V contains newest V and Vbar contains V from previous
 		//info("Calculating update\n");
 		msvmmaj_update(model, data, ClassIdx, A, B, Omega, ZAZ,
 				ZAZV, ZAZVT);
-
+		/*
 		info("################## After %i ################\n", it);
 		info("V:\n");
 		print_matrix(model->V, m+1, K-1);
@@ -284,7 +286,7 @@ void main_loop(struct Model *model, struct Data *data)
 		print_matrix(A, n, 1);
 		info("B:\n");
 		print_matrix(B, n, K-1);
-
+		*/
 		if (it > 50)
 			step_doubling(model);
 
@@ -304,6 +306,11 @@ void main_loop(struct Model *model, struct Data *data)
 	for (i=1; i<m+1; i++)
 		for (j=0; j<K-1; j++)
 			matrix_set(model->W, K-1, i-1, j, matrix_get(model->V, K-1, i, j));
+
+	info("W:\n");
+	print_matrix(model->W, m, K-1);
+	info("t:\n");
+	print_matrix(model->t, K-1, 1);
 
 	info("I'm going to free some stuff ... ");
 	info("0");	
@@ -402,14 +409,14 @@ void msvmmaj_update(struct Model *model, struct Data *data,
 
 	//info("done\n");
 	//info("\tCalculating A and B ... ");
-	
+	b = 0;	
 	Memset(B, double, n*(K-1));	
 	for (i=0; i<n; i++) {
 		Avalue = 0;
 		if (ClassIdx[i] == 1) {
 			for (j=0; j<K; j++) {
 				q = matrix_get(model->Q, K, i, j);
-				if (q < -kappa) {
+				if (q <= -kappa) {
 					a = 0.25/(0.5 - kappa/2.0 - q);
 					b = 0.5;
 				} else if (q <= 1.0) {
@@ -429,10 +436,10 @@ void msvmmaj_update(struct Model *model, struct Data *data,
 			if (2.0 - p < 0.0001) {
 				for (j=0; j<K; j++) {
 					q = matrix_get(model->Q, K, i, j);
-					if (q < -kappa) {
-						b = 0.5*p*pow(0.5 - kappa/2.0 - q, p-1.0);
+					if (q <= -kappa) {
+						b = 0.5 - kappa/2.0 - q;
 					} else if ( q <= 1.0) {
-						b = pow(1.0 - q, 3.0)/pow(2.0*kappa + 2.0, 2.0);
+						b = pow(1.0 - q, 3.0)/(2.0*pow(kappa + 1.0, 2.0));
 					} else {
 						b = 0;
 					}
@@ -445,15 +452,18 @@ void msvmmaj_update(struct Model *model, struct Data *data,
 			} else {
 				for (j=0; j<K; j++) {
 					q = matrix_get(model->Q, K, i, j);
-					if (q < -kappa) {
+					if (q <= (p + kappa - 1.0)/(p - 2.0)) {
 						a = 0.25*pow(p, 2.0)*pow(0.5 - kappa/2.0 - q, p - 2.0);
+					} else if (q <= 1.0) {
+						a = a2g2;
+					} else {
+						a = 0.25*pow(p, 2.0)*pow((p/(p - 2.0))*(0.5 - kappa/2.0 - q), p - 2.0);
+						b = a*(2.0*q + kappa - 1.0)/(p - 2.0) + 0.5*p*pow((p/(p - 2.0))*(0.5 - kappa/2.0 - q), p - 1.0);
+					}
+					if (q <= -kappa) {
 						b = 0.5*p*pow(0.5 - kappa/2.0 - q, p - 1.0);
 					} else if ( q <= 1.0) {
-						a = a2g2;
 						b = p*pow(1.0 - q, 2.0*p - 1.0)/pow(2*kappa+2.0, p);
-					} else {
-						a = 0.25*pow(p, 2.0)*pow((p/(p - 2.0))*(0.5 - kappa/2.0 - q),p - 2.0);
-						b = a*(2.0*q + kappa - 1.0)/(p - 2.0) + 0.5*p*pow((p/(p - 2.0))*(0.5 - kappa/2.0 - q), p - 1.0);
 					}
 					for (k=0; k<K-1; k++) {
 						Bvalue = in*rho[i]*Omega[i]*b*matrix3_get(model->UU, K-1, K, i, k, j);
@@ -493,19 +503,13 @@ void msvmmaj_update(struct Model *model, struct Data *data,
 	//info("done\n");
 	// Copy upper to lower (necessary because we need to switch
 	// to Col-Major order for LAPACK).
-	//
-	// TODO: this needs verification! It might also work without
-	// this step
+	/*
 	for (i=0; i<m+1; i++)
 		for (j=0; j<m+1; j++)
 			matrix_set(ZAZ, m+1, j, i, matrix_get(ZAZ, m+1, i, j));
-
-	info("ZAZ:\n");
-	print_matrix(ZAZ, m+1, m+1);
-	
+	*/
 	// Calculate the right hand side of the system we 
 	// want to solve.
-	//info("\tRunning dsymm ... ");
 	cblas_dsymm(
 			CblasRowMajor,
 			CblasLeft,
@@ -520,8 +524,6 @@ void msvmmaj_update(struct Model *model, struct Data *data,
 			0.0,
 			ZAZV, 
 			K-1);
-	//info("done\n");
-	//info("\tRunning dgemm ... ");
 	cblas_dgemm(
 			CblasRowMajor,
 			CblasTrans,
@@ -552,23 +554,29 @@ void msvmmaj_update(struct Model *model, struct Data *data,
 	for (i=0; i<m+1; i++)
 		for (j=0; j<K-1; j++)
 			ZAZVT[j*(m+1)+i] = ZAZV[i*(K-1)+j];
-	status = 1;	
-	/*
+	
+	// We use the lower ('L') part of the matrix ZAZ, 
+	// because we have used the upper part in the BLAS
+	// calls above in Row-major order, and Lapack uses
+	// column major order. 
 	status = dposv(
-			'U',
+			'L',
 			m+1,
 			K-1,
 			ZAZ,
 			m+1,
 			ZAZVT,
 			m+1);
-	*/
+
 	if (status != 0) {
+		// This step should not be necessary, as the matrix
+		// ZAZ is positive semi-definite by definition. It 
+		// is included for safety.
 		fprintf(stderr, "Received nonzero status from dposv: %i\n", status);
 		int *IPIV = malloc((m+1)*sizeof(int));
 		double *WORK = malloc(1*sizeof(double));
 		status = dsysv(
-				'U',
+				'L',
 				m+1,
 				K-1,
 				ZAZ,
@@ -580,7 +588,7 @@ void msvmmaj_update(struct Model *model, struct Data *data,
 				-1);
 		WORK = (double *)realloc(WORK, WORK[0]*sizeof(double));
 		status = dsysv(
-				'U',
+				'L',
 				m+1,
 				K-1,
 				ZAZ,
@@ -592,8 +600,10 @@ void msvmmaj_update(struct Model *model, struct Data *data,
 				sizeof(WORK)/sizeof(double));
 		if (status != 0)
 			fprintf(stderr, "Received nonzero status from dsysv: %i\n", status);
-
 	}
+
+	// Return to Row-major order. The matrix ZAZVT contains the 
+	// solution after the dposv/dsysv call.
 	for (i=0; i<m+1; i++)
 		for (j=0; j<K-1; j++)
 			ZAZV[i*(K-1)+j] = ZAZVT[j*(m+1)+i];
