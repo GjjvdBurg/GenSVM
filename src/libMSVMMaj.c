@@ -312,25 +312,14 @@ void main_loop(struct Model *model, struct Data *data)
 	info("t:\n");
 	print_matrix(model->t, K-1, 1);
 
-	info("I'm going to free some stuff ... ");
-	info("0");	
 	free(ClassIdx);
-	info("1");	
 	free(A);
-	info("2");	
 	free(B);
-	info("3");	
 	free(Omega);
-	info("4");	
 	free(ZV);
-	info("5");	
 	free(ZAZ);
-	info("6");	
 	free(ZAZV);
-	info("7");	
 	free(ZAZVT);
-	info("8");
-	info(" stuff free.\n");
 
 }
 

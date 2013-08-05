@@ -303,9 +303,9 @@ void print_matrix(double *M, long rows, long cols)
 	long i, j;
 	for (i=0; i<rows; i++) {
 		for (j=0; j<cols; j++) {
-			printf("%8.8f ", matrix_get(M, cols, i, j));
+			info("%8.8f ", matrix_get(M, cols, i, j));
 		}
-		printf("\n");
+		info("\n");
 	}
-	printf("\n");
+	info("\n");
 }
