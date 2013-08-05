@@ -182,23 +182,14 @@ void main_loop(struct Model *model, struct Data *data)
 
 	srand(time(NULL));
 
-	int *ClassIdx = Malloc(int, n);
-	double *A = Malloc(double, n);
-	double *B = Malloc(double, n*(K-1));
-	double *ZV = Malloc(double, n*(K-1));
-	double *ZAZ = Malloc(double, (m+1)*(m+1));	
-	double *ZAZV = Malloc(double, (m+1)*(K-1));
-	double *ZAZVT = Malloc(double, (m+1)*(K-1));
-	double *Omega = Malloc(double, n);
-
-	Memset(ClassIdx, int, n);
-	Memset(A, double, n);
-	Memset(B, double, n*(K-1));
-	Memset(ZV, double, n*(K-1));
-	Memset(ZAZ, double, (m+1)*(m+1));
-	Memset(ZAZV, double, (m+1)*(K-1));
-	Memset(ZAZVT, double, (m+1)*(K-1));
-	Memset(Omega, double, n);
+	int *ClassIdx = Calloc(int, n);
+	double *A = Calloc(double, n);
+	double *B = Calloc(double, n*(K-1));
+	double *ZV = Calloc(double, n*(K-1));
+	double *ZAZ = Calloc(double, (m+1)*(m+1));	
+	double *ZAZV = Calloc(double, (m+1)*(K-1));
+	double *ZAZVT = Calloc(double, (m+1)*(K-1));
+	double *Omega = Calloc(double, n);
 
 	info("Starting main loop.\n");
 	info("Dataset:\n");
