@@ -75,7 +75,6 @@ void calculate_errors(struct Model *model, struct Data *data, double *ZV)
 	long m = model->m;
 	long K = model->K;
 
-	//info("\t\tCalculating ZV ... ");
 	cblas_dgemm(
 			CblasRowMajor,
 			CblasNoTrans,
@@ -91,10 +90,8 @@ void calculate_errors(struct Model *model, struct Data *data, double *ZV)
 			0.0,
 			ZV,
 			K-1);
-	//info("done\n");
+
 	Memset(model->Q, double, n*K);
-	
-	//info("\t\tCalculating qs ... ");	
 	for (i=0; i<n; i++) {
 		for (j=0; j<K-1; j++) {
 			a = matrix_get(ZV, K-1, i, j);
@@ -104,7 +101,6 @@ void calculate_errors(struct Model *model, struct Data *data, double *ZV)
 			}
 		}
 	}
-	//info("done\n");
 }	
 
 /*
@@ -142,9 +138,7 @@ double get_msvmmaj_loss(struct Model *model, struct Data *data, double *ZV)
 
 	double value, rowvalue, loss = 0.0;
 	
-	//info("\tCalculating errors\n");
 	calculate_errors(model, data, ZV);	
-	//info("\tCalculating Hubers\n");
 	calculate_huber(model);
 	
 	for (i=0; i<n; i++) {
@@ -218,75 +212,23 @@ void main_loop(struct Model *model, struct Data *data)
 	info("\tepsilon = %g\n", model->epsilon);
 	info("\n");
 
-	//info("Z:\n");
-	//print_matrix(data->Z, n, m+1);
-
-	//info("Generating simplex\n");
 	simplex_gen(model->K, model->U);
-	//info("Generating simplex diff\n");
 	simplex_diff(model, data);
-	//info("Generating category matrix\n");
 	category_matrix(model, data);
 
 	// Initialize V
-	//info("Initializing V\n");
 	for (i=0; i<m+1; i++) 
 		for (j=0; j<K-1; j++)
-			//matrix_set(model->V, K-1, i, j, -1.0+2.0*rnd());
-			matrix_set(model->V, K-1, i, j, 1.0);
+			matrix_set(model->V, K-1, i, j, -1.0+2.0*rnd());
 	
-	//info("Getting initial loss\n");	
 	L = get_msvmmaj_loss(model, data, ZV);
 	Lbar = L + 2.0*model->epsilon*L;
-	info("Initial loss: %15.16f\n", L);
+
 	while ((it < MAX_ITER) && (Lbar - L)/L > model->epsilon)
 	{
-		/*
-		info("################## Before %i ################\n", it);
-		info("V:\n");
-		print_matrix(model->V, m+1, K-1);
-		info("Vbar:\n");
-		print_matrix(model->Vbar, m+1, K-1);
-		info("Q:\n");
-		print_matrix(model->Q, n, K);
-		info("H:\n");
-		print_matrix(model->H, n, K);
-		info("ZV:\n");
-		print_matrix(ZV, n, K-1);
-		info("ClassIdx:\n");
-		for (i=0; i<n; i++)
-			info("%i\n", ClassIdx[i]);
-		info("\n");
-		info("A:\n");
-		print_matrix(A, n, 1);
-		info("B:\n");
-		print_matrix(B, n, K-1);
-		*/
 		// ensure V contains newest V and Vbar contains V from previous
-		//info("Calculating update\n");
 		msvmmaj_update(model, data, ClassIdx, A, B, Omega, ZAZ,
 				ZAZV, ZAZVT);
-		/*
-		info("################## After %i ################\n", it);
-		info("V:\n");
-		print_matrix(model->V, m+1, K-1);
-		info("Vbar:\n");
-		print_matrix(model->Vbar, m+1, K-1);
-		info("Q:\n");
-		print_matrix(model->Q, n, K);
-		info("H:\n");
-		print_matrix(model->H, n, K);
-		info("ZV:\n");
-		print_matrix(ZV, n, K-1);
-		info("ClassIdx:\n");
-		for (i=0; i<n; i++)
-			info("%i\n", ClassIdx[i]);
-		info("\n");
-		info("A:\n");
-		print_matrix(A, n, 1);
-		info("B:\n");
-		print_matrix(B, n, K-1);
-		*/
 		if (it > 50)
 			step_doubling(model);
 
@@ -382,7 +324,6 @@ void msvmmaj_update(struct Model *model, struct Data *data,
 	const double a2g2 = 0.25*p*(2.0*p - 1.0)*pow((kappa+1.0)/2.0,p-2.0);
 	const double in = 1.0/((double) n);
 
-	//info("\tCalculating class idx and omega ... ");
 	for (i=0; i<n; i++) {
 		value = 0;
 		omega = 0;
@@ -396,8 +337,6 @@ void msvmmaj_update(struct Model *model, struct Data *data,
 		Omega[i] = (1.0/p)*pow(omega, 1.0/p - 1.0);
 	}	
 
-	//info("done\n");
-	//info("\tCalculating A and B ... ");
 	b = 0;	
 	Memset(B, double, n*(K-1));	
 	for (i=0; i<n; i++) {
@@ -466,9 +405,6 @@ void msvmmaj_update(struct Model *model, struct Data *data,
 		A[i] = in*rho[i]*Avalue;
 	}
 
-	//print_matrix(ZAZ, m+1, m+1);
-	//info("done\n");
-	//info("\tCalculating ZAZ ... ");
 	// Now we calculate the matrix ZAZ. Since this is 
 	// guaranteed to be symmetric, we only calculate the 
 	// upper part of the matrix, and then copy this over
@@ -487,9 +423,6 @@ void msvmmaj_update(struct Model *model, struct Data *data,
 				ZAZ,
 				m+1);
 	}
-	//print_matrix(ZAZ, m+1, m+1);
-
-	//info("done\n");
 	// Copy upper to lower (necessary because we need to switch
 	// to Col-Major order for LAPACK).
 	/*
@@ -497,6 +430,7 @@ void msvmmaj_update(struct Model *model, struct Data *data,
 		for (j=0; j<m+1; j++)
 			matrix_set(ZAZ, m+1, j, i, matrix_get(ZAZ, m+1, i, j));
 	*/
+	
 	// Calculate the right hand side of the system we 
 	// want to solve.
 	cblas_dsymm(
@@ -635,7 +569,7 @@ void initialize_weights(struct Data *data, struct Model *model)
 			model->rho[i] = 1.0;
 	} 
 	else if (model->weight_idx == 2) {
-		groups = Malloc(int, K);
+		groups = Calloc(int, K);
 		for (i=0; i<n; i++) {
 			groups[data->y[i]-1]++;
 		}
@@ -646,5 +580,5 @@ void initialize_weights(struct Data *data, struct Model *model)
 		fprintf(stderr, "Unknown weight specification.\n");
 		exit(1);
 	}
-}
 
+}
