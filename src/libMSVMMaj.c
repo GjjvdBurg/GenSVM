@@ -1,0 +1,651 @@
+#include "libMSVMMaj.h"
+
+/*
+	Generate the simplex matrix. A pointer to the matrix
+	must be given, and the matrix must have been
+	allocated.
+*/
+void simplex_gen(long K, double *U)
+{
+	long i, j;
+	for (i=0; i<K; i++) {
+		for (j=0; j<K-1; j++) {
+			if (i <= j) {
+				matrix_set(U, K-1, i, j, -1.0/sqrt(2.0*(j+1)*(j+2)));
+			} else if (i == j+1) {
+				matrix_set(U, K-1, i, j, sqrt((j+1)/(2.0*(j+2))));
+			} else {
+				matrix_set(U, K-1, i, j, 0.0);
+			}
+		}
+	}
+}
+
+/*
+	Generate the category matrix R. The category matrix has 1's everywhere
+	except at the column corresponding to the label of instance i.
+*/
+void category_matrix(struct Model *model, struct Data *dataset)
+{
+	long i, j;
+	long n = model->n;
+	long K = model->K;
+
+	for (i=0; i<n; i++) {
+		for (j=0; j<K; j++) {
+			if (dataset->y[i] != j+1) {
+				matrix_set(model->R, K, i, j, 1.0);
+			}
+		}
+	}
+}
+
+void simplex_diff(struct Model *model, struct Data *data)
+{
+	long i, j, k;
+	double value;
+
+	long n = model->n;
+	long K = model->K;
+
+	for (i=0; i<n; i++) {
+		for (j=0; j<K-1; j++) {
+			for (k=0; k<K; k++) {
+				value = matrix_get(model->U, K-1, data->y[i]-1, j);
+				value -= matrix_get(model->U, K-1, k, j);
+				matrix3_set(model->UU, K-1, K, i, j, k, value);
+			}
+		}
+	}
+}
+
+/*
+	Calculate the errors Q based on the current value of V.
+	It is assumed that the memory for Q has already been allocated. 
+	In addition, the matrix ZV is calculated here. It is assigned to a 
+	pre-allocated block of memory, since it would be inefficient to keep
+	reassigning this block at every iteration.
+*/
+void calculate_errors(struct Model *model, struct Data *data, double *ZV)
+{
+	long i, j, k;
+	double a, value;
+
+	long n = model->n;
+	long m = model->m;
+	long K = model->K;
+
+	//info("\t\tCalculating ZV ... ");
+	cblas_dgemm(
+			CblasRowMajor,
+			CblasNoTrans,
+			CblasNoTrans,
+			n,
+			K-1,
+			m+1,
+			1.0,
+			data->Z,
+			m+1,
+			model->V,
+			K-1,
+			0.0,
+			ZV,
+			K-1);
+	//info("done\n");
+	Memset(model->Q, double, n*K);
+	
+	//info("\t\tCalculating qs ... ");	
+	for (i=0; i<n; i++) {
+		for (j=0; j<K-1; j++) {
+			a = matrix_get(ZV, K-1, i, j);
+			for (k=0; k<K; k++) {
+				value = a * matrix3_get(model->UU, K-1, K, i, j, k);
+				matrix_add(model->Q, K, i, k, value);
+			}
+		}
+	}
+	//info("done\n");
+}	
+
+/*
+	Calculate the Huber hinge errors for each error in the matrix Q.
+*/
+void calculate_huber(struct Model *model) 
+{
+	long i, j;
+	double q, value;
+
+	for (i=0; i<model->n; i++) {
+		for (j=0; j<model->K; j++) {
+			q = matrix_get(model->Q, model->K, i, j);
+			value = 0.0;
+			if (q <= -model->kappa) {
+				value = 1.0 - q - (model->kappa+1.0)/2.0;
+			} else if (q <= 1.0) {
+				value = 1.0/(2.0*model->kappa+2.0)*pow(1.0 - q, 2.0);
+			}
+			matrix_set(model->H, model->K, i, j, value);
+		}
+	}
+}
+
+/*
+	Calculate the value of the loss function based on the current estimate
+	of V. 
+*/
+double get_msvmmaj_loss(struct Model *model, struct Data *data, double *ZV)
+{
+	long i, j;
+	long n = data->n;
+	long K = data->K;
+	long m = data->m;
+
+	double value, rowvalue, loss = 0.0;
+	
+	//info("\tCalculating errors\n");
+	calculate_errors(model, data, ZV);	
+	//info("\tCalculating Hubers\n");
+	calculate_huber(model);
+	
+	for (i=0; i<n; i++) {
+		rowvalue = 0;
+		value = 0;
+		for (j=0; j<K; j++) {
+			value = matrix_get(model->H, K, i, j);
+			value = pow(value, model->p);
+			value *= matrix_get(model->R, K, i, j);
+		}
+		rowvalue += value;
+		rowvalue = pow(rowvalue, 1.0/(model->p));
+		rowvalue *= model->rho[i];
+		loss += rowvalue;
+	}
+	loss /= ((double) n);
+	
+	value = 0;
+	for (i=1; i<m+1; i++) {
+		for (j=0; j<K-1; j++) {
+			value += pow(matrix_get(model->V, K-1, i, j), 2.0);
+		}
+	}
+	loss += model->lambda * value;		
+
+	return loss;
+}
+
+
+/*
+	Training loop is defined here.
+*/
+void main_loop(struct Model *model, struct Data *data) 
+{
+	long i, j, it = 0;
+	double L, Lbar;
+
+	long n = model->n;
+	long m = model->m;
+	long K = model->K;
+
+	srand(time(NULL));
+
+	int *ClassIdx = Malloc(int, n);
+	double *A = Malloc(double, n);
+	double *B = Malloc(double, n*(K-1));
+	double *ZV = Malloc(double, n*(K-1));
+	double *ZAZ = Malloc(double, (m+1)*(m+1));	
+	double *ZAZV = Malloc(double, (m+1)*(K-1));
+	double *ZAZVT = Malloc(double, (m+1)*(K-1));
+	double *Omega = Malloc(double, n);
+
+	Memset(ClassIdx, int, n);
+	Memset(A, double, n);
+	Memset(B, double, n*(K-1));
+	Memset(ZV, double, n*(K-1));
+	Memset(ZAZ, double, (m+1)*(m+1));
+	Memset(ZAZV, double, (m+1)*(K-1));
+	Memset(ZAZVT, double, (m+1)*(K-1));
+	Memset(Omega, double, n);
+
+	info("Starting main loop.\n");
+	info("Dataset:\n");
+	info("\tn = %i\n", n);
+	info("\tm = %i\n", m);
+	info("\tK = %i\n", K);
+	info("Parameters:\n");
+	info("\tkappa = %f\n", model->kappa);
+	info("\tp = %f\n", model->p);
+	info("\tlambda = %15.16f\n", model->lambda);
+	info("\n");
+
+	info("Z:\n");
+	print_matrix(data->Z, n, m+1);
+
+	//info("Generating simplex\n");
+	simplex_gen(model->K, model->U);
+	//info("Generating simplex diff\n");
+	simplex_diff(model, data);
+	//info("Generating category matrix\n");
+	category_matrix(model, data);
+
+	// Initialize V
+	//info("Initializing V\n");
+	for (i=0; i<m+1; i++) 
+		for (j=0; j<K-1; j++)
+			//matrix_set(model->V, K-1, i, j, -1.0+2.0*rnd());
+			matrix_set(model->V, K-1, i, j, 1.0);
+	
+	//info("Getting initial loss\n");	
+	L = get_msvmmaj_loss(model, data, ZV);
+	Lbar = L + 2.0*model->epsilon*L;
+
+	while ((it < MAX_ITER) && (Lbar - L)/L > model->epsilon)
+	{
+		info("################## Before %i ################\n", it);
+		info("V:\n");
+		print_matrix(model->V, m+1, K-1);
+		info("Vbar:\n");
+		print_matrix(model->Vbar, m+1, K-1);
+		info("Q:\n");
+		print_matrix(model->Q, n, K);
+		info("H:\n");
+		print_matrix(model->H, n, K);
+		info("ZV:\n");
+		print_matrix(ZV, n, K-1);
+		info("ClassIdx:\n");
+		for (i=0; i<n; i++)
+			info("%i\n", ClassIdx[i]);
+		info("\n");
+		info("A:\n");
+		print_matrix(A, n, 1);
+		info("B:\n");
+		print_matrix(B, n, K-1);
+
+		// ensure V contains newest V and Vbar contains V from previous
+		//info("Calculating update\n");
+		msvmmaj_update(model, data, ClassIdx, A, B, Omega, ZAZ,
+				ZAZV, ZAZVT);
+
+		info("################## After %i ################\n", it);
+		info("V:\n");
+		print_matrix(model->V, m+1, K-1);
+		info("Vbar:\n");
+		print_matrix(model->Vbar, m+1, K-1);
+		info("Q:\n");
+		print_matrix(model->Q, n, K);
+		info("H:\n");
+		print_matrix(model->H, n, K);
+		info("ZV:\n");
+		print_matrix(ZV, n, K-1);
+		info("ClassIdx:\n");
+		for (i=0; i<n; i++)
+			info("%i\n", ClassIdx[i]);
+		info("\n");
+		info("A:\n");
+		print_matrix(A, n, 1);
+		info("B:\n");
+		print_matrix(B, n, K-1);
+
+		if (it > 50)
+			step_doubling(model);
+
+		Lbar = L;
+		L = get_msvmmaj_loss(model, data, ZV);
+
+		if (it%1 == 0)
+			info("iter = %li, L = %15.16f, Lbar = %15.16f, reldiff = %15.16f\n",
+					it, L, Lbar, (Lbar - L)/L);
+		it++;
+	}
+
+	info("optimization finished, iter = %li\n", it-1);
+
+	for (i=0; i<K-1; i++)
+		model->t[i] = matrix_get(model->V, K-1, 0, i);
+	for (i=1; i<m+1; i++)
+		for (j=0; j<K-1; j++)
+			matrix_set(model->W, K-1, i-1, j, matrix_get(model->V, K-1, i, j));
+
+	info("I'm going to free some stuff ... ");
+	info("0");	
+	free(ClassIdx);
+	info("1");	
+	free(A);
+	info("2");	
+	free(B);
+	info("3");	
+	free(Omega);
+	info("4");	
+	free(ZV);
+	info("5");	
+	free(ZAZ);
+	info("6");	
+	free(ZAZV);
+	info("7");	
+	free(ZAZVT);
+	info("8");
+	info(" stuff free.\n");
+
+}
+
+void step_doubling(struct Model *model)
+{
+	long i, j;
+
+	long m = model->m;
+	long K = model->K;
+
+	for (i=0; i<m+1; i++) {
+		for (j=0; j<K-1; j++) {
+			matrix_mult(model->V, K-1, i, j, 2.0);
+			matrix_add(model->V, K-1, i, j, -matrix_get(model->Vbar, K-1, i, j));
+		}
+	}
+}
+
+int dposv(char UPLO, int N, int NRHS, double *A, int LDA, double *B, 
+		int LDB)
+{
+	extern void dposv_(char *UPLO, int *Np, int *NRHSp, double *A, 
+			int *LDAp, double *B, int *LDBp, int *INFOp);
+	int INFO;
+	dposv_(&UPLO, &N, &NRHS, A, &LDA, B, &LDB, &INFO);
+	return INFO;
+}
+
+int  dsysv(char UPLO, int N, int NRHS, double *A, int LDA, int *IPIV,
+		double *B, int LDB, double *WORK, int LWORK)
+{
+	extern void dsysv_(char *UPLO, int *Np, int *NRHSp, double *A, 
+			int *LDAp, int *IPIV, double *B, int *LDBp, 
+			double *WORK, int *LWORK, int *INFOp);
+	int INFO;
+	dsysv_(&UPLO, &N, &NRHS, A, &LDA, IPIV, B, &LDB, WORK, &LWORK, &INFO);
+	return INFO;
+}
+
+void msvmmaj_update(struct Model *model, struct Data *data, 
+		int *ClassIdx, double *A, double *B, double *Omega, 
+		double *ZAZ, double *ZAZV, double *ZAZVT)
+{
+	// Because msvmmaj_update is always called after a call to 
+	// get_msvmmaj_loss with the latest V, it is unnecessary to recalculate
+	// the matrix ZV, the errors Q and the Huber errors H. Awesome!
+	int status;
+	long i, j, k;
+	double Avalue, Bvalue;
+	double omega, value, a, b, q, h, r;
+
+	long n = model->n;
+	long m = model->m;
+	long K = model->K;
+
+	double kappa = model->kappa;
+	double p = model->p;
+	double *rho = model->rho;
+
+	const double a2g2 = 0.25*p*(2.0*p - 1.0)*pow((kappa+1.0)/2.0,p-2.0);
+	const double in = 1.0/((double) n);
+
+	//info("\tCalculating class idx and omega ... ");
+	for (i=0; i<n; i++) {
+		value = 0;
+		omega = 0;
+		for (j=0; j<K; j++) {
+			h = matrix_get(model->H, K, i, j);
+			r = matrix_get(model->R, K, i, j);
+			value += (h*r > 0) ? 1 : 0;
+			omega += pow(h, p)*r;
+		}
+		ClassIdx[i] = (value <= 1.0) ? 1 : 0;
+		Omega[i] = (1.0/p)*pow(omega, 1.0/p - 1.0);
+	}	
+
+	//info("done\n");
+	//info("\tCalculating A and B ... ");
+	
+	Memset(B, double, n*(K-1));	
+	for (i=0; i<n; i++) {
+		Avalue = 0;
+		if (ClassIdx[i] == 1) {
+			for (j=0; j<K; j++) {
+				q = matrix_get(model->Q, K, i, j);
+				if (q < -kappa) {
+					a = 0.25/(0.5 - kappa/2.0 - q);
+					b = 0.5;
+				} else if (q <= 1.0) {
+					a = 1.0/(2.0*kappa + 2.0);
+					b = (1.0 - q)*a;
+				} else {
+					a = -0.25/(0.5 - kappa/2.0 - q);
+					b = 0;
+				}
+				for (k=0; k<K-1; k++) {
+					Bvalue = in*rho[i]*b*matrix3_get(model->UU, K-1, K, i, k, j);
+					matrix_add(B, K-1, i, k, Bvalue);
+				}
+				Avalue += a*matrix_get(model->R, K, i, j);
+			}
+		} else {
+			if (2.0 - p < 0.0001) {
+				for (j=0; j<K; j++) {
+					q = matrix_get(model->Q, K, i, j);
+					if (q < -kappa) {
+						b = 0.5*p*pow(0.5 - kappa/2.0 - q, p-1.0);
+					} else if ( q <= 1.0) {
+						b = pow(1.0 - q, 3.0)/pow(2.0*kappa + 2.0, 2.0);
+					} else {
+						b = 0;
+					}
+					for (k=0; k<K-1; k++) {
+						Bvalue = in*rho[i]*Omega[i]*b*matrix3_get(model->UU, K-1, K, i, k, j);
+						matrix_add(B, K-1, i, k, Bvalue);
+					}
+				}
+				Avalue = 1.5*(K - 1.0);
+			} else {
+				for (j=0; j<K; j++) {
+					q = matrix_get(model->Q, K, i, j);
+					if (q < -kappa) {
+						a = 0.25*pow(p, 2.0)*pow(0.5 - kappa/2.0 - q, p - 2.0);
+						b = 0.5*p*pow(0.5 - kappa/2.0 - q, p - 1.0);
+					} else if ( q <= 1.0) {
+						a = a2g2;
+						b = p*pow(1.0 - q, 2.0*p - 1.0)/pow(2*kappa+2.0, p);
+					} else {
+						a = 0.25*pow(p, 2.0)*pow((p/(p - 2.0))*(0.5 - kappa/2.0 - q),p - 2.0);
+						b = a*(2.0*q + kappa - 1.0)/(p - 2.0) + 0.5*p*pow((p/(p - 2.0))*(0.5 - kappa/2.0 - q), p - 1.0);
+					}
+					for (k=0; k<K-1; k++) {
+						Bvalue = in*rho[i]*Omega[i]*b*matrix3_get(model->UU, K-1, K, i, k, j);
+						matrix_add(B, K-1, i, k, Bvalue);
+					}
+					Avalue += a*matrix_get(model->R, K, i, j);
+				}
+			}
+			Avalue *= Omega[i];
+		}
+		A[i] = in*rho[i]*Avalue;
+	}
+
+	//print_matrix(ZAZ, m+1, m+1);
+	//info("done\n");
+	//info("\tCalculating ZAZ ... ");
+	// Now we calculate the matrix ZAZ. Since this is 
+	// guaranteed to be symmetric, we only calculate the 
+	// upper part of the matrix, and then copy this over
+	// to the lower part after all calculations are done.
+	// Note that the use of dsym is faster than dspr, even
+	// though dspr uses less memory.
+	Memset(ZAZ, double, (m+1)*(m+1));
+	for (i=0; i<n; i++) {
+		cblas_dsyr(
+				CblasRowMajor,
+				CblasUpper,
+				m+1,
+				A[i],
+				&data->Z[i*(m+1)],
+				1,
+				ZAZ,
+				m+1);
+	}
+	//print_matrix(ZAZ, m+1, m+1);
+
+	//info("done\n");
+	// Copy upper to lower (necessary because we need to switch
+	// to Col-Major order for LAPACK).
+	//
+	// TODO: this needs verification! It might also work without
+	// this step
+	for (i=0; i<m+1; i++)
+		for (j=0; j<m+1; j++)
+			matrix_set(ZAZ, m+1, j, i, matrix_get(ZAZ, m+1, i, j));
+
+	info("ZAZ:\n");
+	print_matrix(ZAZ, m+1, m+1);
+	
+	// Calculate the right hand side of the system we 
+	// want to solve.
+	//info("\tRunning dsymm ... ");
+	cblas_dsymm(
+			CblasRowMajor,
+			CblasLeft,
+			CblasUpper,
+			m+1,
+			K-1,
+			1.0,
+			ZAZ,
+			m+1,
+			model->V,
+			K-1,
+			0.0,
+			ZAZV, 
+			K-1);
+	//info("done\n");
+	//info("\tRunning dgemm ... ");
+	cblas_dgemm(
+			CblasRowMajor,
+			CblasTrans,
+			CblasNoTrans,
+			m+1,
+			K-1,
+			n,
+			1.0,
+			data->Z,
+			m+1,
+			B,
+			K-1,
+			1.0,
+			ZAZV,
+			K-1);
+	/* 
+	 * Add lambda to all diagonal elements except the 
+	 * first one. 
+	 */
+	i = 0;
+	for (j=0; j<m; j++)
+		ZAZ[i+=m+1 + 1] += model->lambda;
+	
+	// For the LAPACK call we need to switch to Column-
+	// Major order. This is unnecessary for the matrix
+	// ZAZ because it is symmetric. The matrix ZAZV 
+	// must be converted however.
+	for (i=0; i<m+1; i++)
+		for (j=0; j<K-1; j++)
+			ZAZVT[j*(m+1)+i] = ZAZV[i*(K-1)+j];
+	status = 1;	
+	/*
+	status = dposv(
+			'U',
+			m+1,
+			K-1,
+			ZAZ,
+			m+1,
+			ZAZVT,
+			m+1);
+	*/
+	if (status != 0) {
+		fprintf(stderr, "Received nonzero status from dposv: %i\n", status);
+		int *IPIV = malloc((m+1)*sizeof(int));
+		double *WORK = malloc(1*sizeof(double));
+		status = dsysv(
+				'U',
+				m+1,
+				K-1,
+				ZAZ,
+				m+1,
+				IPIV,
+				ZAZVT,
+				m+1,
+				WORK,
+				-1);
+		WORK = (double *)realloc(WORK, WORK[0]*sizeof(double));
+		status = dsysv(
+				'U',
+				m+1,
+				K-1,
+				ZAZ,
+				m+1,
+				IPIV,
+				ZAZVT,
+				m+1,
+				WORK,
+				sizeof(WORK)/sizeof(double));
+		if (status != 0)
+			fprintf(stderr, "Received nonzero status from dsysv: %i\n", status);
+
+	}
+	for (i=0; i<m+1; i++)
+		for (j=0; j<K-1; j++)
+			ZAZV[i*(K-1)+j] = ZAZVT[j*(m+1)+i];
+
+	// Store the previous V in Vbar, assign the new V
+	// (which is stored in ZAZVT) to the model, and give ZAZVT the
+	// address of Vbar. This should ensure that we keep
+	// re-using assigned memory instead of reallocating at every
+	// update.
+	/* See this answer: http://stackoverflow.com/q/13246615/
+	 * For now we'll just do it by value until the rest is figured out.
+	ptr = model->Vbar;
+	model->Vbar = model->V;
+	model->V = ZAZVT;
+	ZAZVT = ptr;
+	*/
+	
+	for (i=0; i<m+1; i++) {
+		for (j=0; j<K-1; j++) {
+			value = matrix_get(model->Vbar, K-1, i, j);
+			matrix_set(model->Vbar, K-1, i, j, matrix_get(model->V, K-1, i, j));
+			matrix_set(model->V, K-1, i, j, matrix_get(ZAZV, K-1, i, j));
+			matrix_set(ZAZV, K-1, i, j, value);
+		}
+	}
+
+}
+
+
+void initialize_weights(struct Data *data, struct Model *model)
+{
+	int *groups;
+	long i;
+
+	long n = model->n;
+	long K = model->K;
+
+	if (model->weight_idx == 1) {
+		for (i=0; i<n; i++)
+			model->rho[i] = 1.0;
+	} 
+	else if (model->weight_idx == 2) {
+		groups = Malloc(int, K);
+		for (i=0; i<n; i++) {
+			groups[data->y[i]-1]++;
+		}
+		for (i=0; i<n; i++) {
+			model->rho[i] = 1.0/((double) groups[data->y[i]-1]);
+		}
+	} else {
+		fprintf(stderr, "Unknown weight specification.\n");
+		exit(1);
+	}
+}
+
