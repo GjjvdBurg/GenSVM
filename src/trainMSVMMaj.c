@@ -24,7 +24,6 @@ void exit_with_help()
 	exit(0);
 }
 
-
 /*
 	Main
 */

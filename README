@@ -1,0 +1,2 @@
+Depends on BLAS (libblas-dev)
+Depends on LAPACK (liblapack-dev)
