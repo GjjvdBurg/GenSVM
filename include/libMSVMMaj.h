@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
-#include <time.h>
 #include <cblas.h>
 #include <string.h>
 #include "util.h"
@@ -24,3 +23,7 @@ void main_loop(struct Model *model, struct Data *data);
 int dposv(char UPLO, int N, int NRHS, double *A, int LDA, double *B, int LDB);
 
 void initialize_weights(struct Data *data, struct Model *model);
+
+void predict_labels(struct Data *data, struct Model *model, long *predy);
+double prediction_perf(struct Data *data, long *predy);
+

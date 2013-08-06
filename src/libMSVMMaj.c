@@ -167,7 +167,6 @@ double get_msvmmaj_loss(struct Model *model, struct Data *data, double *ZV)
 	return loss;
 }
 
-
 /*
 	Training loop is defined here.
 */
@@ -226,7 +225,7 @@ void main_loop(struct Model *model, struct Data *data)
 		Lbar = L;
 		L = get_msvmmaj_loss(model, data, ZV);
 
-		if (it%500 == 0)
+		if (it%100 == 0)
 			info("iter = %li, L = %15.16f, Lbar = %15.16f, reldiff = %15.16f\n",
 					it, L, Lbar, (Lbar - L)/L);
 		it++;
@@ -297,7 +296,7 @@ void msvmmaj_update(struct Model *model, struct Data *data,
 {
 	// Because msvmmaj_update is always called after a call to 
 	// get_msvmmaj_loss with the latest V, it is unnecessary to recalculate
-	// the matrix ZV, the errors Q and the Huber errors H. Awesome!
+	// the matrix ZV, the errors Q, or the Huber errors H. Awesome!
 	int status;
 	long i, j, k;
 	double Avalue, Bvalue;
@@ -536,19 +535,16 @@ void msvmmaj_update(struct Model *model, struct Data *data,
 	
 	for (i=0; i<m+1; i++) {
 		for (j=0; j<K-1; j++) {
-			value = matrix_get(model->Vbar, K-1, i, j);
 			matrix_set(model->Vbar, K-1, i, j, matrix_get(model->V, K-1, i, j));
 			matrix_set(model->V, K-1, i, j, matrix_get(ZAZV, K-1, i, j));
-			matrix_set(ZAZV, K-1, i, j, value);
 		}
 	}
-
 }
 
 
 void initialize_weights(struct Data *data, struct Model *model)
 {
-	int *groups;
+	long *groups;
 	long i;
 
 	long n = model->n;
@@ -559,7 +555,7 @@ void initialize_weights(struct Data *data, struct Model *model)
 			model->rho[i] = 1.0;
 	} 
 	else if (model->weight_idx == 2) {
-		groups = Calloc(int, K);
+		groups = Calloc(long, K);
 		for (i=0; i<n; i++) {
 			groups[data->y[i]-1]++;
 		}
@@ -571,4 +567,74 @@ void initialize_weights(struct Data *data, struct Model *model)
 		exit(1);
 	}
 
+}
+
+void predict_labels(struct Data *data, struct Model *model, long *predy)
+{
+	long i, j, k, label;
+	double norm, min_dist;
+
+	long n = data->n; // note that model->n is the size of the training sample.
+	long m = data->m;
+	long K = model->K; //data->K does not necessarily equal the original K.
+
+	double *S = Calloc(double, K-1);
+	double *ZV = Calloc(double, n*(K-1));
+	double *U = Calloc(double, K*(K-1));
+
+	// Get the simplex matrix
+	simplex_gen(K, U);
+
+	// Generate the simplex-space vectors
+	cblas_dgemm(
+			CblasRowMajor,
+			CblasNoTrans,
+			CblasNoTrans,
+			n,
+			K-1,
+			m+1,
+			1.0,
+			data->Z,
+			m+1,
+			model->V,
+			K-1,
+			0.0,
+			ZV,
+			K-1);
+
+	// Calculate the distance to each of the vertices of the simplex.
+	// The closest vertex defines the class label.
+	for (i=0; i<n; i++) {
+		label = 0;
+		min_dist = 1000000000.0;
+		for (j=0; j<K; j++) {
+			for (k=0; k<K-1; k++) {
+				S[k] = matrix_get(ZV, K-1, i, k) - matrix_get(U, K-1, j, k);
+			}
+			norm = cblas_dnrm2(K, S, 1);
+			if (norm < min_dist) {
+				label = j+1;
+				min_dist = norm;
+			}
+		}
+		predy[i] = label;
+	}
+
+	free(ZV);
+	free(U);
+	free(S);
+}
+
+double prediction_perf(struct Data *data, long *predy)
+{
+	long i, correct = 0;
+	double performance;
+
+	for (i=0; i<data->n; i++)
+		if (data->y[i] == predy[i])
+			correct++;
+
+	performance = ((double) correct)/((double) data->n) * 100.0;
+
+	return performance;
 }

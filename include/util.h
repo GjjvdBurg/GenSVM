@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include <string.h>
+#include <time.h>
 #include "MSVMMaj.h"
 
 #define Calloc(type, n) (type *)calloc((n), sizeof(type))
@@ -11,7 +12,12 @@
 #define maximum(a, b) a > b ? a : b
 #define minimum(a, b) a < b ? a : b
 
-void read_data(struct Data *dataset, struct Model *model, char *data_file);
+void read_data(struct Data *dataset, char *data_file);
+
+void read_model(struct Model *model, char *model_filename);
+void write_model(struct Model *model, char *output_filename);
+
+void write_predictions(struct Data *data, long *predy, char *output_filename);
 
 int check_argv(int argc, char **argv, char *str);
 int check_argv_eq(int argc, char **argv, char *str);
@@ -34,3 +40,4 @@ void free_model(struct Model *model);
 void free_data(struct Data *data);
 
 void print_matrix(double *M, long rows, long cols);
+

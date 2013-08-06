@@ -4,7 +4,7 @@
 	Read the data from the data_file. The data matrix X is augmented
 	with a column of ones, to get the matrix Z.
 */
-void read_data(struct Data *dataset, struct Model *model, char *data_file)
+void read_data(struct Data *dataset, char *data_file)
 {
 	FILE *fid;
 	long i, j;
@@ -86,11 +86,179 @@ void read_data(struct Data *dataset, struct Model *model, char *data_file)
 	dataset->m = m;
 	dataset->K = K;
 
-	model->n = n;
-	model->m = m;
-	model->K = K;
-
 	info("Succesfully read data file: %s\n",  data_file);
+}
+
+void next_line(FILE *fid, char *filename)
+{
+	char buffer[MAX_LINE_LENGTH];
+	if (fgets(buffer, MAX_LINE_LENGTH, fid) == NULL) {
+		fprintf(stderr, "Error reading file %s\n", filename);
+		exit(1);
+	}
+}
+
+double get_fmt_double(FILE *fid, char *filename, const char *fmt)
+{
+	char buffer[MAX_LINE_LENGTH];
+	double value;
+
+	if (fgets(buffer, MAX_LINE_LENGTH, fid) == NULL) {
+		fprintf(stderr, "Error reading line from file %s\n", filename);
+		exit(1);
+	}
+	sscanf(buffer, fmt, &value);
+
+	return value;
+}
+
+long get_fmt_long(FILE *fid, char *filename, const char *fmt)
+{
+	char buffer[MAX_LINE_LENGTH];
+	long value;
+
+	if (fgets(buffer, MAX_LINE_LENGTH, fid) == NULL) {
+		fprintf(stderr, "Error reading line from file %s\n", filename);
+		exit(1);
+	}
+	sscanf(buffer, fmt, &value);
+
+	return value;
+}
+
+
+void read_model(struct Model *model, char *model_filename)
+{
+	long i, j, nr = 0;
+	FILE *fid;
+	char buffer[MAX_LINE_LENGTH];
+	char data_filename[MAX_LINE_LENGTH];
+	double value = 0;
+
+	fid = fopen(model_filename, "r");
+	if (fid == NULL) {
+		fprintf(stderr, "Error opening model file %s\n", model_filename);
+		exit(1);
+	}
+	// skip the first four lines
+	for (i=0; i<4; i++)
+		next_line(fid, model_filename);
+
+	// read all model variables
+	model->p = get_fmt_double(fid, model_filename, "p = %lf");
+	model->lambda = get_fmt_double(fid, model_filename, "lambda = %lf");
+	model->kappa = get_fmt_double(fid, model_filename, "kappa = %lf");
+	model->epsilon = get_fmt_double(fid, model_filename, "epsilon = %lf");
+	model->weight_idx = (int) get_fmt_long(fid, model_filename, "weight_idx = %li");
+
+	// skip to data section
+	for (i=0; i<2; i++)
+		next_line(fid, model_filename);
+
+	// read filename of data file
+	if (fgets(buffer, MAX_LINE_LENGTH, fid) == NULL) {
+		fprintf(stderr, "Error reading model file %s\n", model_filename);
+		exit(1);
+	}
+	sscanf(buffer, "filename = %s\n", data_filename);
+	model->data_file = data_filename;
+
+	// read all data variables
+	model->n = get_fmt_long(fid, model_filename, "n = %li\n");
+	model->m = get_fmt_long(fid, model_filename, "m = %li\n");
+	model->K = get_fmt_long(fid, model_filename, "K = %li\n");
+
+	// skip to output
+	for (i=0; i<2; i++)
+		next_line(fid, model_filename);
+
+	// read the matrix V and check for consistency
+	model->V = Malloc(double, (model->m+1)*(model->K-1));
+	for (i=0; i<model->m+1; i++) {
+		for (j=0; j<model->K-1; j++) {
+			nr += fscanf(fid, "%lf ", &value);
+			matrix_set(model->V, model->K-1, i, j, value);
+		}
+	}
+	if (nr != (model->m+1)*(model->K-1)) {
+		fprintf(stderr, "Error reading model file %s. "
+				"Not enough elements of V found.\n", model_filename);
+		exit(1);
+	}
+
+}
+
+
+
+void write_model(struct Model *model, char *output_filename)
+{
+	FILE *fid;
+	int i, j, diff, hours, minutes;
+	char timestr[1000];
+	time_t current_time, lt, gt;
+	struct tm *lclt;
+
+	// open output file
+	fid = fopen(output_filename, "w");
+	if (fid == NULL) {
+		fprintf(stderr, "Error opening output file %s", output_filename);
+		exit(1);
+	}
+
+	// get current time (in epoch)
+	current_time = time(NULL);
+	if (current_time == ((time_t)-1)) {
+		fprintf(stderr, "Failed to compute the current time.\n");
+		exit(1);
+	}
+
+	// convert time to local time and create a string
+	lclt = localtime(&current_time);
+	strftime(timestr, 1000, "%c", lclt);
+	if (timestr == NULL) {
+		fprintf(stderr, "Failed to convert time to string.\n");
+		exit(1);
+	}
+
+	// calculate the difference from UTC including DST
+	lt = mktime(localtime(&current_time));
+	gt = mktime(gmtime(&current_time));
+	diff = -difftime(gt, lt);
+	hours = (diff/3600);
+	minutes = (diff%3600)/60;
+	if (lclt->tm_isdst == 1)
+		hours++;
+
+	// Write output to file
+	fprintf(fid, "Output file for MSVMMaj (version %1.1f)\n", VERSION);
+	fprintf(fid, "Generated on: %s (UTC %+03i:%02i)\n\n", timestr, hours, minutes);
+	fprintf(fid, "Model:\n");
+	fprintf(fid, "p = %15.16f\n", model->p);
+	fprintf(fid, "lambda = %15.16f\n", model->lambda);
+	fprintf(fid, "kappa = %15.16f\n", model->kappa);
+	fprintf(fid, "epsilon = %g\n", model->epsilon);
+	fprintf(fid, "weight_idx = %i\n", model->weight_idx);
+	fprintf(fid, "\n");
+	fprintf(fid, "Data:\n");
+	fprintf(fid, "filename = %s\n", model->data_file);
+	fprintf(fid, "n = %li\n", model->n);
+	fprintf(fid, "m = %li\n", model->m);
+	fprintf(fid, "K = %li\n", model->K);
+	fprintf(fid, "\n");
+	fprintf(fid, "Output:\n");
+	for (i=0; i<model->m+1; i++) {
+		for (j=0; j<model->K-1; j++) {
+			fprintf(fid, "%+15.16f ", matrix_get(model->V, model->K-1, i, j));
+		}
+		fprintf(fid, "\n");
+	}
+
+	fclose(fid);
+
+}
+
+void write_predictions(struct Data *data, long *predy, char *output_filename)
+{
 }
 
 int check_argv(int argc, char **argv, char *str)

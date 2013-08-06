@@ -2,7 +2,7 @@ VERSION=0.1
 CC=gcc
 CFLAGS=-Wall -O2 -DVERSION=$(VERSION) -g
 INCLUDE= -Iinclude/
-EXECS=trainMSVMMaj
+EXECS=trainMSVMMaj predMSVMMaj
 
 .PHONY: all clean tar
 
@@ -12,6 +12,9 @@ override LDFLAGS+=-lblas -llapack -lm
 
 trainMSVMMaj: src/trainMSVMMaj.c src/libMSVMMaj.o src/util.o
 	$(CC) -o trainMSVMMaj src/trainMSVMMaj.c src/libMSVMMaj.o src/util.o $(CFLAGS) $(INCLUDE) $(LDFLAGS)
+
+predMSVMMaj: src/predMSVMMaj.c src/libMSVMMaj.o src/util.o
+	$(CC) -o predMSVMMaj src/predMSVMMaj.c src/libMSVMMaj.o src/util.o $(CFLAGS) $(INCLUDE) $(LDFLAGS)
 
 src/libMSVMMaj.o:
 	$(CC) -c -o src/libMSVMMaj.o src/libMSVMMaj.c $(CFLAGS) $(INCLUDE)
