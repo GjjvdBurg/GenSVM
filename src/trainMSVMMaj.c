@@ -104,11 +104,12 @@ void parse_command_line(int argc, char **argv, struct Model *model,
 			case 'p':
 				model->p = atof(argv[i]);
 				break;
+			case 'r':
+				model->weight_idx = atoi(argv[i]);
+				break;
 			case 'q':
 				print_func = &print_null;
 				i--;
-			case 'r':
-				model->weight_idx = atoi(argv[i]);
 				break;
 			default:
 				fprintf(stderr, "Unknown option: -%c\n", argv[i-1][1]);

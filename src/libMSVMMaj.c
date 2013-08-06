@@ -181,14 +181,11 @@ void main_loop(struct Model *model, struct Data *data)
 
 	srand(time(NULL));
 
-	int *ClassIdx = Calloc(int, n);
-	double *A = Calloc(double, n);
 	double *B = Calloc(double, n*(K-1));
 	double *ZV = Calloc(double, n*(K-1));
 	double *ZAZ = Calloc(double, (m+1)*(m+1));	
 	double *ZAZV = Calloc(double, (m+1)*(K-1));
 	double *ZAZVT = Calloc(double, (m+1)*(K-1));
-	double *Omega = Calloc(double, n);
 
 	info("Starting main loop.\n");
 	info("Dataset:\n");
@@ -209,7 +206,8 @@ void main_loop(struct Model *model, struct Data *data)
 	// Initialize V
 	for (i=0; i<m+1; i++) 
 		for (j=0; j<K-1; j++)
-			matrix_set(model->V, K-1, i, j, -1.0+2.0*rnd());
+			matrix_set(model->V, K-1, i, j, 1.0);
+			//matrix_set(model->V, K-1, i, j, -1.0+2.0*rnd());
 	
 	L = get_msvmmaj_loss(model, data, ZV);
 	Lbar = L + 2.0*model->epsilon*L;
@@ -217,7 +215,7 @@ void main_loop(struct Model *model, struct Data *data)
 	while ((it < MAX_ITER) && (Lbar - L)/L > model->epsilon)
 	{
 		// ensure V contains newest V and Vbar contains V from previous
-		msvmmaj_update(model, data, ClassIdx, A, B, Omega, ZAZ,
+		msvmmaj_update(model, data, B, ZAZ,
 				ZAZV, ZAZVT);
 		if (it > 50)
 			step_doubling(model);
@@ -239,15 +237,7 @@ void main_loop(struct Model *model, struct Data *data)
 		for (j=0; j<K-1; j++)
 			matrix_set(model->W, K-1, i-1, j, matrix_get(model->V, K-1, i, j));
 
-	info("W:\n");
-	print_matrix(model->W, m, K-1);
-	info("t:\n");
-	print_matrix(model->t, K-1, 1);
-
-	free(ClassIdx);
-	free(A);
 	free(B);
-	free(Omega);
 	free(ZV);
 	free(ZAZ);
 	free(ZAZV);
@@ -291,13 +281,12 @@ int  dsysv(char UPLO, int N, int NRHS, double *A, int LDA, int *IPIV,
 }
 
 void msvmmaj_update(struct Model *model, struct Data *data, 
-		int *ClassIdx, double *A, double *B, double *Omega, 
-		double *ZAZ, double *ZAZV, double *ZAZVT)
+		double *B, double *ZAZ, double *ZAZV, double *ZAZVT)
 {
 	// Because msvmmaj_update is always called after a call to 
 	// get_msvmmaj_loss with the latest V, it is unnecessary to recalculate
 	// the matrix ZV, the errors Q, or the Huber errors H. Awesome!
-	int status;
+	int status, class;
 	long i, j, k;
 	double Avalue, Bvalue;
 	double omega, value, a, b, q, h, r;
@@ -313,6 +302,9 @@ void msvmmaj_update(struct Model *model, struct Data *data,
 	const double a2g2 = 0.25*p*(2.0*p - 1.0)*pow((kappa+1.0)/2.0,p-2.0);
 	const double in = 1.0/((double) n);
 
+	Memset(B, double, n*(K-1));
+	Memset(ZAZ, double, (m+1)*(m+1));
+	b = 0;
 	for (i=0; i<n; i++) {
 		value = 0;
 		omega = 0;
@@ -322,15 +314,11 @@ void msvmmaj_update(struct Model *model, struct Data *data,
 			value += (h*r > 0) ? 1 : 0;
 			omega += pow(h, p)*r;
 		}
-		ClassIdx[i] = (value <= 1.0) ? 1 : 0;
-		Omega[i] = (1.0/p)*pow(omega, 1.0/p - 1.0);
-	}	
+		class = (value <= 1.0) ? 1 : 0;
+		omega = (1.0/p)*pow(omega, 1.0/p - 1.0);
 
-	b = 0;	
-	Memset(B, double, n*(K-1));	
-	for (i=0; i<n; i++) {
 		Avalue = 0;
-		if (ClassIdx[i] == 1) {
+		if (class == 1) {
 			for (j=0; j<K; j++) {
 				q = matrix_get(model->Q, K, i, j);
 				if (q <= -kappa) {
@@ -361,7 +349,7 @@ void msvmmaj_update(struct Model *model, struct Data *data,
 						b = 0;
 					}
 					for (k=0; k<K-1; k++) {
-						Bvalue = in*rho[i]*Omega[i]*b*matrix3_get(model->UU, K-1, K, i, k, j);
+						Bvalue = in*rho[i]*omega*b*matrix3_get(model->UU, K-1, K, i, k, j);
 						matrix_add(B, K-1, i, k, Bvalue);
 					}
 				}
@@ -383,30 +371,27 @@ void msvmmaj_update(struct Model *model, struct Data *data,
 						b = p*pow(1.0 - q, 2.0*p - 1.0)/pow(2*kappa+2.0, p);
 					}
 					for (k=0; k<K-1; k++) {
-						Bvalue = in*rho[i]*Omega[i]*b*matrix3_get(model->UU, K-1, K, i, k, j);
+						Bvalue = in*rho[i]*omega*b*matrix3_get(model->UU, K-1, K, i, k, j);
 						matrix_add(B, K-1, i, k, Bvalue);
 					}
 					Avalue += a*matrix_get(model->R, K, i, j);
 				}
 			}
-			Avalue *= Omega[i];
+			Avalue *= omega;
 		}
-		A[i] = in*rho[i]*Avalue;
-	}
+		Avalue *= in * rho[i];
 
-	// Now we calculate the matrix ZAZ. Since this is 
-	// guaranteed to be symmetric, we only calculate the 
-	// upper part of the matrix, and then copy this over
-	// to the lower part after all calculations are done.
-	// Note that the use of dsym is faster than dspr, even
-	// though dspr uses less memory.
-	Memset(ZAZ, double, (m+1)*(m+1));
-	for (i=0; i<n; i++) {
+		// Now we calculate the matrix ZAZ. Since this is 
+		// guaranteed to be symmetric, we only calculate the 
+		// upper part of the matrix, and then copy this over
+		// to the lower part after all calculations are done.
+		// Note that the use of dsym is faster than dspr, even
+		// though dspr uses less memory.
 		cblas_dsyr(
 				CblasRowMajor,
 				CblasUpper,
 				m+1,
-				A[i],
+				Avalue,
 				&data->Z[i*(m+1)],
 				1,
 				ZAZ,
@@ -540,7 +525,6 @@ void msvmmaj_update(struct Model *model, struct Data *data,
 		}
 	}
 }
-
 
 void initialize_weights(struct Data *data, struct Model *model)
 {

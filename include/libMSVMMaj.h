@@ -14,8 +14,7 @@ void calculate_huber(struct Model *model);
 
 double get_msvmmaj_loss(struct Model *model, struct Data *data, double *ZV);
 void msvmmaj_update(struct Model *model, struct Data *data, 
-		int *ClassIdx, double *A, double *B, double *Omega, 
-		double *ZAZ, double *ZAZV, double *ZAZVT);
+		double *B, double *ZAZ, double *ZAZV, double *ZAZVT);
 void step_doubling(struct Model *model);
 
 void main_loop(struct Model *model, struct Data *data);
