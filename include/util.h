@@ -27,17 +27,7 @@ void info(const char *fmt,...);
 
 double rnd();
 
-void matrix_set(double *M, long cols, long i, long j, double val);
-void matrix_add(double *M, long cols, long i, long j, double val);
-void matrix_mult(double *M, long cols, long i, long j, double val);
-double matrix_get(double *M, long cols, long i, long j);
-
-void matrix3_set(double *M, long N2, long N3, long i, long j, long k, double val);
-double matrix3_get(double *M, long N2, long N3, long i, long j, long k);
-
 void allocate_model(struct Model *model);
 void free_model(struct Model *model);
 void free_data(struct Data *data);
-
-void print_matrix(double *M, long rows, long cols);
 

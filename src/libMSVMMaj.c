@@ -1,10 +1,33 @@
+/**
+ * @file libMSVMMaj.c
+ * @author Gertjan van den Burg (burg@ese.eur.nl)
+ * @date August 8, 2013
+ * @brief Main functions for the MSVMMaj algorithm
+ *
+ * @details
+ * The functions in this file are all functions needed
+ * to calculate the optimal separation boundaries for 
+ * a multiclass classification problem, using the 
+ * MSVMMaj algorithm.
+ *
+ */
+
 #include "libMSVMMaj.h"
 
-/*
-	Generate the simplex matrix. A pointer to the matrix
-	must be given, and the matrix must have been
-	allocated.
-*/
+/**
+ * @name simplex_gen
+ * @brief Generate matrix of simplex vertex coordinates
+ * @ingroup libMSVMMaj
+ * 
+ * Generate the simplex matrix. Each row of the created 
+ * matrix contains the coordinate vector of a single 
+ * vertex of the K-simplex in K-1 dimensions. The simplex
+ * generated is a special simplex with edges of length 1.
+ * The simplex matrix U must already have been allocated.
+ *
+ * @param [in] 		K 	number of classes
+ * @param [in,out] 	U 	simplex matrix of size K * (K-1)
+ */
 void simplex_gen(long K, double *U)
 {
 	long i, j;
@@ -21,7 +44,7 @@ void simplex_gen(long K, double *U)
 	}
 }
 
-/*
+/*!
 	Generate the category matrix R. The category matrix has 1's everywhere
 	except at the column corresponding to the label of instance i.
 */
@@ -40,6 +63,9 @@ void category_matrix(struct Model *model, struct Data *dataset)
 	}
 }
 
+/*!
+ * Simplex diff
+ */
 void simplex_diff(struct Model *model, struct Data *data)
 {
 	long i, j, k;
@@ -59,7 +85,7 @@ void simplex_diff(struct Model *model, struct Data *data)
 	}
 }
 
-/*
+/*!
 	Calculate the errors Q based on the current value of V.
 	It is assumed that the memory for Q has already been allocated. 
 	In addition, the matrix ZV is calculated here. It is assigned to a 
@@ -103,7 +129,7 @@ void calculate_errors(struct Model *model, struct Data *data, double *ZV)
 	}
 }	
 
-/*
+/*!
 	Calculate the Huber hinge errors for each error in the matrix Q.
 */
 void calculate_huber(struct Model *model) 
@@ -125,7 +151,7 @@ void calculate_huber(struct Model *model)
 	}
 }
 
-/*
+/*!
 	Calculate the value of the loss function based on the current estimate
 	of V. 
 */
@@ -167,9 +193,46 @@ double get_msvmmaj_loss(struct Model *model, struct Data *data, double *ZV)
 	return loss;
 }
 
-/*
+
+/**
+ * @name seed_model_V
+ * @brief seed the matrix V from an existing model or using rand
+ * @ingroup libMSVMMaj
+ *
+ * The matrix V must be seeded before the main_loop() can start. 
+ * This can be done by either seeding it with random numbers or 
+ * using the solution from a previous model on the same dataset
+ * as initial seed. The latter option usually allows for a 
+ * significant improvement in the number of iterations necessary
+ * because the seeded model V is closer to the optimal V.
+ *
+ * @param [in] 	from_model 	model from which to copy V
+ * @param [in,out] to_model 	model to which V will be copied
+ */
+void seed_model_V(struct Model *from_model, struct Model *to_model)
+{
+	long i, j;
+	long m = to_model->m;
+	long K = to_model->K;
+	double value;
+
+	if (from_model == NULL) {
+		for (i=0; i<m+1; i++)
+			for (j=0; j<K-1; j++)
+				matrix_set(to_model->V, K-1, i, j, -1.0+2.0*rnd());
+	} else {
+		for (i=0; i<m+1; i++)
+			for (j=0; j<K-1; j++) {
+				value = matrix_get(from_model->V, K-1, i, j);
+				matrix_set(to_model->V, K-1, i, j, value);
+			}
+	}
+}
+
+/*!
 	Training loop is defined here.
 */
+
 void main_loop(struct Model *model, struct Data *data) 
 {
 	long i, j, it = 0;
@@ -203,12 +266,6 @@ void main_loop(struct Model *model, struct Data *data)
 	simplex_diff(model, data);
 	category_matrix(model, data);
 
-	// Initialize V
-	for (i=0; i<m+1; i++) 
-		for (j=0; j<K-1; j++)
-			matrix_set(model->V, K-1, i, j, 1.0);
-			//matrix_set(model->V, K-1, i, j, -1.0+2.0*rnd());
-	
 	L = get_msvmmaj_loss(model, data, ZV);
 	Lbar = L + 2.0*model->epsilon*L;
 
@@ -244,6 +301,10 @@ void main_loop(struct Model *model, struct Data *data)
 	free(ZAZVT);
 }
 
+/*!
+ * Step doubling
+ */
+
 void step_doubling(struct Model *model)
 {
 	long i, j;
@@ -253,11 +314,15 @@ void step_doubling(struct Model *model)
 
 	for (i=0; i<m+1; i++) {
 		for (j=0; j<K-1; j++) {
-			matrix_mult(model->V, K-1, i, j, 2.0);
+			matrix_mul(model->V, K-1, i, j, 2.0);
 			matrix_add(model->V, K-1, i, j, -matrix_get(model->Vbar, K-1, i, j));
 		}
 	}
 }
+
+/*!
+ * dposv
+ */
 
 int dposv(char UPLO, int N, int NRHS, double *A, int LDA, double *B, 
 		int LDB)
@@ -269,6 +334,10 @@ int dposv(char UPLO, int N, int NRHS, double *A, int LDA, double *B,
 	return INFO;
 }
 
+/*!
+ * dsysv
+ */
+
 int  dsysv(char UPLO, int N, int NRHS, double *A, int LDA, int *IPIV,
 		double *B, int LDB, double *WORK, int LWORK)
 {
@@ -279,6 +348,10 @@ int  dsysv(char UPLO, int N, int NRHS, double *A, int LDA, int *IPIV,
 	dsysv_(&UPLO, &N, &NRHS, A, &LDA, IPIV, B, &LDB, WORK, &LWORK, &INFO);
 	return INFO;
 }
+
+/*!
+ * msvmmaj_update
+ */
 
 void msvmmaj_update(struct Model *model, struct Data *data, 
 		double *B, double *ZAZ, double *ZAZV, double *ZAZVT)
@@ -526,6 +599,10 @@ void msvmmaj_update(struct Model *model, struct Data *data,
 	}
 }
 
+/*!
+ * initialize_weights
+ */
+
 void initialize_weights(struct Data *data, struct Model *model)
 {
 	long *groups;
@@ -550,8 +627,11 @@ void initialize_weights(struct Data *data, struct Model *model)
 		fprintf(stderr, "Unknown weight specification.\n");
 		exit(1);
 	}
-
 }
+
+/*!
+ * predict_labels
+ */
 
 void predict_labels(struct Data *data, struct Model *model, long *predy)
 {
@@ -608,6 +688,10 @@ void predict_labels(struct Data *data, struct Model *model, long *predy)
 	free(U);
 	free(S);
 }
+
+/*!
+ * prediction_perf
+ */
 
 double prediction_perf(struct Data *data, long *predy)
 {

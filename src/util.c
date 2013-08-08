@@ -1,5 +1,5 @@
 #include "util.h"
-
+#include "matrix.h"
 /*
 	Read the data from the data_file. The data matrix X is augmented
 	with a column of ones, to get the matrix Z.
@@ -188,8 +188,6 @@ void read_model(struct Model *model, char *model_filename)
 
 }
 
-
-
 void write_model(struct Model *model, char *output_filename)
 {
 	FILE *fid;
@@ -318,63 +316,6 @@ double rnd()
 	return (double) rand()/0x7FFFFFFF;
 }
 
-/*
-	Set a matrix element using ROW Major order. i denotes row,
-	j denotes column.
-*/
-void matrix_set(double *M, long cols, long i, long j, double val)
-{
-	M[i*cols+j] = val;
-}
-
-/*
-	Get a matrix element using ROW Major order. i denotes row,
-	j denotes column.
-*/
-double matrix_get(double *M, long cols, long i, long j)
-{
-	return M[i*cols+j];
-}
-
-/*
-	Add to an existing matrix element. Row-Major order is used.
-*/
-void matrix_add(double *M, long cols, long i, long j, double val)
-{
-	M[i*cols+j] += val;
-}
-
-/*
-	Multiply existing matrix element. Row-Major order is used.
-*/
-void matrix_mult(double *M, long cols, long i, long j, double val)
-{
-	M[i*cols+j] *= val;
-}
-
-
-/*
-	Set a matrix element of a 3D matrix in ROW major order. 
-	N2 and N3 are the second and third dimension respectively
-	and i, j, k are the indices of the first, second and third 
-	dimensions respectively.
-*/
-void matrix3_set(double *M, long N2, long N3, long i, long j, long k, double val)
-{
-	M[k+N3*(j+N2*i)] = val;
-}
-
-/*
-	Get a matrix element of a 3D matrix in ROW major order. 
-	N2 and N3 are the second and third dimension respectively, and
-	i, j and k are the indices of the first, second and third
-	dimension of the requested element respectively.
-*/
-double matrix3_get(double *M, long N2, long N3, long i, long j, long k)
-{
-	return M[k+N3*(j+N2*i)];
-}
-
 void allocate_model(struct Model *model)
 {
 	long n = model->n;
@@ -466,6 +407,7 @@ void free_data(struct Data *data)
 	free(data);
 }
 
+/*
 void print_matrix(double *M, long rows, long cols)
 {
 	long i, j;
@@ -477,3 +419,4 @@ void print_matrix(double *M, long rows, long cols)
 	}
 	info("\n");
 }
+*/

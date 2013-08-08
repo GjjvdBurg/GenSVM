@@ -3,7 +3,9 @@
 #include <math.h>
 #include <cblas.h>
 #include <string.h>
+
 #include "util.h"
+#include "matrix.h"
 
 void simplex_gen(long K, double *U);
 void category_matrix(struct Model *model, struct Data *data);
@@ -21,6 +23,7 @@ void main_loop(struct Model *model, struct Data *data);
 
 int dposv(char UPLO, int N, int NRHS, double *A, int LDA, double *B, int LDB);
 
+void seed_model_V(struct Model *from_model, struct Model *to_model);
 void initialize_weights(struct Data *data, struct Model *model);
 
 void predict_labels(struct Data *data, struct Model *model, long *predy);

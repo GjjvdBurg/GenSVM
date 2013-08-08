@@ -5,7 +5,7 @@
 void print_null(const char *s) {}
 void exit_with_help();
 void parse_command_line(int argc, char **argv, struct Model *model, 
-		char *input_filename, char *output_filename);
+		char *input_filename, char *output_filename, char *model_filename);
 
 void exit_with_help()
 {
@@ -17,6 +17,7 @@ void exit_with_help()
 	printf("-h | -help : print this help.\n");
 	printf("-k kappa : set the value of kappa used in the Huber hinge\n");
 	printf("-l lambda : set the value of lambda (lambda > 0)\n");
+	printf("-m model_file : use previous model as seed for W and t\n");
 	printf("-o output_file : write output to file\n");
 	printf("-p p-value : set the value of p in the lp norm (1.0 <= p <= 2.0)\n");
 	printf("-q : quiet mode (no output)\n");
@@ -32,13 +33,14 @@ int main(int argc, char **argv)
 {
 	char input_filename[MAX_LINE_LENGTH];
 	char model_filename[MAX_LINE_LENGTH];
+	char output_filename[MAX_LINE_LENGTH];
 
 	struct Model *model = Malloc(struct Model, 1);
 	struct Data *data = Malloc(struct Data, 1);
 
 	if (argc < MINARGS || check_argv(argc, argv, "-help") || check_argv_eq(argc, argv, "-h") ) 
 		exit_with_help();
-	parse_command_line(argc, argv, model, input_filename, model_filename);
+	parse_command_line(argc, argv, model, input_filename, output_filename, model_filename);
 
 	// read data file
 	read_data(data, input_filename);
@@ -53,13 +55,22 @@ int main(int argc, char **argv)
 	allocate_model(model);
 	initialize_weights(data, model);
 
+	if (check_argv_eq(argc, argv, "-m")) {
+		struct Model *seed_model = Malloc(struct Model, 1);
+		read_model(seed_model, model_filename);
+		seed_model_V(seed_model, model);
+		free_model(seed_model);
+	} else {
+		seed_model_V(NULL, model);
+	}
+
 	// start training
 	main_loop(model, data);
 
 	// write_model to file
 	if (check_argv_eq(argc, argv, "-o")) {
-		write_model(model, model_filename);
-		info("Output written to %s\n", model_filename);
+		write_model(model, output_filename);
+		info("Output written to %s\n", output_filename);
 	}
 
 	// free model and data
@@ -70,7 +81,7 @@ int main(int argc, char **argv)
 }
 
 void parse_command_line(int argc, char **argv, struct Model *model, 
-		char *input_filename, char *output_filename)
+		char *input_filename, char *output_filename, char *model_filename)
 {
 	int i;
 	void (*print_func)(const char*) = NULL;
@@ -97,6 +108,9 @@ void parse_command_line(int argc, char **argv, struct Model *model,
 				break;
 			case 'l':
 				model->lambda = atof(argv[i]);
+				break;
+			case 'm':
+				strcpy(model_filename, argv[i]);
 				break;
 			case 'o':
 				strcpy(output_filename, argv[i]);

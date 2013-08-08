@@ -24,7 +24,6 @@ struct Model {
 	double *H;
 	double *R;
 	double *rho;
-	double training_error;
 	char *data_file;
 };
 
