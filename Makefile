@@ -1,29 +1,71 @@
 VERSION=0.1
 CC=gcc
-CFLAGS=-Wall -O2 -DVERSION=$(VERSION) -g
+CFLAGS=-Wall -O3 -DVERSION=$(VERSION) -g
 INCLUDE= -Iinclude/
-EXECS=trainMSVMMaj predMSVMMaj
+LIB= -Llib/
+EXECS=trainMSVMMaj trainMSVMMajdataset predMSVMMaj
 
 .PHONY: all clean tar
 
-all: $(EXECS)
+all: lib/libmsvmmaj.a $(EXECS)
 
 override LDFLAGS+=-lblas -llapack -lm
 
-trainMSVMMaj: src/trainMSVMMaj.c src/libMSVMMaj.o src/util.o src/matrix.o
-	$(CC) -o trainMSVMMaj src/trainMSVMMaj.c src/libMSVMMaj.o src/util.o src/matrix.o $(CFLAGS) $(INCLUDE) $(LDFLAGS)
+lib/libmsvmmaj.a: src/libMSVMMaj.o src/util.o src/matrix.o src/mylapack.o src/strutil.o src/crossval.o src/msvmmaj_train.o src/msvmmaj_train_dataset.o src/msvmmaj_pred.o src/timer.o
+	@ar rcs lib/libmsvmmaj.a src/libMSVMMaj.o src/util.o src/matrix.o src/mylapack.o src/strutil.o src/crossval.o src/msvmmaj_train.o src/msvmmaj_train_dataset.o src/msvmmaj_pred.o src/timer.o
+	@echo libmsvmmaj.a...
 
-predMSVMMaj: src/predMSVMMaj.c src/libMSVMMaj.o src/util.o src/matrix.o
-	$(CC) -o predMSVMMaj src/predMSVMMaj.c src/libMSVMMaj.o src/util.o src/matrix.o $(CFLAGS) $(INCLUDE) $(LDFLAGS)
+trainMSVMMaj: src/trainMSVMMaj.c lib/libmsvmmaj.a
+	@$(CC) -o trainMSVMMaj src/trainMSVMMaj.c $(CFLAGS) $(INCLUDE) $(LIB) -lmsvmmaj $(LDFLAGS)
+	@echo trainMSVMMaj...
+
+trainMSVMMajdataset: src/trainMSVMMajdataset.c lib/libmsvmmaj.a
+	@$(CC) -o trainMSVMMajdataset src/trainMSVMMajdataset.c $(CFLAGS) $(INCLUDE) $(LIB) -lmsvmmaj $(LDFLAGS)
+	@echo trainMSVMMajdataset...
+
+predMSVMMaj: src/predMSVMMaj.c lib/libmsvmmaj.a
+	@$(CC) -o predMVSMMaj src/predMSVMMaj.c $(CFLAGS) $(INCLUDE) $(LIB) -lmsvmmaj $(LDFLAGS)
+	@echo predMSVMMaj...
 
 src/libMSVMMaj.o:
-	$(CC) -c -o src/libMSVMMaj.o src/libMSVMMaj.c $(CFLAGS) $(INCLUDE)
+	@$(CC) -c -o src/libMSVMMaj.o src/libMSVMMaj.c $(CFLAGS) $(INCLUDE)
+	@echo libMSVMMaj.o...
 
 src/util.o:
-	$(CC) -c -o src/util.o src/util.c $(CFLAGS) $(INCLUDE)
+	@$(CC) -c -o src/util.o src/util.c $(CFLAGS) $(INCLUDE)
+	@echo util.o...
 
 src/matrix.o:
-	$(CC) -c -o src/matrix.o src/matrix.c $(CFLAGS) $(INCLUDE)
+	@$(CC) -c -o src/matrix.o src/matrix.c $(CFLAGS) $(INCLUDE)
+	@echo matrix.o...
+
+src/crossval.o:
+	@$(CC) -c -o src/crossval.o src/crossval.c $(CFLAGS) $(INCLUDE)
+	@echo crossval.o...
+
+src/msvmmaj_train.o:
+	@$(CC) -c -o src/msvmmaj_train.o src/msvmmaj_train.c $(CFLAGS) $(INCLUDE)
+	@echo msvmmaj_train.o...
+
+src/msvmmaj_train_dataset.o:
+	@$(CC) -c -o src/msvmmaj_train_dataset.o src/msvmmaj_train_dataset.c $(CFLAGS) $(INCLUDE) 
+	@echo msvmmaj_train_dataset.o...
+
+src/msvmmaj_pred.o:
+	@$(CC) -c -o src/msvmmaj_pred.o src/msvmmaj_pred.c $(CFLAGS) $(INCLUDE)
+	@echo msvmmaj_pred.o...
+
+src/mylapack.o:
+	@$(CC) -c -o src/mylapack.o src/mylapack.c $(CFLAGS) $(INCLUDE)
+	@echo mylapack.o...
+
+src/strutil.o:
+	@$(CC) -c -o src/strutil.o src/strutil.c $(CFLAGS) $(INCLUDE)
+	@echo strutil.o...
+
+src/timer.o:
+	@$(CC) -c -o src/timer.o src/timer.c $(CFLAGS) $(INCLUDE)
+	@echo timer.o...
 
 clean:
-	rm -rf $(EXECS) *.o src/*.o
+	rm -rf $(EXECS) *.o src/*.o lib/*.a

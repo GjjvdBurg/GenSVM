@@ -1,11 +1,12 @@
+#ifndef MSVMMAJ_H
+#define MSVMMAJ_H
 
-#define MAX_ITER 10000000
-#define MAX_LINE_LENGTH 1024
+#include "globals.h"
 
 /*
 	Model structure
 */
-struct Model {
+struct MajModel {
 	int weight_idx;
 	long K;
 	long n;
@@ -24,16 +25,19 @@ struct Model {
 	double *H;
 	double *R;
 	double *rho;
+	double training_error;
 	char *data_file;
 };
 
 /*
 	Data structure
 */
-struct Data {
+struct MajData {
 	long K;
 	long n;
 	long m;
 	long *y;
 	double *Z;
 };
+
+#endif

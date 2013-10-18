@@ -1,10 +1,20 @@
-#include "util.h"
+#include <math.h>
+#include <stdarg.h>
+#include <time.h>
+
 #include "matrix.h"
+#include "MSVMMaj.h"
+#include "strutil.h"
+
+#include "util.h"
+
+FILE *MSVMMAJ_OUTPUT_FILE;
+
 /*
 	Read the data from the data_file. The data matrix X is augmented
 	with a column of ones, to get the matrix Z.
 */
-void read_data(struct Data *dataset, char *data_file)
+void msvmmaj_read_data(struct MajData *dataset, char *data_file)
 {
 	FILE *fid;
 	long i, j;
@@ -17,7 +27,7 @@ void read_data(struct Data *dataset, char *data_file)
 	char buf[MAX_LINE_LENGTH];
 
 	if ((fid = fopen(data_file, "r")) == NULL) {
-		printf("\nERROR: datafile %s could not be opened.\n",
+		fprintf(stderr, "\nERROR: datafile %s could not be opened.\n",
 				data_file);
 		exit(0);
 	}
@@ -37,7 +47,7 @@ void read_data(struct Data *dataset, char *data_file)
 
 	// Check if there is a label at the end of the line
 	if (fgets(buf, MAX_LINE_LENGTH, fid) == NULL) {
-		printf("ERROR: No label found on first line.\n");
+		fprintf(stderr, "ERROR: No label found on first line.\n");
 		exit(1);
 	}
 	if (sscanf(buf, "%lf", &value) > 0) {
@@ -67,14 +77,15 @@ void read_data(struct Data *dataset, char *data_file)
 	if (min_y == 0) {
 		for (i=0; i<n; i++)
 			dataset->y[i]++;
+		K++;
 	} else if (min_y < 0 ) {
-		printf("ERROR: wrong class labels in %s, minimum value is: %ld\n",
+		fprintf(stderr, "ERROR: wrong class labels in %s, minimum value is: %ld\n",
 				data_file, min_y);
 		exit(0);
 	}
 
 	if (nr < n * m) {
-		printf("ERROR: not enough data found in %s\n", data_file);
+		fprintf(stderr, "ERROR: not enough data found in %s\n", data_file);
 		exit(0);
 	}
 	
@@ -85,49 +96,10 @@ void read_data(struct Data *dataset, char *data_file)
 	dataset->n = n;
 	dataset->m = m;
 	dataset->K = K;
-
-	info("Succesfully read data file: %s\n",  data_file);
+	note("Succesfully read data file: %s\n",  data_file);
 }
 
-void next_line(FILE *fid, char *filename)
-{
-	char buffer[MAX_LINE_LENGTH];
-	if (fgets(buffer, MAX_LINE_LENGTH, fid) == NULL) {
-		fprintf(stderr, "Error reading file %s\n", filename);
-		exit(1);
-	}
-}
-
-double get_fmt_double(FILE *fid, char *filename, const char *fmt)
-{
-	char buffer[MAX_LINE_LENGTH];
-	double value;
-
-	if (fgets(buffer, MAX_LINE_LENGTH, fid) == NULL) {
-		fprintf(stderr, "Error reading line from file %s\n", filename);
-		exit(1);
-	}
-	sscanf(buffer, fmt, &value);
-
-	return value;
-}
-
-long get_fmt_long(FILE *fid, char *filename, const char *fmt)
-{
-	char buffer[MAX_LINE_LENGTH];
-	long value;
-
-	if (fgets(buffer, MAX_LINE_LENGTH, fid) == NULL) {
-		fprintf(stderr, "Error reading line from file %s\n", filename);
-		exit(1);
-	}
-	sscanf(buffer, fmt, &value);
-
-	return value;
-}
-
-
-void read_model(struct Model *model, char *model_filename)
+void msvmmaj_read_model(struct MajModel *model, char *model_filename)
 {
 	long i, j, nr = 0;
 	FILE *fid;
@@ -188,10 +160,11 @@ void read_model(struct Model *model, char *model_filename)
 
 }
 
-void write_model(struct Model *model, char *output_filename)
+void msvmmaj_write_model(struct MajModel *model, char *output_filename)
 {
 	FILE *fid;
-	int i, j, diff, hours, minutes;
+	long i, j;
+	int diff, hours, minutes;
 	char timestr[1000];
 	time_t current_time, lt, gt;
 	struct tm *lclt;
@@ -255,11 +228,27 @@ void write_model(struct Model *model, char *output_filename)
 
 }
 
-void write_predictions(struct Data *data, long *predy, char *output_filename)
+void msvmmaj_write_predictions(struct MajData *data, long *predy, char *output_filename)
 {
+	long i, j;
+	FILE *fid;
+
+	fid = fopen(output_filename, "w");
+	if (fid == NULL) {
+		fprintf(stderr, "Error opening output file %s", output_filename);
+		exit(1);
+	}
+
+	for (i=0; i<data->n; i++) {
+		for (j=0; j<data->m; j++) 
+			fprintf(fid, "%f ", matrix_get(data->Z, data->m+1, i, j+1));
+		fprintf(fid, "%li\n", predy[i]);
+	}
+
+	fclose(fid);
 }
 
-int check_argv(int argc, char **argv, char *str)
+int msvmmaj_check_argv(int argc, char **argv, char *str)
 {
 	int i;
 	int arg_str = 0;
@@ -272,7 +261,7 @@ int check_argv(int argc, char **argv, char *str)
 	return arg_str;
 }
 
-int check_argv_eq(int argc, char **argv, char *str) 
+int msvmmaj_check_argv_eq(int argc, char **argv, char *str) 
 {
 	int i;
 	int arg_str = 0;
@@ -285,38 +274,26 @@ int check_argv_eq(int argc, char **argv, char *str)
 	return arg_str;
 }
 
-static void print_string_stdout(const char *s)
+
+static void msvmmaj_print_string(const char *s)
 {
-	fputs(s, stdout);
-	fflush(stdout);
+	if (MSVMMAJ_OUTPUT_FILE != NULL) {
+		fputs(s, MSVMMAJ_OUTPUT_FILE);
+		fflush(MSVMMAJ_OUTPUT_FILE);
+	}
 }
 
-static void (*print_string) (const char *) = &print_string_stdout;
-
-void set_print_string_function(void (*print_func)(const char *))
-{
-	if (print_func == NULL)
-		print_string = &print_string_stdout;
-	else
-		print_string = print_func;
-}
-
-void info(const char *fmt,...)
+void note(const char *fmt,...)
 {
 	char buf[BUFSIZ];
 	va_list ap;
 	va_start(ap,fmt);
 	vsprintf(buf,fmt,ap);
 	va_end(ap);
-	(*print_string)(buf);
+	(*msvmmaj_print_string)(buf);
 }
 
-double rnd()
-{
-	return (double) rand()/0x7FFFFFFF;
-}
-
-void allocate_model(struct Model *model)
+void msvmmaj_allocate_model(struct MajModel *model)
 {
 	long n = model->n;
 	long m = model->m;
@@ -384,7 +361,7 @@ void allocate_model(struct Model *model)
 
 }	
 
-void free_model(struct Model *model)
+void msvmmaj_free_model(struct MajModel *model)
 {
 	free(model->W);
 	free(model->t);
@@ -400,23 +377,10 @@ void free_model(struct Model *model)
 	free(model);
 }
 
-void free_data(struct Data *data)
+void msvmmaj_free_data(struct MajData *data)
 {
 	free(data->Z);
 	free(data->y);
 	free(data);
 }
 
-/*
-void print_matrix(double *M, long rows, long cols)
-{
-	long i, j;
-	for (i=0; i<rows; i++) {
-		for (j=0; j<cols; j++) {
-			info("%8.8f ", matrix_get(M, cols, i, j));
-		}
-		info("\n");
-	}
-	info("\n");
-}
-*/

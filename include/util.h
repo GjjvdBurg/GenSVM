@@ -1,33 +1,28 @@
-#include <stdarg.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <math.h>
-#include <string.h>
-#include <time.h>
-#include "MSVMMaj.h"
+#ifndef UTIL_H
+#define UTIL_H
 
-#define Calloc(type, n) (type *)calloc((n), sizeof(type))
-#define Malloc(type, n) (type *)malloc((n)*sizeof(type))
-#define Memset(var, type, n) memset(var, 0, (n)*sizeof(type))
-#define maximum(a, b) a > b ? a : b
-#define minimum(a, b) a < b ? a : b
+#include "globals.h"
 
-void read_data(struct Data *dataset, char *data_file);
+// forward declarations
+struct MajData;
+struct MajModel;
 
-void read_model(struct Model *model, char *model_filename);
-void write_model(struct Model *model, char *output_filename);
+// function declarations
+void msvmmaj_read_data(struct MajData *dataset, char *data_file);
 
-void write_predictions(struct Data *data, long *predy, char *output_filename);
+void msvmmaj_read_model(struct MajModel *model, char *model_filename);
+void msvmmaj_write_model(struct MajModel *model, char *output_filename);
 
-int check_argv(int argc, char **argv, char *str);
-int check_argv_eq(int argc, char **argv, char *str);
+void msvmmaj_write_predictions(struct MajData *data, long *predy, 
+		char *output_filename);
 
-void set_print_string_function(void (*print_func)(const char *));
-void info(const char *fmt,...);
+int msvmmaj_check_argv(int argc, char **argv, char *str);
+int msvmmaj_check_argv_eq(int argc, char **argv, char *str);
 
-double rnd();
+void note(const char *fmt,...);
 
-void allocate_model(struct Model *model);
-void free_model(struct Model *model);
-void free_data(struct Data *data);
+void msvmmaj_allocate_model(struct MajModel *model);
+void msvmmaj_free_model(struct MajModel *model);
+void msvmmaj_free_data(struct MajData *data);
 
+#endif

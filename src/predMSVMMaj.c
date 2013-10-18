@@ -1,10 +1,14 @@
-#include "libMSVMMaj.h"
+#include "msvmmaj_pred.h"
+#include "MSVMMaj.h"
+#include "util.h"
 
 #define MINARGS 3
 
+extern FILE *MSVMMAJ_OUTPUT_FILE;
+
 void print_null(const char *s) {}
 void exit_with_help();
-void parse_command_line(int argc, char **argv, struct Model *model,
+void parse_command_line(int argc, char **argv, struct MajModel *model,
 		char *input_filename, char *output_filename, 
 		char *model_filename);
 
@@ -27,17 +31,18 @@ int main(int argc, char **argv)
 	char model_filename[MAX_LINE_LENGTH];
 	char output_filename[MAX_LINE_LENGTH];;
 
-	struct Model *model = Malloc(struct Model, 1);
-	struct Data *data = Malloc(struct Data, 1);
+	struct MajModel *model = Malloc(struct MajModel, 1);
+	struct MajData *data = Malloc(struct MajData, 1);
 
-	if (argc < MINARGS || check_argv(argc, argv, "-help") || check_argv_eq(argc, argv, "-h") )
+	if (argc < MINARGS || msvmmaj_check_argv(argc, argv, "-help") 
+			|| msvmmaj_check_argv_eq(argc, argv, "-h") )
 		exit_with_help();
 	parse_command_line(argc, argv, model, input_filename, output_filename,
 			model_filename);
 
 	// TODO: make sure that read_data allows for files without labels
-	read_data(data, input_filename);
-	read_model(model, model_filename);
+	msvmmaj_read_data(data, input_filename);
+	msvmmaj_read_model(model, model_filename);
 
 	// check if the number of attributes in data equals that in model
 	if (data->m != model->m) {
@@ -48,29 +53,30 @@ int main(int argc, char **argv)
 	}
 
 	predy = Calloc(long, data->n);
-	predict_labels(data, model, predy);
+	msvmmaj_predict_labels(data, model, predy);
 	if (data->y != NULL) {
-		performance = prediction_perf(data, predy);
-		info("Predictive performance: %3.2f%%\n", performance);
+		performance = msvmmaj_prediction_perf(data, predy);
+		note("Predictive performance: %3.2f%%\n", performance);
 	}
 
-	if (check_argv_eq(argc, argv, "-o")) {
-		write_predictions(data, predy, output_filename);
-		info("Predictions written to: %s\n", output_filename);
+	if (msvmmaj_check_argv_eq(argc, argv, "-o")) {
+		msvmmaj_write_predictions(data, predy, output_filename);
+		note("Predictions written to: %s\n", output_filename);
 	}
 
-	free_model(model);
-	free_data(data);
+	msvmmaj_free_model(model);
+	msvmmaj_free_data(data);
 	free(predy);
 
 	return 0;
 }
 
-void parse_command_line(int argc, char **argv, struct Model *model, 
+void parse_command_line(int argc, char **argv, struct MajModel *model, 
 		char *input_filename, char *output_filename, char *model_filename)
 {
 	int i;
-	void (*print_func)(const char*) = NULL;	
+
+	MSVMMAJ_OUTPUT_FILE = stdout;
 
 	for (i=1; i<argc; i++) {
 		if (argv[i][0] != '-') break;
@@ -81,15 +87,14 @@ void parse_command_line(int argc, char **argv, struct Model *model,
 				strcpy(output_filename, argv[i]);
 				break;
 			case 'q':
-				print_func = &print_null;
+				MSVMMAJ_OUTPUT_FILE = NULL;
 				i--;
+				break;
 			default:
 				fprintf(stderr, "Unknown option: -%c\n", argv[i-1][1]);
 				exit_with_help();
 		}
 	}
-
-	set_print_string_function(print_func);
 
 	if (i >= argc)
 		exit_with_help();
