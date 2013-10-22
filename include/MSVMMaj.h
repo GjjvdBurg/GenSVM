@@ -2,6 +2,7 @@
 #define MSVMMAJ_H
 
 #include "globals.h"
+#include "types.h"
 
 /*
 	Model structure
@@ -27,6 +28,8 @@ struct MajModel {
 	double *rho;
 	double training_error;
 	char *data_file;
+	KernelType kerneltype;
+	double *kernelparam;
 };
 
 /*

@@ -73,6 +73,8 @@ int main(int argc, char **argv)
 	} else {
 		msvmmaj_seed_model_V(NULL, model);
 	}
+	// initialize kernel (if necessary)
+	// msvmmaj_make_kernel(model, data);
 
 	// start training
 	msvmmaj_optimize(model, data);
