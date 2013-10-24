@@ -96,7 +96,6 @@ void msvmmaj_read_data(struct MajData *dataset, char *data_file)
 	dataset->n = n;
 	dataset->m = m;
 	dataset->K = K;
-	note("Succesfully read data file: %s\n",  data_file);
 }
 
 void msvmmaj_read_model(struct MajModel *model, char *model_filename)
