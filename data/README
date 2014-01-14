@@ -1,0 +1,4 @@
+All datasets downloaded from the UCI repository.
+
+All datasets scaled to the interval [-1, 1] in Matlab and saved in
+full available precision (16 digits).

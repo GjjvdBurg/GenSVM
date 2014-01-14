@@ -1,6 +1,6 @@
 /**
  * @file msvmmaj_train.c
- * @author Gertjan van den Burg (burg@ese.eur.nl)
+ * @author Gertjan van den Burg
  * @date August 9, 2013
  * @brief Main functions for training the MSVMMaj solution.
  * 
@@ -13,25 +13,34 @@
 #include <math.h>
 #include <cblas.h>
 
-#include "msvmmaj_train.h"
-#include "MSVMMaj.h"
 #include "libMSVMMaj.h"
-#include "mylapack.h"
-#include "matrix.h"
+#include "msvmmaj.h"
+#include "msvmmaj_lapack.h"
+#include "msvmmaj_matrix.h"
+#include "msvmmaj_train.h"
 #include "util.h"
 
+/**
+ * Maximum number of iterations of the algorithm.
+ */
 #define MAX_ITER 1000000
 
 /**
- * @name msvmmaj_optimize
  * @brief The main training loop for MSVMMaj
  *
- * The msvmmaj_optimize() function is the main training function. This function
+ * @details
+ * This function is the main training function. This function
  * handles the optimization of the model with the given model parameters, with
- * the data given. On return the matrix model->V contains the optimal weight matrix.
+ * the data given. On return the matrix MajModel::V contains the optimal 
+ * weight matrix.
  *
- * @param [in,out] 	model 	the model to be trained. Contains optimal V on exit.
- * @param [in] 		data 	the data to train the model with.
+ * In this function, step doubling is used in the majorization algorithm after
+ * a burn-in of 50 iterations. If the training is finished, MajModel::t and 
+ * MajModel::W are extracted from MajModel::V.
+ *
+ * @param[in,out] 	model 	the MajModel to be trained. Contains optimal 
+ * 				V on exit.
+ * @param[in] 		data 	the MajData to train the model with.
  */
 void msvmmaj_optimize(struct MajModel *model, struct MajData *data)
 {
@@ -49,7 +58,7 @@ void msvmmaj_optimize(struct MajModel *model, struct MajData *data)
 	double *ZAZVT = Calloc(double, (m+1)*(K-1));
 
 	note("Starting main loop.\n");
-	note("MajDataset:\n");
+	note("Dataset:\n");
 	note("\tn = %i\n", n);
 	note("\tm = %i\n", m);
 	note("\tK = %i\n", K);
@@ -78,8 +87,8 @@ void msvmmaj_optimize(struct MajModel *model, struct MajData *data)
 		L = msvmmaj_get_loss(model, data, ZV);
 
 		if (it%50 == 0)
-			note("iter = %li, L = %15.16f, Lbar = %15.16f, reldiff = %15.16f\n",
-					it, L, Lbar, (Lbar - L)/L);
+			note("iter = %li, L = %15.16f, Lbar = %15.16f, "
+			     "reldiff = %15.16f\n", it, L, Lbar, (Lbar - L)/L);
 		it++;
 	}
 
@@ -91,7 +100,8 @@ void msvmmaj_optimize(struct MajModel *model, struct MajData *data)
 		model->t[i] = matrix_get(model->V, K-1, 0, i);
 	for (i=1; i<m+1; i++)
 		for (j=0; j<K-1; j++)
-			matrix_set(model->W, K-1, i-1, j, matrix_get(model->V, K-1, i, j));
+			matrix_set(model->W, K-1, i-1, j, 
+					matrix_get(model->V, K-1, i, j));
 	free(B);
 	free(ZV);
 	free(ZAZ);
@@ -100,19 +110,22 @@ void msvmmaj_optimize(struct MajModel *model, struct MajData *data)
 }
 
 /**
- * @name msvmmaj_get_loss
- * @brief calculate the current value of the loss function 
+ * @brief Calculate the current value of the loss function
  * 
- * The current loss value is calculated based on the matrix V in the given
- * model.
+ * @details
+ * The current loss function value is calculated based on the matrix V in the 
+ * given model. Note that the matrix ZV is passed explicitly to avoid having
+ * to reallocate memory at every step.
  *
- * @param [in] 		model 	model structure which holds the current estimate V
- * @param [in]  	data 	data structure
- * @param [in,out] 	ZV 	pre-allocated matrix ZV which is updated on output
- * 
- * @return 	the current value of the loss function
+ * @param[in] 		model 	MajModel structure which holds the current 
+ * 				estimate V
+ * @param[in]  		data 	MajData structure
+ * @param[in,out] 	ZV 	pre-allocated matrix ZV which is updated on 
+ * 				output
+ * @returns 			the current value of the loss function
  */
-double msvmmaj_get_loss(struct MajModel *model, struct MajData *data, double *ZV)
+double msvmmaj_get_loss(struct MajModel *model, struct MajData *data, 
+		double *ZV)
 {
 	long i, j;
 	long n = data->n;
@@ -151,10 +164,52 @@ double msvmmaj_get_loss(struct MajModel *model, struct MajData *data, double *ZV
 }
 
 /**
- * @name msvmmaj_get_update
- * @brief perform a single step of the majorization algorithm to update V
+ * @brief Perform a single step of the majorization algorithm to update V
  *
- * details
+ * @details
+ * This function contains the main update calculations of the algorithm. These
+ * calculations are necessary to find a new update V. The calculations exist of
+ * recalculating the majorization coefficients for all instances and all
+ * classes, and solving a linear system to find V.
+ *
+ * Because the function msvmmaj_get_update() is always called after a call to
+ * msvmmaj_get_loss() with the same MajModel::V, it is unnecessary to calculate
+ * the updated errors MajModel::Q and MajModel::H here too. This saves on 
+ * computation time.
+ *
+ * In calculating the majorization coefficients we calculate the elements of a 
+ * diagonal matrix A with elements
+ * @f[
+ * 	A_{i, i} = \frac{1}{n} \rho_i \sum_{j \neq k} \left[ 
+ * 		\varepsilon_i a_{ijk}^{(p)} + (1 - \varepsilon_i) \omega_i
+ * 		a_{ijk}^{(p)} \right],
+ * @f]
+ * where @f$ k = y_i @f$.
+ * Since this matrix is only used to calculate the matrix @f$ Z' A Z @f$, it is
+ * efficient to update a matrix ZAZ through consecutive rank 1 updates with 
+ * a single element of A and the corresponding row of Z. The BLAS function
+ * dsyr is used for this.
+ *
+ * The B matrix is has rows
+ * @f[
+ * 	\boldsymbol{\beta}_i' = \frac{1}{n} \rho_i \sum_{j \neq k} \left[
+ * 		\varepsilon_i \left( b_{ijk}^{(1)} - a_{ijk}^{(1)}
+ * 			\overline{q}_i^{(kj)} \right) + (1 - \varepsilon_i)
+ * 		\omega_i \left( b_{ijk}^{(p)} - a_{ijk}^{(p)}
+ * 			\overline{q}_i^{(kj)} \right) \right]
+ * 		\boldsymbol{\delta}_{kj}'
+ * @f]
+ * This is also split into two cases, one for which @f$ \varepsilon_i = 1 @f$,
+ * and one for when it is 0. The 3D simplex difference matrix is used here, in
+ * the form of the @f$ \boldsymbol{\delta}_{kj}' @f$.
+ *
+ * Finally, the following system is solved
+ * @f[
+ * 	(\textbf{Z}'\textbf{AZ} + \lambda \textbf{J})\textbf{V} =
+ * 		(\textbf{Z}'\textbf{AZ}\overline{\textbf{V}} + \textbf{Z}'
+ * 		\textbf{B})
+ * @f]
+ * solving this system is done through dposv().
  *
  * @param [in,out] 	model 	model to be updated
  * @param [in] 		data 	data used in model
@@ -166,9 +221,6 @@ double msvmmaj_get_loss(struct MajModel *model, struct MajData *data, double *ZV
 void msvmmaj_get_update(struct MajModel *model, struct MajData *data, double *B,
 		double *ZAZ, double *ZAZV, double *ZAZVT)
 {
-	// Because msvmmaj_update is always called after a call to 
-	// msvmmaj_get_loss() with the latest V, it is unnecessary to recalculate
-	// the matrix ZV, the errors Q, or the Huber errors H. Awesome!
 	int status, class;
 	long i, j, k;
 	double Avalue, Bvalue;
@@ -182,11 +234,14 @@ void msvmmaj_get_update(struct MajModel *model, struct MajData *data, double *B,
 	double p = model->p;
 	double *rho = model->rho;
 
+	// constants which are used often throughout
 	const double a2g2 = 0.25*p*(2.0*p - 1.0)*pow((kappa+1.0)/2.0,p-2.0);
 	const double in = 1.0/((double) n);
 
+	// clear matrices
 	Memset(B, double, n*(K-1));
 	Memset(ZAZ, double, (m+1)*(m+1));
+
 	b = 0;
 	for (i=0; i<n; i++) {
 		value = 0;
@@ -215,7 +270,8 @@ void msvmmaj_get_update(struct MajModel *model, struct MajData *data, double *B,
 					b = 0;
 				}
 				for (k=0; k<K-1; k++) {
-					Bvalue = in*rho[i]*b*matrix3_get(model->UU, K-1, K, i, k, j);
+					Bvalue = in*rho[i]*b*matrix3_get(
+						model->UU, K-1, K, i, k, j);
 					matrix_add(B, K-1, i, k, Bvalue);
 				}
 				Avalue += a*matrix_get(model->R, K, i, j);
@@ -227,13 +283,27 @@ void msvmmaj_get_update(struct MajModel *model, struct MajData *data, double *B,
 					if (q <= -kappa) {
 						b = 0.5 - kappa/2.0 - q;
 					} else if ( q <= 1.0) {
-						b = pow(1.0 - q, 3.0)/(2.0*pow(kappa + 1.0, 2.0));
+						b = pow(1.0 - q, 3.0)/(
+							2.0*pow(kappa + 1.0, 
+								2.0));
 					} else {
 						b = 0;
 					}
 					for (k=0; k<K-1; k++) {
-						Bvalue = in*rho[i]*omega*b*matrix3_get(model->UU, K-1, K, i, k, j);
-						matrix_add(B, K-1, i, k, Bvalue);
+						Bvalue = in*rho[i]*omega*b*
+							matrix3_get(
+								model->UU,
+								K-1,
+							       	K,
+								i,
+								k,
+								j);
+						matrix_add(
+								B,
+								K-1,
+								i,
+								k,
+								Bvalue);
 					}
 				}
 				Avalue = 1.5*(K - 1.0);
@@ -241,23 +311,51 @@ void msvmmaj_get_update(struct MajModel *model, struct MajData *data, double *B,
 				for (j=0; j<K; j++) {
 					q = matrix_get(model->Q, K, i, j);
 					if (q <= (p + kappa - 1.0)/(p - 2.0)) {
-						a = 0.25*pow(p, 2.0)*pow(0.5 - kappa/2.0 - q, p - 2.0);
+						a = 0.25*pow(p, 2.0)*pow(
+							0.5 - kappa/2.0 - q,
+						       		p - 2.0);
 					} else if (q <= 1.0) {
 						a = a2g2;
 					} else {
-						a = 0.25*pow(p, 2.0)*pow((p/(p - 2.0))*(0.5 - kappa/2.0 - q), p - 2.0);
-						b = a*(2.0*q + kappa - 1.0)/(p - 2.0) + 0.5*p*pow((p/(p - 2.0))*(0.5 - kappa/2.0 - q), p - 1.0);
+						a = 0.25*pow(p, 2.0)*pow(
+							(p/(p - 2.0))*
+							(0.5 - kappa/2.0 - q), 
+							p - 2.0);
+						b = a*(2.0*q + kappa - 1.0)/
+							(p - 2.0) + 
+							0.5*p*pow(
+								p/(p - 2.0)*
+								(0.5 - kappa/
+								 2.0 - q), 
+								p - 1.0);
 					}
 					if (q <= -kappa) {
-						b = 0.5*p*pow(0.5 - kappa/2.0 - q, p - 1.0);
+						b = 0.5*p*pow(
+							0.5 - kappa/2.0 - q, 
+							p - 1.0);
 					} else if ( q <= 1.0) {
-						b = p*pow(1.0 - q, 2.0*p - 1.0)/pow(2*kappa+2.0, p);
+						b = p*pow(1.0 - q, 
+								2.0*p - 1.0)/
+							pow(2*kappa+2.0, p);
 					}
 					for (k=0; k<K-1; k++) {
-						Bvalue = in*rho[i]*omega*b*matrix3_get(model->UU, K-1, K, i, k, j);
-						matrix_add(B, K-1, i, k, Bvalue);
+						Bvalue = in*rho[i]*omega*b*
+							matrix3_get(
+								model->UU,
+								K-1,
+								K,
+								i,
+								k,
+								j);
+						matrix_add(
+								B,
+								K-1,
+								i,
+								k,
+								Bvalue);
 					}
-					Avalue += a*matrix_get(model->R, K, i, j);
+					Avalue += a*matrix_get(model->R,
+						       	K, i, j);
 				}
 			}
 			Avalue *= omega;
@@ -352,7 +450,8 @@ void msvmmaj_get_update(struct MajModel *model, struct MajData *data, double *B,
 		// This step should not be necessary, as the matrix
 		// ZAZ is positive semi-definite by definition. It 
 		// is included for safety.
-		fprintf(stderr, "Received nonzero status from dposv: %i\n", status);
+		fprintf(stderr, "Received nonzero status from dposv: %i\n", 
+				status);
 		int *IPIV = malloc((m+1)*sizeof(int));
 		double *WORK = malloc(1*sizeof(double));
 		status = dsysv(
@@ -379,7 +478,8 @@ void msvmmaj_get_update(struct MajModel *model, struct MajData *data, double *B,
 				WORK,
 				sizeof(WORK)/sizeof(double));
 		if (status != 0)
-			fprintf(stderr, "Received nonzero status from dsysv: %i\n", status);
+			fprintf(stderr, "Received nonzero status from "
+					"dsysv: %i\n", status);
 	}
 
 	// Return to Row-major order. The matrix ZAZVT contains the 
@@ -403,8 +503,18 @@ void msvmmaj_get_update(struct MajModel *model, struct MajData *data, double *B,
 	
 	for (i=0; i<m+1; i++) {
 		for (j=0; j<K-1; j++) {
-			matrix_set(model->Vbar, K-1, i, j, matrix_get(model->V, K-1, i, j));
-			matrix_set(model->V, K-1, i, j, matrix_get(ZAZV, K-1, i, j));
+			matrix_set(
+					model->Vbar,
+					K-1,
+					i,
+					j,
+					matrix_get(model->V, K-1, i, j));
+			matrix_set(
+					model->V,
+					K-1,
+					i,
+					j,
+					matrix_get(ZAZV, K-1, i, j));
 		}
 	}
 }

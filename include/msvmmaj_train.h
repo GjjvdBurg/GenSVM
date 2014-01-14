@@ -1,3 +1,15 @@
+/**
+ * @file msvmmaj_train.h
+ * @author Gertjan van den Burg
+ * @date August, 2013
+ * @brief Header file for msvmmaj_train.c
+ *
+ * @details
+ * Contains function declarations for functions used to train a single
+ * MajModel.
+ *
+ */
+
 #ifndef MSVMMAJ_TRAIN_H
 #define MSVMMAJ_TRAIN_H
 

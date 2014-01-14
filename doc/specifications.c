@@ -1,0 +1,170 @@
+/**
+ * @page spec_training_file Training Input File Specification
+ *
+ * This page specifies the training file that can be parsed by
+ * read_training_from_file(). Below is an example training file.
+ *
+ * @verbatim
+ train: /path/to/training/dataset.txt
+ test: /path/to/test/dataset.txt
+ p: 1.0 1.5 2.0
+ kappa: -0.9 0.0 1.0
+ lambda: 64 16 4 1 0.25 0.0625 0.015625 0.00390625 0.0009765625 0.000244140625
+ epsilon: 1e-6
+ weight: 1 2
+ folds: 10
+ kernel: LINEAR
+ gamma: 1e-3 1e-1 1e1 1e3
+ coef: 1.0 2.0
+ degree: 2.0 3.0
+ @endverbatim
+ *
+ * Note that with a @c LINEAR kernel specification, the @c gamma, @c coef, and
+ * @c degree parameters do not need to be specified. The above merely shows
+ * all available parameters that can be specified in the grid search. Below 
+ * each of the parameters are described in more detail. Arguments followed by
+ * an asterisk are optional.
+ *
+ * @c train: @n
+ * The location of the training dataset file. See @ref spec_data_file for the
+ * specification of a dataset file.
+ * 
+ * @c test:* @n
+ * The location of a test dataset file. See @ref spec_data_file for the
+ * specification of a dataset file. This is optional, if specified the
+ * train/test split will be used for training. 
+ *
+ * @c p: @n
+ * The values of the @c p parameter of the algorithm to search over. The @c p
+ * parameter is used in the @f$ \ell_p @f$ norm over the Huber weighted scalar
+ * misclassification errors. Note: @f$ 1 \leq p \leq 2 @f$.
+ *
+ * @c kappa: @n
+ * The values of the @c kappa parameter of the algorithm to search over. The
+ * @c kappa parameter is used in the Huber hinge error over the scalar
+ * misclassification errors. Note: @f$ \kappa > -1 @f$.
+ *
+ * @c lambda: @n
+ * The values of the @c lambda parameter of the algorithm to search over. The
+ * @c lambda parameter is used in the regularization term of the loss
+ * function. Note: @f$ \lambda > 0 @f$.
+ *
+ * @c epsilon: @n
+ * The values of the @c epsilon parameter of the algorithm to search over. The
+ * @c epsilon parameter is used as the stopping parameter in the majorization
+ * algorithm. Note that it often suffices to use only one epsilon value. Using
+ * more than one value increases the size of the grid search considerably. 
+ *
+ * @c weight: @n
+ * The weight specifications for the algorithm to use. Two weight
+ * specifications are implemented: the unit weights (index = 1) and the group
+ * size correction weights (index = 2). See also msvmmaj_initialize_weights().
+ *
+ * @c folds: @n
+ * The number of cross validation folds to use. 
+ *
+ * @c kernel:* @n
+ * Kernel to use in training. Only one kernel can be specified. See KernelType
+ * for available kernel functions. Note: if multiple kernel types are
+ * specified on this line, only the last value will be used (see the
+ * implementation of parse_kernel_str() for details). If no kernel is
+ * specified, the @c LINEAR kernel will be used.
+ *
+ * @c gamma:* @n
+ * Gamma parameters for the @c RBF, @c POLY, and @c SIGMOID kernels. This
+ * parameter is only optional if the @c LINEAR kernel is specified. See
+ * msvmmaj_compute_rbf(), msvmmaj_compute_poly(), and
+ * msvmmaj_compute_sigmoid() for kernel specifications.
+ *
+ * @c coef:* @n
+ * Coefficients for the @c POLY and @c SIGMOID kernels. This parameter is only
+ * optional if the @c LINEAR or @c RBF kernels are used. See
+ * msvmmaj_compute_poly() and msvmmaj_compute_sigmoid() for kernel
+ * specifications.
+ *
+ * @c degree:* @n
+ * Degrees to search over in the grid search when the @c POLY kernel is
+ * specified. With other kernel specifications this parameter is unnecessary.
+ * See msvmmaj_compute_poly() for the polynomial kernel specification.
+ *
+ */
+
+
+/**
+ * @page spec_data_file Data File Specification
+ *
+ * This page describes the input file format for a dataset. This specification
+ * is used by msvmmaj_read_data() and msvmmaj_write_predictions(). The data
+ * file specification is the same as that used in <a
+ * href="http://www.loria.fr/~lauer/MSVMpack/MSVMpack.html">MSVMpack</a>
+ * (verified in v. 1.3). 
+ *
+ * The file is expected to be as follows
+ * @verbatim
+n
+m
+x_11 x_12 ... x_1m y_1
+x_21 x_22 ... x_2m y_2
+...
+x_n1 x_n2 ... x_nm y_n
+@endverbatim
+ * 
+ * Here, @c n denotes the number of instances and @c m denotes the number of
+ * predictors. The class labels @c y_i are expected in the final column of
+ * each line. 
+ *
+ * As an example, below the first 5 lines of the iris dataset are shown.
+ *
+ * @verbatim
+150
+4
+5.10000 3.50000 1.40000 0.20000 1.00000
+4.90000 3.00000 1.40000 0.20000 1.00000
+4.70000 3.20000 1.30000 0.20000 1.00000
+@endverbatim
+ *
+ */
+
+/**
+ * @page spec_model_file Model File Specification
+ *
+ * This page describes the input file format for a MajModel. This
+ * specification is used by msvmmaj_read_model() and msvmmaj_write_model().
+ * The model file is designed to fully reproduce a MajModel. 
+ *
+ * The model output file follows the format
+ * @verbatim
+Output file for MSVMMaj (version 0.1)
+Generated on: Tue Jan 14 12:00:00 2014 (UTC +01:00)
+
+Model:
+p = 2.00
+lambda = 0.001
+kappa = 1.0
+epsilon = 1e-06
+weight_idx = 1
+
+Data:
+filename = /path/to/data_file.txt
+n = 150
+m = 4
+K = 3
+
+Output:
+-0.7693429935131153 -1.9335141926875414
++0.3425555992439160 +1.0939198172438194
++0.3100589593140404 +0.9872012663780092
++0.1319873613546321 +0.1207806485439152
++0.8052481376988456 +0.6507524553955120
+@endverbatim
+ * 
+ * The first two lines of the file mainly serve a logging purpose, and are
+ * ignored when reading the model file. The model section fully describes the
+ * model parameters. Next, the data section describes the data file that was
+ * used in training and the size of the dataset. Finally, the output section
+ * shows the augmented weight matrix MajModel::V, in row-major order.
+ *
+ * @todo
+ * Write kernel specification to model file as well and adjust the format
+ * above.
+ */

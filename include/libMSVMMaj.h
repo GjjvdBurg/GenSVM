@@ -1,3 +1,20 @@
+/**
+ * @file libMSVMMaj.h
+ * @author Gertjan van den Burg
+ * @date August, 2013
+ * @brief Header file for the core MSVMMaj library libMSVMMaj.c
+ *
+ * @details
+ * The core computational routines for MSVMMaj are defined in libMSVMMaj.c.
+ * This file contains function declarations for these functions.
+ *
+ */
+
+/**
+ * @todo 
+ * rename this file and libMSVMMaj.c to correspond with the lowercase convention.
+ * Also change the name of the include guard.
+ */ 
 #ifndef LIBMSVMMAJ_H
 #define LIBMSVMMAJ_H
 

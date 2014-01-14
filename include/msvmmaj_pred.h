@@ -1,3 +1,14 @@
+/**
+ * @file msvmmaj_pred.h
+ * @author Gertjan van den Burg
+ * @date August, 2013
+ * @brief Header file for msvmmaj_pred.c
+ *
+ * @details
+ * Contains function declarations for prediction functions.
+ *
+ */
+
 #ifndef MSVMMAJ_PRED_H
 #define MSVMMAJ_PRED_H
 

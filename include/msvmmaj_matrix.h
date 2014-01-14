@@ -1,5 +1,16 @@
-#ifndef MATRIX_H
-#define MATRIX_H
+/**
+ * @file msvmmaj_matrix.h
+ * @author Gertjan van den Burg
+ * @date August, 2013
+ * @brief Header file for msvmmaj_matrix.c
+ *
+ * @details
+ * Contains function declarations for functions useful for dealing with matrices.
+ *
+ */
+
+#ifndef MSVMMAJ_MATRIX_H
+#define MSVMMAJ_MATRIX_H
 
 #include "globals.h"
 

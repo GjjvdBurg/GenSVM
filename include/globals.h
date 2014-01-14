@@ -1,5 +1,23 @@
-#ifndef GLOBALS_H
-#define GLOBALS_H
+/**
+ * @file globals.h
+ * @author Gertjan van den Burg
+ * @date January, 2014
+ * @brief Global definitions
+ *
+ * @details
+ * This header file contains defines and includes which are used in many
+ * parts of the program. Most notable are the Calloc, Malloc and Memset
+ * defines, which are commonly used to allocate memory. These functions
+ * are shorthands for their lowercase counterparts. 
+ *
+ * Furthermore, a maximum and minimum function are defined here. These 
+ * functions have their own include guards, to ensure potential linked 
+ * libraries don't conflict with these definitions.
+ *
+ */
+
+#ifndef MSVMMAJ_GLOBALS_H
+#define MSVMMAJ_GLOBALS_H
 
 #include <stdio.h>
 #include <stdlib.h>

@@ -1,3 +1,15 @@
+/**
+ * @file crossval.h
+ * @author Gertjan van den Burg
+ * @date January, 2014
+ * @brief Header file for crossval.c
+ *
+ * @details
+ * Contains function declarations for functions needed for performing cross
+ * validation on MajData structures.
+ *
+ */
+
 #ifndef CROSSVAL_H
 #define CROSSVAL_H
 

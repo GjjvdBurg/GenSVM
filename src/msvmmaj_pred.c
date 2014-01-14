@@ -1,31 +1,36 @@
 /**
  * @file msvmmaj_pred.c
- * @author Gertjan van den Burg (burg@ese.eur.nl)
+ * @author Gertjan van den Burg
  * @date August 9, 2013
  * @brief Main functions for predicting class labels..
+ *
+ * @details
+ * This file contains functions for predicting the class labels of instances
+ * and a function for calculating the predictive performance (hitrate) of 
+ * a prediction given true class labels.
  *
  */
 
 #include <cblas.h>
 
 #include "libMSVMMaj.h"
-#include "MSVMMaj.h"
-#include "matrix.h"
+#include "msvmmaj.h"
+#include "msvmmaj_matrix.h"
 #include "msvmmaj_pred.h"
 
 /**
- * @name predict_labels
  * @brief Predict class labels of data given and output in predy
  *
+ * @details
  * The labels are predicted by mapping each instance in data to the 
  * simplex space using the matrix V in the given model. Next, for each
  * instance the nearest simplex vertex is determined using an Euclidean
  * norm. The nearest simplex vertex determines the predicted class label,
- * which is recorded in predy
+ * which is recorded in predy.
  *
- * @param [in] 		data 		data to predict labels for
- * @param [in] 		model 		model with optimized V
- * @param [out] 	predy 		pre-allocated vector to record predictions in
+ * @param[in] 	data 		MajData to predict labels for
+ * @param[in] 	model 		MajModel with optimized V
+ * @param[out] 	predy 		pre-allocated vector to record predictions in
  */
 void msvmmaj_predict_labels(struct MajData *data, struct MajModel *model, long *predy)
 {
@@ -84,15 +89,15 @@ void msvmmaj_predict_labels(struct MajData *data, struct MajModel *model, long *
 }
 
 /**
- * @name msvmmaj_prediction_perf
  * @brief Calculate the predictive performance (percentage correct)
  *
+ * @details
  * The predictive performance is calculated by simply counting the number
  * of correctly classified samples and dividing by the total number of 
  * samples, multiplying by 100.
  *
- * @param [in] 		data 		the dataset with known labels
- * @param [in] 		predy 		the predicted class labels
+ * @param[in] 	data 	the MajData dataset with known labels
+ * @param[in] 	predy 	the predicted class labels
  *
  * @returns percentage correctly classified.
  */

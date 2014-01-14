@@ -1,3 +1,15 @@
+/**
+ * @file strutil.h
+ * @author Gertjan van den Burg
+ * @date August, 2013
+ * @brief Header file for strutil.c
+ *
+ * @details
+ * Function declarations for useful string functions used in parsing
+ * input files.
+ *
+ */
+
 #ifndef STRUTIL_H
 #define STRUTIL_H
 

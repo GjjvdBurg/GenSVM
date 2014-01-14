@@ -1,5 +1,16 @@
-#ifndef TIMER_H
-#define TIMER_H
+/**
+ * @file timer.h
+ * @author Gertjan van den Burg
+ * @date August, 2013
+ * @brief Header file for timer.c
+ *
+ * @details
+ * Function declaration for timer function used to measure computation time.
+ *
+ */
+
+#ifndef MSVMMAJ_TIMER_H
+#define MSVMMAJ_TIMER_H
 
 #include "globals.h"
 

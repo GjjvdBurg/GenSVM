@@ -1,5 +1,16 @@
-#ifndef UTIL_H
-#define UTIL_H
+/**
+ * @file util.h
+ * @author Gertjan van den Burg
+ * @date August, 2013
+ * @brief Header file for util.c
+ * 
+ * @details
+ * Function declarations for utility functions of the program.
+ *
+ */
+
+#ifndef MSVMMAJ_UTIL_H
+#define MSVMMAJ_UTIL_H
 
 #include "globals.h"
 
