@@ -34,7 +34,6 @@
 extern FILE *MSVMMAJ_OUTPUT_FILE;
 
 // function declarations
-void print_null(const char *s) {}
 void exit_with_help();
 void parse_command_line(int argc, char **argv, char *input_filename);
 void read_training_from_file(char *input_filename, struct Training *training);

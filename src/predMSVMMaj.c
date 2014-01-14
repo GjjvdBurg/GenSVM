@@ -28,7 +28,6 @@
 extern FILE *MSVMMAJ_OUTPUT_FILE;
 
 // function declarations
-void print_null(const char *s) {}
 void exit_with_help();
 void parse_command_line(int argc, char **argv, 
 		char *input_filename, char *output_filename, 
