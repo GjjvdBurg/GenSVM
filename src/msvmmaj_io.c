@@ -10,12 +10,11 @@
  *
  */
 
-#include <time.h>
-
 #include "msvmmaj.h"
 #include "msvmmaj_io.h"
 #include "msvmmaj_matrix.h"
 #include "strutil.h"
+#include "timer.h"
 
 /**
  * @brief Read data from file
@@ -215,10 +214,7 @@ void msvmmaj_write_model(struct MajModel *model, char *output_filename)
 {
 	FILE *fid;
 	long i, j;
-	int diff, hours, minutes;
-	char timestr[1000];
-	time_t current_time, lt, gt;
-	struct tm *lclt;
+	char timestr[MAX_LINE_LENGTH];
 
 	// open output file
 	fid = fopen(output_filename, "w");
@@ -227,35 +223,11 @@ void msvmmaj_write_model(struct MajModel *model, char *output_filename)
 				output_filename);
 		exit(1);
 	}
-
-	// get current time (in epoch)
-	current_time = time(NULL);
-	if (current_time == ((time_t)-1)) {
-		fprintf(stderr, "Failed to compute the current time.\n");
-		exit(1);
-	}
-
-	// convert time to local time and create a string
-	lclt = localtime(&current_time);
-	strftime(timestr, 1000, "%c", lclt);
-	if (timestr == NULL) {
-		fprintf(stderr, "Failed to convert time to string.\n");
-		exit(1);
-	}
-
-	// calculate the difference from UTC including DST
-	lt = mktime(localtime(&current_time));
-	gt = mktime(gmtime(&current_time));
-	diff = -difftime(gt, lt);
-	hours = (diff/3600);
-	minutes = (diff%3600)/60;
-	if (lclt->tm_isdst == 1)
-		hours++;
+	get_time_string(timestr);
 
 	// Write output to file
 	fprintf(fid, "Output file for MSVMMaj (version %1.1f)\n", VERSION);
-	fprintf(fid, "Generated on: %s (UTC %+03i:%02i)\n\n", 
-			timestr, hours, minutes);
+	fprintf(fid, "Generated on: %s\n\n", timestr);
 	fprintf(fid, "Model:\n");
 	fprintf(fid, "p = %15.16f\n", model->p);
 	fprintf(fid, "lambda = %15.16f\n", model->lambda);
