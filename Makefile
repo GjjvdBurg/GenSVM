@@ -11,8 +11,34 @@ all: lib/libmsvmmaj.a $(EXECS)
 
 override LDFLAGS+=-lblas -llapack -lm
 
-lib/libmsvmmaj.a: src/libMSVMMaj.o src/util.o src/msvmmaj_matrix.o src/msvmmaj_lapack.o src/strutil.o src/crossval.o src/msvmmaj_init.o src/msvmmaj_train.o src/msvmmaj_train_dataset.o src/msvmmaj_pred.o src/timer.o src/msvmmaj_kernel.o
-	@ar rcs lib/libmsvmmaj.a src/libMSVMMaj.o src/util.o src/msvmmaj_matrix.o src/msvmmaj_lapack.o src/strutil.o src/crossval.o src/msvmmaj_init.o src/msvmmaj_train.o src/msvmmaj_train_dataset.o src/msvmmaj_pred.o src/timer.o src/msvmmaj_kernel.o
+lib/libmsvmmaj.a: \
+	src/crossval.o \
+	src/libMSVMMaj.o \
+	src/msvmmaj_init.o \
+	src/msvmmaj_io.o \
+	src/msvmmaj_kernel.o \
+	src/msvmmaj_lapack.o \
+	src/msvmmaj_matrix.o \
+	src/msvmmaj_pred.o \
+	src/msvmmaj_train.o \
+	src/msvmmaj_train_dataset.o \
+	src/strutil.o \
+	src/timer.o \
+	src/util.o 
+	@ar rcs lib/libmsvmmaj.a \
+		src/crossval.o \
+		src/libMSVMMaj.o \
+		src/msvmmaj_init.o \
+		src/msvmmaj_io.o \
+		src/msvmmaj_matrix.o \
+		src/msvmmaj_kernel.o \
+		src/msvmmaj_lapack.o \
+		src/msvmmaj_pred.o \
+		src/msvmmaj_train.o \
+		src/msvmmaj_train_dataset.o \
+		src/strutil.o \
+		src/timer.o \
+		src/util.o 
 	@echo libmsvmmaj.a...
 
 trainMSVMMaj: src/trainMSVMMaj.c lib/libmsvmmaj.a
@@ -46,6 +72,9 @@ src/msvmmaj_matrix.o:
 src/msvmmaj_init.o:
 	@$(CC) -c -o src/msvmmaj_init.o src/msvmmaj_init.c $(CFLAGS) $(INCLUDE)
 	@echo msvmmaj_init.o...
+
+src/msvmmaj_io.o:
+	@$(CC) -c -o $@ src/msvmmaj_io.c $(CFLAGS) $(INCLUDE)
 
 src/msvmmaj_pred.o:
 	@$(CC) -c -o src/msvmmaj_pred.o src/msvmmaj_pred.c $(CFLAGS) $(INCLUDE)

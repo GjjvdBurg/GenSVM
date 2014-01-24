@@ -20,4 +20,8 @@ struct MajModel *msvmmaj_init_model();
 
 struct MajData *msvmmaj_init_data();
 
+void msvmmaj_allocate_model(struct MajModel *model);
+void msvmmaj_free_model(struct MajModel *model);
+void msvmmaj_free_data(struct MajData *data);
+
 #endif

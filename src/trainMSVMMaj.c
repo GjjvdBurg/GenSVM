@@ -17,6 +17,7 @@
 #include "msvmmaj_kernel.h"
 #include "libMSVMMaj.h"
 #include "msvmmaj.h"
+#include "msvmmaj_io.h"
 #include "msvmmaj_init.h"
 #include "msvmmaj_train.h"
 #include "util.h"

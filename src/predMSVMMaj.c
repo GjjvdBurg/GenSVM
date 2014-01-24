@@ -20,6 +20,7 @@
 
 #include "msvmmaj.h"
 #include "msvmmaj_init.h"
+#include "msvmmaj_io.h"
 #include "msvmmaj_pred.h"
 #include "util.h"
 
