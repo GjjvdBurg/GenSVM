@@ -24,7 +24,7 @@ trainMSVMMajdataset: src/trainMSVMMajdataset.c lib/libmsvmmaj.a
 	@echo trainMSVMMajdataset...
 
 predMSVMMaj: src/predMSVMMaj.c lib/libmsvmmaj.a
-	@$(CC) -o predMVSMMaj src/predMSVMMaj.c $(CFLAGS) $(INCLUDE) $(LIB) -lmsvmmaj $(LDFLAGS)
+	@$(CC) -o predMSVMMaj src/predMSVMMaj.c $(CFLAGS) $(INCLUDE) $(LIB) -lmsvmmaj $(LDFLAGS)
 	@echo predMSVMMaj...
 
 src/crossval.o:
