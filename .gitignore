@@ -1,3 +1,5 @@
 *.o
 *.swp
 trainMSVMMaj
+trainMSVMMajdataset
+predMSVMMaj
