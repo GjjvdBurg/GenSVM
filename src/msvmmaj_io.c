@@ -56,12 +56,12 @@ void msvmmaj_read_data(struct MajData *dataset, char *data_file)
 	nr += fscanf(fid, "%ld", &m);
 
 	// Allocate memory
-	dataset->Z = Malloc(double, n*(m+1));
+	dataset->RAW = Malloc(double, n*(m+1));
 
 	// Read first line of data
 	for (j=1; j<m+1; j++) {
 		nr += fscanf(fid, "%lf", &value);
-		matrix_set(dataset->Z, n, 0, j, value);
+		matrix_set(dataset->RAW, n, 0, j, value);
 	}
 
 	// Check if there is a label at the end of the line
@@ -81,7 +81,7 @@ void msvmmaj_read_data(struct MajData *dataset, char *data_file)
 	for (i=1; i<n; i++) {
 		for (j=1; j<m+1; j++) {
 			nr += fscanf(fid, "%lf", &value);
-			matrix_set(dataset->Z, m+1, i, j, value);
+			matrix_set(dataset->RAW, m+1, i, j, value);
 		}
 		if (dataset->y != NULL) {
 			nr += fscanf(fid, "%lf", &value);
@@ -112,11 +112,12 @@ void msvmmaj_read_data(struct MajData *dataset, char *data_file)
 	
 	// Set the column of ones
 	for (i=0; i<n; i++)
-		matrix_set(dataset->Z, m+1, i, 0, 1.0);
+		matrix_set(dataset->RAW, m+1, i, 0, 1.0);
 
 	dataset->n = n;
 	dataset->m = m;
 	dataset->K = K;
+	dataset->Z = dataset->RAW;
 }
 
 

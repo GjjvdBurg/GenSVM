@@ -30,8 +30,40 @@
  */
 void msvmmaj_make_kernel(struct MajModel *model, struct MajData *data)
 {
-	if (model->kerneltype == K_LINEAR)
-		return;
+	// Determine if a kernel needs to be calculated. This is not the case
+	// if a LINEAR kernel is requested in the model, or if the requested
+	// kernel is already in the data.
+	switch (model->kerneltype) {
+		case K_LINEAR:
+			// if data has another kernel, free that matrix and
+			// assign Z to RAW.
+			if (data->kerneltype != K_LINEAR)
+				free(data->Z);
+				data->Z = data->RAW;
+			return;
+		case K_POLY:
+			// if data has another kernel, we need to recalculate
+			if (data->kerneltype != K_POLY) {
+				break;
+			}
+			// if it is poly, we only need to recalcute if any of
+			// the kernel parameters differ
+			if (data->kernelparam[0] == model->kernelparam[0] &&
+			    data->kernelparam[1] == model->kernelparam[1] &&
+			    data->kernelparam[2] == model->kernelparam[2])
+				return;
+		case K_RBF:
+			if (data->kerneltype != K_RBF)
+				break;
+			if (data->kernelparam[0] == model->kernelparam[0])
+				return;
+		case K_SIGMOID:
+			if (data->kerneltype != K_SIGMOID)
+				break;
+			if (data->kernelparam[0] == model->kernelparam[0] &&
+			    data->kernelparam[1] == model->kernelparam[1])
+				return;
+	}
 
 	long i, j;
 	long n = model->n;
@@ -41,8 +73,8 @@ void msvmmaj_make_kernel(struct MajModel *model, struct MajData *data)
 
 	for (i=0; i<n; i++) {
 		for (j=i; j<n; j++) {
-			x1 = &data->Z[i*(data->m+1)+1];
-			x2 = &data->Z[j*(data->m+1)+1];
+			x1 = &data->RAW[i*(data->m+1)+1];
+			x2 = &data->RAW[j*(data->m+1)+1];
 			if (model->kerneltype == K_POLY)
 				value = msvmmaj_compute_poly(x1, x2, 
 						model->kernelparam, data->m);
@@ -62,20 +94,14 @@ void msvmmaj_make_kernel(struct MajModel *model, struct MajData *data)
 		}
 	}
 
-	// get cholesky if necessary.
-	if (model->use_cholesky == true) {
-		int status = dpotrf('L', n, K, n);
-		if (status != 0) {
-			fprintf(stderr, "Error (%i) computing Cholesky "
-					"decomposition of kernel matrix.\n",
-					status);
-			exit(0);
-		}
-		note("Got Cholesky.\n");
-	}
+	if (model->use_cholesky)
+		msvmmaj_get_cholesky(K, n);
 
+	// allocate Z if necessary (only if it was previously a linear kernel)
+	if (data->kerneltype == K_LINEAR) 
+		data->Z = Malloc(double, n*(n+1));
+	
 	// copy kernel/cholesky to data
-	data->Z = realloc(data->Z, n*(n+1)*(sizeof(double)));
 	for (i=0; i<n; i++) {
 		for (j=0; j<n; j++)
 			matrix_set(data->Z, n+1, i, j+1, 
@@ -108,6 +134,28 @@ void msvmmaj_make_kernel(struct MajModel *model, struct MajData *data)
 	data->use_cholesky = model->use_cholesky;
 	model->m = n;
 	free(K);
+	note(".");
+}
+
+/**
+ * @brief Create a Cholesky decomposition of a kernel matrix.
+ *
+ * @details
+ * details
+ *
+ * @param[in,out] 	K 	kernel matrix (n x n). On exit contains the
+ * 				lower Cholesky decomposition of K.
+ * @param[in] 		n 	size of kernel matrix 
+ */
+void msvmmaj_get_cholesky(double *K, long n)
+{
+	int status = dpotrf('L', n, K, n);
+	if (status != 0) {
+		fprintf(stderr, "Error (%i) computing Cholesky "
+				"decomposition of kernel matrix.\n",
+				status);
+		exit(1);
+	}
 }
 
 /**

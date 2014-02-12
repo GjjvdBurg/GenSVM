@@ -32,13 +32,16 @@
  * @param[in] 	model 		MajModel with optimized V
  * @param[out] 	predy 		pre-allocated vector to record predictions in
  */
-void msvmmaj_predict_labels(struct MajData *data, struct MajModel *model, long *predy)
+void msvmmaj_predict_labels(struct MajData *train_data, 
+		struct MajData *test_data, 
+		struct MajModel *model, 
+		long *predy)
 {
 	long i, j, k, label;
 	double norm, min_dist;
 
-	long n = data->n; // note that model->n is the size of the training sample.
-	long m = data->m;
+	long n = test_data->n; // note model->n is the size of the training sample.
+	long m = test_data->m;
 	long K = model->K; //data->K does not necessarily equal the original K.
 
 	double *S = Calloc(double, K-1);
@@ -57,7 +60,7 @@ void msvmmaj_predict_labels(struct MajData *data, struct MajModel *model, long *
 			K-1,
 			m+1,
 			1.0,
-			data->Z,
+			test_data->Z,
 			m+1,
 			model->V,
 			K-1,
@@ -72,7 +75,8 @@ void msvmmaj_predict_labels(struct MajData *data, struct MajModel *model, long *
 		min_dist = 1000000000.0;
 		for (j=0; j<K; j++) {
 			for (k=0; k<K-1; k++) {
-				S[k] = matrix_get(ZV, K-1, i, k) - matrix_get(U, K-1, j, k);
+				S[k] = matrix_get(ZV, K-1, i, k) - 
+				       matrix_get(U, K-1, j, k);
 			}
 			norm = cblas_dnrm2(K, S, 1);
 			if (norm < min_dist) {

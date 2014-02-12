@@ -29,13 +29,16 @@
  * @param lambda 	parameter for the MajModel
  * @param epsilon 	parameter for the MajModel
  * @param kerneltype 	parameter for the MajModel
- * @param *kernel_param parameters for the MajModel
- * @param *train_data 	pointer to the training data
- * @param *test_data 	pointer to the test data (if any)
+ * @param kernelparam parameters for the MajModel
+ * @param train_data 	pointer to the training data
+ * @param test_data 	pointer to the test data (if any)
  * @param performance 	performance after cross validation
+ * @param use_cholesky 	whether or not to use the Cholesky decomposition of
+ * 			the kernel matrix
  */
 struct Task {
 	KernelType kerneltype;
+	bool use_cholesky;
 	int weight_idx;
 	long folds;
 	long ID;
@@ -43,7 +46,7 @@ struct Task {
 	double kappa;
 	double lambda;
 	double epsilon;
-	double *kernel_param;
+	double *kernelparam;
 	struct MajData *train_data;
 	struct MajData *test_data;
 	double performance;
@@ -70,6 +73,8 @@ struct Queue {
  *
  * @param traintype 		type of training to use
  * @param kerneltype 		type of kernel to use throughout training
+ * @param use_cholesky 		whether to try to use the Cholesky
+ * 				decomposition in training.
  * @param repeats 		number of repeats to be done after the grid 
  * 				search to find the parameter set with the 
  * 				most consistent high performance
@@ -82,21 +87,22 @@ struct Queue {
  * @param Ng 			size of the array of gamma values
  * @param Nc 			size of the array of coef values
  * @param Nd 			size of the array of degree values
- * @param *weight_idxs 		array of weight_idxs
- * @param *ps 			array of p values 
- * @param *lambdas 		array of lambda values
- * @param *kappas 		array of kappa values
- * @param *epsilons 		array of epsilon values
- * @param *gammas 		array of gamma values
- * @param *coefs 		array of coef values
- * @param *degrees 		array of degree values
- * @param *train_data_file 	filename of train data file
- * @param *test_data_file 	filename of test data file
+ * @param weight_idxs 		array of weight_idxs
+ * @param ps 			array of p values 
+ * @param lambdas 		array of lambda values
+ * @param kappas 		array of kappa values
+ * @param epsilons 		array of epsilon values
+ * @param gammas 		array of gamma values
+ * @param coefs 		array of coef values
+ * @param degrees 		array of degree values
+ * @param train_data_file 	filename of train data file
+ * @param test_data_file 	filename of test data file
  *
  */
 struct Training {
 	TrainType traintype;
 	KernelType kerneltype;
+	bool use_cholesky;
 	long repeats;
 	long folds;
 	long Np;
@@ -134,4 +140,5 @@ double cross_validation(struct MajModel *model, struct MajModel *seed_model,
 
 void make_model_from_task(struct Task *task, struct MajModel *model);
 void copy_model(struct MajModel *from, struct MajModel *to);
+void print_progress_string(struct Task *task, long N);
 #endif
