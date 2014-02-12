@@ -290,7 +290,7 @@ double prctile(double *values, long N, double p)
 void consistency_repeats(struct Queue *q, long repeats, TrainType traintype)
 {
 	long i, r, N;
-	double p, pi, pr, boundary, time, *std, *mean, *perf;
+	double p, pi, pr, pt, boundary, *time, *std, *mean, *perf;
 	struct Queue *nq = Malloc(struct Queue, 1);
 	struct MajModel *model = msvmmaj_init_model();
 	struct Task *task = Malloc(struct Task, 1);
@@ -314,6 +314,7 @@ void consistency_repeats(struct Queue *q, long repeats, TrainType traintype)
 	note("Number of items: %li\n", N);
 	std = Calloc(double, N);
 	mean = Calloc(double, N);
+	time = Calloc(double, N);
 	perf = Calloc(double, N*repeats);
 
 	// create a new task queue with the tasks which perform well
@@ -332,7 +333,7 @@ void consistency_repeats(struct Queue *q, long repeats, TrainType traintype)
 		model->m = task->train_data->m;
 		model->K = task->train_data->K;
 
-		time = 0;
+		time[i] = 0.0;
 		note("(%02li/%02li:%03li)\t", i+1, N, task->ID);
 		for (r=0; r<repeats; r++) {
 			if (traintype == CV) {
@@ -340,7 +341,7 @@ void consistency_repeats(struct Queue *q, long repeats, TrainType traintype)
 				p = cross_validation(model, NULL, 
 						task->train_data, task->folds);
 				loop_e = clock();
-				time += elapsed_time(loop_s, loop_e);
+				time[i] += elapsed_time(loop_s, loop_e);
 				matrix_set(perf, repeats, i, r, p);
 				mean[i] += p/((double) repeats);
 			} else {
@@ -360,24 +361,28 @@ void consistency_repeats(struct Queue *q, long repeats, TrainType traintype)
 		std[i] /= ((double) repeats) - 1.0;
 		std[i] = sqrt(std[i]);
 		note("(m = %3.3f, s = %3.3f, t = %3.3f)\n", 
-				mean[i], std[i], time);
+				mean[i], std[i], time[i]);
 	}
 
 	// find the best overall configurations: those with high average
 	// performance and low deviation in the performance
 	note("\nBest overall configuration(s):\n");
 	note("ID\tweights\tepsilon\t\tp\t\tkappa\t\tlambda\t\t"
-			"mean_perf\tstd_perf\n");
+			"mean_perf\tstd_perf\ttime_perf\n");
 	p = 0.0;
 	bool breakout = false;
 	while (breakout == false) {
 		pi = prctile(mean, N, (100.0-p)/100.0);
 		pr = prctile(std, N, p/100.0);
+		pt = prctile(time, N, p/100.0);
 		for (i=0; i<N; i++) 
-			if ((pi - mean[i] < 0.0001) && (std[i] - pr < 0.0001)) {
+			if ((pi - mean[i] < 0.0001) &&
+			    (std[i] - pr < 0.0001) && 
+			    (time[i] - pt < 0.0001)) {
 				note("(%li)\tw = %li\te = %f\tp = %f\t"
 						"k = %f\tl = %f\t"
-						"mean: %3.3f\tstd: %3.3f\n",
+						"mean: %3.3f\tstd: %3.3f\t"
+						"time: %3.3f\n",
 						nq->tasks[i]->ID, 
 						nq->tasks[i]->weight_idx,
 						nq->tasks[i]->epsilon, 
@@ -385,7 +390,8 @@ void consistency_repeats(struct Queue *q, long repeats, TrainType traintype)
 						nq->tasks[i]->kappa, 
 						nq->tasks[i]->lambda,
 						mean[i], 
-						std[i]);
+						std[i],
+						time[i]);
 				breakout = true;
 			}
 		p += 1.0;
@@ -396,6 +402,7 @@ void consistency_repeats(struct Queue *q, long repeats, TrainType traintype)
 	free(perf);
 	free(std);
 	free(mean);
+	free(time);
 }
 
 /**
