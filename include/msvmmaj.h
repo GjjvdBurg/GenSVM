@@ -41,8 +41,6 @@
  * @param *data_file 		pointer to the filename of the data
  * @param kerneltype 		kernel to be used in the model
  * @param kernelparam 		pointer to the vector of kernel parameters
- * @param use_cholesky 		whether the Cholesky decomposition should be 
- * 				used
  *
  */
 struct MajModel {
@@ -68,7 +66,6 @@ struct MajModel {
 	char *data_file; 
 	KernelType kerneltype; 
 	double *kernelparam; 	
-	bool use_cholesky; 
 };
 
 /**
@@ -81,7 +78,6 @@ struct MajModel {
  * @param *Z 		pointer to augmented data matrix
  * @param kerneltype 	kerneltype used in MajData::Z
  * @param *kernelparam 	kernel parameters used in MajData::Z
- * @param use_cholesky 	whether the Cholesky decomposition is used in MajData::Z
  *
  */
 struct MajData {
@@ -92,7 +88,6 @@ struct MajData {
 	double *Z; 
 	KernelType kerneltype; 	
  	double *kernelparam; 
-	bool use_cholesky; 
 };
 
 #endif

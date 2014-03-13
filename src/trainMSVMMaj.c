@@ -55,8 +55,6 @@ void exit_with_help()
 	printf("-r rho : choose the weigth specification (1 = unit, 2 = "
 			"group)\n");
 	printf("-t type: kerneltype (LINEAR=0, POLY=1, RBF=2, SIGMOID=3)\n");
-	printf("-u use_cholesky: use cholesky decomposition when using "
-			"kernels (0 = false, 1 = true). Default 0.\n");
 
 	exit(0);
 }
@@ -157,7 +155,7 @@ int main(int argc, char **argv)
 void parse_command_line(int argc, char **argv, struct MajModel *model, 
 		char *input_filename, char *output_filename, char *model_filename)
 {
-	int i, tmp;
+	int i;
 	double gamma = 1.0, 
 	       degree = 2.0, 
 	       coef = 0.0;
@@ -203,13 +201,6 @@ void parse_command_line(int argc, char **argv, struct MajModel *model,
 				break;
 			case 't':
 				model->kerneltype = atoi(argv[i]);
-				break;
-			case 'u':
-				tmp = atoi(argv[i]);
-				if (!(tmp == 1 || tmp == 0)) 
-					fprintf(stderr, "Unknown value %i for"
-							" use_cholesky", tmp);
-				model->use_cholesky = (tmp == 1) ? true : false;
 				break;
 			case 'q':
 				MSVMMAJ_OUTPUT_FILE = NULL;
