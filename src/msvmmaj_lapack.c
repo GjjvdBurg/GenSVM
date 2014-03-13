@@ -94,36 +94,3 @@ int dsysv(char UPLO, int N, int NRHS, double *A, int LDA, int *IPIV,
 	dsysv_(&UPLO, &N, &NRHS, A, &LDA, IPIV, B, &LDB, WORK, &LWORK, &INFO);
 	return INFO;
 }
-
-/**
- * @brief Compute the Cholesky factorization of a real symmetric positive 
- *  	  definite matrix.
- *
- * @details
- * This function uses the external LAPACK routine dpotrf.
- *
- * @param[in] 		UPLO 	which triangle of A is stored
- * @param[in] 		N 	order of A
- * @param[in,out] 	A 	double precision array of size (LDA, N). On
- * 				exit contains the factor U or L of the Cholesky
- * 				factorization
- * @param[in] 		LDA 	leading dimension of A
- * @returns 			info parameter which contains the status of the
- * 				computation:
- * 					- =0: 	success
- * 					- <0: 	if -i, the i-th argument had an
- * 						illegal value
- * 					- >0: 	if i, the leading minor of
- * 						order i is not positive
- * 						definite
- *
- * See the LAPACK documentation at:
- * http://www.netlib.org/lapack/explore-html/d0/d8a/dpotrf_8f.html
- */
-int dpotrf(char UPLO, int N, double *A, int LDA)
-{
-	extern void dpotrf_(char *UPLO, int *N, double *A, int *LDA, int *INFOp);
-	int INFO;
-	dpotrf_(&UPLO, &N, A, &LDA, &INFO);
-	return INFO;
-}
