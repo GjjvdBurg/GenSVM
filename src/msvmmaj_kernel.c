@@ -10,6 +10,7 @@
  * kernel matrix using several decomposition methods.
  *
  */
+
 #include <math.h>
 
 #include "msvmmaj.h"
@@ -66,18 +67,18 @@ void msvmmaj_make_kernel(struct MajModel *model, struct MajData *data)
 
 	double *P = Malloc(double, n*n);
 	double *Lambda = Malloc(double, n);
-	msvmmaj_make_eigen(K, n, P, Lambda);
+	long num_eigen = msvmmaj_make_eigen(K, n, P, Lambda);
 
-	// copy kernel to data
-	data->Z = realloc(data->Z, n*(n+1)*(sizeof(double)));
+	// copy eigendecomp to data
+	data->Z = realloc(data->Z, n*(n+1)*sizeof(double));
 	for (i=0; i<n; i++) {
 		for (j=0; j<n; j++)
-			matrix_set(data->Z, n+1, i, j+1, 
-					matrix_get(K, n, i, j));
+			matrix_set(data->Z, n+1, i, j+1,
+					matrix_get(P, n, i, j));
 		matrix_set(data->Z, n+1, i, 0, 1.0);
 	}
 	data->m = n;
-	
+
 	// let data know what it's made of
 	data->kerneltype = model->kerneltype;
 	free(data->kernelparam);
@@ -111,7 +112,7 @@ void msvmmaj_make_kernel(struct MajModel *model, struct MajData *data)
  *
  *
  */
-void msvmmaj_make_eigen(double *K, long n, double *P, double *Lambda)
+long msvmmaj_make_eigen(double *K, long n, double *P, double *Lambda)
 {
 	int M, status, LWORK, *IWORK, *IFAIL;
 	double abstol, *WORK;
@@ -182,25 +183,21 @@ void msvmmaj_make_eigen(double *K, long n, double *P, double *Lambda)
 	// Here you can put code to select the necessary eigenvectors, 
 	// depending on the size of the eigenvalues.
 	// For now, let's just print the eigenvalues and exit
-	long i;
-	for (i=0; i<n; i++) {
-		printf("%+16.16f\n", Lambda[i]);
-	}
-	printf("\n");
-
-	long j;
+	
+	print_matrix(Lambda, n, 1);
+	
+	// revert P to row-major order	
+	long i, j;
 	for (i=0; i<n; i++)
 		for (j=0; j<n; j++)
 			P[i*n+j] = tempP[j*n+i];
 
 	print_matrix(P, n, n);
 
-	printf("\n");
-	print_matrix(K, n, n);
+	free(tempP);
 
-	free(tempP);	
-
-	exit(1);
+	// replace by number of columns of P
+	return n;
 }
 
 /**
