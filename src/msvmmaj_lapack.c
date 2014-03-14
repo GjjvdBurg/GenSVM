@@ -94,3 +94,42 @@ int dsysv(char UPLO, int N, int NRHS, double *A, int LDA, int *IPIV,
 	dsysv_(&UPLO, &N, &NRHS, A, &LDA, IPIV, B, &LDB, WORK, &LWORK, &INFO);
 	return INFO;
 }
+
+/**
+ * @brief Compute the eigenvalues and optionally the eigenvectors of a 
+ * symmetric matrix.
+ *
+ * @details
+ * See the LAPACK documentation at:
+ * http://www.netlib.org/lapack/explore-html/d2/d97/dsyevx_8f.html
+ *
+ *
+ */
+int dsyevx(char JOBZ, char RANGE, char UPLO, int N, double *A, int LDA,
+	       	double VL, double VU, int IL, int IU, double ABSTOL, int *M,
+		double *W, double *Z, int LDZ, double *WORK, int LWORK,
+		int *IWORK, int *IFAIL)
+{
+	extern void dsyevx_(char *JOBZ, char *RANGE, char *UPLO, int *Np,
+			double *A, int *LDAp, double *VLp, double *VUp,
+		       	int *ILp, int *IUp, double *ABSTOLp, int *M,
+			double *W, double *Z, int *LDZp, double *WORK,
+		       	int *LWORKp, int *IWORK, int *IFAIL, int *INFOp);
+	int INFO;
+	dsyevx_(&JOBZ, &RANGE, &UPLO, &N, A, &LDA, &VL, &VU, &IL, &IU, &ABSTOL,
+			M, W, Z, &LDZ, WORK, &LWORK, IWORK, IFAIL, &INFO);
+	return INFO;
+}
+
+/**
+ * @brief Determine double precision machine parameters.
+ *
+ * @details
+ * See the LAPACK documentation at:
+ * http://www.netlib.org/lapack/explore-html/d5/dd4/dlamch_8f.html
+ */
+double dlamch(char CMACH)
+{
+	extern double dlamch_(char *CMACH);
+	return dlamch_(&CMACH);
+}

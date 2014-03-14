@@ -18,5 +18,9 @@ int dposv(char UPLO, int N, int NRHS, double *A, int LDA, double *B,
 		int LDB);
 int dsysv(char UPLO, int N, int NRHS, double *A, int LDA, int *IPIV,
 		double *B, int LDB, double *WORK, int LWORK);
-
+int dsyevx(char JOBZ, char RANGE, char UPLO, int N, double *A, int LDA,
+	       	double VL, double VU, int IL, int IU, double ABSTOL,
+		int *M, double *W, double *Z, int LDZ, double *WORK, int LWORK,
+		int *IWORK, int *IFAIL);
+double dlamch(char CMACH);
 #endif
