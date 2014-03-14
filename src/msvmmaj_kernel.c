@@ -62,6 +62,12 @@ void msvmmaj_make_kernel(struct MajModel *model, struct MajData *data)
 		}
 	}
 
+	print_matrix(K, n, n);
+
+	double *P = Malloc(double, n*n);
+	double *Lambda = Malloc(double, n);
+	msvmmaj_make_eigen(K, n, P, Lambda);
+
 	// copy kernel to data
 	data->Z = realloc(data->Z, n*(n+1)*(sizeof(double)));
 	for (i=0; i<n; i++) {
@@ -95,6 +101,106 @@ void msvmmaj_make_kernel(struct MajModel *model, struct MajData *data)
 	}
 	model->m = n;
 	free(K);
+}
+
+/**
+ * @brief Find the eigendecomposition of a kernel matrix.
+ *
+ * @details.
+ * tbd
+ *
+ *
+ */
+void msvmmaj_make_eigen(double *K, long n, double *P, double *Lambda)
+{
+	int M, status, LWORK, *IWORK, *IFAIL;
+	double abstol, *WORK;
+
+	double *tempP = Malloc(double, n*n);
+
+	IWORK = Malloc(int, 5*n);
+	IFAIL = Malloc(int, n);
+	
+	// highest precision eigenvalues, may reduce for speed	
+	abstol = 2.0*dlamch('S');
+
+	// first perform a workspace query to determine optimal size of the 
+	// WORK array.
+	WORK = Malloc(double, 1);
+	status = dsyevx(
+			'V',
+			'A',
+			'U',
+			n,
+			K,
+			n,
+			0,
+			0,
+			0,
+			0,
+			abstol,
+			&M,
+			Lambda,
+			tempP,
+			n,
+			WORK,
+			-1,
+			IWORK,
+			IFAIL);
+	LWORK = WORK[0];
+
+	// allocate the requested memory for the eigendecomposition 
+	WORK = (double *)realloc(WORK, LWORK*sizeof(double));
+	status = dsyevx(
+			'V',
+			'A',
+			'U',
+			n,
+			K,
+			n,
+			0,
+			0,
+			0,
+			0,
+			abstol,
+			&M,
+			Lambda,
+			tempP,
+			n,
+			WORK,
+			LWORK,
+			IWORK,
+			IFAIL);
+
+	printf("status = %i\n", status);
+	printf("Number of eigenvalues found: %i\n", M);
+
+	if (status != 0) {
+		fprintf(stderr, "Nonzero exit status from dsyevx. Exiting...");
+		exit(1);
+	}
+	// Here you can put code to select the necessary eigenvectors, 
+	// depending on the size of the eigenvalues.
+	// For now, let's just print the eigenvalues and exit
+	long i;
+	for (i=0; i<n; i++) {
+		printf("%+16.16f\n", Lambda[i]);
+	}
+	printf("\n");
+
+	long j;
+	for (i=0; i<n; i++)
+		for (j=0; j<n; j++)
+			P[i*n+j] = tempP[j*n+i];
+
+	print_matrix(P, n, n);
+
+	printf("\n");
+	print_matrix(K, n, n);
+
+	free(tempP);	
+
+	exit(1);
 }
 
 /**

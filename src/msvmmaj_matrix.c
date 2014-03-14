@@ -146,7 +146,7 @@ void print_matrix(double *M, long rows, long cols)
 
 	for (i=0; i<rows; i++) {
 		for (j=0; j<cols; j++)
-			note("%8.8f ", matrix_get(M, cols, i, j));
+			note("%+6.6f ", matrix_get(M, cols, i, j));
 		note("\n");
 	}
 	note("\n");
