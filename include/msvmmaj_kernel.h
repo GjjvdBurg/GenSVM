@@ -23,7 +23,7 @@ struct MajModel;
 // function declarations
 void msvmmaj_make_kernel(struct MajModel *model, struct MajData *data);
 
-void msvmmaj_make_eigen(double *K, long n, double *P, double *Lambda);
+long msvmmaj_make_eigen(double *K, long n, double *P, double *Lambda);
 
 double msvmmaj_compute_rbf(double *x1, double *x2, double *kernelparam,
 		long n);
