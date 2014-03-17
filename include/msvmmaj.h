@@ -36,6 +36,8 @@
  * @param *Q 			pointer to the error matrix
  * @param *H 			pointer to the Huber weighted error matrix
  * @param *R 			pointer to the 0-1 auxiliary matrix
+ * @param *J 			pointer to the diagonal matrix in the 
+ * regularization term
  * @param *rho 			pointer to the instance weight vector
  * @param training_error 	error after training has completed
  * @param *data_file 		pointer to the filename of the data
@@ -63,6 +65,7 @@ struct MajModel {
 	double *Q;
 	double *H; 
 	double *R;
+	double *J;
 	double *rho; 	
 	double training_error; 
 	char *data_file; 
