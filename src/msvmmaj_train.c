@@ -86,7 +86,7 @@ void msvmmaj_optimize(struct MajModel *model, struct MajData *data)
 		Lbar = L;
 		L = msvmmaj_get_loss(model, data, ZV);
 
-		if (it%50 == 0)
+		if (it%1 == 0)
 			note("iter = %li, L = %15.16f, Lbar = %15.16f, "
 			     "reldiff = %15.16f\n", it, L, Lbar, (Lbar - L)/L);
 		it++;
@@ -153,10 +153,12 @@ double msvmmaj_get_loss(struct MajModel *model, struct MajData *data,
 	loss /= ((double) n);
 
 	value = 0;
-	for (i=1; i<m+1; i++) {
+	for (i=0; i<m+1; i++) {
+		rowvalue = 0;
 		for (j=0; j<K-1; j++) {
-			value += pow(matrix_get(model->V, K-1, i, j), 2.0);
+			rowvalue += pow(matrix_get(model->V, K-1, i, j), 2.0);
 		}
+		value += model->J[i] * rowvalue;
 	}
 	loss += model->lambda * value;
 
@@ -418,12 +420,14 @@ void msvmmaj_get_update(struct MajModel *model, struct MajData *data, double *B,
 			ZAZV,
 			K-1);
 	/* 
-	 * Add lambda to all diagonal elements except the 
-	 * first one. 
+	 * Add lambda to all diagonal elements except the first one. Recall 
+	 * that ZAZ is of size m+1 and is symmetric.
 	 */
 	i = 0;
-	for (j=0; j<m; j++)
-		ZAZ[i+=m+1 + 1] += model->lambda;
+	for (j=0; j<m; j++) {
+		i += (m+1) + 1;
+		ZAZ[i] += model->lambda * model->J[j+1];
+	}
 	
 	// For the LAPACK call we need to switch to Column-
 	// Major order. This is unnecessary for the matrix

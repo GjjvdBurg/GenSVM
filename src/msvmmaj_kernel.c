@@ -31,14 +31,18 @@
  */
 void msvmmaj_make_kernel(struct MajModel *model, struct MajData *data)
 {
-	if (model->kerneltype == K_LINEAR)
-		return;
-
 	long i, j;
+	if (model->kerneltype == K_LINEAR) {
+		model->J = Calloc(double, model->m+1);
+		for (i=1; i<model->m+1; i++) 
+			matrix_set(model->J, 1, i, 0, 1.0);
+		return;
+	}
+
 	long n = model->n;
 	double value;
 	double *x1, *x2;
-	double *K = Calloc(double, n*n*sizeof(double));
+	double *K = Calloc(double, n*n);
 
 	for (i=0; i<n; i++) {
 		for (j=i; j<n; j++) {
@@ -63,8 +67,6 @@ void msvmmaj_make_kernel(struct MajModel *model, struct MajData *data)
 		}
 	}
 
-	print_matrix(K, n, n);
-
 	double *P = Malloc(double, n*n);
 	double *Lambda = Malloc(double, n);
 	long num_eigen = msvmmaj_make_eigen(K, n, P, Lambda);
@@ -78,6 +80,13 @@ void msvmmaj_make_kernel(struct MajModel *model, struct MajData *data)
 		matrix_set(data->Z, n+1, i, 0, 1.0);
 	}
 	data->m = n;
+
+	// Set the regularization matrix (change if not full rank used)
+	model->J = Calloc(double, model->m+1);
+	for (i=1; i<model->m+1; i++) {
+		value = 1.0/matrix_get(Lambda, 1, i-1, 0);
+		matrix_set(model->J, 1, i, 0, value);
+	}
 
 	// let data know what it's made of
 	data->kerneltype = model->kerneltype;
@@ -191,8 +200,6 @@ long msvmmaj_make_eigen(double *K, long n, double *P, double *Lambda)
 	for (i=0; i<n; i++)
 		for (j=0; j<n; j++)
 			P[i*n+j] = tempP[j*n+i];
-
-	print_matrix(P, n, n);
 
 	free(tempP);
 
