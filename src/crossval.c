@@ -110,8 +110,8 @@ void msvmmaj_get_tt_split(struct MajData *full_data, struct MajData *train_data,
 	train_data->y = Calloc(long, train_n);
 	test_data->y = Calloc(long, test_n);
 
-	train_data->Z = Calloc(double, train_n*(m+1));
-	test_data->Z = Calloc(double, test_n*(m+1));
+	train_data->RAW = Calloc(double, train_n*(m+1));
+	test_data->RAW = Calloc(double, test_n*(m+1));
 
 	k = 0;
 	l = 0;
@@ -119,17 +119,20 @@ void msvmmaj_get_tt_split(struct MajData *full_data, struct MajData *train_data,
 		if (cv_idx[i] == fold_idx) {
 			test_data->y[k] = full_data->y[i];
 			for (j=0; j<m+1; j++)
-				matrix_set(test_data->Z, m+1, k, j, 
-						matrix_get(full_data->Z, m+1, 
+				matrix_set(test_data->RAW, m+1, k, j, 
+						matrix_get(full_data->RAW, m+1,
 							i, j));
 			k++;
 		} else {
 			train_data->y[l] = full_data->y[i];
 			for (j=0; j<m+1; j++)
-				matrix_set(train_data->Z, m+1, l, j,
-						matrix_get(full_data->Z, m+1, 
+				matrix_set(train_data->RAW, m+1, l, j,
+						matrix_get(full_data->RAW, m+1,
 							i, j));
 			l++;
 		}
 	}
+
+	train_data->Z = train_data->RAW;
+	test_data->Z = test_data->RAW;
 }

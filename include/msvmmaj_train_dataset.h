@@ -29,7 +29,7 @@
  * @param lambda 	parameter for the MajModel
  * @param epsilon 	parameter for the MajModel
  * @param kerneltype 	parameter for the MajModel
- * @param *kernel_param parameters for the MajModel
+ * @param *kernelparam parameters for the MajModel
  * @param *train_data 	pointer to the training data
  * @param *test_data 	pointer to the test data (if any)
  * @param performance 	performance after cross validation
@@ -43,7 +43,7 @@ struct Task {
 	double kappa;
 	double lambda;
 	double epsilon;
-	double *kernel_param;
+	double *kernelparam;
 	struct MajData *train_data;
 	struct MajData *test_data;
 	double performance;
@@ -137,4 +137,5 @@ void copy_model(struct MajModel *from, struct MajModel *to);
 
 void msvmmaj_reallocate_model(struct MajModel *model, long n);
 
+void print_progress_string(struct Task *task, long N);
 #endif

@@ -3,7 +3,7 @@ CC=gcc
 CFLAGS=-Wall -O3 -DVERSION=$(VERSION) -g
 INCLUDE= -Iinclude/
 LIB= -Llib/
-EXECS=trainMSVMMaj trainMSVMMajdataset predMSVMMaj
+EXECS=trainMSVMMaj trainMSVMMajdataset
 
 .PHONY: all clean tar
 
