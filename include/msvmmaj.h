@@ -36,8 +36,6 @@
  * @param *Q 			pointer to the error matrix
  * @param *H 			pointer to the Huber weighted error matrix
  * @param *R 			pointer to the 0-1 auxiliary matrix
- * @param *J 			pointer to the diagonal matrix in the 
- * regularization term
  * @param *rho 			pointer to the instance weight vector
  * @param training_error 	error after training has completed
  * @param *data_file 		pointer to the filename of the data
@@ -63,7 +61,6 @@ struct MajModel {
 	double *Q;
 	double *H; 
 	double *R;
-	double *J;
 	double *rho; 	
 	double training_error; 
 	char *data_file; 
@@ -79,6 +76,8 @@ struct MajModel {
  * @param m 		number of predictors
  * @param *y 		pointer to vector of class labels
  * @param *Z 		pointer to augmented data matrix
+ * @param *RAW 		pointer to augmented raw data matrix
+ * @param *J 		pointer to regularization vector
  * @param kerneltype 	kerneltype used in MajData::Z
  * @param *kernelparam 	kernel parameters used in MajData::Z
  *
@@ -89,6 +88,8 @@ struct MajData {
 	long m;		 
  	long *y; 	
 	double *Z; 
+	double *RAW;
+	double *J;
 	KernelType kerneltype; 	
  	double *kernelparam; 
 };

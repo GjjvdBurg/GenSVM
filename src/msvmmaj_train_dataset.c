@@ -16,6 +16,7 @@
 #include "libMSVMMaj.h"
 #include "msvmmaj.h"
 #include "msvmmaj_init.h"
+#include "msvmmaj_kernel.h"
 #include "msvmmaj_matrix.h"
 #include "msvmmaj_train.h"
 #include "msvmmaj_train_dataset.h"
@@ -73,7 +74,7 @@ void make_queue(struct Training *training, struct Queue *queue,
 		task->test_data = test_data;
 		task->folds = training->folds;
 		task->kerneltype = training->kerneltype;
-		task->kernel_param = Calloc(double, training->Ng + 
+		task->kernelparam = Calloc(double, training->Ng + 
 				training->Nc + training->Nd);
 		queue->tasks[i] = task;
 	}
@@ -135,7 +136,7 @@ void make_queue(struct Training *training, struct Queue *queue,
 	while (i < N && training->Ng > 0)
 		for (j=0; j<training->Ng; j++)
 			for (k=0; k<cnt; k++) {
-				queue->tasks[i]->kernel_param[0] = 
+				queue->tasks[i]->kernelparam[0] = 
 					training->gammas[j];
 				i++;
 			}
@@ -145,7 +146,7 @@ void make_queue(struct Training *training, struct Queue *queue,
 	while (i < N && training->Nc > 0)
 		for (j=0; j<training->Nc; j++)
 			for (k=0; k<cnt; k++) {
-				queue->tasks[i]->kernel_param[1] = 
+				queue->tasks[i]->kernelparam[1] = 
 					training->coefs[j];
 				i++;
 			}
@@ -155,7 +156,7 @@ void make_queue(struct Training *training, struct Queue *queue,
 	while (i < N && training->Nd > 0)
 		for (j=0; j<training->Nd; j++)
 			for (k=0; k<cnt; k++) {
-				queue->tasks[i]->kernel_param[2] = 
+				queue->tasks[i]->kernelparam[2] = 
 					training->degrees[j];
 				i++;
 			}
@@ -416,9 +417,6 @@ void consistency_repeats(struct Queue *q, long repeats, TrainType traintype)
  * used.
  *
  * @todo
- * The seed model shouldn't have to be allocated completely, since only V is
- * used.
- * @todo
  * There must be some inefficiencies here because the fold model is allocated
  * at every fold. This would be detrimental with large datasets.
  *
@@ -448,7 +446,11 @@ double cross_validation(struct MajModel *model, struct MajModel *seed_model,
 		seed_model->n = 0; // we never use anything other than V
 		seed_model->m = model->m;
 		seed_model->K = model->K;
-		msvmmaj_allocate_model(seed_model);
+		seed_model->V = Calloc(double, (model->m+1)*(model->K-1));
+		if (seed_model->V == NULL) {
+			fprintf(stderr, "Failed to allocate seed_model:V.\n");
+			exit(1);
+		}	
 		msvmmaj_seed_model_V(NULL, seed_model);
 		fs = true;
 	}
@@ -459,12 +461,24 @@ double cross_validation(struct MajModel *model, struct MajModel *seed_model,
 	msvmmaj_make_cv_split(model->n, folds, cv_idx);
 
 	for (f=0; f<folds; f++) {
+		//printf("Fold: %li\n", f);
 		msvmmaj_get_tt_split(data, train_data, test_data, cv_idx, f);
+	
+		// generate kernel
+		/*
+		printf("Training data (n = %li, m = %li)\n", train_data->n,
+			       	train_data->m);
+		print_matrix(train_data->Z, train_data->n, train_data->m+1);
+		printf("Testing data (n = %li, m = %li)\n", test_data->n,
+				test_data->m);
+		print_matrix(test_data->Z, test_data->n, test_data->m+1);
+		*/
+		msvmmaj_make_kernel(model, train_data);
+
 		// initialize a model for this fold and copy the model
 		// parameters
 		fold_model = msvmmaj_init_model();
 		copy_model(model, fold_model);
-	
 		fold_model->n = train_data->n;
 		fold_model->m = train_data->m;
 		fold_model->K = train_data->K;
@@ -482,8 +496,10 @@ double cross_validation(struct MajModel *model, struct MajModel *seed_model,
 
 		// calculate predictive performance on test set 
 		predy = Calloc(long, test_data->n);
-		msvmmaj_predict_labels(test_data, fold_model, predy);
+		msvmmaj_predict_labels(test_data, train_data, fold_model,
+			       	predy);
 		performance[f] = msvmmaj_prediction_perf(test_data, predy);
+		//printf("Performance fold %li = %f\n", f, performance[f]);
 		total_perf += performance[f]/((double) folds);
 
 		// seed the seed model with the fold model
@@ -499,8 +515,10 @@ double cross_validation(struct MajModel *model, struct MajModel *seed_model,
 	}
 
 	// if a seed model was allocated before, free it.
-	if (fs)
-		msvmmaj_free_model(seed_model);
+	if (fs) {
+		free(seed_model->V);
+		free(seed_model);
+	}
 	free(train_data);
 	free(test_data);
 	free(performance);
@@ -539,21 +557,20 @@ void start_training_cv(struct Queue *q)
 	model->K = task->train_data->K;
 	msvmmaj_allocate_model(model);
 
-	seed_model->n = 0;
-	seed_model->m = task->train_data->m;
-	seed_model->K = task->train_data->K;
-	msvmmaj_allocate_model(seed_model);
-	msvmmaj_seed_model_V(NULL, seed_model);
+	if (model->kerneltype == K_LINEAR) {
+		seed_model->n = 0;
+		seed_model->m = task->train_data->m;
+		seed_model->K = task->train_data->K;
+		msvmmaj_allocate_model(seed_model);
+		msvmmaj_seed_model_V(NULL, seed_model);
+	} else
+		seed_model = NULL;
 	
 	main_s = clock();
 	while (task) {
-		note("(%03li/%03li)\tw = %li\te = %f\tp = %f\tk = %f\t "
-				"l = %f\t",
-				task->ID+1, q->N, task->weight_idx,
-			       	task->epsilon,
-				task->p, task->kappa, task->lambda);
+		print_progress_string(task, q->N);
 		make_model_from_task(task, model);
-		
+
 		loop_s = clock();
 		perf = cross_validation(model, seed_model, task->train_data,
 			       	task->folds);
@@ -588,7 +605,9 @@ void start_training_cv(struct Queue *q)
  * It would probably be better to train the model on the training set using
  * cross validation and only use the test set when comparing with other
  * methods. The way it is now, you're finding out which parameters predict
- * _this_ test set best, which is not what you want.
+ * _this_ test set best, which is not what you want. This function should 
+ * therefore not be used and is considered deprecated, to be removed in the 
+ * future .
  *
  * @param[in] 	q 	Queue with Task structs to run
  *
@@ -636,9 +655,11 @@ void start_training_tt(struct Queue *q)
 		MSVMMAJ_OUTPUT_FILE = fid;
 
 		predy = Calloc(long, task->test_data->n);
-		msvmmaj_predict_labels(task->test_data, model, predy);
+		msvmmaj_predict_labels(task->test_data, task->train_data,
+			       	model, predy);
 		if (task->test_data->y != NULL) 
-			total_perf = msvmmaj_prediction_perf(task->test_data, predy);
+			total_perf = msvmmaj_prediction_perf(task->test_data,
+				       	predy);
 		msvmmaj_seed_model_V(model, seed_model);
 
 		msvmmaj_free_model(model);
@@ -673,7 +694,7 @@ void free_queue(struct Queue *q)
 {
 	long i;
 	for (i=0; i<q->N; i++) {
-		free(q->tasks[i]->kernel_param);
+		free(q->tasks[i]->kernelparam);
 		free(q->tasks[i]);
 	}
 	free(q->tasks);
@@ -692,11 +713,16 @@ void free_queue(struct Queue *q)
  */
 void make_model_from_task(struct Task *task, struct MajModel *model)
 {
+	// copy basic model parameters
 	model->weight_idx = task->weight_idx;
 	model->epsilon = task->epsilon;
 	model->p = task->p;
 	model->kappa = task->kappa;
 	model->lambda = task->lambda;
+
+	// copy kernel parameters
+	model->kerneltype = task->kerneltype;
+	model->kernelparam = task->kernelparam;
 }
 
 /**
@@ -716,4 +742,58 @@ void copy_model(struct MajModel *from, struct MajModel *to)
 	to->p = from->p;
 	to->kappa = from->kappa;
 	to->lambda = from->lambda;
+
+	to->kerneltype = from->kerneltype;
+	switch (to->kerneltype) {
+		case K_LINEAR:
+			break;
+		case K_POLY:
+			to->kernelparam = Malloc(double, 3);
+			to->kernelparam[0] = from->kernelparam[0];
+			to->kernelparam[1] = from->kernelparam[1];
+			to->kernelparam[2] = from->kernelparam[2];
+			break;
+		case K_RBF:
+			to->kernelparam = Malloc(double, 1);
+			to->kernelparam[0] = from->kernelparam[0];
+			break;
+		case K_SIGMOID:
+			to->kernelparam = Malloc(double, 2);
+			to->kernelparam[0] = from->kernelparam[0];
+			to->kernelparam[1] = from->kernelparam[1];
+			break;
+	}
+}
+
+/**
+ * @brief Print the description of the current task on screen
+ *
+ * @details
+ * To track the progress of the grid search the parameters of the current task 
+ * are written to the output specified in MSVMMAJ_OUTPUT_FILE. Since the 
+ * parameters differ with the specified kernel, this function writes a 
+ * parameter string depending on which kernel is used.
+ *
+ * @param[in] 	task 	the Task specified
+ * @param[in] 	N 	total number of tasks
+ *
+ */
+void print_progress_string(struct Task *task, long N)
+{
+	char buffer[MAX_LINE_LENGTH];
+	sprintf(buffer, "(%03li/%03li)\t", task->ID+1, N);
+	if (task->kerneltype == K_POLY)
+		sprintf(buffer + strlen(buffer), "d = %2.2f\t",
+				task->kernelparam[2]);
+	if (task->kerneltype == K_POLY || task->kerneltype == K_SIGMOID)
+		sprintf(buffer + strlen(buffer), "c = %2.2f\t",
+				task->kernelparam[1]);
+	if (task->kerneltype == K_POLY || task->kerneltype == K_SIGMOID ||
+			task->kerneltype == K_RBF)
+		sprintf(buffer + strlen(buffer), "g = %2.2f\t",
+				task->kernelparam[0]);
+	sprintf(buffer + strlen(buffer), "eps = %g\tw = %i\tk = %2.2f\t"
+			"l = %f\tp = %2.2f\t", task->epsilon,
+			task->weight_idx, task->kappa, task->lambda, task->p);
+	note(buffer);
 }

@@ -38,6 +38,7 @@ struct MajModel *msvmmaj_init_model()
 	model->kappa = 0.0;
 	model->weight_idx = 1;
 	model->kerneltype = K_LINEAR;
+	model->kernelparam = NULL;
 
 	return model;
 }
@@ -58,6 +59,7 @@ struct MajData *msvmmaj_init_data()
 
 	// set default values
 	data->kerneltype = K_LINEAR;
+	data->kernelparam = NULL;
 
 	return data;
 }	

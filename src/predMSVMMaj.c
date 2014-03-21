@@ -1,3 +1,9 @@
+/*
+ * 20140317:
+ * THIS FUNCTION IS DEPRECATED, SINCE IT DOES NOT WORK WITH KERNELS.
+ *
+ */
+
 /**
  * @file predMSVMMaj.c
  * @author Gertjan van den Burg

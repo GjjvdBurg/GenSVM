@@ -105,8 +105,7 @@ int main(int argc, char **argv)
 
 	// seed the random number generator (only place in programs is in
 	// command line interfaces)
-	//srand(time(NULL));
-	srand(123456);
+	srand(time(NULL));
 
 	if (msvmmaj_check_argv_eq(argc, argv, "-m")) {
 		struct MajModel *seed_model = msvmmaj_init_model();

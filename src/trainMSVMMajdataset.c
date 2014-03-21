@@ -98,7 +98,8 @@ int main(int argc, char **argv)
 	struct Queue *q = Malloc(struct Queue, 1);
 	make_queue(training, q, train_data, test_data);
 
-	srand(time(NULL));
+	//	srand(time(NULL));
+	srand(123456);
 
 	note("Starting training\n");
 	if (training->traintype == TT)
@@ -161,6 +162,23 @@ void parse_command_line(int argc, char **argv, char *input_filename)
 		exit_with_help();
 
 	strcpy(input_filename, argv[i]);
+}
+
+KernelType parse_kernel_str(char *kernel_line)
+{
+	if (str_endswith(kernel_line, "LINEAR\n")) {
+		return K_LINEAR;
+	} else if (str_endswith(kernel_line, "POLY\n")) {
+		return K_POLY;
+	} else if (str_endswith(kernel_line, "RBF\n")) {
+		return K_RBF;
+	} else if (str_endswith(kernel_line, "SIGMOID\n")) {
+		return K_SIGMOID;
+	} else {
+		fprintf(stderr, "Unknown kernel specified on line: %s\n",
+				kernel_line);
+		exit(1);
+	}
 }
 
 /**
@@ -254,25 +272,7 @@ void read_training_from_file(char *input_filename, struct Training *training)
 						"takes one value. Additional "
 						"fields are ignored.\n");
 		} else if (str_startswith(buffer, "kernel:")) {
-			nr = all_longs_str(buffer, 7, lparams);
-			if (nr > 1)
-				fprintf(stderr, "Field \"kernel\" only takes "
-						"one value. Additional "
-						"fields are ignored.\n");
-			switch (lparams[0]) {
-				case 0:
-					training->kerneltype = K_LINEAR;
-					break;
-				case 1:
-					training->kerneltype = K_POLY;
-					break;
-				case 2:
-					training->kerneltype = K_RBF;
-					break;
-				case 3:
-					training->kerneltype = K_SIGMOID;
-					break;
-			}
+			training->kerneltype = parse_kernel_str(buffer);
 		} else if (str_startswith(buffer, "gamma:")) {
 			nr = all_doubles_str(buffer, 6, params);
 			if (training->kerneltype == K_LINEAR) {
@@ -289,7 +289,7 @@ void read_training_from_file(char *input_filename, struct Training *training)
 			nr = all_doubles_str(buffer, 5, params);
 			if (training->kerneltype == K_LINEAR ||
 				training->kerneltype == K_RBF) {
-				fprintf(stderr, "Field \"coef\" ignored with"
+				fprintf(stderr, "Field \"coef\" ignored with "
 						"specified kernel.\n");
 				training->Nc = 0;
 				break;
