@@ -1,15 +1,15 @@
 VERSION=0.1
 CC=gcc
 CFLAGS=-Wall -O3 -DVERSION=$(VERSION) -g
-INCLUDE= -Iinclude/
-LIB= -Llib/
+INCLUDE= -Iinclude
+LIB= -Llib
 EXECS=trainMSVMMaj trainMSVMMajdataset
 
 .PHONY: all clean tar
 
 all: lib/libmsvmmaj.a $(EXECS)
 
-override LDFLAGS+=-lblas -llapack -lm
+override LDFLAGS+=-lblas -llapack -lm -lcblas
 
 lib/libmsvmmaj.a: \
 	src/crossval.o \
