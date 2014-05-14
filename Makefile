@@ -1,8 +1,8 @@
 VERSION=0.1
 CC=gcc
 CFLAGS=-Wall -O3 -DVERSION=$(VERSION) -g
-INCLUDE= -Iinclude/
-LIB= -Llib/
+INCLUDE= -Iinclude
+LIB= -Llib
 EXECS=trainMSVMMaj trainMSVMMajdataset
 
 .PHONY: all clean tar
