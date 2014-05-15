@@ -20,6 +20,7 @@ lib/libmsvmmaj.a: \
 	src/msvmmaj_lapack.o \
 	src/msvmmaj_matrix.o \
 	src/msvmmaj_pred.o \
+	src/msvmmaj_sv.o \
 	src/msvmmaj_train.o \
 	src/msvmmaj_train_dataset.o \
 	src/strutil.o \
@@ -34,6 +35,7 @@ lib/libmsvmmaj.a: \
 		src/msvmmaj_kernel.o \
 		src/msvmmaj_lapack.o \
 		src/msvmmaj_pred.o \
+		src/msvmmaj_sv.o \
 		src/msvmmaj_train.o \
 		src/msvmmaj_train_dataset.o \
 		src/strutil.o \
@@ -79,6 +81,10 @@ src/msvmmaj_io.o:
 src/msvmmaj_pred.o:
 	@$(CC) -c -o src/msvmmaj_pred.o src/msvmmaj_pred.c $(CFLAGS) $(INCLUDE)
 	@echo msvmmaj_pred.o...
+
+src/msvmmaj_sv.o:
+	@$(CC) -c -o src/msvmmaj_sv.o src/msvmmaj_sv.c $(CFLAGS) $(INCLUDE)
+	@echo msvmmaj_sv.o...
 
 src/msvmmaj_train.o:
 	@$(CC) -c -o src/msvmmaj_train.o src/msvmmaj_train.c $(CFLAGS) $(INCLUDE)
