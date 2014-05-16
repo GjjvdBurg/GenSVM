@@ -9,7 +9,7 @@ EXECS=trainMSVMMaj trainMSVMMajdataset predMSVMMaj
 
 all: lib/libmsvmmaj.a $(EXECS)
 
-override LDFLAGS+=-lblas -llapack -lm
+override LDFLAGS+=-lcblas -llapack -lm
 
 lib/libmsvmmaj.a: \
 	src/crossval.o \

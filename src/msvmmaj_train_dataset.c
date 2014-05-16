@@ -416,9 +416,6 @@ void consistency_repeats(struct Queue *q, long repeats, TrainType traintype)
  * used.
  *
  * @todo
- * The seed model shouldn't have to be allocated completely, since only V is
- * used.
- * @todo
  * There must be some inefficiencies here because the fold model is allocated
  * at every fold. This would be detrimental with large datasets.
  *
@@ -574,6 +571,7 @@ void start_training_cv(struct Queue *q)
 
 	free(task);
 	msvmmaj_free_model(seed_model);
+	msvmmaj_free_model(model);
 }
 
 /**
