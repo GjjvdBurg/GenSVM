@@ -17,6 +17,7 @@
 #include "msvmmaj.h"
 #include "msvmmaj_lapack.h"
 #include "msvmmaj_matrix.h"
+#include "msvmmaj_sv.h"
 #include "msvmmaj_train.h"
 #include "util.h"
 
@@ -92,8 +93,10 @@ void msvmmaj_optimize(struct MajModel *model, struct MajData *data)
 		it++;
 	}
 
-	note("optimization finished, iter = %li, error = %8.8f\n", it-1,
+	note("optimization finished, iter = %li, error = %15.16f\n", it-1,
 			(Lbar - L)/L);
+	note("number of support vectors: %li\n", msvmmaj_num_sv(model, data));
+
 	model->training_error = (Lbar - L)/L;
 
 	for (i=0; i<K-1; i++)

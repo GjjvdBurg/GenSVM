@@ -27,7 +27,7 @@
  * @param[in] 	cols 	number of columns of M
  * @param[in] 	i 	row index of element to write to
  * @param[in] 	j 	column index of element to write to
- * @param[out] 	val 	value to write to specified element of M
+ * @param[in] 	val 	value to write to specified element of M
  */
 void matrix_set(double *M, long cols, long i, long j, double val)
 {
@@ -44,7 +44,7 @@ void matrix_set(double *M, long cols, long i, long j, double val)
  * @param[in] 	cols 	number of columns of M
  * @param[in] 	i 	row index (starting from 0)
  * @param[in] 	j 	column index (starting from 0)
- * @returns 		matrix element at (i, j)	
+ * @return 		matrix element at (i, j)
  */
 double matrix_get(double *M, long cols, long i, long j)
 {
