@@ -129,9 +129,12 @@ void free_queue(struct Queue *q);
 
 void consistency_repeats(struct Queue *q, long repeats, TrainType traintype);
 
-double cross_validation(struct MajModel *model, struct MajModel *seed_model,
-		struct MajData *data, long folds);
+double cross_validation(struct MajModel *model, struct MajData *data,
+	       	long folds);
 
 void make_model_from_task(struct Task *task, struct MajModel *model);
 void copy_model(struct MajModel *from, struct MajModel *to);
+
+void msvmmaj_reallocate_model(struct MajModel *model, long n);
+
 #endif

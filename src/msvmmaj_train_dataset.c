@@ -338,8 +338,8 @@ void consistency_repeats(struct Queue *q, long repeats, TrainType traintype)
 		for (r=0; r<repeats; r++) {
 			if (traintype == CV) {
 				loop_s = clock();
-				p = cross_validation(model, NULL, 
-						task->train_data, task->folds);
+				p = cross_validation(model, task->train_data,
+					       	task->folds);
 				loop_e = clock();
 				time[i] += elapsed_time(loop_s, loop_e);
 				matrix_set(perf, repeats, i, r, p);
@@ -349,6 +349,9 @@ void consistency_repeats(struct Queue *q, long repeats, TrainType traintype)
 				exit(1);
 			}
 			note("%3.3f\t", p);
+			// this is done because if we reuse the V it's not a 
+			// consistency check
+			msvmmaj_seed_model_V(NULL, model);
 		}
 		for (r=0; r<repeats; r++) {
 			std[i] += pow(matrix_get(
@@ -426,85 +429,56 @@ void consistency_repeats(struct Queue *q, long repeats, TrainType traintype)
  * @returns 			performance (hitrate) of the configuration on 
  * 				cross validation
  */
-double cross_validation(struct MajModel *model, struct MajModel *seed_model,
-		struct MajData *data, long folds) 
+double cross_validation(struct MajModel *model, struct MajData *data,
+	       	long folds)
 {
 	FILE *fid;
 
-	bool fs = false;
 	long f, *predy;
-	double total_perf = 0;
-	struct MajModel *fold_model;
+	double performance, total_perf = 0;
 	struct MajData *train_data, *test_data;
 
-	long *cv_idx = Calloc(long, model->n);
-	double *performance = Calloc(double, folds);
-
-	if (seed_model == NULL) {
-		seed_model = msvmmaj_init_model();
-		seed_model->n = 0; // we never use anything other than V
-		seed_model->m = model->m;
-		seed_model->K = model->K;
-		msvmmaj_allocate_model(seed_model);
-		msvmmaj_seed_model_V(NULL, seed_model);
-		fs = true;
-	}
+	long *cv_idx = Calloc(long, data->n);
 
 	train_data = msvmmaj_init_data();
 	test_data = msvmmaj_init_data();
- 	// create splits
-	msvmmaj_make_cv_split(model->n, folds, cv_idx);
+
+	// create splits
+	msvmmaj_make_cv_split(data->n, folds, cv_idx);
 
 	for (f=0; f<folds; f++) {
 		msvmmaj_get_tt_split(data, train_data, test_data, cv_idx, f);
-		// initialize a model for this fold and copy the model
-		// parameters
-		fold_model = msvmmaj_init_model();
-		copy_model(model, fold_model);
-	
-		fold_model->n = train_data->n;
-		fold_model->m = train_data->m;
-		fold_model->K = train_data->K;
-	
-		// allocate, initialize and seed the fold model	
-		msvmmaj_allocate_model(fold_model);
-		msvmmaj_initialize_weights(train_data, fold_model);
-		msvmmaj_seed_model_V(seed_model, fold_model);
 
-		// train the model (without output)	
+		// reallocate the model if necessary for the new train split
+		msvmmaj_reallocate_model(model, train_data->n);
+
+		msvmmaj_initialize_weights(train_data, model);
+
+		// train the model (without output)
 		fid = MSVMMAJ_OUTPUT_FILE;
 		MSVMMAJ_OUTPUT_FILE = NULL;
-		msvmmaj_optimize(fold_model, train_data);
+		msvmmaj_optimize(model, train_data);
 		MSVMMAJ_OUTPUT_FILE = fid;
 
-		// calculate predictive performance on test set 
+		// calculate prediction performance on test set
 		predy = Calloc(long, test_data->n);
-		msvmmaj_predict_labels(test_data, fold_model, predy);
-		performance[f] = msvmmaj_prediction_perf(test_data, predy);
-		total_perf += performance[f]/((double) folds);
+		msvmmaj_predict_labels(test_data, model, predy);
+		performance = msvmmaj_prediction_perf(test_data, predy);
+		total_perf += performance * test_data->n;
 
-		// seed the seed model with the fold model
-		msvmmaj_seed_model_V(fold_model, seed_model);
-		
 		free(predy);
 		free(train_data->y);
 		free(train_data->Z);
 		free(test_data->y);
 		free(test_data->Z);
-
-		msvmmaj_free_model(fold_model);
 	}
 
-	// if a seed model was allocated before, free it.
-	if (fs)
-		msvmmaj_free_model(seed_model);
 	free(train_data);
 	free(test_data);
-	free(performance);
-	free(cv_idx);
+
+	total_perf /= ((double) data->n);
 
 	return total_perf;
-
 }
 
 /**
@@ -527,21 +501,15 @@ void start_training_cv(struct Queue *q)
 {
 	double perf, current_max = 0;
 	struct Task *task = get_next_task(q);
-	struct MajModel *seed_model = msvmmaj_init_model();
 	struct MajModel *model = msvmmaj_init_model();
 	clock_t main_s, main_e, loop_s, loop_e;
 
-	model->n = task->train_data->n;
+	model->n = 0;
 	model->m = task->train_data->m;
 	model->K = task->train_data->K;
 	msvmmaj_allocate_model(model);
+	msvmmaj_seed_model_V(NULL, model);
 
-	seed_model->n = 0;
-	seed_model->m = task->train_data->m;
-	seed_model->K = task->train_data->K;
-	msvmmaj_allocate_model(seed_model);
-	msvmmaj_seed_model_V(NULL, seed_model);
-	
 	main_s = clock();
 	while (task) {
 		note("(%03li/%03li)\tw = %li\te = %f\tp = %f\tk = %f\t "
@@ -550,10 +518,9 @@ void start_training_cv(struct Queue *q)
 			       	task->epsilon,
 				task->p, task->kappa, task->lambda);
 		make_model_from_task(task, model);
-		
+
 		loop_s = clock();
-		perf = cross_validation(model, seed_model, task->train_data,
-			       	task->folds);
+		perf = cross_validation(model, task->train_data, task->folds);
 		loop_e = clock();
 		current_max = maximum(current_max, perf);
 
@@ -565,14 +532,51 @@ void start_training_cv(struct Queue *q)
 		task = get_next_task(q);
 	}
 	main_e = clock();
-
+	
 	note("\nTotal elapsed time: %8.8f seconds\n", 
 			elapsed_time(main_s, main_e));
 
 	free(task);
-	msvmmaj_free_model(seed_model);
 	msvmmaj_free_model(model);
 }
+
+void msvmmaj_reallocate_model(struct MajModel *model, long n)
+{
+	long K = model->K;
+
+	model->UU = (double *) realloc(model->UU, n*K*(K-1)*sizeof(double));
+	if (model->UU == NULL) {
+		fprintf(stderr, "Failed to reallocate UU\n");
+		exit(1);
+	}
+
+	model->Q = (double *) realloc(model->Q, n*K*sizeof(double));
+	if (model->Q == NULL) {
+		fprintf(stderr, "Failed to reallocate Q\n");
+		exit(1);
+	}
+
+	model->H = (double *) realloc(model->H, n*K*sizeof(double));
+	if (model->H == NULL) {
+		fprintf(stderr, "Failed to reallocate H\n");
+		exit(1);
+	}
+
+	model->R = (double *) realloc(model->R, n*K*sizeof(double));
+	if (model->R == NULL) {
+		fprintf(stderr, "Failed to reallocate R\n");
+		exit(1);
+	}
+
+	model->rho = (double *) realloc(model->rho, n*sizeof(double));
+	if (model->rho == NULL) {
+		fprintf(stderr, "Failed to reallocte rho\n");
+		exit(1);
+	}
+
+	model->n = n;
+}
+
 
 /**
  * @brief Run the grid search for a train/test dataset

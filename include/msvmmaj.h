@@ -42,7 +42,10 @@
  * @param kerneltype 		kernel to be used in the model
  * @param kernelparam 		pointer to the vector of kernel parameters
  * @param use_cholesky 		whether the Cholesky decomposition should be 
- * 				used
+ * used
+ *
+ * @TODO
+ * change R to int, it's a binary matrix
  *
  */
 struct MajModel {
