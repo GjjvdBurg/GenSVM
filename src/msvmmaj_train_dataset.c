@@ -448,6 +448,7 @@ double cross_validation(struct MajModel *model, struct MajData *data,
 	msvmmaj_make_cv_split(data->n, folds, cv_idx);
 
 	for (f=0; f<folds; f++) {
+		//printf("Fold: %li\n", f);
 		msvmmaj_get_tt_split(data, train_data, test_data, cv_idx, f);
 	
 		msvmmaj_make_kernel(model, train_data);
