@@ -62,19 +62,7 @@ void msvmmaj_make_kernel(struct MajModel *model, struct MajData *data)
 		}
 	}
 
-	// get cholesky if necessary.
-	if (model->use_cholesky == true) {
-		int status = dpotrf('L', n, K, n);
-		if (status != 0) {
-			fprintf(stderr, "Error (%i) computing Cholesky "
-					"decomposition of kernel matrix.\n",
-					status);
-			exit(0);
-		}
-		note("Got Cholesky.\n");
-	}
-
-	// copy kernel/cholesky to data
+	// copy kernel to data
 	data->Z = realloc(data->Z, n*(n+1)*(sizeof(double)));
 	for (i=0; i<n; i++) {
 		for (j=0; j<n; j++)
@@ -105,7 +93,6 @@ void msvmmaj_make_kernel(struct MajModel *model, struct MajData *data)
 			data->kernelparam[0] = model->kernelparam[0];
 			data->kernelparam[1] = model->kernelparam[1];
 	}
-	data->use_cholesky = model->use_cholesky;
 	model->m = n;
 	free(K);
 }
