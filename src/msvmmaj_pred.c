@@ -196,7 +196,6 @@ void msvmmaj_predict_labels_kernel(struct MajData *data_test,
 			}
 		}
 		predy[i] = label;
-		//printf("predy[%li] = %li\n", i, label);
 	}
 
 	free(ZV);

@@ -118,7 +118,6 @@ void msvmmaj_make_kernel(struct MajModel *model, struct MajData *data)
 	long num_eigen = msvmmaj_make_eigen(K, n, &P, &Sigma);
 	//printf("num eigen: %li\n", num_eigen);
 	data->m = num_eigen;
-	model->m = num_eigen;
 
 	// copy eigendecomp to data
 	data->Z = Calloc(double, n*(num_eigen+1));

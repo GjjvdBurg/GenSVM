@@ -112,10 +112,15 @@ int main(int argc, char **argv)
 		consistency_repeats(q, training->repeats, training->traintype);
 	}
 
+	printf("here 0\n");
 	free_queue(q);
+	printf("here 1\n");
 	free(training);
+	printf("here 2\n");
 	msvmmaj_free_data(train_data);
+	printf("here 3\n");
 	msvmmaj_free_data(test_data);
+	printf("here 4\n");
 
 	note("Done.\n");
 	return 0;

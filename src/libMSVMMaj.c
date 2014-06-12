@@ -126,7 +126,8 @@ void msvmmaj_simplex_diff(struct MajModel *model, struct MajData *data)
  * 				calculated with MajModel::V.
  *
  */
-void msvmmaj_calculate_errors(struct MajModel *model, struct MajData *data, double *ZV)
+void msvmmaj_calculate_errors(struct MajModel *model, struct MajData *data,
+	       	double *ZV)
 {
 	long i, j, k;
 	double a, value;
@@ -156,7 +157,8 @@ void msvmmaj_calculate_errors(struct MajModel *model, struct MajData *data, doub
 		for (j=0; j<K-1; j++) {
 			a = matrix_get(ZV, K-1, i, j);
 			for (k=0; k<K; k++) {
-				value = a * matrix3_get(model->UU, K-1, K, i, j, k);
+				value = a * matrix3_get(model->UU, K-1, K, i,
+					       	j, k);
 				matrix_add(model->Q, K, i, k, value);
 			}
 		}

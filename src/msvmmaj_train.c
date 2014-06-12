@@ -84,7 +84,7 @@ void msvmmaj_optimize(struct MajModel *model, struct MajData *data)
 		msvmmaj_get_update(model, data, B, ZAZ, ZAZV, ZAZVT);
 		if (it > 50)
 			msvmmaj_step_doubling(model);
-
+		
 		Lbar = L;
 		L = msvmmaj_get_loss(model, data, ZV);
 
@@ -216,6 +216,10 @@ double msvmmaj_get_loss(struct MajModel *model, struct MajData *data,
  * 		\textbf{B})
  * @f]
  * solving this system is done through dposv().
+ *
+ * @todo
+ * Consider allocating IPIV and WORK at a higher level, they probably don't 
+ * change much during the iterations.
  *
  * @param [in,out] 	model 	model to be updated
  * @param [in] 		data 	data used in model
@@ -408,6 +412,7 @@ void msvmmaj_get_update(struct MajModel *model, struct MajData *data, double *B,
 			0.0,
 			ZAZV, 
 			K-1);
+
 	cblas_dgemm(
 			CblasRowMajor,
 			CblasTrans,
@@ -446,6 +451,7 @@ void msvmmaj_get_update(struct MajModel *model, struct MajData *data, double *B,
 	// because we have used the upper part in the BLAS
 	// calls above in Row-major order, and Lapack uses
 	// column major order. 
+
 	status = dposv(
 			'L',
 			m+1,
@@ -489,10 +495,12 @@ void msvmmaj_get_update(struct MajModel *model, struct MajData *data, double *B,
 		if (status != 0)
 			fprintf(stderr, "Received nonzero status from "
 					"dsysv: %i\n", status);
+		free(WORK);
+		free(IPIV);
 	}
 
-	// Return to Row-major order. The matrix ZAZVT contains the 
-	// solution after the dposv/dsysv call.
+	// Return to Row-major order. The matrix ZAZVT contains the solution 
+	// after the dposv/dsysv call.
 	for (i=0; i<m+1; i++)
 		for (j=0; j<K-1; j++)
 			ZAZV[i*(K-1)+j] = ZAZVT[j*(m+1)+i];
@@ -509,7 +517,7 @@ void msvmmaj_get_update(struct MajModel *model, struct MajData *data, double *B,
 	model->V = ZAZVT;
 	ZAZVT = ptr;
 	*/
-	
+
 	for (i=0; i<m+1; i++) {
 		for (j=0; j<K-1; j++) {
 			matrix_set(
