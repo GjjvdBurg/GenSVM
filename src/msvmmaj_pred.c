@@ -119,15 +119,6 @@ void msvmmaj_predict_labels_kernel(struct MajData *data_test,
 	double *K2 = NULL;
 	msvmmaj_make_crosskernel(model, data_train, data_test, &K2);
 
-	//printf("K2:\n");
-	//print_matrix(K2, n_test, n_train);
-
-	//printf("P:\n");
-	//print_matrix(data_train->Z, n_train, r+1);
-
-	//printf("Sigma:\n");
-	//print_matrix(data_train->J, 1, r+1);
-
 	double *S = Calloc(double, K-1);
 	double *ZV = Calloc(double, n_test*(r+1));
 	double *KPS = Calloc(double, n_test*(r+1));
@@ -155,12 +146,6 @@ void msvmmaj_predict_labels_kernel(struct MajData *data_test,
 		matrix_set(KPS, r+1, i, 0, 1.0);
 	}
 	
-	//printf("\nPrinting KPS:\n");
-	//print_matrix(KPS, n_test, r+1);
-
-	//printf("\nPrinting Omega (model->m = %li):\n", model->m);
-	//print_matrix(model->V, r+1, K-1);
-
 	cblas_dgemm(
 			CblasRowMajor,
 			CblasNoTrans,
@@ -176,10 +161,6 @@ void msvmmaj_predict_labels_kernel(struct MajData *data_test,
 			0.0,
 			ZV,
 			K-1);
-
-	//printf("\nPrinting ZV:\n");
-	//print_matrix(ZV, n_test, K-1);
-	//printf("\n");
 
 	for (i=0; i<n_test; i++) {
 		label = 0;
@@ -204,7 +185,6 @@ void msvmmaj_predict_labels_kernel(struct MajData *data_test,
 	free(KPS);
 	free(K2);
 
-	//exit(1);
 }
 
 /**
