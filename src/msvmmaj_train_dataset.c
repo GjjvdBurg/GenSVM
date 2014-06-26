@@ -425,10 +425,6 @@ void consistency_repeats(struct Queue *q, long repeats, TrainType traintype)
  * seed_model parameter. If seed_model is NULL, random starting values are
  * used.
  *
- * @todo
- * There must be some inefficiencies here because the fold model is allocated
- * at every fold. This would be detrimental with large datasets.
- *
  * @param[in] 	model 		MajModel with the configuration to train
  * @param[in] 	seed_model 	MajModel with a seed for MajModel::V
  * @param[in] 	data 		MajData with the dataset
