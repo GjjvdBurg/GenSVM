@@ -151,7 +151,7 @@ void make_queue(struct Training *training, struct Queue *queue,
 				i++;
 			}
 
-	cnt *= training->Nc > 0 ? training->Ng : 1;
+	cnt *= training->Nc > 0 ? training->Nc : 1;
 	i = 0;
 	while (i < N && training->Nd > 0)
 		for (j=0; j<training->Nd; j++)
