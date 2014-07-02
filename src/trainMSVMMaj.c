@@ -95,12 +95,15 @@ int main(int argc, char **argv)
 	model->m = data->m;
 	model->K = data->K;
 	model->data_file = input_filename;
-
+	
+	// allocate model
+	msvmmaj_allocate_model(model);
+	
 	// initialize kernel (if necessary)
 	msvmmaj_make_kernel(model, data);
 
-	// allocate model and initialize weights
-	msvmmaj_allocate_model(model);
+	// reallocate model and initialize weights
+	msvmmaj_reallocate_model(model, data->n, data->m);
 	msvmmaj_initialize_weights(data, model);
 
 	// seed the random number generator (only place in programs is in

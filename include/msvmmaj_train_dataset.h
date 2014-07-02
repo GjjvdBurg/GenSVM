@@ -135,7 +135,5 @@ double cross_validation(struct MajModel *model, struct MajData *data,
 void make_model_from_task(struct Task *task, struct MajModel *model);
 void copy_model(struct MajModel *from, struct MajModel *to);
 
-void msvmmaj_reallocate_model(struct MajModel *model, long n, long m);
-
 void print_progress_string(struct Task *task, long N);
 #endif

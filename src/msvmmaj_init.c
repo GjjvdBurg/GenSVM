@@ -142,6 +142,85 @@ void msvmmaj_allocate_model(struct MajModel *model)
 }
 
 /**
+ * @brief Reallocate memory for MajModel
+ *
+ * @details
+ * This function can be used to reallocate existing memory for a MajModel, 
+ * upon a change in the model dimensions. This is used in combination with 
+ * kernels.
+ *
+ * @param[in] 	model 	MajModel to reallocate
+ * @param[in] 	n 	new value of MajModel->n
+ * @param[in] 	m 	new value of MajModel->m
+ *
+ */
+void msvmmaj_reallocate_model(struct MajModel *model, long n, long m)
+{
+	long K = model->K;
+
+	if (model->n == n && model->m == m)
+		return;
+	if (model->n != n) {
+		model->UU = (double *) realloc(model->UU,
+				n*K*(K-1)*sizeof(double));
+		if (model->UU == NULL) {
+			fprintf(stderr, "Failed to reallocate UU\n");
+			exit(1);
+		}
+		
+		model->Q = (double *) realloc(model->Q, n*K*sizeof(double));
+		if (model->Q == NULL) {
+			fprintf(stderr, "Failed to reallocate Q\n");
+			exit(1);
+		}
+	
+		model->H = (double *) realloc(model->H, n*K*sizeof(double));
+		if (model->H == NULL) {
+			fprintf(stderr, "Failed to reallocate H\n");
+			exit(1);
+		}
+	
+		model->R = (double *) realloc(model->R, n*K*sizeof(double));
+		if (model->R == NULL) {
+			fprintf(stderr, "Failed to reallocate R\n");
+			exit(1);
+		}
+	
+		model->rho = (double *) realloc(model->rho, n*sizeof(double));
+		if (model->rho == NULL) {
+			fprintf(stderr, "Failed to reallocte rho\n");
+			exit(1);
+		}
+	
+		model->n = n;
+	}
+	if (model->m != m) {
+		model->W = (double *) realloc(model->W,
+			       	m*(K-1)*sizeof(double));
+		if (model->W == NULL) {
+			fprintf(stderr, "Failed to reallocate W\n");
+			exit(1);
+		}
+
+		model->V = (double *) realloc(model->V,
+			       	(m+1)*(K-1)*sizeof(double));
+		if (model->V == NULL) {
+			fprintf(stderr, "Failed to reallocate V\n");
+			exit(1);
+		}
+
+		model->Vbar = (double *) realloc(model->Vbar,
+				(m+1)*(K-1)*sizeof(double));
+		if (model->Vbar == NULL) {
+			fprintf(stderr, "Failed to reallocate Vbar\n");
+			exit(1);
+		}
+		
+		model->m = m;
+	}
+}
+
+/**
  * @brief Free allocated MajModel struct
  *
  * @details

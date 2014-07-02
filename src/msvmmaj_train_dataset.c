@@ -294,7 +294,7 @@ void consistency_repeats(struct Queue *q, long repeats, TrainType traintype)
 	double p, pi, pr, pt, boundary, *time, *std, *mean, *perf;
 	struct Queue *nq = Malloc(struct Queue, 1);
 	struct MajModel *model = msvmmaj_init_model();
-	struct Task *task = Malloc(struct Task, 1);
+	struct Task *task;
 	clock_t loop_s, loop_e;
 
 	// calculate the performance percentile (Matlab style)
@@ -407,7 +407,6 @@ void consistency_repeats(struct Queue *q, long repeats, TrainType traintype)
 
 	free(nq->tasks);
 	free(nq);
-	free(task);
 	free(model);
 	free(perf);
 	free(std);
@@ -450,7 +449,6 @@ double cross_validation(struct MajModel *model, struct MajData *data,
 	msvmmaj_make_cv_split(data->n, folds, cv_idx);
 
 	for (f=0; f<folds; f++) {
-		note(".");
 		msvmmaj_get_tt_split(data, train_data, test_data, cv_idx, f);
 	
 		msvmmaj_make_kernel(model, train_data);
@@ -542,72 +540,6 @@ void start_training_cv(struct Queue *q)
 	msvmmaj_free_model(model);
 }
 
-void msvmmaj_reallocate_model(struct MajModel *model, long n, long m)
-{
-	long K = model->K;
-	
-	if (model->n == n && model->m == m)
-		return;
-	if (model->n != n) {
-		model->UU = (double *) realloc(model->UU,
-			       	n*K*(K-1)*sizeof(double));
-		if (model->UU == NULL) {
-			fprintf(stderr, "Failed to reallocate UU\n");
-			exit(1);
-		}
-	
-		model->Q = (double *) realloc(model->Q, n*K*sizeof(double));
-		if (model->Q == NULL) {
-			fprintf(stderr, "Failed to reallocate Q\n");
-			exit(1);
-		}
-	
-		model->H = (double *) realloc(model->H, n*K*sizeof(double));
-		if (model->H == NULL) {
-			fprintf(stderr, "Failed to reallocate H\n");
-			exit(1);
-		}
-	
-		model->R = (double *) realloc(model->R, n*K*sizeof(double));
-		if (model->R == NULL) {
-			fprintf(stderr, "Failed to reallocate R\n");
-			exit(1);
-		}
-	
-		model->rho = (double *) realloc(model->rho, n*sizeof(double));
-		if (model->rho == NULL) {
-			fprintf(stderr, "Failed to reallocte rho\n");
-			exit(1);
-		}
-	
-		model->n = n;
-	}
-	if (model->m != m) {
-		model->W = (double *) realloc(model->W,
-			       	m*(K-1)*sizeof(double));
-		if (model->W == NULL) {
-			fprintf(stderr, "Failed to reallocate W\n");
-			exit(1);
-		}
-
-		model->V = (double *) realloc(model->V,
-			       	(m+1)*(K-1)*sizeof(double));
-		if (model->V == NULL) {
-			fprintf(stderr, "Failed to reallocate V\n");
-			exit(1);
-		}
-
-		model->Vbar = (double *) realloc(model->Vbar,
-				(m+1)*(K-1)*sizeof(double));
-		if (model->Vbar == NULL) {
-			fprintf(stderr, "Failed to reallocate Vbar\n");
-			exit(1);
-		}
-		
-		model->m = m;
-	}
-}
-	
 /**
  * @brief Run the grid search for a train/test dataset
  *
@@ -707,24 +639,13 @@ void start_training_tt(struct Queue *q)
  */
 void free_queue(struct Queue *q)
 {
-	printf("\there 0\n");
 	long i;
-	printf("\there 1\n");
 	for (i=0; i<q->N; i++) {
-		printf("\there 2\n");
-		fflush(stdout);
 		free(q->tasks[i]->kernelparam);
-		printf("\there 3\n");
-		fflush(stdout);
 		free(q->tasks[i]);
-		printf("\there 4\n");
-		fflush(stdout);
 	}
-	printf("\there 5\n");
 	free(q->tasks);
-	printf("\there 6\n");
 	free(q);
-	printf("\there 7\n");
 }
 
 /**
