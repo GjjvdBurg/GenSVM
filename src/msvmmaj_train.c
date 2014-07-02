@@ -24,7 +24,7 @@
 /**
  * Maximum number of iterations of the algorithm.
  */
-#define MAX_ITER 1000000
+#define MAX_ITER 1000000000
 
 /**
  * @brief The main training loop for MSVMMaj
