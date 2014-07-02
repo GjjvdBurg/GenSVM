@@ -216,19 +216,34 @@ void msvmmaj_calculate_huber(struct MajModel *model)
  * @param[in] 		from_model 	MajModel from which to copy V
  * @param[in,out] 	to_model 	MajModel to which V will be copied
  */
-void msvmmaj_seed_model_V(struct MajModel *from_model, struct MajModel *to_model)
+void msvmmaj_seed_model_V(struct MajModel *from_model,
+	       	struct MajModel *to_model, struct MajData *data)
 {
-	long i, j;
-	long m = to_model->m;
-	long K = to_model->K;
-	double value;
-
+	long i, j, k;
+	double cmin, cmax, value;
+	
+	long n = data->n;
+	long m = data->m;
+	long K = data->K;
+	
 	if (from_model == NULL) {
-		for (i=0; i<m+1; i++)
-			for (j=0; j<K-1; j++)
-				matrix_set(to_model->V, K-1, i, j, -1.0+2.0*rnd());
+		for (i=0; i<m+1; i++) {
+			cmin = 1e100;
+			cmax = -1e100;
+			for (k=0; k<n; k++) {
+				value = matrix_get(data->Z, m+1, k, i);
+				cmin = minimum(cmin, value);
+				cmax = maximum(cmax, value);
+			}
+			for (j=0; j<K-1; j++) {
+				cmin = (abs(cmin) < 1e-10) ? -1 : cmin;
+				cmax = (abs(cmax) < 1e-10) ? 1 : cmax;
+				value = 1.0/cmin + (1.0/cmax - 1.0/cmin)*rnd();
+				matrix_set(to_model->V, K-1, i, j, value);
+			}
+		}
 	} else {
-		for (i=0; i<m+1; i++)
+		for (i=0; i<m+1; i++) 
 			for (j=0; j<K-1; j++) {
 				value = matrix_get(from_model->V, K-1, i, j);
 				matrix_set(to_model->V, K-1, i, j, value);

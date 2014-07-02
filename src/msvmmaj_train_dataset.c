@@ -335,7 +335,7 @@ void consistency_repeats(struct Queue *q, long repeats, TrainType traintype)
 			model->m = task->train_data->m;
 			model->K = task->train_data->K;
 			msvmmaj_allocate_model(model);
-			msvmmaj_seed_model_V(NULL, model);
+			msvmmaj_seed_model_V(NULL, model, task->train_data);
 		}
 
 		time[i] = 0.0;
@@ -356,7 +356,7 @@ void consistency_repeats(struct Queue *q, long repeats, TrainType traintype)
 			note("%3.3f\t", p);
 			// this is done because if we reuse the V it's not a 
 			// consistency check
-			msvmmaj_seed_model_V(NULL, model);
+			msvmmaj_seed_model_V(NULL, model, task->train_data);
 		}
 		for (r=0; r<repeats; r++) {
 			std[i] += pow(matrix_get(
@@ -512,7 +512,7 @@ void start_training_cv(struct Queue *q)
 	model->m = task->train_data->m;
 	model->K = task->train_data->K;
 	msvmmaj_allocate_model(model);
-	msvmmaj_seed_model_V(NULL, model);
+	msvmmaj_seed_model_V(NULL, model, task->train_data);
 
 	main_s = clock();
 	while (task) {
@@ -576,7 +576,7 @@ void start_training_tt(struct Queue *q)
 	seed_model->m = task->train_data->m;
 	seed_model->K = task->train_data->K;
 	msvmmaj_allocate_model(seed_model);
-	msvmmaj_seed_model_V(NULL, seed_model);
+	msvmmaj_seed_model_V(NULL, seed_model, task->train_data);
 	
 	main_s = clock();
 	while (task) {
@@ -594,7 +594,7 @@ void start_training_tt(struct Queue *q)
 
 		msvmmaj_allocate_model(model);
 		msvmmaj_initialize_weights(task->train_data, model);
-		msvmmaj_seed_model_V(seed_model, model);
+		msvmmaj_seed_model_V(seed_model, model, task->train_data);
 
 		fid = MSVMMAJ_OUTPUT_FILE;
 		MSVMMAJ_OUTPUT_FILE = NULL;
@@ -607,7 +607,7 @@ void start_training_tt(struct Queue *q)
 		if (task->test_data->y != NULL) 
 			total_perf = msvmmaj_prediction_perf(task->test_data,
 				       	predy);
-		msvmmaj_seed_model_V(model, seed_model);
+		msvmmaj_seed_model_V(model, seed_model, task->train_data);
 
 		msvmmaj_free_model(model);
 		free(predy);

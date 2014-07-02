@@ -88,13 +88,14 @@ void msvmmaj_optimize(struct MajModel *model, struct MajData *data)
 		Lbar = L;
 		L = msvmmaj_get_loss(model, data, ZV);
 
-		if (it%100 == 0)
+		if (it%100 == 0) 
 			note("iter = %li, L = %15.16f, Lbar = %15.16f, "
 			     "reldiff = %15.16f\n", it, L, Lbar, (Lbar - L)/L);
 		it++;
 	}
 
-	note("optimization finished, iter = %li, error = %15.16f\n", it-1,
+	note("optimization finished, iter = %li, loss = %15.16f, "
+			"rel. diff. = %15.16f\n", it-1, L,
 			(Lbar - L)/L);
 	note("number of support vectors: %li\n", msvmmaj_num_sv(model, data));
 

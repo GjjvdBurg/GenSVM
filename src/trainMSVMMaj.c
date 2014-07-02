@@ -113,10 +113,10 @@ int main(int argc, char **argv)
 	if (msvmmaj_check_argv_eq(argc, argv, "-m")) {
 		struct MajModel *seed_model = msvmmaj_init_model();
 		msvmmaj_read_model(seed_model, model_filename);
-		msvmmaj_seed_model_V(seed_model, model);
+		msvmmaj_seed_model_V(seed_model, model, data);
 		msvmmaj_free_model(seed_model);
 	} else {
-		msvmmaj_seed_model_V(NULL, model);
+		msvmmaj_seed_model_V(NULL, model, data);
 	}
 
 	// start training
