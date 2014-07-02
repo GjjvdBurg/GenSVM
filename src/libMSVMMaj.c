@@ -70,9 +70,10 @@ void msvmmaj_category_matrix(struct MajModel *model, struct MajData *dataset)
 
 	for (i=0; i<n; i++) {
 		for (j=0; j<K; j++) {
-			if (dataset->y[i] != j+1) {
+			if (dataset->y[i] != j+1)
 				matrix_set(model->R, K, i, j, 1.0);
-			}
+			else
+				matrix_set(model->R, K, i, j, 0.0);
 		}
 	}
 }
