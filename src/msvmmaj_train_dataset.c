@@ -366,8 +366,11 @@ void consistency_repeats(struct Queue *q, long repeats, TrainType traintype)
 						r) - mean[i],
 				       	2.0);
 		}
-		std[i] /= ((double) repeats) - 1.0;
-		std[i] = sqrt(std[i]);
+		if (r > 1) {
+			std[i] /= ((double) repeats) - 1.0;
+			std[i] = sqrt(std[i]);
+		} else
+			std[i] = 0.0;
 		note("(m = %3.3f, s = %3.3f, t = %3.3f)\n", 
 				mean[i], std[i], time[i]);
 	}
