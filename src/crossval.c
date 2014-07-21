@@ -39,6 +39,9 @@ void msvmmaj_make_cv_split(long N, long folds, long *cv_idx)
 {
 	long i, j, idx;
 
+	for (i=0; i<N; i++)
+		cv_idx[i] = 0;
+
 	long big_folds = N%folds;
 	long small_fold_size = N/folds;
 	
