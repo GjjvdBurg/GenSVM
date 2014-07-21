@@ -539,7 +539,6 @@ void start_training_cv(struct Queue *q)
 	note("\nTotal elapsed time: %8.8f seconds\n", 
 			elapsed_time(main_s, main_e));
 
-	free(task);
 	msvmmaj_free_model(model);
 }
 
