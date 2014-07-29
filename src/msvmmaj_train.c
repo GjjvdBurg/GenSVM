@@ -93,6 +93,8 @@ void msvmmaj_optimize(struct MajModel *model, struct MajData *data)
 			     "reldiff = %15.16f\n", it, L, Lbar, (Lbar - L)/L);
 		it++;
 	}
+	if (L > Lbar)
+		fprintf(stderr, "Negative step occurred in majorization.\n");
 
 	note("optimization finished, iter = %li, loss = %15.16f, "
 			"rel. diff. = %15.16f\n", it-1, L,
