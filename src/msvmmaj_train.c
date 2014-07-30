@@ -77,6 +77,8 @@ void msvmmaj_optimize(struct MajModel *model, struct MajData *data)
 	L = msvmmaj_get_loss(model, data, ZV);
 	Lbar = L + 2.0*model->epsilon*L;
 
+	printf("L: %15.16f\n", L);
+
 	printf("V:\n");
 	print_matrix(model->V, m+1, K-1);
 
