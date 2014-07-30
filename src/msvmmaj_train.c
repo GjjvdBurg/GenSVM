@@ -88,7 +88,7 @@ void msvmmaj_optimize(struct MajModel *model, struct MajData *data)
 		Lbar = L;
 		L = msvmmaj_get_loss(model, data, ZV);
 
-		if (it%100 == 0) 
+		if (it%1 == 0) 
 			note("iter = %li, L = %15.16f, Lbar = %15.16f, "
 			     "reldiff = %15.16f\n", it, L, Lbar, (Lbar - L)/L);
 		it++;
