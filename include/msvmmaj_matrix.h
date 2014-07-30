@@ -14,15 +14,23 @@
 
 #include "globals.h"
 
-void matrix_set(double *M, long cols, long i, long j, double val);
-void matrix_add(double *M, long cols, long i, long j, double val);
-void matrix_mul(double *M, long cols, long i, long j, double val);
+// Set a matrix element (RowMajor)
+#define matrix_set(M, cols, i, j, val) M[(i)*(cols)+j] = val
 
-double matrix_get(double *M, long cols, long i, long j);
+// Get a matrix element (RowMajor)
+#define matrix_get(M, cols, i, j) M[(i)*(cols)+j]
 
-void matrix3_set(double *M, long N2, long N3, long i, long j, long k,
-		double val);
-double matrix3_get(double *M, long N2, long N3, long i, long j, long k);
+// Add to a matrix element (RowMajor)
+#define matrix_add(M, cols, i, j, val) M[(i)*(cols)+j] += val
+
+// Multiply a matrix element (RowMajor)
+#define matrix_mul(M, cols, i, j, val) M[(i)*(cols)+j] *= val
+
+// Set a 3D matrix element (N2 = second dim, N3 = third dim, RowMajor)
+#define matrix3_set(M, N2, N3, i, j, k, val) M[k+(N3)*(j+(N2)*(i))] = val
+
+// Get a 3D matrix element (N2 = second dim, N3 = third dim, RowMajor)
+#define matrix3_get(M, N2, N3, i, j, k) M[k+(N3)*(j+(N2)*(i))]
 
 void print_matrix(double *M, long rows, long cols);
 
