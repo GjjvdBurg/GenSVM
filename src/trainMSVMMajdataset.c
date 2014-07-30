@@ -98,7 +98,8 @@ int main(int argc, char **argv)
 	struct Queue *q = Malloc(struct Queue, 1);
 	make_queue(training, q, train_data, test_data);
 
-	srand(time(NULL));
+	//srand(time(NULL));
+	srand(123123);
 
 	note("Starting training\n");
 	if (training->traintype == TT)

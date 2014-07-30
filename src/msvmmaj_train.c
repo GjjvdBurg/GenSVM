@@ -77,17 +77,6 @@ void msvmmaj_optimize(struct MajModel *model, struct MajData *data)
 	L = msvmmaj_get_loss(model, data, ZV);
 	Lbar = L + 2.0*model->epsilon*L;
 
-	printf("L: %15.16f\n", L);
-
-	printf("V:\n");
-	print_matrix(model->V, m+1, K-1);
-
-	printf("Q:\n");
-	print_matrix(model->Q, n, K);
-
-	printf("H:\n");
-	print_matrix(model->H, n, K);
-
 	while ((it < MAX_ITER) && (Lbar - L)/L > model->epsilon)
 	{
 		// ensure V contains newest V and Vbar contains V from 
@@ -99,7 +88,7 @@ void msvmmaj_optimize(struct MajModel *model, struct MajData *data)
 		Lbar = L;
 		L = msvmmaj_get_loss(model, data, ZV);
 
-		if (it%1 == 0) 
+		if (it%100 == 0) 
 			note("iter = %li, L = %15.16f, Lbar = %15.16f, "
 			     "reldiff = %15.16f\n", it, L, Lbar, (Lbar - L)/L);
 		it++;
