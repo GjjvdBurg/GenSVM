@@ -6,5 +6,4 @@ epsilon: 1e-6
 weight: 1 2
 folds: 10
 repeats: 10
-kernel: RBF
-gamma: 1e-3 1e-2 1e-1 1e0 1e1 1e2 1e3
+kernel: LINEAR
