@@ -95,6 +95,8 @@ void msvmmaj_get_tt_split(struct MajData *full_data, struct MajData *train_data,
 	long m = full_data->m;
 	long K = full_data->K;
 
+	double value;
+
 	test_n = 0;
 	for (i=0; i<n; i++)
 		if (cv_idx[i] == fold_idx)
@@ -121,17 +123,17 @@ void msvmmaj_get_tt_split(struct MajData *full_data, struct MajData *train_data,
 	for (i=0; i<n; i++) {
 		if (cv_idx[i] == fold_idx) {
 			test_data->y[k] = full_data->y[i];
-			for (j=0; j<m+1; j++)
-				matrix_set(test_data->RAW, m+1, k, j, 
-						matrix_get(full_data->RAW, m+1,
-							i, j));
+			for (j=0; j<m+1; j++) {
+				value = matrix_get(full_data->RAW, m+1, i, j);
+				matrix_set(test_data->RAW, m+1, k, j, value);
+			}
 			k++;
 		} else {
 			train_data->y[l] = full_data->y[i];
-			for (j=0; j<m+1; j++)
-				matrix_set(train_data->RAW, m+1, l, j,
-						matrix_get(full_data->RAW, m+1,
-							i, j));
+			for (j=0; j<m+1; j++) {
+				value = matrix_get(full_data->RAW, m+1, i, j);
+				matrix_set(train_data->RAW, m+1, l, j, value);
+			}
 			l++;
 		}
 	}

@@ -46,7 +46,7 @@
 void msvmmaj_optimize(struct MajModel *model, struct MajData *data)
 {
 	long i, j, it = 0;
-	double L, Lbar;
+	double L, Lbar, value;
 
 	long n = model->n;
 	long m = model->m;
@@ -105,10 +105,12 @@ void msvmmaj_optimize(struct MajModel *model, struct MajData *data)
 
 	for (i=0; i<K-1; i++)
 		model->t[i] = matrix_get(model->V, K-1, 0, i);
-	for (i=1; i<m+1; i++)
-		for (j=0; j<K-1; j++)
-			matrix_set(model->W, K-1, i-1, j, 
-					matrix_get(model->V, K-1, i, j));
+	for (i=1; i<m+1; i++) {
+		for (j=0; j<K-1; j++) {
+			value = matrix_get(model->V, K-1, i, j);
+			matrix_set(model->W, K-1, i-1, j, value);
+		}
+	}
 	free(B);
 	free(ZV);
 	free(ZAZ);
@@ -523,18 +525,10 @@ void msvmmaj_get_update(struct MajModel *model, struct MajData *data, double *B,
 
 	for (i=0; i<m+1; i++) {
 		for (j=0; j<K-1; j++) {
-			matrix_set(
-					model->Vbar,
-					K-1,
-					i,
-					j,
-					matrix_get(model->V, K-1, i, j));
-			matrix_set(
-					model->V,
-					K-1,
-					i,
-					j,
-					matrix_get(ZAZV, K-1, i, j));
+			value = matrix_get(model->V, K-1, i, j);
+			matrix_set(model->Vbar, K-1, i, j, value);
+			value = matrix_get(ZAZV, K-1, i, j);
+			matrix_set(model->V, K-1, i, j, value);
 		}
 	}
 }

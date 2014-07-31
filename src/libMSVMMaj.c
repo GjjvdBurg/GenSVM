@@ -265,6 +265,7 @@ void msvmmaj_seed_model_V(struct MajModel *from_model,
 void msvmmaj_step_doubling(struct MajModel *model)
 {
 	long i, j;
+	double value;
 
 	long m = model->m;
 	long K = model->K;
@@ -272,8 +273,8 @@ void msvmmaj_step_doubling(struct MajModel *model)
 	for (i=0; i<m+1; i++) {
 		for (j=0; j<K-1; j++) {
 			matrix_mul(model->V, K-1, i, j, 2.0);
-			matrix_add(model->V, K-1, i, j, 
-					-matrix_get(model->Vbar, K-1, i, j));
+			value = - matrix_get(model->Vbar, K-1, i, j);
+			matrix_add(model->V, K-1, i, j, value);
 		}
 	}
 }
