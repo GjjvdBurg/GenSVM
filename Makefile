@@ -44,7 +44,8 @@ lib/libmsvmmaj.a: \
 	@echo libmsvmmaj.a...
 
 trainMSVMMaj: src/trainMSVMMaj.c lib/libmsvmmaj.a
-	@$(CC) -o trainMSVMMaj src/trainMSVMMaj.c $(CFLAGS) $(INCLUDE) $(LIB) -lmsvmmaj $(LDFLAGS)
+	@$(CC) -o trainMSVMMaj src/trainMSVMMaj.c $(CFLAGS) $(INCLUDE) $(LIB)\
+		-lmsvmmaj $(LDFLAGS)
 	@echo trainMSVMMaj...
 
 trainMSVMMajdataset: src/trainMSVMMajdataset.c lib/libmsvmmaj.a

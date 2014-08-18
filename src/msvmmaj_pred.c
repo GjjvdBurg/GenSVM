@@ -90,7 +90,7 @@ void msvmmaj_predict_labels_linear(struct MajData *data,
 				S[k] = matrix_get(ZV, K-1, i, k) -
 				       	matrix_get(U, K-1, j, k);
 			}
-			norm = cblas_dnrm2(K, S, 1);
+			norm = cblas_dnrm2(K-1, S, 1);
 			if (norm < min_dist) {
 				label = j+1; // labels start counting from 1
 				min_dist = norm;
