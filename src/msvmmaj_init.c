@@ -40,6 +40,18 @@ struct MajModel *msvmmaj_init_model()
 	model->kerneltype = K_LINEAR;
 	model->kernelparam = NULL;
 
+	model->W = NULL;
+	model->t = NULL;
+	model->V = NULL;
+	model->Vbar = NULL;
+	model->U = NULL;
+	model->UU = NULL;
+	model->Q = NULL;
+	model->H = NULL;
+	model->R = NULL;
+	model->rho = NULL;
+	model->data_file = NULL;
+
 	return model;
 }
 
@@ -56,6 +68,10 @@ struct MajModel *msvmmaj_init_model()
 struct MajData *msvmmaj_init_data()
 {
 	struct MajData *data = Malloc(struct MajData, 1);
+	data->J = NULL;
+	data->y = NULL;
+	data->Z = NULL;
+	data->RAW = NULL;
 
 	// set default values
 	data->kerneltype = K_LINEAR;
@@ -242,6 +258,7 @@ void msvmmaj_free_model(struct MajModel *model)
 	free(model->H);
 	free(model->rho);
 	free(model->R);
+	free(model->kernelparam);
 
 	free(model);
 }
@@ -260,5 +277,6 @@ void msvmmaj_free_data(struct MajData *data)
 {
 	free(data->Z);
 	free(data->y);
+	free(data->J);
 	free(data);
 }
