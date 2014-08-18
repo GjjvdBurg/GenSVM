@@ -92,8 +92,8 @@ void msvmmaj_make_kernel(struct MajModel *model, struct MajData *data)
 
 	for (i=0; i<n; i++) {
 		for (j=i; j<n; j++) {
-			x1 = &data->Z[i*(data->m+1)+1];
-			x2 = &data->Z[j*(data->m+1)+1];
+			x1 = &data->RAW[i*(data->m+1)+1];
+			x2 = &data->RAW[j*(data->m+1)+1];
 			if (model->kerneltype == K_POLY)
 				value = msvmmaj_compute_poly(x1, x2, 
 						model->kernelparam, data->m);
@@ -130,6 +130,8 @@ void msvmmaj_make_kernel(struct MajModel *model, struct MajData *data)
 	}
 
 	// Set the regularization matrix (change if not full rank used)
+	if (data->J != NULL)
+		free(data->J);
 	data->J = Calloc(double, data->m+1);
 	for (i=1; i<data->m+1; i++) {
 		value = 1.0/matrix_get(Sigma, 1, i-1, 0);
