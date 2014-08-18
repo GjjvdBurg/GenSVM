@@ -271,6 +271,9 @@ long msvmmaj_make_eigen(double *K, long n, double **P, double **Sigma)
 
 	free(tempSigma);	
 	free(tempP);
+	free(IWORK);
+	free(IFAIL);
+	free(WORK);
 
 	return num_eigen;
 }
