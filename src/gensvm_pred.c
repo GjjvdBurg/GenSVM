@@ -65,7 +65,7 @@ void gensvm_predict_labels_linear(struct GenData *data,
 
 	// Generate the simplex-space vectors
 	cblas_dgemm(
-			CblasRowGenor,
+			CblasRowMajor,
 			CblasNoTrans,
 			CblasNoTrans,
 			n,
@@ -147,7 +147,7 @@ void gensvm_predict_labels_kernel(struct GenData *data_test,
 	}
 	
 	cblas_dgemm(
-			CblasRowGenor,
+			CblasRowMajor,
 			CblasNoTrans,
 			CblasNoTrans,
 			n_test,

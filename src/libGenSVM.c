@@ -138,7 +138,7 @@ void gensvm_calculate_errors(struct GenModel *model, struct GenData *data,
 	long K = model->K;
 
 	cblas_dgemm(
-			CblasRowGenor,
+			CblasRowMajor,
 			CblasNoTrans,
 			CblasNoTrans,
 			n,
@@ -255,8 +255,8 @@ void gensvm_seed_model_V(struct GenModel *from_model,
  * @brief Use step doubling
  *
  * @details
- * Step doubling can be used to speed up the Genorization algorithm. Instead 
- * of using the value at the minimimum of the majorization function, the value
+ * Step doubling can be used to speed up the maorization algorithm. Instead of 
+ * using the value at the minimimum of the majorization function, the value
  * ``opposite'' the majorization point is used. This can essentially cut the
  * number of iterations necessary to reach the minimum in half.
  *

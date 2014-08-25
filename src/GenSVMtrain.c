@@ -1,5 +1,5 @@
 /**
- * @file trainGenSVM.c
+ * @file GenSVM_train.c
  * @author Gertjan van den Burg
  * @date August, 2013
  * @brief Command line interface for training a single model with GenSVM

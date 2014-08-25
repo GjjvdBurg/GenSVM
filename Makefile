@@ -3,7 +3,7 @@ CC=gcc
 CFLAGS=-Wall -O3 -DVERSION=$(VERSION)
 INCLUDE= -Iinclude
 LIB= -Llib
-EXECS=trainGenSVM trainGenSVMdataset
+EXECS=GenSVM_train GenSVM_grid
 
 .PHONY: all clean tar
 
@@ -43,18 +43,20 @@ lib/libgensvm.a: \
 		src/util.o 
 	@echo libgensvm.a...
 
-trainGenSVM: src/trainGenSVM.c lib/libgensvm.a
-	@$(CC) -o trainGenSVM src/trainGenSVM.c $(CFLAGS) $(INCLUDE) $(LIB)\
+GenSVM_train: src/GenSVMtrain.c lib/libgensvm.a
+	@$(CC) -o GenSVM_train src/GenSVMtrain.c $(CFLAGS) $(INCLUDE) $(LIB)\
 		-lgensvm $(LDFLAGS)
-	@echo trainGenSVM...
+	@echo GenSVM_train...
 
-trainGenSVMdataset: src/trainGenSVMdataset.c lib/libgensvm.a
-	@$(CC) -o trainGenSVMdataset src/trainGenSVMdataset.c $(CFLAGS) $(INCLUDE) $(LIB) -lgensvm $(LDFLAGS)
-	@echo trainGenSVMdataset...
+GenSVM_grid: src/GenSVMgrid.c lib/libgensvm.a
+	@$(CC) -o GenSVM_grid src/GenSVMgrid.c $(CFLAGS) $(INCLUDE) $(LIB) \
+		-lgensvm $(LDFLAGS)
+	@echo GenSVM_grid...
 
-predGenSVM: src/predGenSVM.c lib/libgensvm.a
-	@$(CC) -o predGenSVM src/predGenSVM.c $(CFLAGS) $(INCLUDE) $(LIB) -lgensvm $(LDFLAGS)
-	@echo predGenSVM...
+GenSVM_pred: src/GenSVMpred.c lib/libgensvm.a
+	@$(CC) -o GenSVM_pred src/GenSVMpred.c $(CFLAGS) $(INCLUDE) $(LIB) \
+		-lgensvm $(LDFLAGS)
+	@echo GenSVM_pred...
 
 src/crossval.o:
 	@$(CC) -c -o src/crossval.o src/crossval.c $(CFLAGS) $(INCLUDE)
@@ -78,6 +80,7 @@ src/gensvm_init.o:
 
 src/gensvm_io.o:
 	@$(CC) -c -o $@ src/gensvm_io.c $(CFLAGS) $(INCLUDE)
+	@echo gensvm_io.o...
 
 src/gensvm_pred.o:
 	@$(CC) -c -o src/gensvm_pred.o src/gensvm_pred.c $(CFLAGS) $(INCLUDE)

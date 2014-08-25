@@ -1,5 +1,5 @@
 /**
- * @file trainGenSVMdataset.c
+ * @file GenSVM_grid.c
  * @author Gertjan van den Burg
  * @date January, 2014
  * @brief Command line interface for the grid search program

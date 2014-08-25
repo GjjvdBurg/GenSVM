@@ -5,7 +5,7 @@
  */
 
 /**
- * @file predGenSVM.c
+ * @file GenSVM_pred.c
  * @author Gertjan van den Burg
  * @date January, 2014
  * @brief Command line interface for predicting class labels

@@ -384,7 +384,7 @@ void gensvm_get_update(struct GenModel *model, struct GenData *data, double *B,
 		// Note that the use of dsym is faster than dspr, even
 		// though dspr uses less memory.
 		cblas_dsyr(
-				CblasRowGenor,
+				CblasRowMajor,
 				CblasUpper,
 				m+1,
 				Avalue,
@@ -394,7 +394,7 @@ void gensvm_get_update(struct GenModel *model, struct GenData *data, double *B,
 				m+1);
 	}
 	// Copy upper to lower (necessary because we need to switch
-	// to Col-Genor order for LAPACK).
+	// to Col-Major order for LAPACK).
 	/*
 	for (i=0; i<m+1; i++)
 		for (j=0; j<m+1; j++)
@@ -404,7 +404,7 @@ void gensvm_get_update(struct GenModel *model, struct GenData *data, double *B,
 	// Calculate the right hand side of the system we 
 	// want to solve.
 	cblas_dsymm(
-			CblasRowGenor,
+			CblasRowMajor,
 			CblasLeft,
 			CblasUpper,
 			m+1,
@@ -419,7 +419,7 @@ void gensvm_get_update(struct GenModel *model, struct GenData *data, double *B,
 			K-1);
 
 	cblas_dgemm(
-			CblasRowGenor,
+			CblasRowMajor,
 			CblasTrans,
 			CblasNoTrans,
 			m+1,
@@ -445,7 +445,7 @@ void gensvm_get_update(struct GenModel *model, struct GenData *data, double *B,
 	}
 	
 	// For the LAPACK call we need to switch to Column-
-	// Genor order. This is unnecessary for the matrix
+	// Major order. This is unnecessary for the matrix
 	// ZAZ because it is symmetric. The matrix ZAZV 
 	// must be converted however.
 	for (i=0; i<m+1; i++)
