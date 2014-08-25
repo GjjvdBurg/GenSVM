@@ -1,5 +1,4 @@
 *.o
 *.swp
-trainMSVMMaj
-trainMSVMMajdataset
-predMSVMMaj
+GenSVM_train
+GenSVM_grid
