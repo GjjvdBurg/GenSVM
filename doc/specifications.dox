@@ -128,13 +128,13 @@ x_n1 x_n2 ... x_nm y_n
 /**
  * @page spec_model_file Model File Specification
  *
- * This page describes the input file format for a MajModel. This
+ * This page describes the input file format for a GenModel. This
  * specification is used by msvmmaj_read_model() and msvmmaj_write_model().
- * The model file is designed to fully reproduce a MajModel. 
+ * The model file is designed to fully reproduce a GenModel. 
  *
  * The model output file follows the format
  * @verbatim
-Output file for MSVMMaj (version 0.1)
+Output file for GenSVM (version 0.1)
 Generated on: Tue Jan 14 12:00:00 2014 (UTC +01:00)
 
 Model:
@@ -162,7 +162,7 @@ Output:
  * ignored when reading the model file. The model section fully describes the
  * model parameters. Next, the data section describes the data file that was
  * used in training and the size of the dataset. Finally, the output section
- * shows the augmented weight matrix MajModel::V, in row-major order.
+ * shows the augmented weight matrix GenModel::V, in row-major order.
  *
  * @todo
  * Write kernel specification to model file as well and adjust the format
