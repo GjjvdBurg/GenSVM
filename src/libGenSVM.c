@@ -1,23 +1,23 @@
 /**
- * @file libMSVMMaj.c
+ * @file libGenSVM.c
  * @author Gertjan van den Burg
  * @date August 8, 2013
- * @brief Main functions for the MSVMMaj algorithm
+ * @brief Main functions for the GenSVM algorithm
  *
  * @details
  * The functions in this file are all functions needed
  * to calculate the optimal separation boundaries for 
  * a multiclass classification problem, using the 
- * MSVMMaj algorithm.
+ * GenSVM algorithm.
  *
  */
 
 #include <cblas.h>
 #include <math.h>
 
-#include "libMSVMMaj.h"
-#include "msvmmaj.h"
-#include "msvmmaj_matrix.h"
+#include "libGenSVM.h"
+#include "gensvm.h"
+#include "gensvm_matrix.h"
 
 inline double rnd() { return (double) rand()/0x7FFFFFFF; }
 
@@ -34,7 +34,7 @@ inline double rnd() { return (double) rand()/0x7FFFFFFF; }
  * @param[in] 		K 	number of classes
  * @param[in,out] 	U 	simplex matrix of size K * (K-1)
  */
-void msvmmaj_simplex_gen(long K, double *U)
+void gensvm_simplex_gen(long K, double *U)
 {
 	long i, j;
 	for (i=0; i<K; i++) {
@@ -58,11 +58,11 @@ void msvmmaj_simplex_gen(long K, double *U)
  * except at the column corresponding to the label of instance i, there the
  * element is 0.
  *
- * @param[in,out] 	model 		corresponding MajModel
- * @param[in] 		dataset 	corresponding MajData
+ * @param[in,out] 	model 		corresponding GenModel
+ * @param[in] 		dataset 	corresponding GenData
  *
  */
-void msvmmaj_category_matrix(struct MajModel *model, struct MajData *dataset)
+void gensvm_category_matrix(struct GenModel *model, struct GenData *dataset)
 {
 	long i, j;
 	long n = model->n;
@@ -88,11 +88,11 @@ void msvmmaj_category_matrix(struct MajModel *model, struct MajData *dataset)
  * other rows of the simplex matrix are calculated. These difference vectors 
  * are stored in a matrix, which is one horizontal slice of the 3D matrix.
  *
- * @param[in,out] 	model 	the corresponding MajModel
- * @param[in] 		data 	the corresponding MajData
+ * @param[in,out] 	model 	the corresponding GenModel
+ * @param[in] 		data 	the corresponding GenData
  *
  */
-void msvmmaj_simplex_diff(struct MajModel *model, struct MajData *data)
+void gensvm_simplex_diff(struct GenModel *model, struct GenData *data)
 {
 	long i, j, k;
 	double value;
@@ -120,14 +120,14 @@ void msvmmaj_simplex_diff(struct MajModel *model, struct MajData *data)
  * allocated. In addition, the matrix ZV is calculated here. It is assigned 
  * to a pre-allocated block of memory, which is passed to this function.
  *
- * @param[in,out] 	model 	the corresponding MajModel
- * @param[in] 		data 	the corresponding MajData
+ * @param[in,out] 	model 	the corresponding GenModel
+ * @param[in] 		data 	the corresponding GenData
  * @param[in,out] 	ZV 	a pointer to a memory block for ZV. On exit
  * 				this block is updated with the new ZV matrix
- * 				calculated with MajModel::V.
+ * 				calculated with GenModel::V.
  *
  */
-void msvmmaj_calculate_errors(struct MajModel *model, struct MajData *data,
+void gensvm_calculate_errors(struct GenModel *model, struct GenData *data,
 	       	double *ZV)
 {
 	long i, j, k;
@@ -138,7 +138,7 @@ void msvmmaj_calculate_errors(struct MajModel *model, struct MajData *data,
 	long K = model->K;
 
 	cblas_dgemm(
-			CblasRowMajor,
+			CblasRowGenor,
 			CblasNoTrans,
 			CblasNoTrans,
 			n,
@@ -181,9 +181,9 @@ void msvmmaj_calculate_errors(struct MajModel *model, struct MajData *data,
  * 		\end{dcases}
  * @f]
  *
- * @param[in,out] model 	the corresponding MajModel
+ * @param[in,out] model 	the corresponding GenModel
  */
-void msvmmaj_calculate_huber(struct MajModel *model) 
+void gensvm_calculate_huber(struct GenModel *model) 
 {
 	long i, j;
 	double q, value;
@@ -213,11 +213,11 @@ void msvmmaj_calculate_huber(struct MajModel *model)
  * significant improvement in the number of iterations necessary
  * because the seeded model V is closer to the optimal V.
  *
- * @param[in] 		from_model 	MajModel from which to copy V
- * @param[in,out] 	to_model 	MajModel to which V will be copied
+ * @param[in] 		from_model 	GenModel from which to copy V
+ * @param[in,out] 	to_model 	GenModel to which V will be copied
  */
-void msvmmaj_seed_model_V(struct MajModel *from_model,
-	       	struct MajModel *to_model, struct MajData *data)
+void gensvm_seed_model_V(struct GenModel *from_model,
+	       	struct GenModel *to_model, struct GenData *data)
 {
 	long i, j, k;
 	double cmin, cmax, value;
@@ -255,14 +255,14 @@ void msvmmaj_seed_model_V(struct MajModel *from_model,
  * @brief Use step doubling
  *
  * @details
- * Step doubling can be used to speed up the Majorization algorithm. Instead 
+ * Step doubling can be used to speed up the Genorization algorithm. Instead 
  * of using the value at the minimimum of the majorization function, the value
  * ``opposite'' the majorization point is used. This can essentially cut the
  * number of iterations necessary to reach the minimum in half.
  *
- * @param[in] 	model	MajModel containing the augmented parameters
+ * @param[in] 	model	GenModel containing the augmented parameters
  */
-void msvmmaj_step_doubling(struct MajModel *model)
+void gensvm_step_doubling(struct GenModel *model)
 {
 	long i, j;
 	double value;
@@ -295,12 +295,12 @@ void msvmmaj_step_doubling(struct MajModel *model)
  * where @f$ n_k @f$ is the number of instances in group @f$ k @f$ and
  * @f$ y_i = k @f$.
  *
- * @param[in] 		data 	MajData with the dataset
- * @param[in,out] 	model 	MajModel with the weight specification. On 
- * 				exit MajModel::rho contains the instance 
+ * @param[in] 		data 	GenData with the dataset
+ * @param[in,out] 	model 	GenModel with the weight specification. On 
+ * 				exit GenModel::rho contains the instance 
  * 				weights.
  */
-void msvmmaj_initialize_weights(struct MajData *data, struct MajModel *model)
+void gensvm_initialize_weights(struct GenData *data, struct GenModel *model)
 {
 	long *groups;
 	long i;

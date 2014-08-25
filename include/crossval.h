@@ -6,20 +6,20 @@
  *
  * @details
  * Contains function declarations for functions needed for performing cross
- * validation on MajData structures.
+ * validation on GenData structures.
  *
  */
 
-#ifndef CROSSVAL_H
-#define CROSSVAL_H
+#ifndef GENSVM_CROSSVAL_H
+#define GENSVM_CROSSVAL_H
 
 #include "globals.h"
 
 // forward delaration
-struct MajData;
+struct GenData;
 
-void msvmmaj_make_cv_split(long N, long folds, long *cv_idx);
-void msvmmaj_get_tt_split(struct MajData *full_data, struct MajData *train_data,
-		struct MajData *test_data, long *cv_idx, long fold_idx);
+void gensvm_make_cv_split(long N, long folds, long *cv_idx);
+void gensvm_get_tt_split(struct GenData *full_data, struct GenData *train_data,
+		struct GenData *test_data, long *cv_idx, long fold_idx);
 
 #endif

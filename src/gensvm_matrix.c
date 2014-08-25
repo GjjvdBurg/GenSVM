@@ -1,5 +1,5 @@
 /**
- * @file msvmmaj_matrix.c
+ * @file gensvm_matrix.c
  * @author Gertjan van den Burg
  * @date August, 2013
  * @brief Functions facilitating matrix access
@@ -12,7 +12,7 @@
  *
  */
 
-#include "msvmmaj_matrix.h"
+#include "gensvm_matrix.h"
 #include "util.h"
 
 /**

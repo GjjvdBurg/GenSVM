@@ -5,7 +5,7 @@
  */
 
 /**
- * @file predMSVMMaj.c
+ * @file predGenSVM.c
  * @author Gertjan van den Burg
  * @date January, 2014
  * @brief Command line interface for predicting class labels
@@ -15,24 +15,24 @@
  * determining the predictive performance of a pre-determined model on a given
  * test dataset. The predictive performance can be written to the screen or
  * the predicted class labels can be written to a specified output file. This
- * is done using msvmmaj_write_predictions().
+ * is done using gensvm_write_predictions().
  *
  * The specified model file must follow the specification given in
- * msvmmaj_write_model().
+ * gensvm_write_model().
  *
  * For usage information, see the program help function.
  *
  */
 
-#include "msvmmaj.h"
-#include "msvmmaj_init.h"
-#include "msvmmaj_io.h"
-#include "msvmmaj_pred.h"
+#include "gensvm.h"
+#include "gensvm_init.h"
+#include "gensvm_io.h"
+#include "gensvm_pred.h"
 #include "util.h"
 
 #define MINARGS 3
 
-extern FILE *MSVMMAJ_OUTPUT_FILE;
+extern FILE *GENSVM_OUTPUT_FILE;
 
 // function declarations
 void exit_with_help();
@@ -45,8 +45,8 @@ void parse_command_line(int argc, char **argv,
  */
 void exit_with_help()
 {
-	printf("This is MSVMMaj, version %1.1f\n\n", VERSION);
-	printf("Usage: predMSVMMaj [options] test_data_file model_file\n");
+	printf("This is GenSVM, version %1.1f\n\n", VERSION);
+	printf("Usage: predGenSVM [options] test_data_file model_file\n");
 	printf("Options:\n");
 	printf("-o output_file : write output to file\n");
 	printf("-q : quiet mode (no output)\n");
@@ -54,7 +54,7 @@ void exit_with_help()
 }
 
 /**
- * @brief Main interface function for predMSVMMaj
+ * @brief Main interface function for predGenSVM
  *
  * @details
  * Main interface for the command line program. A given model file is read and
@@ -80,17 +80,17 @@ int main(int argc, char **argv)
 	char model_filename[MAX_LINE_LENGTH];
 	char output_filename[MAX_LINE_LENGTH];;
 
-	if (argc < MINARGS || msvmmaj_check_argv(argc, argv, "-help") 
-			|| msvmmaj_check_argv_eq(argc, argv, "-h") )
+	if (argc < MINARGS || gensvm_check_argv(argc, argv, "-help") 
+			|| gensvm_check_argv_eq(argc, argv, "-h") )
 		exit_with_help();
 	parse_command_line(argc, argv, input_filename, output_filename,
 			model_filename);
 
 	// read the data and model
-	struct MajModel *model = msvmmaj_init_model();
-	struct MajData *data = msvmmaj_init_data();
-	msvmmaj_read_data(data, input_filename);
-	msvmmaj_read_model(model, model_filename);
+	struct GenModel *model = gensvm_init_model();
+	struct GenData *data = gensvm_init_data();
+	gensvm_read_data(data, input_filename);
+	gensvm_read_model(model, model_filename);
 
 	// check if the number of attributes in data equals that in model
 	if (data->m != model->m) {
@@ -107,21 +107,21 @@ int main(int argc, char **argv)
 
 	// predict labels and performance if test data has labels
 	predy = Calloc(long, data->n);
-	msvmmaj_predict_labels(data, model, predy);
+	gensvm_predict_labels(data, model, predy);
 	if (data->y != NULL) {
-		performance = msvmmaj_prediction_perf(data, predy);
+		performance = gensvm_prediction_perf(data, predy);
 		note("Predictive performance: %3.2f%%\n", performance);
 	}
 
 	// if output file is specified, write predictions to it
-	if (msvmmaj_check_argv_eq(argc, argv, "-o")) {
-		msvmmaj_write_predictions(data, predy, output_filename);
+	if (gensvm_check_argv_eq(argc, argv, "-o")) {
+		gensvm_write_predictions(data, predy, output_filename);
 		note("Predictions written to: %s\n", output_filename);
 	}
 
 	// free the model, data, and predictions
-	msvmmaj_free_model(model);
-	msvmmaj_free_data(data);
+	gensvm_free_model(model);
+	gensvm_free_data(data);
 	free(predy);
 
 	return 0;
@@ -150,7 +150,7 @@ void parse_command_line(int argc, char **argv, char *input_filename,
 {
 	int i;
 
-	MSVMMAJ_OUTPUT_FILE = stdout;
+	GENSVM_OUTPUT_FILE = stdout;
 
 	for (i=1; i<argc; i++) {
 		if (argv[i][0] != '-') break;
@@ -161,7 +161,7 @@ void parse_command_line(int argc, char **argv, char *input_filename,
 				strcpy(output_filename, argv[i]);
 				break;
 			case 'q':
-				MSVMMAJ_OUTPUT_FILE = NULL;
+				GENSVM_OUTPUT_FILE = NULL;
 				i--;
 				break;
 			default:

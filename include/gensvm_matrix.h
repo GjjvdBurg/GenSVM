@@ -1,16 +1,16 @@
 /**
- * @file msvmmaj_matrix.h
+ * @file gensvm_matrix.h
  * @author Gertjan van den Burg
  * @date August, 2013
- * @brief Header file for msvmmaj_matrix.c
+ * @brief Header file for gensvm_matrix.c
  *
  * @details
  * Contains function declarations for functions useful for dealing with matrices.
  *
  */
 
-#ifndef MSVMMAJ_MATRIX_H
-#define MSVMMAJ_MATRIX_H
+#ifndef GENSVM_MATRIX_H
+#define GENSVM_MATRIX_H
 
 #include "globals.h"
 

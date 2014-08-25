@@ -1,22 +1,22 @@
 /**
- * @file msvmmaj.h
+ * @file gensvm.h
  * @author Gertjan van den Burg
  * @date August, 2013
  * @brief Definitions for common structures
  *
  * @details
- * Contains documentation and declarations of MajModel and MajData.
+ * Contains documentation and declarations of GenModel and GenData.
  *
  */
 
-#ifndef MSVMMAJ_H
-#define MSVMMAJ_H
+#ifndef GENSVM_H
+#define GENSVM_H
 
 #include "globals.h"
 #include "types.h"
 
 /**
- * @brief A structure to represent a single MSVMMaj model.
+ * @brief A structure to represent a single GenSVM model.
  *
  * @param weight_idx 		which weights to use (1 = unit, 2 = group)
  * @param K 			number of classes in the dataset
@@ -45,7 +45,7 @@
  * @TODO
  * change R to int, it's a binary matrix
  */
-struct MajModel {
+struct GenModel {
 	int weight_idx; 	
 	long K; 	
 	long n; 
@@ -80,11 +80,11 @@ struct MajModel {
  * @param *Z 		pointer to augmented data matrix
  * @param *RAW 		pointer to augmented raw data matrix
  * @param *J 		pointer to regularization vector
- * @param kerneltype 	kerneltype used in MajData::Z
- * @param *kernelparam 	kernel parameters used in MajData::Z
+ * @param kerneltype 	kerneltype used in GenData::Z
+ * @param *kernelparam 	kernel parameters used in GenData::Z
  *
  */
-struct MajData {
+struct GenData {
 	long K; 		
 	long n; 		
 	long m;		 

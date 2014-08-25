@@ -1,5 +1,5 @@
 /**
- * @file msvmmaj_io.c
+ * @file gensvm_io.c
  * @author Gertjan van den Burg
  * @date January, 2014
  * @brief Functions for input and output of data and model files
@@ -10,9 +10,9 @@
  *
  */
 
-#include "msvmmaj.h"
-#include "msvmmaj_io.h"
-#include "msvmmaj_matrix.h"
+#include "gensvm.h"
+#include "gensvm_io.h"
+#include "gensvm_matrix.h"
 #include "strutil.h"
 #include "timer.h"
 
@@ -30,10 +30,10 @@
  * Make sure that this function allows datasets without class labels for
  * testing.
  *
- * @param[in,out] 	dataset 	initialized MajData struct
+ * @param[in,out] 	dataset 	initialized GenData struct
  * @param[in] 		data_file 	filename of the data file.
  */
-void msvmmaj_read_data(struct MajData *dataset, char *data_file)
+void gensvm_read_data(struct GenData *dataset, char *data_file)
 {
 	FILE *fid;
 	long i, j;
@@ -125,16 +125,16 @@ void msvmmaj_read_data(struct MajData *dataset, char *data_file)
  * @brief Read model from file
  *
  * @details
- * Read a MajModel from a model file. The MajModel struct must have been
+ * Read a GenModel from a model file. The GenModel struct must have been
  * initalized elswhere. The model file is expected to follow the @ref
  * spec_model_file. The easiest way to generate a model file is through
- * msvmmaj_write_model(), which can for instance be used in trainMSVMMaj.c.
+ * gensvm_write_model(), which can for instance be used in trainGenSVM.c.
  *
- * @param[in,out] 	model 		initialized MajModel
+ * @param[in,out] 	model 		initialized GenModel
  * @param[in] 		model_filename 	filename of the model file
  *
  */
-void msvmmaj_read_model(struct MajModel *model, char *model_filename)
+void gensvm_read_model(struct GenModel *model, char *model_filename)
 {
 	long i, j, nr = 0;
 	FILE *fid;
@@ -202,16 +202,16 @@ void msvmmaj_read_model(struct MajModel *model, char *model_filename)
  * @brief Write model to file
  *
  * @details
- * Write a MajModel to a file. The current time is specified in the file in
+ * Write a GenModel to a file. The current time is specified in the file in
  * UTC + offset. The model file further corresponds to the @ref
  * spec_model_file.
  *
- * @param[in] 	model 		MajModel which contains an estimate for 
- * 				MajModel::V
+ * @param[in] 	model 		GenModel which contains an estimate for 
+ * 				GenModel::V
  * @param[in] 	output_filename the output file to write the model to
  *
  */
-void msvmmaj_write_model(struct MajModel *model, char *output_filename)
+void gensvm_write_model(struct GenModel *model, char *output_filename)
 {
 	FILE *fid;
 	long i, j;
@@ -227,7 +227,7 @@ void msvmmaj_write_model(struct MajModel *model, char *output_filename)
 	get_time_string(timestr);
 
 	// Write output to file
-	fprintf(fid, "Output file for MSVMMaj (version %1.1f)\n", VERSION);
+	fprintf(fid, "Output file for GenSVM (version %1.1f)\n", VERSION);
 	fprintf(fid, "Generated on: %s\n\n", timestr);
 	fprintf(fid, "Model:\n");
 	fprintf(fid, "p = %15.16f\n", model->p);
@@ -262,15 +262,15 @@ void msvmmaj_write_model(struct MajModel *model, char *output_filename)
  * Write the given predictions to an output file, such that the resulting file
  * corresponds to the @ref spec_data_file. 
  *
- * @param[in] 	data 		MajData with the original instances
+ * @param[in] 	data 		GenData with the original instances
  * @param[in] 	predy 		predictions of the class labels of the 
- * 				instances in the given MajData. Note that the
+ * 				instances in the given GenData. Note that the
  * 				order of the instances is assumed to be the
  * 				same.
  * @param[in] 	output_filename the file to which the predictions are written
  *
  */
-void msvmmaj_write_predictions(struct MajData *data, long *predy, 
+void gensvm_write_predictions(struct GenData *data, long *predy, 
 		char *output_filename)
 {
 	long i, j;

@@ -1,5 +1,5 @@
 /**
- * @file msvmmaj_sv.c
+ * @file gensvm_sv.c
  * @author Gertjan van den Burg
  * @date May, 2014
  * @brief Calculate the number of support vectors
@@ -10,8 +10,8 @@
  *
  */
 
-#include "msvmmaj.h"
-#include "msvmmaj_matrix.h"
+#include "gensvm.h"
+#include "gensvm_matrix.h"
 
 /**
  * @brief Calculate the number of support vectors in a model
@@ -22,12 +22,12 @@
  * other classes).  All objects for which this is not the case are thus support 
  * vectors.
  *
- * @param[in] 	model 	MajModel with solution
- * @param[in] 	data 	MajData to be used
+ * @param[in] 	model 	GenModel with solution
+ * @param[in] 	data 	GenData to be used
  * @return 		number of support vectors with this solution
  *
  */
-long msvmmaj_num_sv(struct MajModel *model, struct MajData *data)
+long gensvm_num_sv(struct GenModel *model, struct GenData *data)
 {
 	long i, j, num_correct, num_sv = 0;
 	double value;

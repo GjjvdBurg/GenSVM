@@ -9,8 +9,8 @@
  *
  */
 
-#ifndef MSVMMAJ_TIMER_H
-#define MSVMMAJ_TIMER_H
+#ifndef GENSVM_TIMER_H
+#define GENSVM_TIMER_H
 
 #include "globals.h"
 

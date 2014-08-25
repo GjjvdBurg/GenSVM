@@ -16,8 +16,8 @@
  *
  */
 
-#ifndef MSVMMAJ_GLOBALS_H
-#define MSVMMAJ_GLOBALS_H
+#ifndef GENSVM_GLOBALS_H
+#define GENSVM_GLOBALS_H
 
 #include <stdio.h>
 #include <stdlib.h>

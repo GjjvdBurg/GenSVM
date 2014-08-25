@@ -9,18 +9,18 @@
  *
  */
 
-#ifndef MSVMMAJ_UTIL_H
-#define MSVMMAJ_UTIL_H
+#ifndef GENSVM_UTIL_H
+#define GENSVM_UTIL_H
 
 #include "globals.h"
 
 // forward declarations
-struct MajData;
-struct MajModel;
+struct GenData;
+struct GenModel;
 
 // function declarations
-int msvmmaj_check_argv(int argc, char **argv, char *str);
-int msvmmaj_check_argv_eq(int argc, char **argv, char *str);
+int gensvm_check_argv(int argc, char **argv, char *str);
+int gensvm_check_argv_eq(int argc, char **argv, char *str);
 
 void note(const char *fmt,...);
 

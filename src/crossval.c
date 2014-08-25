@@ -6,16 +6,16 @@
  *
  * @details
  * This file contains functions for performing cross validation. The funtion
- * msvmmaj_make_cv_split() creates a cross validation vector for non-stratified
- * cross validation. The function msvmmaj_get_tt_split() creates a train and 
+ * gensvm_make_cv_split() creates a cross validation vector for non-stratified
+ * cross validation. The function gensvm_get_tt_split() creates a train and 
  * test dataset from a given dataset and a pre-determined CV partition vector.
  * See individual function documentation for details.
  *
  */
 
 #include "crossval.h"
-#include "msvmmaj.h"
-#include "msvmmaj_matrix.h"
+#include "gensvm.h"
+#include "gensvm_matrix.h"
 
 /**
  * @brief Create a cross validation split vector
@@ -35,7 +35,7 @@
  * 				for each observation on exit	
  *
  */
-void msvmmaj_make_cv_split(long N, long folds, long *cv_idx)
+void gensvm_make_cv_split(long N, long folds, long *cv_idx)
 {
 	long i, j, idx;
 
@@ -71,23 +71,23 @@ void msvmmaj_make_cv_split(long N, long folds, long *cv_idx)
  * @brief Create train and test datasets for a CV split
  *
  * @details
- * Given a MajData structure for the full dataset, a previously created
+ * Given a GenData structure for the full dataset, a previously created
  * cross validation split vector and a fold index, a training and test dataset
  * are created. 
  *
- * @param[in] 		full_data 	a MajData structure for the entire 
+ * @param[in] 		full_data 	a GenData structure for the entire 
  * 					dataset
- * @param[in,out] 	train_data 	an initialized MajData structure which
+ * @param[in,out] 	train_data 	an initialized GenData structure which
  * 					on exit contains the training dataset
- * @param[in,out] 	test_data 	an initialized MajData structure which
+ * @param[in,out] 	test_data 	an initialized GenData structure which
  * 					on exit contains the test dataset
  * @param[in] 		cv_idx 		a vector of cv partitions created by
- * 					msvmmaj_make_cv_split()
+ * 					gensvm_make_cv_split()
  * @param[in] 		fold_idx 	index of the fold which becomes the 
  * 					test dataset
  */
-void msvmmaj_get_tt_split(struct MajData *full_data, struct MajData *train_data,
-		struct MajData *test_data, long *cv_idx, long fold_idx)
+void gensvm_get_tt_split(struct GenData *full_data, struct GenData *train_data,
+		struct GenData *test_data, long *cv_idx, long fold_idx)
 {
 	long i, j, k, l, test_n, train_n;
 

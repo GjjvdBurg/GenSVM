@@ -1,8 +1,8 @@
 /**
- * @file msvmmaj_kernel.c
+ * @file gensvm_kernel.c
  * @author Gertjan van den Burg
  * @date October 18, 2013
- * @brief Defines main functions for use of kernels in MSVMMaj.
+ * @brief Defines main functions for use of kernels in GenSVM.
  *
  * @details
  * Functions for constructing different kernels using user-supplied 
@@ -13,10 +13,10 @@
 
 #include <math.h>
 
-#include "msvmmaj.h"
-#include "msvmmaj_kernel.h"
-#include "msvmmaj_lapack.h"
-#include "msvmmaj_matrix.h"
+#include "gensvm.h"
+#include "gensvm_kernel.h"
+#include "gensvm_lapack.h"
+#include "gensvm_matrix.h"
 #include "util.h"
 
 /**
@@ -25,11 +25,11 @@
  * Create a kernel matrix based on the specified kerneltype. Kernel parameters 
  * are assumed to be specified in the model.
  *
- * @param[in] 	model 	MajModel specifying the parameters
- * @param[in] 	data 	MajData specifying the data.
+ * @param[in] 	model 	GenModel specifying the parameters
+ * @param[in] 	data 	GenData specifying the data.
  *
  */
-void msvmmaj_make_kernel(struct MajModel *model, struct MajData *data)
+void gensvm_make_kernel(struct GenModel *model, struct GenData *data)
 {
 	long i, j;
 	// Determine if a kernel needs to be computed. This is not the case if 
@@ -95,17 +95,17 @@ void msvmmaj_make_kernel(struct MajModel *model, struct MajData *data)
 			x1 = &data->RAW[i*(data->m+1)+1];
 			x2 = &data->RAW[j*(data->m+1)+1];
 			if (model->kerneltype == K_POLY)
-				value = msvmmaj_compute_poly(x1, x2, 
+				value = gensvm_compute_poly(x1, x2, 
 						model->kernelparam, data->m);
 			else if (model->kerneltype == K_RBF)
-				value = msvmmaj_compute_rbf(x1, x2, 
+				value = gensvm_compute_rbf(x1, x2, 
 						model->kernelparam, data->m);
 			else if (model->kerneltype == K_SIGMOID)
-				value = msvmmaj_compute_sigmoid(x1, x2, 
+				value = gensvm_compute_sigmoid(x1, x2, 
 						model->kernelparam, data->m);
 			else {
 				fprintf(stderr, "Unknown kernel type in "
-						"msvmmaj_make_kernel\n");
+						"gensvm_make_kernel\n");
 				exit(1);
 			}
 			matrix_set(K, n, i, j, value);
@@ -115,7 +115,7 @@ void msvmmaj_make_kernel(struct MajModel *model, struct MajData *data)
 
 	double *P = NULL;
 	double *Sigma = NULL;
-	long num_eigen = msvmmaj_make_eigen(K, n, &P, &Sigma);
+	long num_eigen = gensvm_make_eigen(K, n, &P, &Sigma);
 	//printf("num eigen: %li\n", num_eigen);
 	data->m = num_eigen;
 
@@ -171,7 +171,7 @@ void msvmmaj_make_kernel(struct MajModel *model, struct MajData *data)
  * tbd
  *
  */
-long msvmmaj_make_eigen(double *K, long n, double **P, double **Sigma)
+long gensvm_make_eigen(double *K, long n, double **P, double **Sigma)
 {
 	int M, status, LWORK, *IWORK, *IFAIL;
 	long i, j, num_eigen, cutoff_idx;
@@ -278,8 +278,8 @@ long msvmmaj_make_eigen(double *K, long n, double **P, double **Sigma)
 	return num_eigen;
 }
 
-void msvmmaj_make_crosskernel(struct MajModel *model,
-	       	struct MajData *data_train, struct MajData *data_test,
+void gensvm_make_crosskernel(struct GenModel *model,
+	       	struct GenData *data_train, struct GenData *data_test,
 	       	double **K2)
 {
 	long i, j;
@@ -302,20 +302,20 @@ void msvmmaj_make_crosskernel(struct MajModel *model,
 			x1 = &data_test->RAW[i*(m+1)+1];
 			x2 = &data_train->RAW[j*(m+1)+1];
 			if (model->kerneltype == K_POLY)
-				value = msvmmaj_compute_poly(x1, x2,
+				value = gensvm_compute_poly(x1, x2,
 						model->kernelparam,
 					       	m);
 			else if (model->kerneltype == K_RBF)
-				value = msvmmaj_compute_rbf(x1, x2,
+				value = gensvm_compute_rbf(x1, x2,
 						model->kernelparam,
 					       	m);
 			else if (model->kerneltype == K_SIGMOID)
-				value = msvmmaj_compute_sigmoid(x1, x2,
+				value = gensvm_compute_sigmoid(x1, x2,
 						model->kernelparam,
 					       	m);
 			else {
 				fprintf(stderr, "Unknown kernel type in "
-						"msvmmaj_make_crosskernel\n");
+						"gensvm_make_crosskernel\n");
 				exit(1);
 			}
 			matrix_set((*K2), n_train, i, j, value);
@@ -344,7 +344,7 @@ void msvmmaj_make_crosskernel(struct MajModel *model,
  * @param[in] 	n 		length of the vectors x1 and x2
  * @returns  			kernel evaluation
  */
-double msvmmaj_compute_rbf(double *x1, double *x2, double *kernelparam, long n)
+double gensvm_compute_rbf(double *x1, double *x2, double *kernelparam, long n)
 {
 	long i;
 	double value = 0.0;
@@ -372,7 +372,7 @@ double msvmmaj_compute_rbf(double *x1, double *x2, double *kernelparam, long n)
  * @param[in] 	n 		length of the vectors x1 and x2
  * @returns 			kernel evaluation
  */
-double msvmmaj_compute_poly(double *x1, double *x2, double *kernelparam, long n)
+double gensvm_compute_poly(double *x1, double *x2, double *kernelparam, long n)
 {
 	long i;
 	double value = 0.0;
@@ -400,7 +400,7 @@ double msvmmaj_compute_poly(double *x1, double *x2, double *kernelparam, long n)
  * @param[in] 	n 		length of the vectors x1 and x2
  * @returns 			kernel evaluation
  */
-double msvmmaj_compute_sigmoid(double *x1, double *x2, double *kernelparam, long n)
+double gensvm_compute_sigmoid(double *x1, double *x2, double *kernelparam, long n)
 {
 	long i;
 	double value = 0.0;

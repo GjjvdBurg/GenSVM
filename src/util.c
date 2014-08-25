@@ -13,11 +13,11 @@
 
 #include "util.h"
 
-FILE *MSVMMAJ_OUTPUT_FILE; 	///< The #MSVMMAJ_OUTPUT_FILE specifies the 
+FILE *GENSVM_OUTPUT_FILE; 	///< The #GENSVM_OUTPUT_FILE specifies the 
 				///< output stream to which all output is 
 				///< written. This is done through the
 				///< internal (!)
-				///< function msvmmaj_print_string(). The
+				///< function gensvm_print_string(). The
 				///< advantage of using a global output 
 				///< stream variable is that the output can
 				///< temporarily be suppressed by importing
@@ -40,7 +40,7 @@ FILE *MSVMMAJ_OUTPUT_FILE; 	///< The #MSVMMAJ_OUTPUT_FILE specifies the
  * @returns 		index of the string in the arguments if found, 0
  * 			otherwise
  */
-int msvmmaj_check_argv(int argc, char **argv, char *str)
+int gensvm_check_argv(int argc, char **argv, char *str)
 {
 	int i;
 	int arg_str = 0;
@@ -69,7 +69,7 @@ int msvmmaj_check_argv(int argc, char **argv, char *str)
  * @returns 		index of the command line argument that corresponds to
  * 			the string, 0 if none matches.
  */
-int msvmmaj_check_argv_eq(int argc, char **argv, char *str) 
+int gensvm_check_argv_eq(int argc, char **argv, char *str) 
 {
 	int i;
 	int arg_str = 0;
@@ -88,19 +88,19 @@ int msvmmaj_check_argv_eq(int argc, char **argv, char *str)
  *
  * @details
  * This function is used to print a given string to the output stream
- * specified by #MSVMMAJ_OUTPUT_FILE. The stream is flushed after the string 
- * is written to the stream. If #MSVMMAJ_OUTPUT_FILE is NULL, nothing is
+ * specified by #GENSVM_OUTPUT_FILE. The stream is flushed after the string 
+ * is written to the stream. If #GENSVM_OUTPUT_FILE is NULL, nothing is
  * written. Note that this function is only used by note(), it should never be
  * used directly.
  *
  * @param[in] 	s 	string to write to the stream
  *
  */
-static void msvmmaj_print_string(const char *s)
+static void gensvm_print_string(const char *s)
 {
-	if (MSVMMAJ_OUTPUT_FILE != NULL) {
-		fputs(s, MSVMMAJ_OUTPUT_FILE);
-		fflush(MSVMMAJ_OUTPUT_FILE);
+	if (GENSVM_OUTPUT_FILE != NULL) {
+		fputs(s, GENSVM_OUTPUT_FILE);
+		fflush(GENSVM_OUTPUT_FILE);
 	}
 }
 
@@ -111,7 +111,7 @@ static void msvmmaj_print_string(const char *s)
  * This function is a replacement of fprintf(), such that the output stream
  * does not have to be specified at each function call. The functionality is
  * exactly the same however. Writing the formatted string to the output stream
- * is handled by msvmmaj_print_string().
+ * is handled by gensvm_print_string().
  *
  * @param[in] 	fmt 	String format
  * @param[in] 	... 	variable argument list for the string format
@@ -124,5 +124,5 @@ void note(const char *fmt,...)
 	va_start(ap,fmt);
 	vsprintf(buf,fmt,ap);
 	va_end(ap);
-	(*msvmmaj_print_string)(buf);
+	(*gensvm_print_string)(buf);
 }

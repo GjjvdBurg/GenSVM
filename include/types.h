@@ -9,8 +9,8 @@
  *
  */
 
-#ifndef MSVMMAJ_TYPES_H
-#define MSVMMAJ_TYPES_H
+#ifndef GENSVM_TYPES_H
+#define GENSVM_TYPES_H
 
 /**
  * @brief Implementation of true and false

@@ -1,8 +1,8 @@
 /**
- * @file msvmmaj_train.c
+ * @file gensvm_train.c
  * @author Gertjan van den Burg
  * @date August 9, 2013
- * @brief Main functions for training the MSVMMaj solution.
+ * @brief Main functions for training the GenSVM solution.
  * 
  * @details
  * Contains update and loss functions used to actually find
@@ -13,12 +13,12 @@
 #include <math.h>
 #include <cblas.h>
 
-#include "libMSVMMaj.h"
-#include "msvmmaj.h"
-#include "msvmmaj_lapack.h"
-#include "msvmmaj_matrix.h"
-#include "msvmmaj_sv.h"
-#include "msvmmaj_train.h"
+#include "libGenSVM.h"
+#include "gensvm.h"
+#include "gensvm_lapack.h"
+#include "gensvm_matrix.h"
+#include "gensvm_sv.h"
+#include "gensvm_train.h"
 #include "util.h"
 
 /**
@@ -27,23 +27,23 @@
 #define MAX_ITER 1000000000
 
 /**
- * @brief The main training loop for MSVMMaj
+ * @brief The main training loop for GenSVM
  *
  * @details
  * This function is the main training function. This function
  * handles the optimization of the model with the given model parameters, with
- * the data given. On return the matrix MajModel::V contains the optimal 
+ * the data given. On return the matrix GenModel::V contains the optimal 
  * weight matrix.
  *
  * In this function, step doubling is used in the majorization algorithm after
- * a burn-in of 50 iterations. If the training is finished, MajModel::t and 
- * MajModel::W are extracted from MajModel::V.
+ * a burn-in of 50 iterations. If the training is finished, GenModel::t and 
+ * GenModel::W are extracted from GenModel::V.
  *
- * @param[in,out] 	model 	the MajModel to be trained. Contains optimal 
+ * @param[in,out] 	model 	the GenModel to be trained. Contains optimal 
  * 				V on exit.
- * @param[in] 		data 	the MajData to train the model with.
+ * @param[in] 		data 	the GenData to train the model with.
  */
-void msvmmaj_optimize(struct MajModel *model, struct MajData *data)
+void gensvm_optimize(struct GenModel *model, struct GenData *data)
 {
 	long i, j, it = 0;
 	double L, Lbar, value;
@@ -70,23 +70,23 @@ void msvmmaj_optimize(struct MajModel *model, struct MajData *data)
 	note("\tepsilon = %g\n", model->epsilon);
 	note("\n");
 
-	msvmmaj_simplex_gen(model->K, model->U);
-	msvmmaj_simplex_diff(model, data);
-	msvmmaj_category_matrix(model, data);
+	gensvm_simplex_gen(model->K, model->U);
+	gensvm_simplex_diff(model, data);
+	gensvm_category_matrix(model, data);
 
-	L = msvmmaj_get_loss(model, data, ZV);
+	L = gensvm_get_loss(model, data, ZV);
 	Lbar = L + 2.0*model->epsilon*L;
 
 	while ((it < MAX_ITER) && (Lbar - L)/L > model->epsilon)
 	{
 		// ensure V contains newest V and Vbar contains V from 
 		// previous
-		msvmmaj_get_update(model, data, B, ZAZ, ZAZV, ZAZVT);
+		gensvm_get_update(model, data, B, ZAZ, ZAZV, ZAZVT);
 		if (it > 50)
-			msvmmaj_step_doubling(model);
+			gensvm_step_doubling(model);
 		
 		Lbar = L;
-		L = msvmmaj_get_loss(model, data, ZV);
+		L = gensvm_get_loss(model, data, ZV);
 
 		if (it%100 == 0) 
 			note("iter = %li, L = %15.16f, Lbar = %15.16f, "
@@ -99,7 +99,7 @@ void msvmmaj_optimize(struct MajModel *model, struct MajData *data)
 	note("optimization finished, iter = %li, loss = %15.16f, "
 			"rel. diff. = %15.16f\n", it-1, L,
 			(Lbar - L)/L);
-	note("number of support vectors: %li\n", msvmmaj_num_sv(model, data));
+	note("number of support vectors: %li\n", gensvm_num_sv(model, data));
 
 	model->training_error = (Lbar - L)/L;
 
@@ -126,14 +126,14 @@ void msvmmaj_optimize(struct MajModel *model, struct MajData *data)
  * given model. Note that the matrix ZV is passed explicitly to avoid having
  * to reallocate memory at every step.
  *
- * @param[in] 		model 	MajModel structure which holds the current 
+ * @param[in] 		model 	GenModel structure which holds the current 
  * 				estimate V
- * @param[in]  		data 	MajData structure
+ * @param[in]  		data 	GenData structure
  * @param[in,out] 	ZV 	pre-allocated matrix ZV which is updated on 
  * 				output
  * @returns 			the current value of the loss function
  */
-double msvmmaj_get_loss(struct MajModel *model, struct MajData *data, 
+double gensvm_get_loss(struct GenModel *model, struct GenData *data, 
 		double *ZV)
 {
 	long i, j;
@@ -143,8 +143,8 @@ double msvmmaj_get_loss(struct MajModel *model, struct MajData *data,
 
 	double value, rowvalue, loss = 0.0;
 
-	msvmmaj_calculate_errors(model, data, ZV);
-	msvmmaj_calculate_huber(model);
+	gensvm_calculate_errors(model, data, ZV);
+	gensvm_calculate_huber(model);
 
 	for (i=0; i<n; i++) {
 		rowvalue = 0;
@@ -183,9 +183,9 @@ double msvmmaj_get_loss(struct MajModel *model, struct MajData *data,
  * recalculating the majorization coefficients for all instances and all
  * classes, and solving a linear system to find V.
  *
- * Because the function msvmmaj_get_update() is always called after a call to
- * msvmmaj_get_loss() with the same MajModel::V, it is unnecessary to calculate
- * the updated errors MajModel::Q and MajModel::H here too. This saves on 
+ * Because the function gensvm_get_update() is always called after a call to
+ * gensvm_get_loss() with the same GenModel::V, it is unnecessary to calculate
+ * the updated errors GenModel::Q and GenModel::H here too. This saves on 
  * computation time.
  *
  * In calculating the majorization coefficients we calculate the elements of a 
@@ -233,7 +233,7 @@ double msvmmaj_get_loss(struct MajModel *model, struct MajData *data,
  * @param [in] 		ZAZV 	pre-allocated matrix used in system solving
  * @param [in] 		ZAZVT 	pre-allocated matrix used in system solving
  */
-void msvmmaj_get_update(struct MajModel *model, struct MajData *data, double *B,
+void gensvm_get_update(struct GenModel *model, struct GenData *data, double *B,
 		double *ZAZ, double *ZAZV, double *ZAZVT)
 {
 	int status, class;
@@ -384,7 +384,7 @@ void msvmmaj_get_update(struct MajModel *model, struct MajData *data, double *B,
 		// Note that the use of dsym is faster than dspr, even
 		// though dspr uses less memory.
 		cblas_dsyr(
-				CblasRowMajor,
+				CblasRowGenor,
 				CblasUpper,
 				m+1,
 				Avalue,
@@ -394,7 +394,7 @@ void msvmmaj_get_update(struct MajModel *model, struct MajData *data, double *B,
 				m+1);
 	}
 	// Copy upper to lower (necessary because we need to switch
-	// to Col-Major order for LAPACK).
+	// to Col-Genor order for LAPACK).
 	/*
 	for (i=0; i<m+1; i++)
 		for (j=0; j<m+1; j++)
@@ -404,7 +404,7 @@ void msvmmaj_get_update(struct MajModel *model, struct MajData *data, double *B,
 	// Calculate the right hand side of the system we 
 	// want to solve.
 	cblas_dsymm(
-			CblasRowMajor,
+			CblasRowGenor,
 			CblasLeft,
 			CblasUpper,
 			m+1,
@@ -419,7 +419,7 @@ void msvmmaj_get_update(struct MajModel *model, struct MajData *data, double *B,
 			K-1);
 
 	cblas_dgemm(
-			CblasRowMajor,
+			CblasRowGenor,
 			CblasTrans,
 			CblasNoTrans,
 			m+1,
@@ -445,7 +445,7 @@ void msvmmaj_get_update(struct MajModel *model, struct MajData *data, double *B,
 	}
 	
 	// For the LAPACK call we need to switch to Column-
-	// Major order. This is unnecessary for the matrix
+	// Genor order. This is unnecessary for the matrix
 	// ZAZ because it is symmetric. The matrix ZAZV 
 	// must be converted however.
 	for (i=0; i<m+1; i++)

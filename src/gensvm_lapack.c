@@ -1,5 +1,5 @@
 /**
- * @file msvmmaj_lapack.c
+ * @file gensvm_lapack.c
  * @author Gertjan van den Burg
  * @date August 9, 2013
  * @brief Utility functions for interacting with LAPACK
@@ -9,7 +9,7 @@
  * to use LAPACK functions from liblapack.
  */
 
-#include "msvmmaj_lapack.h"
+#include "gensvm_lapack.h"
 
 /**
  * @brief Solve AX = B where A is symmetric positive definite.

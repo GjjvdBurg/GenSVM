@@ -1,5 +1,5 @@
 /**
- * @file msvmmaj_train_dataset.h
+ * @file gensvm_train_dataset.h
  * @author Gertjan van den Burg
  * @date August, 2013
  * @brief Structs and functions necessary for the grid search
@@ -12,8 +12,8 @@
  *
  */
 
-#ifndef MSVMMAJ_TRAIN_DATASET_H
-#define MSVMMAJ_TRAIN_DATASET_H
+#ifndef GENSVM_TRAIN_DATASET_H
+#define GENSVM_TRAIN_DATASET_H
 
 #include "globals.h"
 #include "types.h"
@@ -23,13 +23,13 @@
  *
  * @param folds 	number of folds in cross validation
  * @param ID 		numeric id of the task in the queue
- * @param weight_idx 	parameter for the MajModel
- * @param p 		parameter for the MajModel
- * @param kappa 	parameter for the MajModel
- * @param lambda 	parameter for the MajModel
- * @param epsilon 	parameter for the MajModel
- * @param kerneltype 	parameter for the MajModel
- * @param *kernelparam parameters for the MajModel
+ * @param weight_idx 	parameter for the GenModel
+ * @param p 		parameter for the GenModel
+ * @param kappa 	parameter for the GenModel
+ * @param lambda 	parameter for the GenModel
+ * @param epsilon 	parameter for the GenModel
+ * @param kerneltype 	parameter for the GenModel
+ * @param *kernelparam parameters for the GenModel
  * @param *train_data 	pointer to the training data
  * @param *test_data 	pointer to the test data (if any)
  * @param performance 	performance after cross validation
@@ -44,8 +44,8 @@ struct Task {
 	double lambda;
 	double epsilon;
 	double *kernelparam;
-	struct MajData *train_data;
-	struct MajData *test_data;
+	struct GenData *train_data;
+	struct GenData *test_data;
 	double performance;
 };
 
@@ -120,7 +120,7 @@ struct Training {
 };
 
 void make_queue(struct Training *training, struct Queue *queue,
-		struct MajData *train_data, struct MajData *test_data);
+		struct GenData *train_data, struct GenData *test_data);
 
 struct Task *get_next_task(struct Queue *q);
 void start_training_tt(struct Queue *q);
@@ -129,11 +129,11 @@ void free_queue(struct Queue *q);
 
 void consistency_repeats(struct Queue *q, long repeats, TrainType traintype);
 
-double cross_validation(struct MajModel *model, struct MajData *data,
+double cross_validation(struct GenModel *model, struct GenData *data,
 	       	long folds);
 
-void make_model_from_task(struct Task *task, struct MajModel *model);
-void copy_model(struct MajModel *from, struct MajModel *to);
+void make_model_from_task(struct Task *task, struct GenModel *model);
+void copy_model(struct GenModel *from, struct GenModel *to);
 
 void print_progress_string(struct Task *task, long N);
 #endif

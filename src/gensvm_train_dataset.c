@@ -1,11 +1,11 @@
 /**
- * @file msvmmaj_train_dataset.c
+ * @file gensvm_train_dataset.c
  * @author Gertjan van den Burg
  * @date January, 2014
  * @brief Functions for finding the optimal parameters for the dataset
  *
  * @details
- * The MSVMMaj algorithm takes a number of parameters. The functions in
+ * The GenSVM algorithm takes a number of parameters. The functions in
  * this file are used to find the optimal parameters. 
  */
 
@@ -13,18 +13,18 @@
 #include <time.h>
 
 #include "crossval.h"
-#include "libMSVMMaj.h"
-#include "msvmmaj.h"
-#include "msvmmaj_init.h"
-#include "msvmmaj_kernel.h"
-#include "msvmmaj_matrix.h"
-#include "msvmmaj_train.h"
-#include "msvmmaj_train_dataset.h"
-#include "msvmmaj_pred.h"
+#include "libGenSVM.h"
+#include "gensvm.h"
+#include "gensvm_init.h"
+#include "gensvm_kernel.h"
+#include "gensvm_matrix.h"
+#include "gensvm_train.h"
+#include "gensvm_train_dataset.h"
+#include "gensvm_pred.h"
 #include "util.h"
 #include "timer.h"
 
-extern FILE *MSVMMAJ_OUTPUT_FILE;
+extern FILE *GENSVM_OUTPUT_FILE;
 
 /**
  * @brief Initialize a Queue from a Training instance
@@ -34,19 +34,19 @@ extern FILE *MSVMMAJ_OUTPUT_FILE;
  * creates all tasks that need to be performed and adds these to 
  * a Queue. Each task contains a pointer to the train and test datasets
  * which are supplied. Note that the tasks are created in a specific order of
- * the parameters, to ensure that the MajModel::V of a previous parameter
- * set provides the best possible initial estimate of MajModel::V for the next
+ * the parameters, to ensure that the GenModel::V of a previous parameter
+ * set provides the best possible initial estimate of GenModel::V for the next
  * parameter set.
  *
  * @param[in] 	training 	Training struct describing the grid search
  * @param[in] 	queue 		pointer to a Queue that will be used to 
  * 				add the tasks to
- * @param[in] 	train_data 	MajData of the training set
- * @param[in] 	test_data 	MajData of the test set
+ * @param[in] 	train_data 	GenData of the training set
+ * @param[in] 	test_data 	GenData of the test set
  *
  */
 void make_queue(struct Training *training, struct Queue *queue, 
-		struct MajData *train_data, struct MajData *test_data)
+		struct GenData *train_data, struct GenData *test_data)
 {
 	long i, j, k;
 	long N, cnt = 0;
@@ -293,7 +293,7 @@ void consistency_repeats(struct Queue *q, long repeats, TrainType traintype)
 	long i, r, N;
 	double p, pi, pr, pt, boundary, *time, *std, *mean, *perf;
 	struct Queue *nq = Malloc(struct Queue, 1);
-	struct MajModel *model = msvmmaj_init_model();
+	struct GenModel *model = gensvm_init_model();
 	struct Task *task;
 	clock_t loop_s, loop_e;
 
@@ -334,8 +334,8 @@ void consistency_repeats(struct Queue *q, long repeats, TrainType traintype)
 			model->n = 0;
 			model->m = task->train_data->m;
 			model->K = task->train_data->K;
-			msvmmaj_allocate_model(model);
-			msvmmaj_seed_model_V(NULL, model, task->train_data);
+			gensvm_allocate_model(model);
+			gensvm_seed_model_V(NULL, model, task->train_data);
 		}
 
 		time[i] = 0.0;
@@ -356,7 +356,7 @@ void consistency_repeats(struct Queue *q, long repeats, TrainType traintype)
 			note("%3.3f\t", p);
 			// this is done because if we reuse the V it's not a 
 			// consistency check
-			msvmmaj_seed_model_V(NULL, model, task->train_data);
+			gensvm_seed_model_V(NULL, model, task->train_data);
 		}
 		for (r=0; r<repeats; r++) {
 			std[i] += pow(matrix_get(
@@ -422,55 +422,55 @@ void consistency_repeats(struct Queue *q, long repeats, TrainType traintype)
  *
  * @details
  * This is an implementation of cross validation which uses the optimal
- * parameters MajModel::V of a previous fold as initial conditions for
- * MajModel::V of the next fold. An initial seed for V can be given through the
+ * parameters GenModel::V of a previous fold as initial conditions for
+ * GenModel::V of the next fold. An initial seed for V can be given through the
  * seed_model parameter. If seed_model is NULL, random starting values are
  * used.
  *
- * @param[in] 	model 		MajModel with the configuration to train
- * @param[in] 	seed_model 	MajModel with a seed for MajModel::V
- * @param[in] 	data 		MajData with the dataset
+ * @param[in] 	model 		GenModel with the configuration to train
+ * @param[in] 	seed_model 	GenModel with a seed for GenModel::V
+ * @param[in] 	data 		GenData with the dataset
  * @param[in] 	folds 		number of cross validation folds
  * @returns 			performance (hitrate) of the configuration on 
  * 				cross validation
  */
-double cross_validation(struct MajModel *model, struct MajData *data,
+double cross_validation(struct GenModel *model, struct GenData *data,
 	       	long folds)
 {
 	FILE *fid;
 
 	long f, *predy;
 	double performance, total_perf = 0;
-	struct MajData *train_data, *test_data;
+	struct GenData *train_data, *test_data;
 
 	long *cv_idx = Calloc(long, data->n);
 
-	train_data = msvmmaj_init_data();
-	test_data = msvmmaj_init_data();
+	train_data = gensvm_init_data();
+	test_data = gensvm_init_data();
 
 	// create splits
-	msvmmaj_make_cv_split(data->n, folds, cv_idx);
+	gensvm_make_cv_split(data->n, folds, cv_idx);
 
 	for (f=0; f<folds; f++) {
-		msvmmaj_get_tt_split(data, train_data, test_data, cv_idx, f);
+		gensvm_get_tt_split(data, train_data, test_data, cv_idx, f);
 	
-		msvmmaj_make_kernel(model, train_data);
+		gensvm_make_kernel(model, train_data);
 
 		// reallocate the model if necessary for the new train split
-		msvmmaj_reallocate_model(model, train_data->n, train_data->m);
+		gensvm_reallocate_model(model, train_data->n, train_data->m);
 
-		msvmmaj_initialize_weights(train_data, model);
+		gensvm_initialize_weights(train_data, model);
 
 		// train the model (without output)
-		fid = MSVMMAJ_OUTPUT_FILE;
-		MSVMMAJ_OUTPUT_FILE = NULL;
-		msvmmaj_optimize(model, train_data);
-		MSVMMAJ_OUTPUT_FILE = fid;
+		fid = GENSVM_OUTPUT_FILE;
+		GENSVM_OUTPUT_FILE = NULL;
+		gensvm_optimize(model, train_data);
+		GENSVM_OUTPUT_FILE = fid;
 
 		// calculate prediction performance on test set
 		predy = Calloc(long, test_data->n);
-		msvmmaj_predict_labels(test_data, train_data, model, predy);
-		performance = msvmmaj_prediction_perf(test_data, predy);
+		gensvm_predict_labels(test_data, train_data, model, predy);
+		performance = gensvm_prediction_perf(test_data, predy);
 		total_perf += performance * test_data->n;
 
 		free(predy);
@@ -495,7 +495,7 @@ double cross_validation(struct MajModel *model, struct MajData *data,
  * Given a Queue of Task struct to be trained, a grid search is launched to
  * find the optimal parameter configuration. As is also done within
  * cross_validation(), the optimal weights of one parameter set are used as
- * initial estimates for MajModel::V in the next parameter set. Note that to
+ * initial estimates for GenModel::V in the next parameter set. Note that to
  * optimally exploit this feature of the optimization algorithm, the order in
  * which tasks are considered is important. This is considered in 
  * make_queue().
@@ -508,14 +508,14 @@ void start_training_cv(struct Queue *q)
 {
 	double perf, current_max = 0;
 	struct Task *task = get_next_task(q);
-	struct MajModel *model = msvmmaj_init_model();
+	struct GenModel *model = gensvm_init_model();
 	clock_t main_s, main_e, loop_s, loop_e;
 
 	model->n = 0;
 	model->m = task->train_data->m;
 	model->K = task->train_data->K;
-	msvmmaj_allocate_model(model);
-	msvmmaj_seed_model_V(NULL, model, task->train_data);
+	gensvm_allocate_model(model);
+	gensvm_seed_model_V(NULL, model, task->train_data);
 
 	main_s = clock();
 	while (task) {
@@ -539,7 +539,7 @@ void start_training_cv(struct Queue *q)
 	note("\nTotal elapsed time: %8.8f seconds\n", 
 			elapsed_time(main_s, main_e));
 
-	msvmmaj_free_model(model);
+	gensvm_free_model(model);
 }
 
 /**
@@ -570,15 +570,15 @@ void start_training_tt(struct Queue *q)
 	double total_perf, current_max = 0;
 
 	struct Task *task = get_next_task(q);
-	struct MajModel *seed_model = msvmmaj_init_model();
+	struct GenModel *seed_model = gensvm_init_model();
 
 	clock_t main_s, main_e;
 	clock_t loop_s, loop_e;
 
 	seed_model->m = task->train_data->m;
 	seed_model->K = task->train_data->K;
-	msvmmaj_allocate_model(seed_model);
-	msvmmaj_seed_model_V(NULL, seed_model, task->train_data);
+	gensvm_allocate_model(seed_model);
+	gensvm_seed_model_V(NULL, seed_model, task->train_data);
 	
 	main_s = clock();
 	while (task) {
@@ -587,31 +587,31 @@ void start_training_tt(struct Queue *q)
 				c+1, q->N, task->weight_idx, task->epsilon,
 				task->p, task->kappa, task->lambda);
 		loop_s = clock();
-		struct MajModel *model = msvmmaj_init_model();
+		struct GenModel *model = gensvm_init_model();
 		make_model_from_task(task, model);
 
 		model->n = task->train_data->n;
 		model->m = task->train_data->m;
 		model->K = task->train_data->K;
 
-		msvmmaj_allocate_model(model);
-		msvmmaj_initialize_weights(task->train_data, model);
-		msvmmaj_seed_model_V(seed_model, model, task->train_data);
+		gensvm_allocate_model(model);
+		gensvm_initialize_weights(task->train_data, model);
+		gensvm_seed_model_V(seed_model, model, task->train_data);
 
-		fid = MSVMMAJ_OUTPUT_FILE;
-		MSVMMAJ_OUTPUT_FILE = NULL;
-		msvmmaj_optimize(model, task->train_data);
-		MSVMMAJ_OUTPUT_FILE = fid;
+		fid = GENSVM_OUTPUT_FILE;
+		GENSVM_OUTPUT_FILE = NULL;
+		gensvm_optimize(model, task->train_data);
+		GENSVM_OUTPUT_FILE = fid;
 
 		predy = Calloc(long, task->test_data->n);
-		msvmmaj_predict_labels(task->test_data, task->train_data,
+		gensvm_predict_labels(task->test_data, task->train_data,
 			       	model, predy);
 		if (task->test_data->y != NULL) 
-			total_perf = msvmmaj_prediction_perf(task->test_data,
+			total_perf = gensvm_prediction_perf(task->test_data,
 				       	predy);
-		msvmmaj_seed_model_V(model, seed_model, task->train_data);
+		gensvm_seed_model_V(model, seed_model, task->train_data);
 
-		msvmmaj_free_model(model);
+		gensvm_free_model(model);
 		free(predy);
 		note(".");
 		loop_e = clock();
@@ -626,7 +626,7 @@ void start_training_tt(struct Queue *q)
 	note("\nTotal elapsed time: %8.8f seconds\n",
 			elapsed_time(main_s, main_e));
 	free(task);
-	msvmmaj_free_model(seed_model);
+	gensvm_free_model(seed_model);
 }
 
 /**
@@ -651,16 +651,16 @@ void free_queue(struct Queue *q)
 }
 
 /**
- * @brief Copy parameters from Task to MajModel
+ * @brief Copy parameters from Task to GenModel
  *
  * @details
- * A Task struct only contains the parameters of the MajModel to be estimated.
+ * A Task struct only contains the parameters of the GenModel to be estimated.
  * This function is used to copy these parameters.
  *
  * @param[in] 		task 	Task instance with parameters
- * @param[in,out] 	model 	MajModel to which the parameters are copied
+ * @param[in,out] 	model 	GenModel to which the parameters are copied
  */
-void make_model_from_task(struct Task *task, struct MajModel *model)
+void make_model_from_task(struct Task *task, struct GenModel *model)
 {
 	// copy basic model parameters
 	model->weight_idx = task->weight_idx;
@@ -675,16 +675,16 @@ void make_model_from_task(struct Task *task, struct MajModel *model)
 }
 
 /**
- * @brief Copy model parameters between two MajModel structs
+ * @brief Copy model parameters between two GenModel structs
  *
  * @details
- * The parameters copied are MajModel::weight_idx, MajModel::epsilon,
- * MajModel::p, MajModel::kappa, and MajModel::lambda.
+ * The parameters copied are GenModel::weight_idx, GenModel::epsilon,
+ * GenModel::p, GenModel::kappa, and GenModel::lambda.
  *
- * @param[in] 		from 	MajModel to copy parameters from
- * @param[in,out] 	to 	MajModel to copy parameters to
+ * @param[in] 		from 	GenModel to copy parameters from
+ * @param[in,out] 	to 	GenModel to copy parameters to
  */
-void copy_model(struct MajModel *from, struct MajModel *to)
+void copy_model(struct GenModel *from, struct GenModel *to)
 {
 	to->weight_idx = from->weight_idx;
 	to->epsilon = from->epsilon;
@@ -719,7 +719,7 @@ void copy_model(struct MajModel *from, struct MajModel *to)
  *
  * @details
  * To track the progress of the grid search the parameters of the current task 
- * are written to the output specified in MSVMMAJ_OUTPUT_FILE. Since the 
+ * are written to the output specified in GENSVM_OUTPUT_FILE. Since the 
  * parameters differ with the specified kernel, this function writes a 
  * parameter string depending on which kernel is used.
  *

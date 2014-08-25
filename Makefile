@@ -1,102 +1,102 @@
 VERSION=0.1
 CC=gcc
-CFLAGS=-Wall -O3 -DVERSION=$(VERSION) -g
+CFLAGS=-Wall -O3 -DVERSION=$(VERSION)
 INCLUDE= -Iinclude
 LIB= -Llib
-EXECS=trainMSVMMaj trainMSVMMajdataset
+EXECS=trainGenSVM trainGenSVMdataset
 
 .PHONY: all clean tar
 
-all: lib/libmsvmmaj.a $(EXECS)
+all: lib/libgensvm.a $(EXECS)
 
 override LDFLAGS+=-lcblas -llapack -lm
 
-lib/libmsvmmaj.a: \
+lib/libgensvm.a: \
 	src/crossval.o \
-	src/libMSVMMaj.o \
-	src/msvmmaj_init.o \
-	src/msvmmaj_io.o \
-	src/msvmmaj_kernel.o \
-	src/msvmmaj_lapack.o \
-	src/msvmmaj_matrix.o \
-	src/msvmmaj_pred.o \
-	src/msvmmaj_sv.o \
-	src/msvmmaj_train.o \
-	src/msvmmaj_train_dataset.o \
+	src/libGenSVM.o \
+	src/gensvm_init.o \
+	src/gensvm_io.o \
+	src/gensvm_kernel.o \
+	src/gensvm_lapack.o \
+	src/gensvm_matrix.o \
+	src/gensvm_pred.o \
+	src/gensvm_sv.o \
+	src/gensvm_train.o \
+	src/gensvm_train_dataset.o \
 	src/strutil.o \
 	src/timer.o \
 	src/util.o 
-	@ar rcs lib/libmsvmmaj.a \
+	@ar rcs lib/libgensvm.a \
 		src/crossval.o \
-		src/libMSVMMaj.o \
-		src/msvmmaj_init.o \
-		src/msvmmaj_io.o \
-		src/msvmmaj_matrix.o \
-		src/msvmmaj_kernel.o \
-		src/msvmmaj_lapack.o \
-		src/msvmmaj_pred.o \
-		src/msvmmaj_sv.o \
-		src/msvmmaj_train.o \
-		src/msvmmaj_train_dataset.o \
+		src/libGenSVM.o \
+		src/gensvm_init.o \
+		src/gensvm_io.o \
+		src/gensvm_matrix.o \
+		src/gensvm_kernel.o \
+		src/gensvm_lapack.o \
+		src/gensvm_pred.o \
+		src/gensvm_sv.o \
+		src/gensvm_train.o \
+		src/gensvm_train_dataset.o \
 		src/strutil.o \
 		src/timer.o \
 		src/util.o 
-	@echo libmsvmmaj.a...
+	@echo libgensvm.a...
 
-trainMSVMMaj: src/trainMSVMMaj.c lib/libmsvmmaj.a
-	@$(CC) -o trainMSVMMaj src/trainMSVMMaj.c $(CFLAGS) $(INCLUDE) $(LIB)\
-		-lmsvmmaj $(LDFLAGS)
-	@echo trainMSVMMaj...
+trainGenSVM: src/trainGenSVM.c lib/libgensvm.a
+	@$(CC) -o trainGenSVM src/trainGenSVM.c $(CFLAGS) $(INCLUDE) $(LIB)\
+		-lgensvm $(LDFLAGS)
+	@echo trainGenSVM...
 
-trainMSVMMajdataset: src/trainMSVMMajdataset.c lib/libmsvmmaj.a
-	@$(CC) -o trainMSVMMajdataset src/trainMSVMMajdataset.c $(CFLAGS) $(INCLUDE) $(LIB) -lmsvmmaj $(LDFLAGS)
-	@echo trainMSVMMajdataset...
+trainGenSVMdataset: src/trainGenSVMdataset.c lib/libgensvm.a
+	@$(CC) -o trainGenSVMdataset src/trainGenSVMdataset.c $(CFLAGS) $(INCLUDE) $(LIB) -lgensvm $(LDFLAGS)
+	@echo trainGenSVMdataset...
 
-predMSVMMaj: src/predMSVMMaj.c lib/libmsvmmaj.a
-	@$(CC) -o predMSVMMaj src/predMSVMMaj.c $(CFLAGS) $(INCLUDE) $(LIB) -lmsvmmaj $(LDFLAGS)
-	@echo predMSVMMaj...
+predGenSVM: src/predGenSVM.c lib/libgensvm.a
+	@$(CC) -o predGenSVM src/predGenSVM.c $(CFLAGS) $(INCLUDE) $(LIB) -lgensvm $(LDFLAGS)
+	@echo predGenSVM...
 
 src/crossval.o:
 	@$(CC) -c -o src/crossval.o src/crossval.c $(CFLAGS) $(INCLUDE)
 	@echo crossval.o...
 
-src/msvmmaj_kernel.o:
-	@$(CC) -c -o src/msvmmaj_kernel.o src/msvmmaj_kernel.c $(CFLAGS) $(INCLUDE)
-	@echo msvmmaj_kernel.o...
+src/gensvm_kernel.o:
+	@$(CC) -c -o src/gensvm_kernel.o src/gensvm_kernel.c $(CFLAGS) $(INCLUDE)
+	@echo gensvm_kernel.o...
 
-src/libMSVMMaj.o:
-	@$(CC) -c -o src/libMSVMMaj.o src/libMSVMMaj.c $(CFLAGS) $(INCLUDE)
-	@echo libMSVMMaj.o...
+src/libGenSVM.o:
+	@$(CC) -c -o src/libGenSVM.o src/libGenSVM.c $(CFLAGS) $(INCLUDE)
+	@echo libGenSVM.o...
 
-src/msvmmaj_matrix.o:
-	@$(CC) -c -o src/msvmmaj_matrix.o src/msvmmaj_matrix.c $(CFLAGS) $(INCLUDE)
-	@echo msvmmaj_matrix.o...
+src/gensvm_matrix.o:
+	@$(CC) -c -o src/gensvm_matrix.o src/gensvm_matrix.c $(CFLAGS) $(INCLUDE)
+	@echo gensvm_matrix.o...
 
-src/msvmmaj_init.o:
-	@$(CC) -c -o src/msvmmaj_init.o src/msvmmaj_init.c $(CFLAGS) $(INCLUDE)
-	@echo msvmmaj_init.o...
+src/gensvm_init.o:
+	@$(CC) -c -o src/gensvm_init.o src/gensvm_init.c $(CFLAGS) $(INCLUDE)
+	@echo gensvm_init.o...
 
-src/msvmmaj_io.o:
-	@$(CC) -c -o $@ src/msvmmaj_io.c $(CFLAGS) $(INCLUDE)
+src/gensvm_io.o:
+	@$(CC) -c -o $@ src/gensvm_io.c $(CFLAGS) $(INCLUDE)
 
-src/msvmmaj_pred.o:
-	@$(CC) -c -o src/msvmmaj_pred.o src/msvmmaj_pred.c $(CFLAGS) $(INCLUDE)
-	@echo msvmmaj_pred.o...
+src/gensvm_pred.o:
+	@$(CC) -c -o src/gensvm_pred.o src/gensvm_pred.c $(CFLAGS) $(INCLUDE)
+	@echo gensvm_pred.o...
 
-src/msvmmaj_sv.o:
-	@$(CC) -c -o src/msvmmaj_sv.o src/msvmmaj_sv.c $(CFLAGS) $(INCLUDE)
-	@echo msvmmaj_sv.o...
+src/gensvm_sv.o:
+	@$(CC) -c -o src/gensvm_sv.o src/gensvm_sv.c $(CFLAGS) $(INCLUDE)
+	@echo gensvm_sv.o...
 
-src/msvmmaj_train.o:
-	@$(CC) -c -o src/msvmmaj_train.o src/msvmmaj_train.c $(CFLAGS) $(INCLUDE)
-	@echo msvmmaj_train.o...
+src/gensvm_train.o:
+	@$(CC) -c -o src/gensvm_train.o src/gensvm_train.c $(CFLAGS) $(INCLUDE)
+	@echo gensvm_train.o...
 
-src/msvmmaj_train_dataset.o:
-	@$(CC) -c -o src/msvmmaj_train_dataset.o src/msvmmaj_train_dataset.c $(CFLAGS) $(INCLUDE) 
-	@echo msvmmaj_train_dataset.o...
+src/gensvm_train_dataset.o:
+	@$(CC) -c -o src/gensvm_train_dataset.o src/gensvm_train_dataset.c $(CFLAGS) $(INCLUDE) 
+	@echo gensvm_train_dataset.o...
 
-src/msvmmaj_lapack.o:
-	@$(CC) -c -o src/msvmmaj_lapack.o src/msvmmaj_lapack.c $(CFLAGS) $(INCLUDE)
+src/gensvm_lapack.o:
+	@$(CC) -c -o src/gensvm_lapack.o src/gensvm_lapack.c $(CFLAGS) $(INCLUDE)
 	@echo mylapack.o...
 
 src/strutil.o:

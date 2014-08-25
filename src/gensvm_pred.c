@@ -1,5 +1,5 @@
 /**
- * @file msvmmaj_pred.c
+ * @file gensvm_pred.c
  * @author Gertjan van den Burg
  * @date August 9, 2013
  * @brief Main functions for predicting class labels..
@@ -13,22 +13,22 @@
 
 #include <cblas.h>
 
-#include "libMSVMMaj.h"
-#include "msvmmaj.h"
-#include "msvmmaj_kernel.h"
-#include "msvmmaj_matrix.h"
-#include "msvmmaj_pred.h"
+#include "libGenSVM.h"
+#include "gensvm.h"
+#include "gensvm_kernel.h"
+#include "gensvm_matrix.h"
+#include "gensvm_pred.h"
 
 #include "util.h" // testing
 
-void msvmmaj_predict_labels(struct MajData *data_test,
-	       	struct MajData *data_train, struct MajModel *model,
+void gensvm_predict_labels(struct GenData *data_test,
+	       	struct GenData *data_train, struct GenModel *model,
 	       	long *predy)
 {
 	if (model->kerneltype == K_LINEAR)
-		msvmmaj_predict_labels_linear(data_test, model, predy);
+		gensvm_predict_labels_linear(data_test, model, predy);
 	else
-		msvmmaj_predict_labels_kernel(data_test, data_train, model,
+		gensvm_predict_labels_kernel(data_test, data_train, model,
 			       	predy);
 }
 
@@ -42,12 +42,12 @@ void msvmmaj_predict_labels(struct MajData *data_test,
  * norm. The nearest simplex vertex determines the predicted class label,
  * which is recorded in predy.
  *
- * @param[in] 	data 		MajData to predict labels for
- * @param[in] 	model 		MajModel with optimized V
+ * @param[in] 	data 		GenData to predict labels for
+ * @param[in] 	model 		GenModel with optimized V
  * @param[out] 	predy 		pre-allocated vector to record predictions in
  */
-void msvmmaj_predict_labels_linear(struct MajData *data,
-	       	struct MajModel *model, long *predy)
+void gensvm_predict_labels_linear(struct GenData *data,
+	       	struct GenModel *model, long *predy)
 {
 	long i, j, k, label;
 	double norm, min_dist;
@@ -61,11 +61,11 @@ void msvmmaj_predict_labels_linear(struct MajData *data,
 	double *U = Calloc(double, K*(K-1));
 
 	// Get the simplex matrix
-	msvmmaj_simplex_gen(K, U);
+	gensvm_simplex_gen(K, U);
 
 	// Generate the simplex-space vectors
 	cblas_dgemm(
-			CblasRowMajor,
+			CblasRowGenor,
 			CblasNoTrans,
 			CblasNoTrans,
 			n,
@@ -104,8 +104,8 @@ void msvmmaj_predict_labels_linear(struct MajData *data,
 	free(S);
 }
 
-void msvmmaj_predict_labels_kernel(struct MajData *data_test,
-	       	struct MajData *data_train, struct MajModel *model,
+void gensvm_predict_labels_kernel(struct GenData *data_test,
+	       	struct GenData *data_train, struct GenModel *model,
 	       	long *predy)
 {
 	long i, j, k, label;
@@ -117,14 +117,14 @@ void msvmmaj_predict_labels_kernel(struct MajData *data_test,
 	long K = model->K;
 
 	double *K2 = NULL;
-	msvmmaj_make_crosskernel(model, data_train, data_test, &K2);
+	gensvm_make_crosskernel(model, data_train, data_test, &K2);
 
 	double *S = Calloc(double, K-1);
 	double *ZV = Calloc(double, n_test*(r+1));
 	double *KPS = Calloc(double, n_test*(r+1));
 	double *U = Calloc(double, K*(K-1));
 
-	msvmmaj_simplex_gen(K, U);
+	gensvm_simplex_gen(K, U);
 	
 	// were doing the computations explicitly since P is included in 
 	// data_train->Z. Might want to look at this some more if it turns out 
@@ -147,7 +147,7 @@ void msvmmaj_predict_labels_kernel(struct MajData *data_test,
 	}
 	
 	cblas_dgemm(
-			CblasRowMajor,
+			CblasRowGenor,
 			CblasNoTrans,
 			CblasNoTrans,
 			n_test,
@@ -195,12 +195,12 @@ void msvmmaj_predict_labels_kernel(struct MajData *data_test,
  * of correctly classified samples and dividing by the total number of 
  * samples, multiplying by 100.
  *
- * @param[in] 	data 	the MajData dataset with known labels
+ * @param[in] 	data 	the GenData dataset with known labels
  * @param[in] 	predy 	the predicted class labels
  *
  * @returns percentage correctly classified.
  */
-double msvmmaj_prediction_perf(struct MajData *data, long *predy)
+double gensvm_prediction_perf(struct GenData *data, long *predy)
 {
 	long i, correct = 0;
 	double performance;

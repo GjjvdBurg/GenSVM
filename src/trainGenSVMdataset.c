@@ -1,5 +1,5 @@
 /**
- * @file trainMSVMMajdataset.c
+ * @file trainGenSVMdataset.c
  * @author Gertjan van den Burg
  * @date January, 2014
  * @brief Command line interface for the grid search program
@@ -22,18 +22,18 @@
 #include <time.h>
 
 #include "crossval.h"
-#include "msvmmaj.h"
-#include "msvmmaj_io.h"
-#include "msvmmaj_init.h"
-#include "msvmmaj_pred.h"
-#include "msvmmaj_train.h"
-#include "msvmmaj_train_dataset.h"
+#include "gensvm.h"
+#include "gensvm_io.h"
+#include "gensvm_init.h"
+#include "gensvm_pred.h"
+#include "gensvm_train.h"
+#include "gensvm_train_dataset.h"
 #include "strutil.h"
 #include "util.h"
 
 #define MINARGS 2
 
-extern FILE *MSVMMAJ_OUTPUT_FILE;
+extern FILE *GENSVM_OUTPUT_FILE;
 
 // function declarations
 void exit_with_help();
@@ -45,8 +45,8 @@ void read_training_from_file(char *input_filename, struct Training *training);
  */
 void exit_with_help()
 {
-	printf("This is MSVMMaj, version %1.1f\n\n", VERSION);
-	printf("Usage: trainMSVMMajdataset [options] training_file\n");
+	printf("This is GenSVM, version %1.1f\n\n", VERSION);
+	printf("Usage: trainGenSVMdataset [options] training_file\n");
 	printf("Options:\n");
 	printf("-h | -help : print this help.\n");
 	printf("-q : quiet mode (no output)\n");
@@ -55,7 +55,7 @@ void exit_with_help()
 }
 
 /**
- * @brief Main interface function for trainMSVMMajdataset
+ * @brief Main interface function for trainGenSVMdataset
  *
  * @details
  * Main interface for the command line program. A given training file which
@@ -75,11 +75,11 @@ int main(int argc, char **argv)
 	char input_filename[MAX_LINE_LENGTH];
 	
 	struct Training *training = Malloc(struct Training, 1);	
-	struct MajData *train_data = Malloc(struct MajData, 1);
-	struct MajData *test_data = Malloc(struct MajData, 1);
+	struct GenData *train_data = Malloc(struct GenData, 1);
+	struct GenData *test_data = Malloc(struct GenData, 1);
 
-	if (argc < MINARGS || msvmmaj_check_argv(argc, argv, "-help") 
-			|| msvmmaj_check_argv_eq(argc, argv, "-h") )
+	if (argc < MINARGS || gensvm_check_argv(argc, argv, "-help") 
+			|| gensvm_check_argv_eq(argc, argv, "-h") )
 		exit_with_help();
 	parse_command_line(argc, argv, input_filename);
 
@@ -88,10 +88,10 @@ int main(int argc, char **argv)
 	read_training_from_file(input_filename, training);
 
 	note("Reading data from %s\n", training->train_data_file);
-	msvmmaj_read_data(train_data, training->train_data_file);
+	gensvm_read_data(train_data, training->train_data_file);
 	if (training->traintype == TT) {
 		note("Reading data from %s\n", training->test_data_file);
-		msvmmaj_read_data(test_data, training->test_data_file);
+		gensvm_read_data(test_data, training->test_data_file);
 	}
 
 	note("Creating queue\n");
@@ -113,8 +113,8 @@ int main(int argc, char **argv)
 
 	free_queue(q);
 	free(training);
-	msvmmaj_free_data(train_data);
-	msvmmaj_free_data(test_data);
+	gensvm_free_data(train_data);
+	gensvm_free_data(test_data);
 
 	note("Done.\n");
 	return 0;
@@ -139,7 +139,7 @@ void parse_command_line(int argc, char **argv, char *input_filename)
 {
 	int i;
 
-	MSVMMAJ_OUTPUT_FILE = stdout;
+	GENSVM_OUTPUT_FILE = stdout;
 
 	for (i=1; i<argc; i++) {
 		if (argv[i][0] != '-') break;
@@ -147,7 +147,7 @@ void parse_command_line(int argc, char **argv, char *input_filename)
 			exit_with_help();
 		switch (argv[i-1][1]) {
 			case 'q':
-				MSVMMAJ_OUTPUT_FILE = NULL;
+				GENSVM_OUTPUT_FILE = NULL;
 				i--;
 				break;
 			default:

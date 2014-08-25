@@ -1,16 +1,16 @@
 /**
- * @file msvmmaj_lapack.h
+ * @file gensvm_lapack.h
  * @author Gertjan van den Burg
  * @date August, 2013
- * @brief Header file for msvmmaj_lapack.c
+ * @brief Header file for gensvm_lapack.c
  * 
  * @details
  * Function declarations for external LAPACK functions 
  *
  */
 
-#ifndef MSVMMAJ_LAPACK_H
-#define MSVMMAJ_LAPACK_H
+#ifndef GENSVM_LAPACK_H
+#define GENSVM_LAPACK_H
 
 #include "globals.h"
 

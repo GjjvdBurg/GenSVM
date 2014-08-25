@@ -1,12 +1,12 @@
 /**
- * @file msvmmaj_init.c
+ * @file gensvm_init.c
  * @author Gertjan van den Burg
  * @date January 7, 2014
  * @brief Functions for initializing model and data structures
  *
  * @details 
- * This file contains functions for initializing a MajModel instance
- * and a MajData instance. In addition, default values for these 
+ * This file contains functions for initializing a GenModel instance
+ * and a GenData instance. In addition, default values for these 
  * structures are defined here (and only here). Functions for allocating
  * memory for the model structure and freeing of the model and data structures
  * are also included.
@@ -15,21 +15,21 @@
 
 #include <math.h>
 
-#include "msvmmaj.h"
-#include "msvmmaj_init.h"
+#include "gensvm.h"
+#include "gensvm_init.h"
 
 /**
- * @brief Initialize a MajModel structure
+ * @brief Initialize a GenModel structure
  *
  * @details
- * A MajModel structure is initialized and the default value for the
+ * A GenModel structure is initialized and the default value for the
  * parameters are set. A pointer to the initialized model is returned.
  *
- * @returns 	initialized MajModel
+ * @returns 	initialized GenModel
  */
-struct MajModel *msvmmaj_init_model()
+struct GenModel *gensvm_init_model()
 {
-	struct MajModel *model = Malloc(struct MajModel, 1);
+	struct GenModel *model = Malloc(struct GenModel, 1);
 	
 	// set default values
 	model->p = 1.0;
@@ -56,18 +56,18 @@ struct MajModel *msvmmaj_init_model()
 }
 
 /**
- * @brief Initialize a MajData structure
+ * @brief Initialize a GenData structure
  * 
  * @details
- * A MajData structure is initialized and default values are set. 
+ * A GenData structure is initialized and default values are set. 
  * A pointer to the initialized data is returned.
  *
- * @returns 	initialized MajData
+ * @returns 	initialized GenData
  *
  */
-struct MajData *msvmmaj_init_data()
+struct GenData *gensvm_init_data()
 {
-	struct MajData *data = Malloc(struct MajData, 1);
+	struct GenData *data = Malloc(struct GenData, 1);
 	data->J = NULL;
 	data->y = NULL;
 	data->Z = NULL;
@@ -81,16 +81,16 @@ struct MajData *msvmmaj_init_data()
 }	
 
 /**
- * @brief Allocate memory for a MajModel
+ * @brief Allocate memory for a GenModel
  *
  * @details
- * This function can be used to allocate the memory needed for a MajModel. All
+ * This function can be used to allocate the memory needed for a GenModel. All
  * arrays in the model are specified and initialized to 0.
  *
- * @param[in] 	model 	MajModel to allocate
+ * @param[in] 	model 	GenModel to allocate
  *
  */
-void msvmmaj_allocate_model(struct MajModel *model)
+void gensvm_allocate_model(struct GenModel *model)
 {
 	long n = model->n;
 	long m = model->m;
@@ -158,19 +158,19 @@ void msvmmaj_allocate_model(struct MajModel *model)
 }
 
 /**
- * @brief Reallocate memory for MajModel
+ * @brief Reallocate memory for GenModel
  *
  * @details
- * This function can be used to reallocate existing memory for a MajModel, 
+ * This function can be used to reallocate existing memory for a GenModel, 
  * upon a change in the model dimensions. This is used in combination with 
  * kernels.
  *
- * @param[in] 	model 	MajModel to reallocate
- * @param[in] 	n 	new value of MajModel->n
- * @param[in] 	m 	new value of MajModel->m
+ * @param[in] 	model 	GenModel to reallocate
+ * @param[in] 	n 	new value of GenModel->n
+ * @param[in] 	m 	new value of GenModel->m
  *
  */
-void msvmmaj_reallocate_model(struct MajModel *model, long n, long m)
+void gensvm_reallocate_model(struct GenModel *model, long n, long m)
 {
 	long K = model->K;
 
@@ -237,16 +237,16 @@ void msvmmaj_reallocate_model(struct MajModel *model, long n, long m)
 }
 
 /**
- * @brief Free allocated MajModel struct
+ * @brief Free allocated GenModel struct
  *
  * @details
- * Simply free a previously allocated MajModel by freeing all its component
+ * Simply free a previously allocated GenModel by freeing all its component
  * arrays. Note that the model struct itself is also freed here.
  *
- * @param[in] 	model 	MajModel to free
+ * @param[in] 	model 	GenModel to free
  *
  */
-void msvmmaj_free_model(struct MajModel *model)
+void gensvm_free_model(struct GenModel *model)
 {
 	free(model->W);
 	free(model->t);
@@ -264,16 +264,16 @@ void msvmmaj_free_model(struct MajModel *model)
 }
 
 /**
- * @brief Free allocated MajData struct 
+ * @brief Free allocated GenData struct 
  *
  * @details
- * Simply free a previously allocated MajData struct by freeing all its
+ * Simply free a previously allocated GenData struct by freeing all its
  * components. Note that the data struct itself is also freed here.
  *
- * @param[in] 	data 	MajData struct to free
+ * @param[in] 	data 	GenData struct to free
  *
  */
-void msvmmaj_free_data(struct MajData *data)
+void gensvm_free_data(struct GenData *data)
 {
 	free(data->Z);
 	free(data->y);
