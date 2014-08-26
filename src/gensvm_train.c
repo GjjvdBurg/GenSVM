@@ -94,12 +94,16 @@ void gensvm_optimize(struct GenModel *model, struct GenData *data)
 		it++;
 	}
 	if (L > Lbar)
-		fprintf(stderr, "Negative step occurred in majorization.\n");
+		fprintf(stderr, "GenSVM warning: Negative step occurred in "
+				"majorization.\n");
+	if (it >= MAX_ITER)
+		fprintf(stderr, "GenSVM warning: maximum number of iterations "
+				"reached.\n");
 
-	note("optimization finished, iter = %li, loss = %15.16f, "
+	note("Optimization finished, iter = %li, loss = %15.16f, "
 			"rel. diff. = %15.16f\n", it-1, L,
 			(Lbar - L)/L);
-	note("number of support vectors: %li\n", gensvm_num_sv(model, data));
+	note("Number of support vectors: %li\n", gensvm_num_sv(model, data));
 
 	model->training_error = (Lbar - L)/L;
 
@@ -470,7 +474,8 @@ void gensvm_get_update(struct GenModel *model, struct GenData *data, double *B,
 		// This step should not be necessary, as the matrix
 		// ZAZ is positive semi-definite by definition. It 
 		// is included for safety.
-		fprintf(stderr, "Received nonzero status from dposv: %i\n", 
+		fprintf(stderr, "GenSVM warning: Received nonzero status from "
+				"dposv: %i\n", 
 				status);
 		int *IPIV = malloc((m+1)*sizeof(int));
 		double *WORK = malloc(1*sizeof(double));
@@ -498,8 +503,8 @@ void gensvm_get_update(struct GenModel *model, struct GenData *data, double *B,
 				WORK,
 				sizeof(WORK)/sizeof(double));
 		if (status != 0)
-			fprintf(stderr, "Received nonzero status from "
-					"dsysv: %i\n", status);
+			fprintf(stderr, "GenSVM warning: Received nonzero "
+					"status from dsysv: %i\n", status);
 		free(WORK);
 		free(IPIV);
 	}
