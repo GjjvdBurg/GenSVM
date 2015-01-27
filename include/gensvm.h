@@ -18,56 +18,54 @@
 /**
  * @brief A structure to represent a single GenSVM model.
  *
- * @param weight_idx 		which weights to use (1 = unit, 2 = group)
- * @param K 			number of classes in the dataset
- * @param n  			number of instances in the dataset
- * @param m 		 	number of predictors in the dataset
- * @param epsilon 		stopping criterion
- * @param p 			parameter for the L_p norm
- * @param kappa 		parameter for the Huber hinge
- * @param lambda 		regularization parameter
- * @param *W 			pointer to the weight matrix
- * @param *t 			pointer to the translation vector
- * @param *V 	 		pointer to the augmented weight matrix
- * @param *Vbar 		pointer to the augmented weight matrix from a 
- * 				previous iteration
- * @param *U 			pointer to the simplex matrix
- * @param *UU 			pointer to the 3D simplex difference matrix
- * @param *Q 			pointer to the error matrix
- * @param *H 			pointer to the Huber weighted error matrix
- * @param *R 			pointer to the 0-1 auxiliary matrix
- * @param *rho 			pointer to the instance weight vector
- * @param training_error 	error after training has completed
- * @param *data_file 		pointer to the filename of the data
- * @param kerneltype 		kernel to be used in the model
- * @param kernelparam 		pointer to the vector of kernel parameters
- *
- * @TODO
- * change R to int, it's a binary matrix
  */
 struct GenModel {
-	int weight_idx; 	
-	long K; 	
-	long n; 
+	int weight_idx;
+	///< which weights to use (1 = unit, 2 = group)
+	long K;
+	///< number of classes in the dataset
+	long n;
+	///< number of instances in the dataset
 	long m;
-	double epsilon;		
-	double p; 	
+	///< number of predictor variables in the dataset
+	double epsilon;
+	///< stopping criterion for the IM algorithm.
+	double p;
+	///< parameter for the L-p norm in the loss function	
 	double kappa;
-	double lambda; 		
-	double *W;	
-	double *t; 
-	double *V; 	
-	double *Vbar; 		
-	double *U;		
-	double *UU; 	
+	///< parameter for the Huber hinge function
+	double lambda;
+	///< regularization parameter in the loss function
+	double *W;
+	///< weight matrix
+	double *t;
+	///< translation vector
+	double *V;
+	///< augmented weight matrix
+	double *Vbar;
+	///< augmented weight matrix from the previous iteration of the IM
+	///< algorithm
+	double *U;
+	///< simplex matrix
+	double *UU;
+	///< 3D simplex difference matrix
 	double *Q;
+	///< error matrix
 	double *H; 
+	///< Huber weighted error matrix
 	double *R;
+	///< 0-1 auixiliary matrix, this matrix is n x K, with for row i a 0 on 
+	///< column y[i]-1, and 1 everywhere else.
 	double *rho; 	
-	double training_error; 
+	///< vector of instance weights
+	double training_error;
+	///< loss function value after training has finished
 	char *data_file; 
-	KernelType kerneltype; 
-	double *kernelparam; 	
+	///< filename of the data
+	KernelType kerneltype;
+	///< type of kernel used in the model
+	double *kernelparam;
+	///< array of kernel parameters, size depends on kernel type
 };
 
 /**
@@ -85,12 +83,19 @@ struct GenModel {
  *
  */
 struct GenData {
-	long K; 		
-	long n; 		
-	long m;		 
- 	long *y; 	
-	double *Z; 
+	long K;
+	///< number of classes
+	long n;
+	///< number of instances
+	long m;
+	///< number of predictors
+ 	long *y;
+	///< array of class labels, 1..K
+	double *Z;
+	///< augmented data matrix (either equal to RAW or to the eigenvectors 
+	///< of the kernel matrix)
 	double *RAW;
+	///< augmented raw data matrix
 	double *J;
 	KernelType kerneltype; 	
  	double *kernelparam; 
