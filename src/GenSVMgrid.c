@@ -75,8 +75,8 @@ int main(int argc, char **argv)
 	char input_filename[MAX_LINE_LENGTH];
 	
 	struct Training *training = Malloc(struct Training, 1);	
-	struct GenData *train_data = Malloc(struct GenData, 1);
-	struct GenData *test_data = Malloc(struct GenData, 1);
+	struct GenData *train_data = gensvm_init_data();
+	struct GenData *test_data = gensvm_init_data();
 
 	if (argc < MINARGS || gensvm_check_argv(argc, argv, "-help") 
 			|| gensvm_check_argv_eq(argc, argv, "-h") )
@@ -104,7 +104,7 @@ int main(int argc, char **argv)
 	if (training->traintype == TT)
 		start_training_tt(q);
 	else
-		start_training_cv(q);
+		start_training(q);
 	note("Training finished\n");
 
 	if (training->repeats > 0) {

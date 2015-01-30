@@ -21,18 +21,22 @@ struct GenData;
 struct GenModel;
 
 // function declarations
-void gensvm_make_kernel(struct GenModel *model, struct GenData *data);
 
-long gensvm_make_eigen(double *K, long n, double **P, double **Lambda);
-
+void gensvm_kernel_preprocess(struct GenModel *model, struct GenData *data);
+void gensvm_kernel_postprocess(struct GenModel *model,
+	       	struct GenData *traindata, struct GenData *testdata);
+void gensvm_make_kernel(struct GenModel *model, struct GenData *data,
+		double *K);
+long gensvm_make_eigen(double *K, long n, double **P, double **Sigma);
 void gensvm_make_crosskernel(struct GenModel *model,
-	       	struct GenData *data_train, struct GenData *data_test,
+		struct GenData *data_train, struct GenData *data_test,
 		double **K2);
+void gensvm_make_trainfactor(struct GenData *data, double *P, double *Sigma,
+		long r);
+void gensvm_make_testfactor(struct GenData *testdata,
+	       	struct GenData *traindata, double *K2);
+double gensvm_dot_rbf(double *x1, double *x2, double *kernelparam, long n);
+double gensvm_dot_poly(double *x1, double *x2, double *kernelparam, long n);
+double gensvm_dot_sigmoid(double *x1, double *x2, double *kernelparam, long n);
 
-double gensvm_compute_rbf(double *x1, double *x2, double *kernelparam,
-		long n);
-double gensvm_compute_poly(double *x1, double *x2, double *kernelparam,
-		long n);
-double gensvm_compute_sigmoid(double *x1, double *x2, double *kernelparam,
-		long n);
 #endif

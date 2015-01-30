@@ -100,7 +100,7 @@ int main(int argc, char **argv)
 	gensvm_allocate_model(model);
 	
 	// initialize kernel (if necessary)
-	gensvm_make_kernel(model, data);
+	//gensvm_make_kernel(model, data);
 
 	// reallocate model and initialize weights
 	gensvm_reallocate_model(model, data->n, data->m);

@@ -19,14 +19,8 @@ struct GenData;
 struct GenModel;
 
 // function declarations
-void gensvm_predict_labels(struct GenData *data_test,
-	       	struct GenData *data_train, struct GenModel *model,
-	       	long *predy);
-void gensvm_predict_labels_linear(struct GenData *data,
+void gensvm_predict_labels(struct GenData *testdata,
 	       	struct GenModel *model, long *predy);
-void gensvm_predict_labels_kernel(struct GenData *data_test,
-		struct GenData *data_train, struct GenModel *model,
-		long *predy);
 double gensvm_prediction_perf(struct GenData *data, long *perdy);
 
 #endif

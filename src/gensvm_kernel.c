@@ -11,6 +11,7 @@
  *
  */
 
+#include <cblas.h>
 #include <math.h>
 
 #include "gensvm.h"
@@ -20,125 +21,48 @@
 #include "util.h"
 
 /**
- * @brief Create the kernel matrix
+ * @brief Do the preprocessing steps needed to perform kernel GenSVM
  *
- * Create a kernel matrix based on the specified kerneltype. Kernel parameters 
- * are assumed to be specified in the model.
- *
- * @param[in] 	model 	GenModel specifying the parameters
- * @param[in] 	data 	GenData specifying the data.
+ * @details
+ * tdb
  *
  */
-void gensvm_make_kernel(struct GenModel *model, struct GenData *data)
+void gensvm_kernel_preprocess(struct GenModel *model, struct GenData *data)
 {
-	long i, j;
-	// Determine if a kernel needs to be computed. This is not the case if 
-	// a LINEAR kernel is requested in the model, or if the requested 
-	// kernel is already in the data. 
-
 	if (model->kerneltype == K_LINEAR) {
-		data->J = Calloc(double, data->m+1);
-		for (i=1; i<data->m+1; i++) {
-			matrix_set(data->J, 1, i, 0, 1.0);
-		}
+		data->r = data->m;
 		return;
 	}
 
-	/*
-	switch (model->kerneltype) {
-		case K_LINEAR:
-			// if data has another kernel, free that matrix and 
-			// assign Z to RAW
-			if (data->kerneltype != K_LINEAR) {
-				free(data->Z);
-				data->Z = data->RAW;
-			}
-			data->J = Calloc(double, data->m+1);
-			for (i=1; i<model->m+1; i++) {
-				matrix_set(data->J, 1, i, 0, 1.0);
-			}
-			return;
-		case K_POLY:
-			// if data has another kernel, we need to recalculate
-			if (data->kerneltype != K_POLY) {
-				break;
-			}
-			// if it is poly, we only recalculate if the kernel 
-			// parameters differ
-			if (data->kernelparam[0] == model->kernelparam[0] &&
-				data->kernelparam[1] == model->kernelparam[1] &&
-				data->kernelparam[2] == model->kernelparam[2])
-				// < do something with J ?
-				return;
-		case K_RBF:
-			if (data->kerneltype != K_RBF)
-				break;
-			if (data->kernelparam[0] == model->kernelparam[0])
-				// < do something with J ?
-				return;
-		case K_SIGMOID:
-			if (data->kerneltype != K_SIGMOID)
-				break;
-			if (data->kernelparam[0] == model->kernelparam[0] &&
-				data->kernelparam[1] == model->kernelparam[1])
-				// < do something with J ?
-				return;
+	int i;	
+	long r,
+	     n = data->n;
+	double *P = NULL,
+	       *Sigma = NULL,
+	       *K = NULL;
+
+	// build the kernel matrix
+	K = Calloc(double, n*n);
+	if (K == NULL) {
+		fprintf(stderr, "Failed to allocate memory for K in "
+				"gensvm_kernel_preprocess.\n");
+		exit(1);
 	}
-	*/
-	long n = data->n;
-	double value;
-	double *x1, *x2;
-	double *K = Calloc(double, n*n);
+	gensvm_make_kernel(model, data, K);
 
-	for (i=0; i<n; i++) {
-		for (j=i; j<n; j++) {
-			x1 = &data->RAW[i*(data->m+1)+1];
-			x2 = &data->RAW[j*(data->m+1)+1];
-			if (model->kerneltype == K_POLY)
-				value = gensvm_compute_poly(x1, x2, 
-						model->kernelparam, data->m);
-			else if (model->kerneltype == K_RBF)
-				value = gensvm_compute_rbf(x1, x2, 
-						model->kernelparam, data->m);
-			else if (model->kerneltype == K_SIGMOID)
-				value = gensvm_compute_sigmoid(x1, x2, 
-						model->kernelparam, data->m);
-			else {
-				fprintf(stderr, "Unknown kernel type in "
-						"gensvm_make_kernel\n");
-				exit(1);
-			}
-			matrix_set(K, n, i, j, value);
-			matrix_set(K, n, j, i, value);
-		}
-	}
+	// generate the eigen decomposition
+	r = gensvm_make_eigen(K, n, &P, &Sigma);
+	note("[DEBUG]: n = %li\tr = %li\n", n, r);
 
-	double *P = NULL;
-	double *Sigma = NULL;
-	long num_eigen = gensvm_make_eigen(K, n, &P, &Sigma);
-	//printf("num eigen: %li\n", num_eigen);
-	data->m = num_eigen;
+	// build M and set to data (leave RAW intact)
+	gensvm_make_trainfactor(data, P, Sigma, r);
+	
+	// Set Sigma to data->Sigma (need it again for prediction)
+	if (data->Sigma != NULL)
+		free(data->Sigma);
+	data->Sigma = Sigma;
 
-	// copy eigendecomp to data
-	data->Z = Calloc(double, n*(num_eigen+1));
-	for (i=0; i<n; i++) {
-		for (j=0; j<num_eigen; j++) {
-			value = matrix_get(P, num_eigen, i, j);
-			matrix_set(data->Z, num_eigen+1, i, j, value);
-		}
-		matrix_set(data->Z, num_eigen+1, i, 0, 1.0);
-	}
-
-	// Set the regularization matrix (change if not full rank used)
-	if (data->J != NULL)
-		free(data->J);
-	data->J = Calloc(double, data->m+1);
-	for (i=1; i<data->m+1; i++) {
-		value = 1.0/matrix_get(Sigma, 1, i-1, 0);
-		matrix_set(data->J, 1, i, 0, value);
-	}
-
-	// let data know what it's made of
+	// write kernel params to data
 	data->kerneltype = model->kerneltype;
 	free(data->kernelparam);
 	switch (model->kerneltype) {
@@ -146,9 +70,8 @@ void gensvm_make_kernel(struct GenModel *model, struct GenData *data)
 			break;
 		case K_POLY:
 			data->kernelparam = Calloc(double, 3);
-			data->kernelparam[0] = model->kernelparam[0];
-			data->kernelparam[1] = model->kernelparam[1];
-			data->kernelparam[2] = model->kernelparam[2];
+			for (i=0; i<3; i++)
+				data->kernelparam[i] = model->kernelparam[i];
 			break;
 		case K_RBF:
 			data->kernelparam = Calloc(double, 1);
@@ -159,9 +82,59 @@ void gensvm_make_kernel(struct GenModel *model, struct GenData *data)
 			data->kernelparam[0] = model->kernelparam[0];
 			data->kernelparam[1] = model->kernelparam[1];
 	}
+	
 	free(K);
-	free(Sigma);
 	free(P);
+}
+
+void gensvm_kernel_postprocess(struct GenModel *model,
+		struct GenData *traindata, struct GenData *testdata)
+{
+	if (model->kerneltype == K_LINEAR) {
+		testdata->r = testdata->m;
+		return;
+	}
+
+	// build the cross kernel matrix between train and test
+	double *K2 = NULL;
+	gensvm_make_crosskernel(model, traindata, testdata, &K2);
+
+	// generate the data matrix N = K2 * M * Sigma^{-2}
+	gensvm_make_testfactor(testdata, traindata, K2);
+
+	free(K2);
+}
+
+void gensvm_make_kernel(struct GenModel *model, struct GenData *data,
+	       	double *K)
+{
+	long i, j;
+	long n = data->n;
+	double value;
+	double *x1, *x2;
+
+	for (i=0; i<n; i++) {
+		for (j=i; j<n; j++) {
+			x1 = &data->RAW[i*(data->m+1)+1];
+			x2 = &data->RAW[j*(data->m+1)+1];
+			if (model->kerneltype == K_POLY)
+				value = gensvm_dot_poly(x1, x2, 
+						model->kernelparam, data->m);
+			else if (model->kerneltype == K_RBF)
+				value = gensvm_dot_rbf(x1, x2, 
+						model->kernelparam, data->m);
+			else if (model->kerneltype == K_SIGMOID)
+				value = gensvm_dot_sigmoid(x1, x2, 
+						model->kernelparam, data->m);
+			else {
+				fprintf(stderr, "Unknown kernel type in "
+						"gensvm_make_kernel\n");
+				exit(1);
+			}
+			matrix_set(K, n, i, j, value);
+			matrix_set(K, n, j, i, value);
+		}
+	}
 }
 
 /**
@@ -241,7 +214,6 @@ long gensvm_make_eigen(double *K, long n, double **P, double **Sigma)
 
 	// Select the desired number of eigenvalues, depending on their size.  
 	// dsyevx sorts eigenvalues in ascending order.
-	//
 	max_eigen = tempSigma[n-1];
 	cutoff_idx = 0;
 
@@ -261,7 +233,6 @@ long gensvm_make_eigen(double *K, long n, double **P, double **Sigma)
 
 	// revert P to row-major order and copy only the the columns 
 	// corresponding to the selected eigenvalues
-	//
 	*P = Calloc(double, n*num_eigen);	
 	for (j=n-1; j>n-1-num_eigen; j--) {
 		for (i=0; i<n; i++) {
@@ -291,26 +262,20 @@ void gensvm_make_crosskernel(struct GenModel *model,
 
 	*K2 = Calloc(double, n_test*n_train);
 
-	//printf("Training RAW\n");
-	//print_matrix(data_train->RAW, n_train, m+1);
-
-	//printf("Testing RAW\n");
-	//print_matrix(data_test->RAW, n_test, m+1);
-
 	for (i=0; i<n_test; i++) {
 		for (j=0; j<n_train; j++) {
 			x1 = &data_test->RAW[i*(m+1)+1];
 			x2 = &data_train->RAW[j*(m+1)+1];
 			if (model->kerneltype == K_POLY)
-				value = gensvm_compute_poly(x1, x2,
+				value = gensvm_dot_poly(x1, x2,
 						model->kernelparam,
 					       	m);
 			else if (model->kerneltype == K_RBF)
-				value = gensvm_compute_rbf(x1, x2,
+				value = gensvm_dot_rbf(x1, x2,
 						model->kernelparam,
 					       	m);
 			else if (model->kerneltype == K_SIGMOID)
-				value = gensvm_compute_sigmoid(x1, x2,
+				value = gensvm_dot_sigmoid(x1, x2,
 						model->kernelparam,
 					       	m);
 			else {
@@ -321,10 +286,97 @@ void gensvm_make_crosskernel(struct GenModel *model,
 			matrix_set((*K2), n_train, i, j, value);
 		}
 	}
+}
 
-	//printf("cross K2:\n");
-	//print_matrix((*K2), n_test, n_train);
+void gensvm_make_trainfactor(struct GenData *data, double *P, double *Sigma,
+	       	long r)
+{
+	long i, j, n = data->n;
+	double value;
 
+	// allocate Z
+	data->Z = Calloc(double, n*(r+1));
+	if (data->Z == NULL) {
+		fprintf(stderr, "Failed to allocate memory for data->Z in "
+				"gensvm_make_trainfactor.\n");
+		exit(1);
+	}
+
+	// Write data->Z = [1 M] = [1 P*Sigma]
+	for (i=0; i<n; i++) {
+		for (j=0; j<r; j++) {
+			value = matrix_get(P, r, i, j);
+			value *= matrix_get(Sigma, 1, j, 0);
+			matrix_set(data->Z, r+1, i, j+1, value);
+		}
+		matrix_set(data->Z, r+1, i, 0, 1.0);
+	}
+
+	// Set data->r to r so data knows the width of Z
+	data->r = r;
+}
+
+void gensvm_make_testfactor(struct GenData *testdata,
+	       	struct GenData *traindata, double *K2)
+{
+	long n1, n2, r, i, j;
+	double value,
+	       *N = NULL,
+	       *M = NULL;
+	
+	n1 = traindata->n;
+	n2 = testdata->n;
+	r = traindata->r;
+
+	N = Calloc(double, n2*(r+1));
+	if (N == NULL) {
+		fprintf(stderr, "Failed to allocate memory for N in "
+				"gensvm_make_testfactor.\n");
+		exit(1);
+	}
+	M = Calloc(double, n1*r);
+	if (M == NULL) {
+		fprintf(stderr, "Failed to allocate memory for M in "
+				"gensvm_make_testfactor.\n");
+		exit(1);
+	}
+
+	// copy M from traindata->Z because we need it in dgemm without column 
+	// of 1's.
+	for (i=0; i<n1; i++)
+		for (j=0; j<r; j++)
+			matrix_set(M, r, i, j,
+				       	matrix_get(traindata->Z, r+1, i, j+1));
+
+	// Multiply K2 with M and store in N
+	cblas_dgemm(
+			CblasRowMajor,
+			CblasNoTrans,
+			CblasNoTrans,
+			n2,
+			r,
+			n1,
+			1.0,
+			K2,
+			n1,
+			M,
+			r,
+			0.0,
+			N,
+			r);
+
+	// Multiply N with Sigma^{-2}
+	for (j=0; j<r; j++) {
+		value = pow(matrix_get(traindata->Sigma, 1, j, 0), -2.0);
+		for (i=0; i<n2; i++)
+			matrix_mul(N, r, i, j, value);
+	}
+
+	// Set N and r to testdata
+	testdata->Z = N;
+	testdata->r = r;
+
+	free(M);
 }
 
 /**
@@ -344,7 +396,7 @@ void gensvm_make_crosskernel(struct GenModel *model,
  * @param[in] 	n 		length of the vectors x1 and x2
  * @returns  			kernel evaluation
  */
-double gensvm_compute_rbf(double *x1, double *x2, double *kernelparam, long n)
+double gensvm_dot_rbf(double *x1, double *x2, double *kernelparam, long n)
 {
 	long i;
 	double value = 0.0;
@@ -372,7 +424,7 @@ double gensvm_compute_rbf(double *x1, double *x2, double *kernelparam, long n)
  * @param[in] 	n 		length of the vectors x1 and x2
  * @returns 			kernel evaluation
  */
-double gensvm_compute_poly(double *x1, double *x2, double *kernelparam, long n)
+double gensvm_dot_poly(double *x1, double *x2, double *kernelparam, long n)
 {
 	long i;
 	double value = 0.0;
@@ -400,7 +452,7 @@ double gensvm_compute_poly(double *x1, double *x2, double *kernelparam, long n)
  * @param[in] 	n 		length of the vectors x1 and x2
  * @returns 			kernel evaluation
  */
-double gensvm_compute_sigmoid(double *x1, double *x2, double *kernelparam, long n)
+double gensvm_dot_sigmoid(double *x1, double *x2, double *kernelparam, long n)
 {
 	long i;
 	double value = 0.0;

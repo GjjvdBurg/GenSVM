@@ -68,7 +68,7 @@ struct GenModel *gensvm_init_model()
 struct GenData *gensvm_init_data()
 {
 	struct GenData *data = Malloc(struct GenData, 1);
-	data->J = NULL;
+	data->Sigma = NULL;
 	data->y = NULL;
 	data->Z = NULL;
 	data->RAW = NULL;
@@ -275,8 +275,16 @@ void gensvm_free_model(struct GenModel *model)
  */
 void gensvm_free_data(struct GenData *data)
 {
-	free(data->Z);
+	if (data == NULL)
+		return;
+
+	if (data->Z == data->RAW) {
+		free(data->Z);
+	}else {
+		free(data->Z);
+		free(data->RAW);
+	}
 	free(data->y);
-	free(data->J);
+	free(data->Sigma);
 	free(data);
 }

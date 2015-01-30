@@ -88,7 +88,9 @@ struct GenData {
 	long n;
 	///< number of instances
 	long m;
-	///< number of predictors
+	///< number of predictors (width of RAW)
+	long r;
+	///< number of eigenvalues (width of Z)
  	long *y;
 	///< array of class labels, 1..K
 	double *Z;
@@ -96,7 +98,7 @@ struct GenData {
 	///< of the kernel matrix)
 	double *RAW;
 	///< augmented raw data matrix
-	double *J;
+	double *Sigma;
 	KernelType kerneltype; 	
  	double *kernelparam; 
 };

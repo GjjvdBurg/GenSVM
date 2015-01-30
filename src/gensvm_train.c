@@ -94,10 +94,10 @@ void gensvm_optimize(struct GenModel *model, struct GenData *data)
 		it++;
 	}
 	if (L > Lbar)
-		fprintf(stderr, "GenSVM warning: Negative step occurred in "
+		fprintf(stderr, "[WARNING]: Negative step occurred in "
 				"majorization.\n");
 	if (it >= MAX_ITER)
-		fprintf(stderr, "GenSVM warning: maximum number of iterations "
+		fprintf(stderr, "[WARNING]: maximum number of iterations "
 				"reached.\n");
 
 	note("Optimization finished, iter = %li, loss = %15.16f, "
@@ -166,12 +166,10 @@ double gensvm_get_loss(struct GenModel *model, struct GenData *data,
 	loss /= ((double) n);
 
 	value = 0;
-	for (i=0; i<m+1; i++) {
-		rowvalue = 0;
+	for (i=1; i<m+1; i++) {
 		for (j=0; j<K-1; j++) {
-			rowvalue += pow(matrix_get(model->V, K-1, i, j), 2.0);
+			value += pow(matrix_get(model->V, K-1, i, j), 2.0);
 		}
-		value += data->J[i] * rowvalue;
 	}
 	loss += model->lambda * value;
 
@@ -445,7 +443,7 @@ void gensvm_get_update(struct GenModel *model, struct GenData *data, double *B,
 	i = 0;
 	for (j=0; j<m; j++) {
 		i += (m+1) + 1;
-		ZAZ[i] += model->lambda * data->J[j+1];
+		ZAZ[i] += model->lambda;
 	}
 	
 	// For the LAPACK call we need to switch to Column-

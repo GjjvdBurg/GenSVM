@@ -116,6 +116,7 @@ void gensvm_read_data(struct GenData *dataset, char *data_file)
 
 	dataset->n = n;
 	dataset->m = m;
+	dataset->r = m;
 	dataset->K = K;
 	dataset->Z = dataset->RAW;
 }
