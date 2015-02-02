@@ -4,7 +4,7 @@ CFLAGS=-Wall -O3 -DVERSION=$(VERSION)
 INCLUDE= -Iinclude
 LIB= -Llib
 
-EXECS=GenSVM_train GenSVM_grid
+EXECS=GenSVM_train GenSVM_grid gensvm
 
 .PHONY: all clean tar
 
@@ -43,6 +43,10 @@ lib/libgensvm.a: \
 		src/timer.o \
 		src/util.o 
 	@echo libgensvm.a...
+
+gensvm: src/GenSVMtraintest.c lib/libgensvm.a
+	@$(CC) -o $@ $< $(CFLAGS) $(INCLUDE) $(LIB) -lgensvm $(LDFLAGS)
+	@echo gensvm...
 
 GenSVM_train: src/GenSVMtrain.c lib/libgensvm.a
 	@$(CC) -o GenSVM_train src/GenSVMtrain.c $(CFLAGS) $(INCLUDE) $(LIB)\

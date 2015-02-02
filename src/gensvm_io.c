@@ -283,6 +283,9 @@ void gensvm_write_predictions(struct GenData *data, long *predy,
 				output_filename);
 		exit(1);
 	}
+	
+	fprintf(fid, "%li\n", data->n);
+	fprintf(fid, "%li\n", data->m);
 
 	for (i=0; i<data->n; i++) {
 		for (j=0; j<data->m; j++) 
