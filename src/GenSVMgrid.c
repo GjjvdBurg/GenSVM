@@ -39,6 +39,9 @@ extern FILE *GENSVM_OUTPUT_FILE;
 void exit_with_help();
 void parse_command_line(int argc, char **argv, char *input_filename);
 void read_training_from_file(char *input_filename, struct Training *training);
+struct Training *gensvm_init_training();
+struct Queue *gensvm_init_queue();
+void gensvm_free_training(struct Training *training);
 
 /**
  * @brief Help function
@@ -74,16 +77,16 @@ int main(int argc, char **argv)
 {
 	char input_filename[MAX_LINE_LENGTH];
 	
-	struct Training *training = Malloc(struct Training, 1);	
+	struct Training *training = gensvm_init_training();
 	struct GenData *train_data = gensvm_init_data();
 	struct GenData *test_data = gensvm_init_data();
+	struct Queue *q = gensvm_init_queue();
 
 	if (argc < MINARGS || gensvm_check_argv(argc, argv, "-help") 
 			|| gensvm_check_argv_eq(argc, argv, "-h") )
 		exit_with_help();
 	parse_command_line(argc, argv, input_filename);
 
-	training->repeats = 0;
 	note("Reading training file\n");	
 	read_training_from_file(input_filename, training);
 
@@ -95,7 +98,6 @@ int main(int argc, char **argv)
 	}
 
 	note("Creating queue\n");
-	struct Queue *q = Malloc(struct Queue, 1);
 	make_queue(training, q, train_data, test_data);
 
 	srand(time(NULL));
@@ -112,7 +114,7 @@ int main(int argc, char **argv)
 	}
 
 	free_queue(q);
-	free(training);
+	gensvm_free_training(training);
 	gensvm_free_data(train_data);
 	gensvm_free_data(test_data);
 
@@ -318,4 +320,63 @@ void read_training_from_file(char *input_filename, struct Training *training)
 	free(params);
 	free(lparams);
 	fclose(fid);
+}
+
+struct Training *gensvm_init_training()
+{
+	struct Training *training = Malloc(struct Training, 1);
+
+	// initialize to defaults
+	training->traintype = CV;
+	training->kerneltype = K_LINEAR;
+	training->repeats = 0;
+	training->folds = 10;
+	training->Np = 0;
+	training->Nl = 0;
+	training->Nk = 0;
+	training->Ne = 0;
+	training->Nw = 0;
+	training->Ng = 0;
+	training->Nc = 0;
+	training->Nd = 0;
+
+	// set arrays to NULL
+	training->weight_idxs = NULL;
+	training->ps = NULL;
+	training->lambdas = NULL;
+	training->kappas = NULL;
+	training->epsilons = NULL;
+	training->gammas = NULL;
+	training->coefs = NULL;
+	training->degrees = NULL;
+	training->train_data_file = NULL;
+	training->test_data_file = NULL;
+
+	return training;
+}
+
+struct Queue *gensvm_init_queue()
+{
+	struct Queue *q = Malloc(struct Queue, 1);
+
+	q->tasks = NULL;
+	q->N = 0;
+	q->i = 0;
+
+	return q;
+}
+
+void gensvm_free_training(struct Training *training)
+{
+	free(training->weight_idxs);
+	free(training->ps);
+	free(training->lambdas);
+	free(training->kappas);
+	free(training->epsilons);
+	free(training->gammas);
+	free(training->coefs);
+	free(training->degrees);
+	free(training->train_data_file);
+	free(training->test_data_file);
+	free(training);
 }
