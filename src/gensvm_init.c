@@ -173,37 +173,52 @@ void gensvm_allocate_model(struct GenModel *model)
 void gensvm_reallocate_model(struct GenModel *model, long n, long m)
 {
 	long K = model->K;
+	double *tmp = NULL;
 
 	if (model->n == n && model->m == m)
 		return;
 	if (model->n != n) {
-		model->UU = (double *) realloc(model->UU,
-				n*K*(K-1)*sizeof(double));
-		if (model->UU == NULL) {
+		tmp = (double *) realloc(model->UU, n*K*(K-1)*sizeof(double));
+		if (tmp) {
+			Memset(tmp, double, n*K*(K-1));
+			model->UU = tmp;
+		} else {
 			fprintf(stderr, "Failed to reallocate UU\n");
 			exit(1);
 		}
 		
-		model->Q = (double *) realloc(model->Q, n*K*sizeof(double));
-		if (model->Q == NULL) {
+		tmp = (double *) realloc(model->Q, n*K*sizeof(double));
+		if (tmp) {
+			Memset(tmp, double, n*K);
+			model->Q = tmp;
+		} else {
 			fprintf(stderr, "Failed to reallocate Q\n");
 			exit(1);
 		}
 	
-		model->H = (double *) realloc(model->H, n*K*sizeof(double));
-		if (model->H == NULL) {
+		tmp = (double *) realloc(model->H, n*K*sizeof(double));
+		if (tmp) {
+			Memset(tmp, double, n*K);
+			model->H = tmp;
+		} else {
 			fprintf(stderr, "Failed to reallocate H\n");
 			exit(1);
 		}
-	
-		model->R = (double *) realloc(model->R, n*K*sizeof(double));
-		if (model->R == NULL) {
+
+		tmp = (double *) realloc(model->R, n*K*sizeof(double));
+		if (tmp) {
+			Memset(tmp, double, n*K);
+			model->R = tmp;
+		} else {
 			fprintf(stderr, "Failed to reallocate R\n");
 			exit(1);
 		}
 	
-		model->rho = (double *) realloc(model->rho, n*sizeof(double));
-		if (model->rho == NULL) {
+		tmp = (double *) realloc(model->rho, n*sizeof(double));
+		if (tmp) {
+			Memset(tmp, double, n);
+			model->rho = tmp;
+		} else {
 			fprintf(stderr, "Failed to reallocte rho\n");
 			exit(1);
 		}
@@ -211,23 +226,29 @@ void gensvm_reallocate_model(struct GenModel *model, long n, long m)
 		model->n = n;
 	}
 	if (model->m != m) {
-		model->W = (double *) realloc(model->W,
-			       	m*(K-1)*sizeof(double));
-		if (model->W == NULL) {
+		tmp = (double *) realloc(model->W, m*(K-1)*sizeof(double));
+		if (tmp) {
+			Memset(tmp, double, m*(K-1));
+			model->W = tmp;
+		} else {
 			fprintf(stderr, "Failed to reallocate W\n");
 			exit(1);
 		}
 
-		model->V = (double *) realloc(model->V,
-			       	(m+1)*(K-1)*sizeof(double));
-		if (model->V == NULL) {
+		tmp = (double *) realloc(model->V, (m+1)*(K-1)*sizeof(double));
+		if (tmp) {
+			Memset(tmp, double, (m+1)*(K-1));
+			model->V = tmp;
+		} else {
 			fprintf(stderr, "Failed to reallocate V\n");
 			exit(1);
 		}
 
-		model->Vbar = (double *) realloc(model->Vbar,
-				(m+1)*(K-1)*sizeof(double));
-		if (model->Vbar == NULL) {
+		tmp = (double *) realloc(model->Vbar, (m+1)*(K-1)*sizeof(double));
+		if (tmp) {
+			Memset(tmp, double, (m+1)*(K-1));
+			model->Vbar = tmp;
+		} else {
 			fprintf(stderr, "Failed to reallocate Vbar\n");
 			exit(1);
 		}
