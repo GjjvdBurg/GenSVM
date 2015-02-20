@@ -1,6 +1,6 @@
 VERSION=0.1
 CC=gcc
-CFLAGS=-Wall -O3 -DVERSION=$(VERSION)
+CFLAGS=-Wall -O3 -DVERSION=$(VERSION) -g
 INCLUDE= -Iinclude
 LIB= -Llib
 

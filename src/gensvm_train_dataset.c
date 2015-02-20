@@ -63,12 +63,12 @@ void make_queue(struct Training *training, struct Queue *queue,
 	N *= training->Nc > 0 ? training->Nc : 1;
 	N *= training->Nd > 0 ? training->Nd : 1;
 
-	queue->tasks = Malloc(struct Task *, N);
+	queue->tasks = Calloc(struct Task *, N);
 	queue->N = N;
 
 	// initialize all tasks
 	for (i=0; i<N; i++) {
-		task = Malloc(struct Task, 1);
+		task = Calloc(struct Task, 1);
 		task->ID = i;
 		task->train_data = train_data;
 		task->test_data = test_data;
@@ -232,11 +232,14 @@ int doublesort(const void *elem1, const void *elem2)
  *
  * @param[in] 	values 	array of doubles
  * @param[in] 	N 	length of the array
- * @param[in] 	p 	percentile to calculate ( 0 <= p <= 1.0 ).
+ * @param[in] 	p 	percentile to calculate ( 0 <= p <= 100.0 ).
  * @returns 		the p-th percentile of the values
  */
 double prctile(double *values, long N, double p)
 {
+	if (N == 1)
+		return values[0];
+
 	long i;
 	double pi, pr, boundary;
 	double *local = Malloc(double, N);
@@ -244,6 +247,7 @@ double prctile(double *values, long N, double p)
 		local[i] = values[i];
 
 	qsort(local, N, sizeof(double), doublesort);
+	p /= 100.0;
 	p = p*N + 0.5;
 	pi = maximum(minimum(floor(p), N-1), 1);
 	pr = maximum(minimum(p - pi, 1), 0);
@@ -383,9 +387,9 @@ void consistency_repeats(struct Queue *q, long repeats, TrainType traintype)
 	p = 0.0;
 	bool breakout = false;
 	while (breakout == false) {
-		pi = prctile(mean, N, (100.0-p)/100.0);
-		pr = prctile(std, N, p/100.0);
-		pt = prctile(time, N, p/100.0);
+		pi = prctile(mean, N, (100.0-p));
+		pr = prctile(std, N, p);
+		pt = prctile(time, N, p);
 		for (i=0; i<N; i++) 
 			if ((pi - mean[i] < 0.0001) &&
 			    (std[i] - pr < 0.0001) && 
@@ -408,9 +412,11 @@ void consistency_repeats(struct Queue *q, long repeats, TrainType traintype)
 		p += 1.0;
 	}
 
+	// make sure no double free occurs with the copied kernelparam
+	model->kernelparam = NULL;
+	gensvm_free_model(model);
 	free(nq->tasks);
 	free(nq);
-	free(model);
 	free(perf);
 	free(std);
 	free(mean);
@@ -640,6 +646,8 @@ void start_training(struct Queue *q)
 	note("\nTotal elapsed training time: %8.8f seconds\n",
 			elapsed_time(main_s, main_e));
 
+	// make sure no double free occurs with the copied kernelparam
+	model->kernelparam = NULL;
 	gensvm_free_model(model);
 	for (f=0; f<folds; f++) {
 		gensvm_free_data(train_folds[f]);
@@ -647,6 +655,7 @@ void start_training(struct Queue *q)
 	}
 	free(train_folds);
 	free(test_folds);
+	free(cv_idx);
 }
 
 

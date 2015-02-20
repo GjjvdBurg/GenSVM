@@ -305,6 +305,7 @@ void gensvm_free_data(struct GenData *data)
 		free(data->Z);
 		free(data->RAW);
 	}
+	free(data->kernelparam);
 	free(data->y);
 	free(data->Sigma);
 	free(data);

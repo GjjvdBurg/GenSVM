@@ -18,6 +18,10 @@
 #include "globals.h"
 #include "types.h"
 
+// forward declarations
+struct GenData;
+struct GenModel;
+
 /**
  * @brief A structure for a single task in the queue.
  *
@@ -142,6 +146,4 @@ void start_training(struct Queue *q);
 double gensvm_cross_validation(struct GenModel *model,
 	       	struct GenData **train_folds, struct GenData **test_folds,
 		int folds, long n_total);
-
-
 #endif
