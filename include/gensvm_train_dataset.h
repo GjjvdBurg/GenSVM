@@ -127,14 +127,9 @@ void make_queue(struct Training *training, struct Queue *queue,
 		struct GenData *train_data, struct GenData *test_data);
 
 struct Task *get_next_task(struct Queue *q);
-void start_training_tt(struct Queue *q);
-void start_training_cv(struct Queue *q);
 void free_queue(struct Queue *q);
 
 void consistency_repeats(struct Queue *q, long repeats, TrainType traintype);
-
-double cross_validation(struct GenModel *model, struct GenData *data,
-	       	long folds);
 
 void make_model_from_task(struct Task *task, struct GenModel *model);
 void copy_model(struct GenModel *from, struct GenModel *to);

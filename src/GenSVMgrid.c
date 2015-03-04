@@ -103,10 +103,7 @@ int main(int argc, char **argv)
 	srand(time(NULL));
 
 	note("Starting training\n");
-	if (training->traintype == TT)
-		start_training_tt(q);
-	else
-		start_training(q);
+	start_training(q);
 	note("Training finished\n");
 
 	if (training->repeats > 0) {

@@ -205,10 +205,7 @@ int tasksort(const void *elem1, const void *elem2)
 }
 
 /**
- * @brief Comparison function for doubles
- *
- * @details
- * Similar to tasksort() only now for two doubles.
+ * @brief Comparison function for doubl
  *
  * @param[in] 	elem1 	number 1
  * @param[in] 	elem2 	number 2
@@ -258,6 +255,41 @@ double prctile(double *values, long N, double p)
 	return boundary;
 }
 
+struct Queue *create_top_queue(struct Queue *q)
+{
+	long i, k, N = 0;
+	double boundary, *perf;
+	struct Queue *nq = Malloc(struct Queue, 1);
+
+	// find the 95th percentile of performance
+	perf = Calloc(double, q->N);
+	for (i=0; i<q->N; i++) {
+		perf[i] = q->tasks[i]->performance;
+	}
+	boundary = prctile(perf, q->N, 95.0);
+	free(perf);
+	note("boundary determined at: %f\n", boundary);
+
+	// find the number of tasks that perform at or above the boundary
+	for (i=0; i<q->N; i++) {
+		if (q->tasks[i]->performance >= boundary)
+			N++;
+	}
+
+	// create a new queue with the best tasks
+	nq->tasks = Malloc(struct Task *, N);
+	k = 0;
+	for (i=0; i<q->N; i++) {
+		if (q->tasks[i]->performance >= boundary)
+			nq->tasks[k++] = q->tasks[i];
+	}
+	nq->N = N;
+	nq->i = 0;
+	
+	return nq;
+}
+
+
 /**
  * @brief Run repeats of the Task structs in Queue to find the best
  * configuration
@@ -294,89 +326,87 @@ double prctile(double *values, long N, double p)
  */
 void consistency_repeats(struct Queue *q, long repeats, TrainType traintype)
 {
-	long i, r, N;
-	double p, pi, pr, pt, boundary, *time, *std, *mean, *perf;
-	struct Queue *nq = Malloc(struct Queue, 1);
+	long i, f, r, N, *cv_idx;
+	double p, pi, pr, pt, *time, *std, *mean, *perf;
+	struct Queue *nq;
+	struct GenData **train_folds, **test_folds;
 	struct GenModel *model = gensvm_init_model();
-	struct Task *task;
+	struct Task *task = NULL;
 	clock_t loop_s, loop_e;
 
-	// calculate the performance percentile (Matlab style)
-	qsort(q->tasks, q->N, sizeof(struct Task *), tasksort);
-	p = 0.95*q->N + 0.5;
-	pi = maximum(minimum(floor(p), q->N-1), 1);
-	pr = maximum(minimum(p - pi, 1), 0);
-	boundary = (1 - pr)*q->tasks[((long) pi)-1]->performance;
-	boundary += pr*q->tasks[((long) pi)]->performance;
-	note("boundary determined at: %f\n", boundary);
-	
-	// find the number of tasks that perform at least as good as the 95th
-	// percentile
-	N = 0;
-	for (i=0; i<q->N; i++)
-		if (q->tasks[i]->performance >= boundary)
-			N++;
-	note("Number of items: %li\n", N);
+	nq = create_top_queue(q);
+	N = nq->N;
+
+	note("Number of items: %li\n", nq->N);
 	std = Calloc(double, N);
 	mean = Calloc(double, N);
 	time = Calloc(double, N);
 	perf = Calloc(double, N*repeats);
 
-	// create a new task queue with the tasks which perform well
-	nq->tasks = Malloc(struct Task *, N);
-	for (i=q->N-1; i>q->N-N-1; i--) 
-		nq->tasks[q->N-i-1] = q->tasks[i];
-	nq->N = N;
-	nq->i = 0;
+	task = get_next_task(nq);
 
-	// for each task run the consistency repeats
-	for (i=0; i<N; i++) {
-		task = get_next_task(nq);
+	model->n = 0;
+	model->m = task->train_data->m;
+	model->K = task->train_data->K;
+	gensvm_allocate_model(model);
+	gensvm_seed_model_V(NULL, model, task->train_data);
+
+	cv_idx = Calloc(long, task->train_data->n);
+
+	train_folds = Malloc(struct GenData *, task->folds);
+	test_folds = Malloc(struct GenData *, task->folds);
+
+	i = 0;
+	while (task) {
 		make_model_from_task(task, model);
-
-		if (i == 0) {
-			model->n = 0;
-			model->m = task->train_data->m;
-			model->K = task->train_data->K;
-			gensvm_allocate_model(model);
-			gensvm_seed_model_V(NULL, model, task->train_data);
-		}
 
 		time[i] = 0.0;
 		note("(%02li/%02li:%03li)\t", i+1, N, task->ID);
 		for (r=0; r<repeats; r++) {
-			if (traintype == CV) {
-				loop_s = clock();
-				p = cross_validation(model, task->train_data,
-					       	task->folds);
-				loop_e = clock();
-				time[i] += elapsed_time(loop_s, loop_e);
-				matrix_set(perf, repeats, i, r, p);
-				mean[i] += p/((double) repeats);
-			} else {
-				note("Only cv is implemented\n");
-				exit(1);
+			Memset(cv_idx, long, task->train_data->n);
+			gensvm_make_cv_split(task->train_data->n, task->folds, cv_idx);
+			train_folds = Malloc(struct GenData *, task->folds);
+			test_folds = Malloc(struct GenData *, task->folds);
+			for (f=0; f<task->folds; f++) {
+				train_folds[f] = gensvm_init_data();
+				test_folds[f] = gensvm_init_data();
+				gensvm_get_tt_split(task->train_data, train_folds[f],
+						test_folds[f], cv_idx, f);
+				gensvm_kernel_preprocess(model, train_folds[f]);
+				gensvm_kernel_postprocess(model, train_folds[f],
+						test_folds[f]);
 			}
+
+			loop_s = clock();
+			p = gensvm_cross_validation(model, train_folds, test_folds,
+					task->folds, task->train_data->n);
+			loop_e = clock();
+			time[i] += elapsed_time(loop_s, loop_e);
+			matrix_set(perf, repeats, i, r, p);
+			mean[i] += p/((double) repeats);
 			note("%3.3f\t", p);
 			// this is done because if we reuse the V it's not a 
 			// consistency check
 			gensvm_seed_model_V(NULL, model, task->train_data);
+			for (f=0; f<task->folds; f++) {
+				gensvm_free_data(train_folds[f]);
+				gensvm_free_data(test_folds[f]);
+			}
+			free(train_folds);
+			free(test_folds);
 		}
 		for (r=0; r<repeats; r++) {
-			std[i] += pow(matrix_get(
-						perf, 
-						repeats, 
-						i, 
-						r) - mean[i],
-				       	2.0);
+			std[i] += pow(matrix_get(perf, repeats, i, r) - mean[i], 2.0);
 		}
 		if (r > 1) {
 			std[i] /= ((double) repeats) - 1.0;
 			std[i] = sqrt(std[i]);
-		} else
+		} else {
 			std[i] = 0.0;
-		note("(m = %3.3f, s = %3.3f, t = %3.3f)\n", 
-				mean[i], std[i], time[i]);
+		}
+		note("(m = %3.3f, s = %3.3f, t = %3.3f)\n", mean[i], std[i], time[i]);
+		task = get_next_task(nq);
+		i++;
 	}
 
 	// find the best overall configurations: those with high average
@@ -412,6 +442,7 @@ void consistency_repeats(struct Queue *q, long repeats, TrainType traintype)
 		p += 1.0;
 	}
 
+	free(cv_idx);
 	// make sure no double free occurs with the copied kernelparam
 	model->kernelparam = NULL;
 	gensvm_free_model(model);
@@ -424,142 +455,24 @@ void consistency_repeats(struct Queue *q, long repeats, TrainType traintype)
 }
 
 /**
- * @brief Run cross validation with a seed model
+ * @brief Check if the kernel parameters change between tasks
  *
  * @details
- * This is an implementation of cross validation which uses the optimal
- * parameters GenModel::V of a previous fold as initial conditions for
- * GenModel::V of the next fold. An initial seed for V can be given through the
- * seed_model parameter. If seed_model is NULL, random starting values are
- * used.
+ * In the current strategy for training the kernel matrix is decomposed once, 
+ * and tasks with the same kernel settings are performed sequentially. When a 
+ * task needs to be done with different kernel parameters, the kernel matrix 
+ * needs to be recalculated. This function is used to check whether this is 
+ * the case.
  *
- * @param[in] 	model 		GenModel with the configuration to train
- * @param[in] 	seed_model 	GenModel with a seed for GenModel::V
- * @param[in] 	data 		GenData with the dataset
- * @param[in] 	folds 		number of cross validation folds
- * @returns 			performance (hitrate) of the configuration on 
- * 				cross validation
+ * @param[in] 	newtask 	the next task
+ * @param[in] 	oldtask 	the old task
+ * @return 			whether the kernel needs to be reevaluated 
  */
-double cross_validation(struct GenModel *model, struct GenData *data,
-		long folds)
-{
-	return 0.0;
-}
-/*
-double cross_validation(struct GenModel *model, struct GenData *data,
-	       	long folds)
-{
-	FILE *fid;
-
-	long f, *predy;
-	double performance, total_perf = 0;
-	struct GenData *train_data, *test_data;
-
-	long *cv_idx = Calloc(long, data->n);
-
-	train_data = gensvm_init_data();
-	test_data = gensvm_init_data();
-
-	// create splits
-	gensvm_make_cv_split(data->n, folds, cv_idx);
-
-	for (f=0; f<folds; f++) {
-		gensvm_get_tt_split(data, train_data, test_data, cv_idx, f);
-	
-		gensvm_make_kernel(model, train_data);
-
-		// reallocate the model if necessary for the new train split
-		gensvm_reallocate_model(model, train_data->n, train_data->m);
-
-		gensvm_initialize_weights(train_data, model);
-
-		// train the model (without output)
-		fid = GENSVM_OUTPUT_FILE;
-		GENSVM_OUTPUT_FILE = NULL;
-		gensvm_optimize(model, train_data);
-		GENSVM_OUTPUT_FILE = fid;
-
-		// calculate prediction performance on test set
-		predy = Calloc(long, test_data->n);
-		gensvm_predict_labels(test_data, train_data, model, predy);
-		performance = gensvm_prediction_perf(test_data, predy);
-		total_perf += performance * test_data->n;
-
-		free(predy);
-		free(train_data->y);
-		free(train_data->Z);
-		free(test_data->y);
-		free(test_data->Z);
-	}
-
-	free(train_data);
-	free(test_data);
-
-	total_perf /= ((double) data->n);
-
-	return total_perf;
-}
-*/
-/**
- * @brief Run the grid search for a cross validation dataset
- *
- * @details
- * Given a Queue of Task struct to be trained, a grid search is launched to
- * find the optimal parameter configuration. As is also done within
- * cross_validation(), the optimal weights of one parameter set are used as
- * initial estimates for GenModel::V in the next parameter set. Note that to
- * optimally exploit this feature of the optimization algorithm, the order in
- * which tasks are considered is important. This is considered in 
- * make_queue().
- * 
- * The performance found by cross validation is stored in the Task struct. 
- *
- * @param[in,out] 	q 	Queue with Task instances to run
- */
-void start_training_cv(struct Queue *q)
-{
-	double perf, current_max = 0;
-	struct Task *task = get_next_task(q);
-	struct GenModel *model = gensvm_init_model();
-	clock_t main_s, main_e, loop_s, loop_e;
-
-	model->n = 0;
-	model->m = task->train_data->m;
-	model->K = task->train_data->K;
-	gensvm_allocate_model(model);
-	gensvm_seed_model_V(NULL, model, task->train_data);
-
-	main_s = clock();
-	while (task) {
-		print_progress_string(task, q->N);
-		make_model_from_task(task, model);
-
-		loop_s = clock();
-		perf = cross_validation(model, task->train_data, task->folds);
-		loop_e = clock();
-		current_max = maximum(current_max, perf);
-
-		note("\t%3.3f%% (%3.3fs)\t(best = %3.3f%%)\n", perf,
-				elapsed_time(loop_s, loop_e),
-				current_max);
-
-		q->tasks[task->ID]->performance = perf;
-		task = get_next_task(q);
-	}
-	main_e = clock();
-	
-	note("\nTotal elapsed time: %8.8f seconds\n", 
-			elapsed_time(main_s, main_e));
-
-	gensvm_free_model(model);
-}
-
-
 bool kernel_changed(struct Task *newtask, struct Task *oldtask)
 {
+	int i;
 	if (oldtask == NULL)
 		return true;
-	int i;
 	if (newtask->kerneltype != oldtask->kerneltype) {
 		return true;
 	} else if (newtask->kerneltype == K_POLY) {
@@ -580,6 +493,22 @@ bool kernel_changed(struct Task *newtask, struct Task *oldtask)
 	return false;
 }
 
+/**
+ * @brief Run the grid search for a Queue
+ *
+ * @details
+ * Given a Queue of Task struct to be trained, a grid search is launched to
+ * find the optimal parameter configuration. As is also done within
+ * cross_validation(), the optimal weights of one parameter set are used as
+ * initial estimates for GenModel::V in the next parameter set. Note that to
+ * optimally exploit this feature of the optimization algorithm, the order in
+ * which tasks are considered is important. This is considered in 
+ * make_queue().
+ * 
+ * The performance found by cross validation is stored in the Task struct. 
+ *
+ * @param[in,out] 	q 	Queue with Task instances to run
+ */
 
 void start_training(struct Queue *q)
 {
@@ -620,6 +549,10 @@ void start_training(struct Queue *q)
 		if (kernel_changed(task, prevtask)) {
 			note("*");
 			for (f=0; f<folds; f++) {
+				if (train_folds[f]->Z != train_folds[f]->RAW)
+					free(train_folds[f]->Z);
+				if (test_folds[f]->Z != test_folds[f]->RAW)
+					free(test_folds[f]->Z);
 				gensvm_kernel_preprocess(model,
 					       	train_folds[f]);
 				gensvm_kernel_postprocess(model,
@@ -658,7 +591,23 @@ void start_training(struct Queue *q)
 	free(cv_idx);
 }
 
-
+/**
+ * @brief Run cross validation with a given set of train/test folds
+ *
+ * @details
+ * This cross validation function uses predefined train/test splits. Also, the  
+ * the optimal parameters GenModel::V of a previous fold as initial conditions 
+ * for GenModel::V of the next fold. 
+ *
+ * @param[in] 	model 		GenModel with the configuration to train
+ * @param[in] 	train_folds 	array of training datasets
+ * @param[in] 	test_folds 	array of test datasets
+ * @param[in] 	folds 		number of folds
+ * @param[in] 	n_total 	number of objects in the union of the train 
+ * datasets
+ * @return 			performance (hitrate) of the configuration on 
+ * cross validation
+ */
 double gensvm_cross_validation(struct GenModel *model,
 	      	struct GenData **train_folds, struct GenData **test_folds,
 		int folds, long n_total)
@@ -697,99 +646,6 @@ double gensvm_cross_validation(struct GenModel *model,
 	return total_perf;
 }	
 
-
-/**
- * @brief Run the grid search for a train/test dataset
- *
- * @details
- * This function is similar to start_training_cv(), except that the
- * pre-determined training set is used only once, and the pre-determined test
- * set is used for validation.
- *
- * @todo
- * It would probably be better to train the model on the training set using
- * cross validation and only use the test set when comparing with other
- * methods. The way it is now, you're finding out which parameters predict
- * _this_ test set best, which is not what you want. This function should 
- * therefore not be used and is considered deprecated, to be removed in the 
- * future .
- *
- * @param[in] 	q 	Queue with Task structs to run
- *
- */
-void start_training_tt(struct Queue *q)
-{
-	return;
-}
-/*
-void start_training_tt(struct Queue *q)
-{
-	FILE *fid;
-
-	long c = 0;
-	long *predy;
-	double total_perf, current_max = 0;
-
-	struct Task *task = get_next_task(q);
-	struct GenModel *seed_model = gensvm_init_model();
-
-	clock_t main_s, main_e;
-	clock_t loop_s, loop_e;
-
-	seed_model->m = task->train_data->m;
-	seed_model->K = task->train_data->K;
-	gensvm_allocate_model(seed_model);
-	gensvm_seed_model_V(NULL, seed_model, task->train_data);
-	
-	main_s = clock();
-	while (task) {
-		total_perf = 0;
-		note("(%li/%li)\tw = %li\te = %f\tp = %f\tk = %f\tl = %f\t",
-				c+1, q->N, task->weight_idx, task->epsilon,
-				task->p, task->kappa, task->lambda);
-		loop_s = clock();
-		struct GenModel *model = gensvm_init_model();
-		make_model_from_task(task, model);
-
-		model->n = task->train_data->n;
-		model->m = task->train_data->m;
-		model->K = task->train_data->K;
-
-		gensvm_allocate_model(model);
-		gensvm_initialize_weights(task->train_data, model);
-		gensvm_seed_model_V(seed_model, model, task->train_data);
-
-		fid = GENSVM_OUTPUT_FILE;
-		GENSVM_OUTPUT_FILE = NULL;
-		gensvm_optimize(model, task->train_data);
-		GENSVM_OUTPUT_FILE = fid;
-
-		predy = Calloc(long, task->test_data->n);
-		gensvm_predict_labels(task->test_data, task->train_data,
-			       	model, predy);
-		if (task->test_data->y != NULL) 
-			total_perf = gensvm_prediction_perf(task->test_data,
-				       	predy);
-		gensvm_seed_model_V(model, seed_model, task->train_data);
-
-		gensvm_free_model(model);
-		free(predy);
-		note(".");
-		loop_e = clock();
-		current_max = maximum(current_max, total_perf);
-		note("\t%3.3f%% (%3.3fs)\t(best = %3.3f%%)\n", total_perf,
-				elapsed_time(loop_s, loop_e), current_max);
-		q->tasks[task->ID]->performance = total_perf;
-		task = get_next_task(q);
-	}
-	main_e = clock();
-	
-	note("\nTotal elapsed time: %8.8f seconds\n",
-			elapsed_time(main_s, main_e));
-	free(task);
-	gensvm_free_model(seed_model);
-}
-*/
 
 /**
  * @brief Free the Queue struct

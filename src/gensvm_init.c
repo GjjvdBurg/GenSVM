@@ -301,7 +301,7 @@ void gensvm_free_data(struct GenData *data)
 
 	if (data->Z == data->RAW) {
 		free(data->Z);
-	}else {
+	} else {
 		free(data->Z);
 		free(data->RAW);
 	}

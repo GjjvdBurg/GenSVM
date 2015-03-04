@@ -161,6 +161,12 @@ int main(int argc, char **argv)
 	gensvm_free_model(model);
 	gensvm_free_data(traindata);
 	gensvm_free_data(testdata);
+	free(training_inputfile);
+	free(testing_inputfile);
+	free(model_inputfile);
+	free(model_outputfile);
+	free(prediction_outputfile);
+
 	free(predy);
 
 	return 0;

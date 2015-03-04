@@ -141,9 +141,9 @@ double gensvm_get_loss(struct GenModel *model, struct GenData *data,
 		double *ZV)
 {
 	long i, j;
-	long n = data->n;
-	long K = data->K;
-	long m = data->m;
+	long n = model->n;
+	long K = model->K;
+	long m = model->m;
 
 	double value, rowvalue, loss = 0.0;
 
