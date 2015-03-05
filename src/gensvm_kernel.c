@@ -52,7 +52,6 @@ void gensvm_kernel_preprocess(struct GenModel *model, struct GenData *data)
 
 	// generate the eigen decomposition
 	r = gensvm_make_eigen(K, n, &P, &Sigma);
-	note("[DEBUG]: n = %li\tr = %li\n", n, r);
 
 	// build M and set to data (leave RAW intact)
 	gensvm_make_trainfactor(data, P, Sigma, r);
@@ -218,7 +217,7 @@ long gensvm_make_eigen(double *K, long n, double **P, double **Sigma)
 	cutoff_idx = 0;
 
 	for (i=0; i<n; i++)
-		if (tempSigma[i]/max_eigen > 1e-10 ) {
+		if (tempSigma[i]/max_eigen > 1e-8 ) {
 			cutoff_idx = i;
 			break;
 		}
@@ -328,7 +327,7 @@ void gensvm_make_testfactor(struct GenData *testdata,
 	n2 = testdata->n;
 	r = traindata->r;
 
-	N = Calloc(double, n2*(r+1));
+	N = Calloc(double, n2*r);
 	if (N == NULL) {
 		fprintf(stderr, "Failed to allocate memory for N in "
 				"gensvm_make_testfactor.\n");
@@ -371,12 +370,26 @@ void gensvm_make_testfactor(struct GenData *testdata,
 		for (i=0; i<n2; i++)
 			matrix_mul(N, r, i, j, value);
 	}
-
-	// Set N and r to testdata
-	testdata->Z = N;
+	
+	// write N to Z with a column of ones
+	testdata->Z = Calloc(double, n2*(r+1));
+	if (testdata->Z == NULL) {
+		fprintf(stderr, "Failed to allocate memory for testdata->Z in "
+				"gensvm_make_testfactor.\n");
+		exit(1);
+	}
+	for (i=0; i<n2; i++) {
+		for (j=0; j<r; j++) {
+			matrix_set(testdata->Z, r+1, i, j+1, 
+					matrix_get(N, r, i, j));
+		}
+		matrix_set(testdata->Z, r+1, i, 0, 1.0);
+	}
+	// Set r to testdata
 	testdata->r = r;
 
 	free(M);
+	free(N);
 }
 
 /**

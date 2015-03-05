@@ -543,11 +543,9 @@ void start_training(struct Queue *q)
 
 	main_s = clock();
 	while (task) {
-		print_progress_string(task, q->N);
 		make_model_from_task(task, model);
-	
 		if (kernel_changed(task, prevtask)) {
-			note("*");
+			note("Computing kernel");
 			for (f=0; f<folds; f++) {
 				if (train_folds[f]->Z != train_folds[f]->RAW)
 					free(train_folds[f]->Z);
@@ -558,8 +556,9 @@ void start_training(struct Queue *q)
 				gensvm_kernel_postprocess(model,
 					       	train_folds[f], test_folds[f]);
 			}
-			note("*");
+			note(".\n");
 		}
+		print_progress_string(task, q->N);
 
 		loop_s = clock();
 		perf = gensvm_cross_validation(model, train_folds, test_folds,
