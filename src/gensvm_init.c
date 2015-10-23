@@ -30,7 +30,7 @@
 struct GenModel *gensvm_init_model()
 {
 	struct GenModel *model = Malloc(struct GenModel, 1);
-	
+
 	// set default values
 	model->p = 1.0;
 	model->lambda = pow(2, -8.0);
@@ -57,7 +57,7 @@ struct GenModel *gensvm_init_model()
 
 /**
  * @brief Initialize a GenData structure
- * 
+ *
  * @details
  * A GenData structure is initialized and default values are set. 
  * A pointer to the initialized data is returned.
@@ -78,7 +78,7 @@ struct GenData *gensvm_init_data()
 	data->kernelparam = NULL;
 
 	return data;
-}	
+}
 
 /**
  * @brief Allocate memory for a GenModel
@@ -186,7 +186,7 @@ void gensvm_reallocate_model(struct GenModel *model, long n, long m)
 			fprintf(stderr, "Failed to reallocate UU\n");
 			exit(1);
 		}
-		
+
 		tmp = (double *) realloc(model->Q, n*K*sizeof(double));
 		if (tmp) {
 			Memset(tmp, double, n*K);
@@ -195,7 +195,7 @@ void gensvm_reallocate_model(struct GenModel *model, long n, long m)
 			fprintf(stderr, "Failed to reallocate Q\n");
 			exit(1);
 		}
-	
+
 		tmp = (double *) realloc(model->H, n*K*sizeof(double));
 		if (tmp) {
 			Memset(tmp, double, n*K);
@@ -213,7 +213,7 @@ void gensvm_reallocate_model(struct GenModel *model, long n, long m)
 			fprintf(stderr, "Failed to reallocate R\n");
 			exit(1);
 		}
-	
+
 		tmp = (double *) realloc(model->rho, n*sizeof(double));
 		if (tmp) {
 			Memset(tmp, double, n);
@@ -222,7 +222,7 @@ void gensvm_reallocate_model(struct GenModel *model, long n, long m)
 			fprintf(stderr, "Failed to reallocte rho\n");
 			exit(1);
 		}
-	
+
 		model->n = n;
 	}
 	if (model->m != m) {
@@ -252,7 +252,7 @@ void gensvm_reallocate_model(struct GenModel *model, long n, long m)
 			fprintf(stderr, "Failed to reallocate Vbar\n");
 			exit(1);
 		}
-		
+
 		model->m = m;
 	}
 }
@@ -285,7 +285,7 @@ void gensvm_free_model(struct GenModel *model)
 }
 
 /**
- * @brief Free allocated GenData struct 
+ * @brief Free allocated GenData struct
  *
  * @details
  * Simply free a previously allocated GenData struct by freeing all its

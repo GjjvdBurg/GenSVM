@@ -76,7 +76,7 @@ void exit_with_help()
 int main(int argc, char **argv)
 {
 	char input_filename[MAX_LINE_LENGTH];
-	
+
 	struct Training *training = gensvm_init_training();
 	struct GenData *train_data = gensvm_init_data();
 	struct GenData *test_data = gensvm_init_data();
@@ -87,7 +87,7 @@ int main(int argc, char **argv)
 		exit_with_help();
 	parse_command_line(argc, argv, input_filename);
 
-	note("Reading training file\n");	
+	note("Reading training file\n");
 	read_training_from_file(input_filename, training);
 
 	note("Reading data from %s\n", training->train_data_file);
