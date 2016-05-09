@@ -19,7 +19,7 @@
 #include "gensvm_matrix.h"
 #include "gensvm_sv.h"
 #include "gensvm_train.h"
-#include "util.h"
+#include "gensvm_util.h"
 
 /**
  * Maximum number of iterations of the algorithm.

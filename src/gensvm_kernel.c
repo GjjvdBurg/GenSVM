@@ -18,7 +18,7 @@
 #include "gensvm_kernel.h"
 #include "gensvm_lapack.h"
 #include "gensvm_matrix.h"
-#include "util.h"
+#include "gensvm_util.h"
 
 /**
  * @brief Do the preprocessing steps needed to perform kernel GenSVM

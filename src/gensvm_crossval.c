@@ -13,8 +13,8 @@
  *
  */
 
-#include "crossval.h"
 #include "gensvm.h"
+#include "gensvm_crossval.h"
 #include "gensvm_matrix.h"
 
 /**

@@ -19,7 +19,7 @@
 #include "gensvm_train.h"
 #include "gensvm_pred.h"
 #include "libGenSVM.h"
-#include "util.h"
+#include "gensvm_util.h"
 
 #define MINARGS 2
 

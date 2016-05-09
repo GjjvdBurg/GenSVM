@@ -12,17 +12,17 @@
 #include <math.h>
 #include <time.h>
 
-#include "crossval.h"
 #include "libGenSVM.h"
 #include "gensvm.h"
+#include "gensvm_crossval.h"
 #include "gensvm_init.h"
 #include "gensvm_kernel.h"
 #include "gensvm_matrix.h"
 #include "gensvm_train.h"
 #include "gensvm_train_dataset.h"
 #include "gensvm_pred.h"
-#include "util.h"
-#include "timer.h"
+#include "gensvm_util.h"
+#include "gensvm_timer.h"
 
 extern FILE *GENSVM_OUTPUT_FILE;
 

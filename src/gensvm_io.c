@@ -14,7 +14,7 @@
 #include "gensvm_io.h"
 #include "gensvm_matrix.h"
 #include "gensvm_strutil.h"
-#include "timer.h"
+#include "gensvm_timer.h"
 
 /**
  * @brief Read data from file

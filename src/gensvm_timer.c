@@ -12,7 +12,7 @@
 
 #include <time.h>
 
-#include "timer.h"
+#include "gensvm_timer.h"
 
 /**
  * @brief Calculate the time between two clocks

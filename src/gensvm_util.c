@@ -11,7 +11,7 @@
  */
 #include <stdarg.h>
 
-#include "util.h"
+#include "gensvm_util.h"
 
 FILE *GENSVM_OUTPUT_FILE; 	///< The #GENSVM_OUTPUT_FILE specifies the 
 				///< output stream to which all output is 

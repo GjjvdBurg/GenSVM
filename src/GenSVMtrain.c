@@ -14,13 +14,13 @@
 #include <time.h>
 #include <math.h>
 
-#include "gensvm_kernel.h"
 #include "libGenSVM.h"
 #include "gensvm.h"
 #include "gensvm_io.h"
 #include "gensvm_init.h"
+#include "gensvm_kernel.h"
 #include "gensvm_train.h"
-#include "util.h"
+#include "gensvm_util.h"
 
 #define MINARGS 2
 

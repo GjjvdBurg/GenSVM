@@ -13,7 +13,7 @@
  */
 
 #include "gensvm_matrix.h"
-#include "util.h"
+#include "gensvm_util.h"
 
 /**
  * @brief print a matrix

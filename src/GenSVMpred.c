@@ -28,7 +28,7 @@
 #include "gensvm_init.h"
 #include "gensvm_io.h"
 #include "gensvm_pred.h"
-#include "util.h"
+#include "gensvm_util.h"
 
 #define MINARGS 3
 

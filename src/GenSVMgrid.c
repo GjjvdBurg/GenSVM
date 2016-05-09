@@ -21,15 +21,15 @@
 
 #include <time.h>
 
-#include "crossval.h"
 #include "gensvm.h"
+#include "gensvm_crossval.h"
 #include "gensvm_io.h"
 #include "gensvm_init.h"
 #include "gensvm_pred.h"
+#include "gensvm_strutil.h"
 #include "gensvm_train.h"
 #include "gensvm_train_dataset.h"
-#include "gensvm_strutil.h"
-#include "util.h"
+#include "gensvm_util.h"
 
 #define MINARGS 2
 

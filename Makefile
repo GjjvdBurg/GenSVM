@@ -13,35 +13,35 @@ all: lib/libgensvm.a $(EXECS)
 override LDFLAGS+=-lcblas -llapack -lm
 
 lib/libgensvm.a: \
-	src/crossval.o \
 	src/libGenSVM.o \
+	src/gensvm_crossval.o \
 	src/gensvm_init.o \
 	src/gensvm_io.o \
 	src/gensvm_kernel.o \
 	src/gensvm_lapack.o \
 	src/gensvm_matrix.o \
 	src/gensvm_pred.o \
+	src/gensvm_strutil.o \
 	src/gensvm_sv.o \
 	src/gensvm_train.o \
 	src/gensvm_train_dataset.o \
-	src/strutil.o \
-	src/timer.o \
-	src/util.o 
+	src/gensvm_timer.o \
+	src/gensvm_util.o
 	@ar rcs lib/libgensvm.a \
-		src/crossval.o \
 		src/libGenSVM.o \
+		src/gensvm_crossval.o \
 		src/gensvm_init.o \
 		src/gensvm_io.o \
 		src/gensvm_matrix.o \
 		src/gensvm_kernel.o \
 		src/gensvm_lapack.o \
 		src/gensvm_pred.o \
+		src/gensvm_strutil.o \
 		src/gensvm_sv.o \
 		src/gensvm_train.o \
 		src/gensvm_train_dataset.o \
-		src/strutil.o \
-		src/timer.o \
-		src/util.o 
+		src/gensvm_timer.o \
+		src/gensvm_util.o
 	@echo libgensvm.a...
 
 gensvm: src/GenSVMtraintest.c lib/libgensvm.a
