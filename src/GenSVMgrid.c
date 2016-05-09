@@ -8,7 +8,7 @@
  * This is a command line interface to the parameter grid search functionality
  * of the algorithm. The grid search is specified in a separate file, thereby
  * reducing the number of command line arguments. See
- * read_training_from_file() for documentation on the training file. 
+ * read_training_from_file() for documentation on the training file.
  *
  * The program runs a grid search as specified in the training file. If
  * desired the grid search can incorporate consistency checks to find the
@@ -82,7 +82,7 @@ int main(int argc, char **argv)
 	struct GenData *test_data = gensvm_init_data();
 	struct Queue *q = gensvm_init_queue();
 
-	if (argc < MINARGS || gensvm_check_argv(argc, argv, "-help") 
+	if (argc < MINARGS || gensvm_check_argv(argc, argv, "-help")
 			|| gensvm_check_argv_eq(argc, argv, "-h") )
 		exit_with_help();
 	parse_command_line(argc, argv, input_filename);
@@ -150,7 +150,7 @@ void parse_command_line(int argc, char **argv, char *input_filename)
 				i--;
 				break;
 			default:
-				fprintf(stderr, "Unknown option: -%c\n", 
+				fprintf(stderr, "Unknown option: -%c\n",
 						argv[i-1][1]);
 				exit_with_help();
 		}
@@ -184,10 +184,10 @@ KernelType parse_kernel_str(char *kernel_line)
  *
  * @details
  * Read the Training struct from a file. The training file follows a specific
- * format specified in @ref spec_training_file. 
+ * format specified in @ref spec_training_file.
  *
  * Commonly used string functions in this function are all_doubles_str() and
- * all_longs_str(). 
+ * all_longs_str().
  *
  * @param[in] 	input_filename 	filename of the training file
  * @param[in] 	training 	Training structure to place the parsed
@@ -206,7 +206,7 @@ void read_training_from_file(char *input_filename, struct Training *training)
 
 	fid = fopen(input_filename, "r");
 	if (fid == NULL) {
-		fprintf(stderr, "Error opening training file %s\n", 
+		fprintf(stderr, "Error opening training file %s\n",
 				input_filename);
 		exit(1);
 	}
@@ -216,7 +216,7 @@ void read_training_from_file(char *input_filename, struct Training *training)
 		Memset(lparams, long, MAX_LINE_LENGTH);
 		if (str_startswith(buffer, "train:")) {
 			sscanf(buffer, "train: %s\n", train_filename);
-			training->train_data_file = Calloc(char, 
+			training->train_data_file = Calloc(char,
 					MAX_LINE_LENGTH);
 			strcpy(training->train_data_file, train_filename);
 		} else if (str_startswith(buffer, "test:")) {

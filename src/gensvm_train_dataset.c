@@ -6,7 +6,7 @@
  *
  * @details
  * The GenSVM algorithm takes a number of parameters. The functions in
- * this file are used to find the optimal parameters. 
+ * this file are used to find the optimal parameters.
  */
 
 #include <math.h>
@@ -31,7 +31,7 @@ extern FILE *GENSVM_OUTPUT_FILE;
  *
  * @details
  * A Training instance describes the grid to search over. This funtion
- * creates all tasks that need to be performed and adds these to 
+ * creates all tasks that need to be performed and adds these to
  * a Queue. Each task contains a pointer to the train and test datasets
  * which are supplied. Note that the tasks are created in a specific order of
  * the parameters, to ensure that the GenModel::V of a previous parameter
@@ -39,13 +39,13 @@ extern FILE *GENSVM_OUTPUT_FILE;
  * parameter set.
  *
  * @param[in] 	training 	Training struct describing the grid search
- * @param[in] 	queue 		pointer to a Queue that will be used to 
+ * @param[in] 	queue 		pointer to a Queue that will be used to
  * 				add the tasks to
  * @param[in] 	train_data 	GenData of the training set
  * @param[in] 	test_data 	GenData of the test set
  *
  */
-void make_queue(struct Training *training, struct Queue *queue, 
+void make_queue(struct Training *training, struct Queue *queue,
 		struct GenData *train_data, struct GenData *test_data)
 {
 	long i, j, k;
@@ -74,7 +74,7 @@ void make_queue(struct Training *training, struct Queue *queue,
 		task->test_data = test_data;
 		task->folds = training->folds;
 		task->kerneltype = training->kerneltype;
-		task->kernelparam = Calloc(double, training->Ng + 
+		task->kernelparam = Calloc(double, training->Ng +
 				training->Nc + training->Nd);
 		queue->tasks[i] = task;
 	}
@@ -86,7 +86,7 @@ void make_queue(struct Training *training, struct Queue *queue,
 	cnt = 1;
 	i = 0;
 	while (i < N )
-		for (j=0; j<training->Np; j++) 
+		for (j=0; j<training->Np; j++)
 			for (k=0; k<cnt; k++) {
 				queue->tasks[i]->p = training->ps[j];
 				i++;
@@ -95,9 +95,9 @@ void make_queue(struct Training *training, struct Queue *queue,
 	cnt *= training->Np;
 	i = 0;
 	while (i < N )
-		for (j=0; j<training->Nl; j++) 
+		for (j=0; j<training->Nl; j++)
 			for (k=0; k<cnt; k++) {
-				queue->tasks[i]->lambda = 
+				queue->tasks[i]->lambda =
 					training->lambdas[j];
 				i++;
 			}
@@ -116,7 +116,7 @@ void make_queue(struct Training *training, struct Queue *queue,
 	while (i < N )
 		for (j=0; j<training->Nw; j++)
 			for (k=0; k<cnt; k++) {
-				queue->tasks[i]->weight_idx = 
+				queue->tasks[i]->weight_idx =
 					training->weight_idxs[j];
 				i++;
 			}
@@ -126,7 +126,7 @@ void make_queue(struct Training *training, struct Queue *queue,
 	while (i < N )
 		for (j=0; j<training->Ne; j++)
 			for (k=0; k<cnt; k++) {
-				queue->tasks[i]->epsilon = 
+				queue->tasks[i]->epsilon =
 					training->epsilons[j];
 				i++;
 			}
@@ -136,7 +136,7 @@ void make_queue(struct Training *training, struct Queue *queue,
 	while (i < N && training->Ng > 0)
 		for (j=0; j<training->Ng; j++)
 			for (k=0; k<cnt; k++) {
-				queue->tasks[i]->kernelparam[0] = 
+				queue->tasks[i]->kernelparam[0] =
 					training->gammas[j];
 				i++;
 			}
@@ -146,7 +146,7 @@ void make_queue(struct Training *training, struct Queue *queue,
 	while (i < N && training->Nc > 0)
 		for (j=0; j<training->Nc; j++)
 			for (k=0; k<cnt; k++) {
-				queue->tasks[i]->kernelparam[1] = 
+				queue->tasks[i]->kernelparam[1] =
 					training->coefs[j];
 				i++;
 			}
@@ -156,7 +156,7 @@ void make_queue(struct Training *training, struct Queue *queue,
 	while (i < N && training->Nd > 0)
 		for (j=0; j<training->Nd; j++)
 			for (k=0; k<cnt; k++) {
-				queue->tasks[i]->kernelparam[2] = 
+				queue->tasks[i]->kernelparam[2] =
 					training->degrees[j];
 				i++;
 			}
@@ -285,7 +285,7 @@ struct Queue *create_top_queue(struct Queue *q)
 	}
 	nq->N = N;
 	nq->i = 0;
-	
+
 	return nq;
 }
 
@@ -298,12 +298,12 @@ struct Queue *create_top_queue(struct Queue *q)
  * The best performing tasks in the supplied Queue are found by taking those
  * Task structs that have a performance greater or equal to the 95% percentile
  * of the performance of all tasks. These tasks are then gathered in a new
- * Queue. For each of the tasks in this new Queue the cross validation run is 
- * repeated a number of times. 
+ * Queue. For each of the tasks in this new Queue the cross validation run is
+ * repeated a number of times.
  *
  * For each of the Task configurations that are repeated the mean performance,
  * standard deviation of the performance and the mean computation time are
- * reported. 
+ * reported.
  *
  * Finally, the overall best tasks are written to the specified output. These
  * tasks are selected to have both the highest mean performance, as well as the
@@ -317,7 +317,7 @@ struct Queue *create_top_queue(struct Queue *q)
  * an interval is found which contains tasks. If one or more tasks are found,
  * this loop stops.
  *
- * @param[in] 	q 		Queue of Task structs which have already been 
+ * @param[in] 	q 		Queue of Task structs which have already been
  * 				run and have a Task::performance value
  * @param[in] 	repeats 	Number of times to repeat the best
  * 				configurations for consistency
@@ -385,7 +385,7 @@ void consistency_repeats(struct Queue *q, long repeats, TrainType traintype)
 			matrix_set(perf, repeats, i, r, p);
 			mean[i] += p/((double) repeats);
 			note("%3.3f\t", p);
-			// this is done because if we reuse the V it's not a 
+			// this is done because if we reuse the V it's not a
 			// consistency check
 			gensvm_seed_model_V(NULL, model, task->train_data);
 			for (f=0; f<task->folds; f++) {
@@ -420,21 +420,21 @@ void consistency_repeats(struct Queue *q, long repeats, TrainType traintype)
 		pi = prctile(mean, N, (100.0-p));
 		pr = prctile(std, N, p);
 		pt = prctile(time, N, p);
-		for (i=0; i<N; i++) 
+		for (i=0; i<N; i++)
 			if ((pi - mean[i] < 0.0001) &&
-			    (std[i] - pr < 0.0001) && 
+			    (std[i] - pr < 0.0001) &&
 			    (time[i] - pt < 0.0001)) {
 				note("(%li)\tw = %li\te = %f\tp = %f\t"
 						"k = %f\tl = %f\t"
 						"mean: %3.3f\tstd: %3.3f\t"
 						"time: %3.3f\n",
-						nq->tasks[i]->ID, 
+						nq->tasks[i]->ID,
 						nq->tasks[i]->weight_idx,
-						nq->tasks[i]->epsilon, 
+						nq->tasks[i]->epsilon,
 						nq->tasks[i]->p,
-						nq->tasks[i]->kappa, 
+						nq->tasks[i]->kappa,
 						nq->tasks[i]->lambda,
-						mean[i], 
+						mean[i],
 						std[i],
 						time[i]);
 				breakout = true;
@@ -458,15 +458,15 @@ void consistency_repeats(struct Queue *q, long repeats, TrainType traintype)
  * @brief Check if the kernel parameters change between tasks
  *
  * @details
- * In the current strategy for training the kernel matrix is decomposed once, 
- * and tasks with the same kernel settings are performed sequentially. When a 
- * task needs to be done with different kernel parameters, the kernel matrix 
- * needs to be recalculated. This function is used to check whether this is 
+ * In the current strategy for training the kernel matrix is decomposed once,
+ * and tasks with the same kernel settings are performed sequentially. When a
+ * task needs to be done with different kernel parameters, the kernel matrix
+ * needs to be recalculated. This function is used to check whether this is
  * the case.
  *
  * @param[in] 	newtask 	the next task
  * @param[in] 	oldtask 	the old task
- * @return 			whether the kernel needs to be reevaluated 
+ * @return 			whether the kernel needs to be reevaluated
  */
 bool kernel_changed(struct Task *newtask, struct Task *oldtask)
 {
@@ -502,10 +502,10 @@ bool kernel_changed(struct Task *newtask, struct Task *oldtask)
  * cross_validation(), the optimal weights of one parameter set are used as
  * initial estimates for GenModel::V in the next parameter set. Note that to
  * optimally exploit this feature of the optimization algorithm, the order in
- * which tasks are considered is important. This is considered in 
+ * which tasks are considered is important. This is considered in
  * make_queue().
- * 
- * The performance found by cross validation is stored in the Task struct. 
+ *
+ * The performance found by cross validation is stored in the Task struct.
  *
  * @param[in,out] 	q 	Queue with Task instances to run
  */
@@ -519,7 +519,7 @@ void start_training(struct Queue *q)
 	struct GenModel *model = gensvm_init_model();
 	clock_t main_s, main_e, loop_s, loop_e;
 
-	// in principle this can change between tasks, but this shouldn't be 
+	// in principle this can change between tasks, but this shouldn't be
 	// the case TODO
 	folds = task->folds;
 
@@ -594,17 +594,17 @@ void start_training(struct Queue *q)
  * @brief Run cross validation with a given set of train/test folds
  *
  * @details
- * This cross validation function uses predefined train/test splits. Also, the  
- * the optimal parameters GenModel::V of a previous fold as initial conditions 
- * for GenModel::V of the next fold. 
+ * This cross validation function uses predefined train/test splits. Also, the
+ * the optimal parameters GenModel::V of a previous fold as initial conditions
+ * for GenModel::V of the next fold.
  *
  * @param[in] 	model 		GenModel with the configuration to train
  * @param[in] 	train_folds 	array of training datasets
  * @param[in] 	test_folds 	array of test datasets
  * @param[in] 	folds 		number of folds
- * @param[in] 	n_total 	number of objects in the union of the train 
+ * @param[in] 	n_total 	number of objects in the union of the train
  * datasets
- * @return 			performance (hitrate) of the configuration on 
+ * @return 			performance (hitrate) of the configuration on
  * cross validation
  */
 double gensvm_cross_validation(struct GenModel *model,
@@ -643,7 +643,7 @@ double gensvm_cross_validation(struct GenModel *model,
 	total_perf /= ((double) n_total);
 
 	return total_perf;
-}	
+}
 
 
 /**
@@ -735,9 +735,9 @@ void copy_model(struct GenModel *from, struct GenModel *to)
  * @brief Print the description of the current task on screen
  *
  * @details
- * To track the progress of the grid search the parameters of the current task 
- * are written to the output specified in GENSVM_OUTPUT_FILE. Since the 
- * parameters differ with the specified kernel, this function writes a 
+ * To track the progress of the grid search the parameters of the current task
+ * are written to the output specified in GENSVM_OUTPUT_FILE. Since the
+ * parameters differ with the specified kernel, this function writes a
  * parameter string depending on which kernel is used.
  *
  * @param[in] 	task 	the Task specified

@@ -15,13 +15,13 @@
  * @brief Solve AX = B where A is symmetric positive definite.
  *
  * @details
- * Solve a linear system of equations AX = B where A is symmetric positive 
+ * Solve a linear system of equations AX = B where A is symmetric positive
  * definite. This function uses the externel LAPACK routine dposv.
  *
  * @param[in] 		UPLO 	which triangle of A is stored
  * @param[in] 		N 	order of A
  * @param[in] 		NRHS 	number of columns of B
- * @param[in,out] 	A 	double precision array of size (LDA, N). On 
+ * @param[in,out] 	A 	double precision array of size (LDA, N). On
  * 				exit contains the upper or lower factor of the
  * 				Cholesky factorization of A.
  * @param[in] 		LDA 	leading dimension of A
@@ -36,7 +36,7 @@
  * 					- >0: 	if i, the leading minor of A
  * 						was not positive definite
  *
- * See the LAPACK documentation at: 
+ * See the LAPACK documentation at:
  * http://www.netlib.org/lapack/explore-html/dc/de9/group__double_p_osolve.html
  */
 int dposv(char UPLO, int N, int NRHS, double *A, int LDA, double *B,
@@ -53,13 +53,13 @@ int dposv(char UPLO, int N, int NRHS, double *A, int LDA, double *B,
  * @brief Solve a system of equations AX = B where A is symmetric.
  *
  * @details
- * Solve a linear system of equations AX = B where A is symmetric. This 
+ * Solve a linear system of equations AX = B where A is symmetric. This
  * function uses the external LAPACK routine dsysv.
  *
  * @param[in] 		UPLO 	which triangle of A is stored
  * @param[in] 		N 	order of A
  * @param[in] 		NRHS 	number of columns of B
- * @param[in,out] 	A 	double precision array of size (LDA, N). On 
+ * @param[in,out] 	A 	double precision array of size (LDA, N). On
  * 				exit contains the block diagonal matrix D and
  * 				the multipliers used to obtain the factor U or
  * 				L from the factorization A = U*D*U**T or
@@ -96,7 +96,7 @@ int dsysv(char UPLO, int N, int NRHS, double *A, int LDA, int *IPIV,
 }
 
 /**
- * @brief Compute the eigenvalues and optionally the eigenvectors of a 
+ * @brief Compute the eigenvalues and optionally the eigenvectors of a
  * symmetric matrix.
  *
  * @details

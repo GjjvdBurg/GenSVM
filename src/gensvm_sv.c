@@ -5,7 +5,7 @@
  * @brief Calculate the number of support vectors
  *
  * @details
- * The function in this file can be used to calculate the number of support 
+ * The function in this file can be used to calculate the number of support
  * vectors are left in a model.
  *
  */
@@ -17,9 +17,9 @@
  * @brief Calculate the number of support vectors in a model
  *
  * @details
- * If an object is correctly classified, the number of classes for which the 
- * error q is larger than 1, is K-1 (i.e., there is no error w.r.t. any of the 
- * other classes).  All objects for which this is not the case are thus support 
+ * If an object is correctly classified, the number of classes for which the
+ * error q is larger than 1, is K-1 (i.e., there is no error w.r.t. any of the
+ * other classes).  All objects for which this is not the case are thus support
  * vectors.
  *
  * @param[in] 	model 	GenModel with solution
@@ -40,6 +40,6 @@ long gensvm_num_sv(struct GenModel *model, struct GenData *data)
 		}
 		num_sv += (num_correct < data->K - 1);
 	}
-	
+
 	return num_sv;
 }

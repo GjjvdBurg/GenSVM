@@ -4,9 +4,9 @@
  * @date January 7, 2014
  * @brief Functions for initializing model and data structures
  *
- * @details 
+ * @details
  * This file contains functions for initializing a GenModel instance
- * and a GenData instance. In addition, default values for these 
+ * and a GenData instance. In addition, default values for these
  * structures are defined here (and only here). Functions for allocating
  * memory for the model structure and freeing of the model and data structures
  * are also included.
@@ -59,7 +59,7 @@ struct GenModel *gensvm_init_model()
  * @brief Initialize a GenData structure
  *
  * @details
- * A GenData structure is initialized and default values are set. 
+ * A GenData structure is initialized and default values are set.
  * A pointer to the initialized data is returned.
  *
  * @returns 	initialized GenData
@@ -161,8 +161,8 @@ void gensvm_allocate_model(struct GenModel *model)
  * @brief Reallocate memory for GenModel
  *
  * @details
- * This function can be used to reallocate existing memory for a GenModel, 
- * upon a change in the model dimensions. This is used in combination with 
+ * This function can be used to reallocate existing memory for a GenModel,
+ * upon a change in the model dimensions. This is used in combination with
  * kernels.
  *
  * @param[in] 	model 	GenModel to reallocate

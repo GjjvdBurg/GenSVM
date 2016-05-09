@@ -8,10 +8,10 @@
  * This header file contains defines and includes which are used in many
  * parts of the program. Most notable are the Calloc, Malloc and Memset
  * defines, which are commonly used to allocate memory. These functions
- * are shorthands for their lowercase counterparts. 
+ * are shorthands for their lowercase counterparts.
  *
- * Furthermore, a maximum and minimum function are defined here. These 
- * functions have their own include guards, to ensure potential linked 
+ * Furthermore, a maximum and minimum function are defined here. These
+ * functions have their own include guards, to ensure potential linked
  * libraries don't conflict with these definitions.
  *
  */

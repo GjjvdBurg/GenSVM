@@ -6,7 +6,7 @@
  *
  * @details
  * Contains function declarations for computing the kernel matrix
- * in nonlinear MSVMGen. Additional kernel functions should be 
+ * in nonlinear MSVMGen. Additional kernel functions should be
  * included here and in gensvm_kernel.c
  *
  */

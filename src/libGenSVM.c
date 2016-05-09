@@ -6,8 +6,8 @@
  *
  * @details
  * The functions in this file are all functions needed
- * to calculate the optimal separation boundaries for 
- * a multiclass classification problem, using the 
+ * to calculate the optimal separation boundaries for
+ * a multiclass classification problem, using the
  * GenSVM algorithm.
  *
  */
@@ -23,10 +23,10 @@ inline double rnd() { return (double) rand()/0x7FFFFFFF; }
 
 /**
  * @brief Generate matrix of simplex vertex coordinates
- * 
+ *
  * @details
- * Generate the simplex matrix. Each row of the created 
- * matrix contains the coordinate vector of a single 
+ * Generate the simplex matrix. Each row of the created
+ * matrix contains the coordinate vector of a single
  * vertex of the K-simplex in K-1 dimensions. The simplex
  * generated is a special simplex with edges of length 1.
  * The simplex matrix U must already have been allocated.
@@ -83,9 +83,9 @@ void gensvm_category_matrix(struct GenModel *model, struct GenData *dataset)
  *
  * @details
  * The simplex difference matrix is a 3D matrix which is constructed
- * as follows. For each instance i, the difference vectors between the row of 
+ * as follows. For each instance i, the difference vectors between the row of
  * the simplex matrix corresponding to the class label of instance i and the
- * other rows of the simplex matrix are calculated. These difference vectors 
+ * other rows of the simplex matrix are calculated. These difference vectors
  * are stored in a matrix, which is one horizontal slice of the 3D matrix.
  *
  * @param[in,out] 	model 	the corresponding GenModel
@@ -113,11 +113,11 @@ void gensvm_simplex_diff(struct GenModel *model, struct GenData *data)
 
 /**
  * @brief Calculate the scalar errors
- * 
+ *
  * @details
  * Calculate the scalar errors q based on the current estimate of V, and
- * store these in Q. It is assumed that the memory for Q has already been 
- * allocated. In addition, the matrix ZV is calculated here. It is assigned 
+ * store these in Q. It is assumed that the memory for Q has already been
+ * allocated. In addition, the matrix ZV is calculated here. It is assigned
  * to a pre-allocated block of memory, which is passed to this function.
  *
  * @param[in,out] 	model 	the corresponding GenModel
@@ -164,16 +164,16 @@ void gensvm_calculate_errors(struct GenModel *model, struct GenData *data,
 			}
 		}
 	}
-}	
+}
 
 /**
  * @brief Calculate the Huber hinge errors
  *
  * @details
- * For each of the scalar errors in Q the Huber hinge errors are 
- * calculated. The Huber hinge is here defined as 
+ * For each of the scalar errors in Q the Huber hinge errors are
+ * calculated. The Huber hinge is here defined as
  * @f[
- * 	h(q) = 
+ * 	h(q) =
  * 		\begin{dcases}
  * 			1 - q - \frac{\kappa + 1}{2} & \text{if } q \leq -\kappa \\
  * 			\frac{1}{2(\kappa + 1)} ( 1 - q)^2 & \text{if } q \in (-\kappa, 1] \\
@@ -183,7 +183,7 @@ void gensvm_calculate_errors(struct GenModel *model, struct GenData *data,
  *
  * @param[in,out] model 	the corresponding GenModel
  */
-void gensvm_calculate_huber(struct GenModel *model) 
+void gensvm_calculate_huber(struct GenModel *model)
 {
 	long i, j;
 	double q, value;
@@ -206,10 +206,10 @@ void gensvm_calculate_huber(struct GenModel *model)
  * @brief seed the matrix V from an existing model or using rand
  *
  * @details
- * The matrix V must be seeded before the main_loop() can start. 
- * This can be done by either seeding it with random numbers or 
+ * The matrix V must be seeded before the main_loop() can start.
+ * This can be done by either seeding it with random numbers or
  * using the solution from a previous model on the same dataset
- * as initial seed. The latter option usually allows for a 
+ * as initial seed. The latter option usually allows for a
  * significant improvement in the number of iterations necessary
  * because the seeded model V is closer to the optimal V.
  *
@@ -221,11 +221,11 @@ void gensvm_seed_model_V(struct GenModel *from_model,
 {
 	long i, j, k;
 	double cmin, cmax, value;
-	
+
 	long n = data->n;
 	long m = data->m;
 	long K = data->K;
-	
+
 	if (from_model == NULL) {
 		for (i=0; i<m+1; i++) {
 			cmin = 1e100;
@@ -243,7 +243,7 @@ void gensvm_seed_model_V(struct GenModel *from_model,
 			}
 		}
 	} else {
-		for (i=0; i<m+1; i++) 
+		for (i=0; i<m+1; i++)
 			for (j=0; j<K-1; j++) {
 				value = matrix_get(from_model->V, K-1, i, j);
 				matrix_set(to_model->V, K-1, i, j, value);
@@ -255,7 +255,7 @@ void gensvm_seed_model_V(struct GenModel *from_model,
  * @brief Use step doubling
  *
  * @details
- * Step doubling can be used to speed up the maorization algorithm. Instead of 
+ * Step doubling can be used to speed up the maorization algorithm. Instead of
  * using the value at the minimimum of the majorization function, the value
  * ``opposite'' the majorization point is used. This can essentially cut the
  * number of iterations necessary to reach the minimum in half.
@@ -283,10 +283,10 @@ void gensvm_step_doubling(struct GenModel *model)
  * @brief Initialize instance weights
  *
  * @details
- * Instance weights can for instance be used to add additional weights to 
+ * Instance weights can for instance be used to add additional weights to
  * instances of certain classes. Two default weight possibilities are
- * implemented here. The first is unit weights, where each instance gets 
- * weight 1. 
+ * implemented here. The first is unit weights, where each instance gets
+ * weight 1.
  *
  * The second are group size correction weights, which are calculated as
  * @f[
@@ -296,8 +296,8 @@ void gensvm_step_doubling(struct GenModel *model)
  * @f$ y_i = k @f$.
  *
  * @param[in] 		data 	GenData with the dataset
- * @param[in,out] 	model 	GenModel with the weight specification. On 
- * 				exit GenModel::rho contains the instance 
+ * @param[in,out] 	model 	GenModel with the weight specification. On
+ * 				exit GenModel::rho contains the instance
  * 				weights.
  */
 void gensvm_initialize_weights(struct GenData *data, struct GenModel *model)
@@ -311,12 +311,12 @@ void gensvm_initialize_weights(struct GenData *data, struct GenModel *model)
 	if (model->weight_idx == 1) {
 		for (i=0; i<n; i++)
 			model->rho[i] = 1.0;
-	} 
+	}
 	else if (model->weight_idx == 2) {
 		groups = Calloc(long, K);
-		for (i=0; i<n; i++) 
+		for (i=0; i<n; i++)
 			groups[data->y[i]-1]++;
-		for (i=0; i<n; i++) 
+		for (i=0; i<n; i++)
 			model->rho[i] = ((double) n)/((double) (groups[data->y[i]-1]*K));
 	} else {
 		fprintf(stderr, "Unknown weight specification.\n");

@@ -6,7 +6,7 @@
  *
  * @details
  * This file contains functions for predicting the class labels of instances
- * and a function for calculating the predictive performance (hitrate) of 
+ * and a function for calculating the predictive performance (hitrate) of
  * a prediction given true class labels.
  *
  */
@@ -24,7 +24,7 @@
  * @brief Predict class labels of data given and output in predy
  *
  * @details
- * The labels are predicted by mapping each instance in data to the 
+ * The labels are predicted by mapping each instance in data to the
  * simplex space using the matrix V in the given model. Next, for each
  * instance the nearest simplex vertex is determined using an Euclidean
  * norm. The nearest simplex vertex determines the predicted class label,
@@ -113,7 +113,7 @@ void gensvm_predict_labels(struct GenData *testdata, struct GenModel *model,
  *
  * @details
  * The predictive performance is calculated by simply counting the number
- * of correctly classified samples and dividing by the total number of 
+ * of correctly classified samples and dividing by the total number of
  * samples, multiplying by 100.
  *
  * @param[in] 	data 	the GenData dataset with known labels

@@ -3,7 +3,7 @@
  * @author Gertjan van den Burg
  * @date August 9, 2013
  * @brief Main functions for training the GenSVM solution.
- * 
+ *
  * @details
  * Contains update and loss functions used to actually find
  * the optimal V.
@@ -32,14 +32,14 @@
  * @details
  * This function is the main training function. This function
  * handles the optimization of the model with the given model parameters, with
- * the data given. On return the matrix GenModel::V contains the optimal 
+ * the data given. On return the matrix GenModel::V contains the optimal
  * weight matrix.
  *
  * In this function, step doubling is used in the majorization algorithm after
- * a burn-in of 50 iterations. If the training is finished, GenModel::t and 
+ * a burn-in of 50 iterations. If the training is finished, GenModel::t and
  * GenModel::W are extracted from GenModel::V.
  *
- * @param[in,out] 	model 	the GenModel to be trained. Contains optimal 
+ * @param[in,out] 	model 	the GenModel to be trained. Contains optimal
  * 				V on exit.
  * @param[in] 		data 	the GenData to train the model with.
  */
@@ -54,7 +54,7 @@ void gensvm_optimize(struct GenModel *model, struct GenData *data)
 
 	double *B = Calloc(double, n*(K-1));
 	double *ZV = Calloc(double, n*(K-1));
-	double *ZAZ = Calloc(double, (m+1)*(m+1));	
+	double *ZAZ = Calloc(double, (m+1)*(m+1));
 	double *ZAZV = Calloc(double, (m+1)*(K-1));
 	double *ZAZVT = Calloc(double, (m+1)*(K-1));
 
@@ -79,16 +79,16 @@ void gensvm_optimize(struct GenModel *model, struct GenData *data)
 
 	while ((it < MAX_ITER) && (Lbar - L)/L > model->epsilon)
 	{
-		// ensure V contains newest V and Vbar contains V from 
+		// ensure V contains newest V and Vbar contains V from
 		// previous
 		gensvm_get_update(model, data, B, ZAZ, ZAZV, ZAZVT);
 		if (it > 50)
 			gensvm_step_doubling(model);
-		
+
 		Lbar = L;
 		L = gensvm_get_loss(model, data, ZV);
 
-		if (it%100 == 0) 
+		if (it%100 == 0)
 			note("iter = %li, L = %15.16f, Lbar = %15.16f, "
 			     "reldiff = %15.16f\n", it, L, Lbar, (Lbar - L)/L);
 		it++;
@@ -124,20 +124,20 @@ void gensvm_optimize(struct GenModel *model, struct GenData *data)
 
 /**
  * @brief Calculate the current value of the loss function
- * 
+ *
  * @details
- * The current loss function value is calculated based on the matrix V in the 
+ * The current loss function value is calculated based on the matrix V in the
  * given model. Note that the matrix ZV is passed explicitly to avoid having
  * to reallocate memory at every step.
  *
- * @param[in] 		model 	GenModel structure which holds the current 
+ * @param[in] 		model 	GenModel structure which holds the current
  * 				estimate V
  * @param[in]  		data 	GenData structure
- * @param[in,out] 	ZV 	pre-allocated matrix ZV which is updated on 
+ * @param[in,out] 	ZV 	pre-allocated matrix ZV which is updated on
  * 				output
  * @returns 			the current value of the loss function
  */
-double gensvm_get_loss(struct GenModel *model, struct GenData *data, 
+double gensvm_get_loss(struct GenModel *model, struct GenData *data,
 		double *ZV)
 {
 	long i, j;
@@ -187,19 +187,19 @@ double gensvm_get_loss(struct GenModel *model, struct GenData *data,
  *
  * Because the function gensvm_get_update() is always called after a call to
  * gensvm_get_loss() with the same GenModel::V, it is unnecessary to calculate
- * the updated errors GenModel::Q and GenModel::H here too. This saves on 
+ * the updated errors GenModel::Q and GenModel::H here too. This saves on
  * computation time.
  *
- * In calculating the majorization coefficients we calculate the elements of a 
+ * In calculating the majorization coefficients we calculate the elements of a
  * diagonal matrix A with elements
  * @f[
- * 	A_{i, i} = \frac{1}{n} \rho_i \sum_{j \neq k} \left[ 
+ * 	A_{i, i} = \frac{1}{n} \rho_i \sum_{j \neq k} \left[
  * 		\varepsilon_i a_{ijk}^{(p)} + (1 - \varepsilon_i) \omega_i
  * 		a_{ijk}^{(p)} \right],
  * @f]
  * where @f$ k = y_i @f$.
  * Since this matrix is only used to calculate the matrix @f$ Z' A Z @f$, it is
- * efficient to update a matrix ZAZ through consecutive rank 1 updates with 
+ * efficient to update a matrix ZAZ through consecutive rank 1 updates with
  * a single element of A and the corresponding row of Z. The BLAS function
  * dsyr is used for this.
  *
@@ -225,7 +225,7 @@ double gensvm_get_loss(struct GenModel *model, struct GenData *data,
  * solving this system is done through dposv().
  *
  * @todo
- * Consider allocating IPIV and WORK at a higher level, they probably don't 
+ * Consider allocating IPIV and WORK at a higher level, they probably don't
  * change much during the iterations.
  *
  * @param [in,out] 	model 	model to be updated
@@ -301,7 +301,7 @@ void gensvm_get_update(struct GenModel *model, struct GenData *data, double *B,
 						b = 0.5 - kappa/2.0 - q;
 					} else if ( q <= 1.0) {
 						b = pow(1.0 - q, 3.0)/(
-							2.0*pow(kappa + 1.0, 
+							2.0*pow(kappa + 1.0,
 								2.0));
 					} else {
 						b = 0;
@@ -336,22 +336,22 @@ void gensvm_get_update(struct GenModel *model, struct GenData *data, double *B,
 					} else {
 						a = 0.25*pow(p, 2.0)*pow(
 							(p/(p - 2.0))*
-							(0.5 - kappa/2.0 - q), 
+							(0.5 - kappa/2.0 - q),
 							p - 2.0);
 						b = a*(2.0*q + kappa - 1.0)/
-							(p - 2.0) + 
+							(p - 2.0) +
 							0.5*p*pow(
 								p/(p - 2.0)*
 								(0.5 - kappa/
-								 2.0 - q), 
+								 2.0 - q),
 								p - 1.0);
 					}
 					if (q <= -kappa) {
 						b = 0.5*p*pow(
-							0.5 - kappa/2.0 - q, 
+							0.5 - kappa/2.0 - q,
 							p - 1.0);
 					} else if ( q <= 1.0) {
-						b = p*pow(1.0 - q, 
+						b = p*pow(1.0 - q,
 								2.0*p - 1.0)/
 							pow(2*kappa+2.0, p);
 					}
@@ -379,8 +379,8 @@ void gensvm_get_update(struct GenModel *model, struct GenData *data, double *B,
 		}
 		Avalue *= in * rho[i];
 
-		// Now we calculate the matrix ZAZ. Since this is 
-		// guaranteed to be symmetric, we only calculate the 
+		// Now we calculate the matrix ZAZ. Since this is
+		// guaranteed to be symmetric, we only calculate the
 		// upper part of the matrix, and then copy this over
 		// to the lower part after all calculations are done.
 		// Note that the use of dsym is faster than dspr, even
@@ -402,8 +402,8 @@ void gensvm_get_update(struct GenModel *model, struct GenData *data, double *B,
 		for (j=0; j<m+1; j++)
 			matrix_set(ZAZ, m+1, j, i, matrix_get(ZAZ, m+1, i, j));
 	*/
-	
-	// Calculate the right hand side of the system we 
+
+	// Calculate the right hand side of the system we
 	// want to solve.
 	cblas_dsymm(
 			CblasRowMajor,
@@ -417,7 +417,7 @@ void gensvm_get_update(struct GenModel *model, struct GenData *data, double *B,
 			model->V,
 			K-1,
 			0.0,
-			ZAZV, 
+			ZAZV,
 			K-1);
 
 	cblas_dgemm(
@@ -436,8 +436,8 @@ void gensvm_get_update(struct GenModel *model, struct GenData *data, double *B,
 			ZAZV,
 			K-1);
 
-	/* 
-	 * Add lambda to all diagonal elements except the first one. Recall 
+	/*
+	 * Add lambda to all diagonal elements except the first one. Recall
 	 * that ZAZ is of size m+1 and is symmetric.
 	 */
 	i = 0;
@@ -445,19 +445,19 @@ void gensvm_get_update(struct GenModel *model, struct GenData *data, double *B,
 		i += (m+1) + 1;
 		ZAZ[i] += model->lambda;
 	}
-	
+
 	// For the LAPACK call we need to switch to Column-
 	// Major order. This is unnecessary for the matrix
-	// ZAZ because it is symmetric. The matrix ZAZV 
+	// ZAZ because it is symmetric. The matrix ZAZV
 	// must be converted however.
 	for (i=0; i<m+1; i++)
 		for (j=0; j<K-1; j++)
 			ZAZVT[j*(m+1)+i] = ZAZV[i*(K-1)+j];
-	
-	// We use the lower ('L') part of the matrix ZAZ, 
+
+	// We use the lower ('L') part of the matrix ZAZ,
 	// because we have used the upper part in the BLAS
 	// calls above in Row-major order, and Lapack uses
-	// column major order. 
+	// column major order.
 
 	status = dposv(
 			'L',
@@ -470,10 +470,10 @@ void gensvm_get_update(struct GenModel *model, struct GenData *data, double *B,
 
 	if (status != 0) {
 		// This step should not be necessary, as the matrix
-		// ZAZ is positive semi-definite by definition. It 
+		// ZAZ is positive semi-definite by definition. It
 		// is included for safety.
 		fprintf(stderr, "GenSVM warning: Received nonzero status from "
-				"dposv: %i\n", 
+				"dposv: %i\n",
 				status);
 		int *IPIV = malloc((m+1)*sizeof(int));
 		double *WORK = malloc(1*sizeof(double));
@@ -507,7 +507,7 @@ void gensvm_get_update(struct GenModel *model, struct GenData *data, double *B,
 		free(IPIV);
 	}
 
-	// Return to Row-major order. The matrix ZAZVT contains the solution 
+	// Return to Row-major order. The matrix ZAZVT contains the solution
 	// after the dposv/dsysv call.
 	for (i=0; i<m+1; i++)
 		for (j=0; j<K-1; j++)

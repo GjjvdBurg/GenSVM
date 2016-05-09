@@ -6,8 +6,8 @@
  *
  * @details
  * This is a command line program for training a single model on a given
- * dataset. To run a grid search over a number of parameter configurations, 
- * see trainGenSVMdataset.c. 
+ * dataset. To run a grid search over a number of parameter configurations,
+ * see trainGenSVMdataset.c.
  *
  */
 
@@ -28,7 +28,7 @@ extern FILE *GENSVM_OUTPUT_FILE;
 
 // function declarations
 void exit_with_help();
-void parse_command_line(int argc, char **argv, struct GenModel *model, 
+void parse_command_line(int argc, char **argv, struct GenModel *model,
 		char *input_filename, char *output_filename, char *model_filename);
 
 /**
@@ -81,24 +81,24 @@ int main(int argc, char **argv)
 	struct GenModel *model = gensvm_init_model();
 	struct GenData *data = gensvm_init_data();
 
-	if (argc < MINARGS || gensvm_check_argv(argc, argv, "-help") 
-			|| gensvm_check_argv_eq(argc, argv, "-h") ) 
+	if (argc < MINARGS || gensvm_check_argv(argc, argv, "-help")
+			|| gensvm_check_argv_eq(argc, argv, "-h") )
 		exit_with_help();
-	parse_command_line(argc, argv, model, input_filename, 
+	parse_command_line(argc, argv, model, input_filename,
 			output_filename, model_filename);
 
 	// read data file
 	gensvm_read_data(data, input_filename);
 
-	// copy dataset parameters to model	
+	// copy dataset parameters to model
 	model->n = data->n;
 	model->m = data->m;
 	model->K = data->K;
 	model->data_file = input_filename;
-	
+
 	// allocate model
 	gensvm_allocate_model(model);
-	
+
 	// initialize kernel (if necessary)
 	//gensvm_make_kernel(model, data);
 
@@ -131,7 +131,7 @@ int main(int argc, char **argv)
 	// free model and data
 	gensvm_free_model(model);
 	gensvm_free_data(data);
-	
+
 	return 0;
 }
 
@@ -155,12 +155,12 @@ int main(int argc, char **argv)
  * 					filename
  *
  */
-void parse_command_line(int argc, char **argv, struct GenModel *model, 
+void parse_command_line(int argc, char **argv, struct GenModel *model,
 		char *input_filename, char *output_filename, char *model_filename)
 {
 	int i;
-	double gamma = 1.0, 
-	       degree = 2.0, 
+	double gamma = 1.0,
+	       degree = 2.0,
 	       coef = 0.0;
 
 	GENSVM_OUTPUT_FILE = stdout;
@@ -210,12 +210,12 @@ void parse_command_line(int argc, char **argv, struct GenModel *model,
 				i--;
 				break;
 			default:
-				fprintf(stderr, "Unknown option: -%c\n", 
+				fprintf(stderr, "Unknown option: -%c\n",
 						argv[i-1][1]);
 				exit_with_help();
 		}
 	}
-	
+
 	// read input filename
 	if (i >= argc)
 		exit_with_help();

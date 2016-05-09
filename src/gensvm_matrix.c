@@ -17,7 +17,7 @@
 
 /**
  * @brief print a matrix
- * 
+ *
  * @details
  * Debug function to print a matrix
  *

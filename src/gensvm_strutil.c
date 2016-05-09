@@ -38,7 +38,7 @@ bool str_endswith(const char *str, const char *suf)
 {
 	size_t lensuf = strlen(suf),
 	       lenstr = strlen(str);
-	return lenstr < lensuf ? false : strncmp(str + lenstr - lensuf, suf, 
+	return lenstr < lensuf ? false : strncmp(str + lenstr - lensuf, suf,
 			lensuf) == 0;
 }
 
@@ -110,7 +110,7 @@ long get_fmt_long(FILE *fid, char *filename, const char *fmt)
  *
  * @details
  * This function is used to read a line of doubles from a buffer. All the
- * doubles found are stored in a pre-allocated array. 
+ * doubles found are stored in a pre-allocated array.
  *
  * @param[in] 	buffer 		a string buffer
  * @param[in] 	offset 		an offset of the string to start looking for
@@ -131,7 +131,7 @@ long all_doubles_str(char *buffer, long offset, double *all_doubles)
 		if (start != end) {
 			all_doubles[i] = value;
 			i++;
-		} else 
+		} else
 			break;
 		start = end;
 		end = NULL;
@@ -145,7 +145,7 @@ long all_doubles_str(char *buffer, long offset, double *all_doubles)
  *
  * @details
  * This function is used to read a line of longs from a buffer. All the
- * longs found are stored in a pre-allocated array. 
+ * longs found are stored in a pre-allocated array.
  *
  * @param[in] 	buffer 		a string buffer
  * @param[in] 	offset 		an offset of the string to start looking for

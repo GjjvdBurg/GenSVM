@@ -36,8 +36,8 @@ extern FILE *GENSVM_OUTPUT_FILE;
 
 // function declarations
 void exit_with_help();
-void parse_command_line(int argc, char **argv, 
-		char *input_filename, char *output_filename, 
+void parse_command_line(int argc, char **argv,
+		char *input_filename, char *output_filename,
 		char *model_filename);
 
 /**
@@ -80,7 +80,7 @@ int main(int argc, char **argv)
 	char model_filename[MAX_LINE_LENGTH];
 	char output_filename[MAX_LINE_LENGTH];;
 
-	if (argc < MINARGS || gensvm_check_argv(argc, argv, "-help") 
+	if (argc < MINARGS || gensvm_check_argv(argc, argv, "-help")
 			|| gensvm_check_argv_eq(argc, argv, "-h") )
 		exit_with_help();
 	parse_command_line(argc, argv, input_filename, output_filename,
@@ -137,7 +137,7 @@ int main(int argc, char **argv)
  *
  * @param[in] 	argc 			number of command line arguments
  * @param[in] 	argv 			array of command line arguments
- * @param[in] 	input_filename 		pre-allocated array for the input 
+ * @param[in] 	input_filename 		pre-allocated array for the input
  * 					filename
  * @param[in] 	output_filename 	pre-allocated array for the output
  * 					filename
@@ -165,7 +165,7 @@ void parse_command_line(int argc, char **argv, char *input_filename,
 				i--;
 				break;
 			default:
-				fprintf(stderr, "Unknown option: -%c\n", 
+				fprintf(stderr, "Unknown option: -%c\n",
 						argv[i-1][1]);
 				exit_with_help();
 		}

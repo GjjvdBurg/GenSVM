@@ -4,7 +4,7 @@
  * @date August, 2013
  * @brief Definitions of common types
  *
- * @details 
+ * @details
  * Here common types used throughout the program are defined.
  *
  */

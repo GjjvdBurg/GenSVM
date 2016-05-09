@@ -13,23 +13,23 @@
 
 #include "gensvm_util.h"
 
-FILE *GENSVM_OUTPUT_FILE; 	///< The #GENSVM_OUTPUT_FILE specifies the 
-				///< output stream to which all output is 
+FILE *GENSVM_OUTPUT_FILE; 	///< The #GENSVM_OUTPUT_FILE specifies the
+				///< output stream to which all output is
 				///< written. This is done through the
 				///< internal (!)
 				///< function gensvm_print_string(). The
-				///< advantage of using a global output 
+				///< advantage of using a global output
 				///< stream variable is that the output can
 				///< temporarily be suppressed by importing
-				///< this variable through @c extern and 
+				///< this variable through @c extern and
 				///< (temporarily) setting it to NULL.
 
 /**
  * @brief Check if any command line arguments contain string
  *
  * @details
- * Check if any of a given array of command line arguments contains a given 
- * string. If the string is found, the index of the string in argv is 
+ * Check if any of a given array of command line arguments contains a given
+ * string. If the string is found, the index of the string in argv is
  * returned. If the string is not found, 0 is returned.
  *
  * This function is copied from MSVMpack/libMSVM.c.
@@ -69,7 +69,7 @@ int gensvm_check_argv(int argc, char **argv, char *str)
  * @returns 		index of the command line argument that corresponds to
  * 			the string, 0 if none matches.
  */
-int gensvm_check_argv_eq(int argc, char **argv, char *str) 
+int gensvm_check_argv_eq(int argc, char **argv, char *str)
 {
 	int i;
 	int arg_str = 0;
@@ -88,7 +88,7 @@ int gensvm_check_argv_eq(int argc, char **argv, char *str)
  *
  * @details
  * This function is used to print a given string to the output stream
- * specified by #GENSVM_OUTPUT_FILE. The stream is flushed after the string 
+ * specified by #GENSVM_OUTPUT_FILE. The stream is flushed after the string
  * is written to the stream. If #GENSVM_OUTPUT_FILE is NULL, nothing is
  * written. Note that this function is only used by note(), it should never be
  * used directly.

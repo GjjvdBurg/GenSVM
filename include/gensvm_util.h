@@ -3,7 +3,7 @@
  * @author Gertjan van den Burg
  * @date August, 2013
  * @brief Header file for util.c
- * 
+ *
  * @details
  * Function declarations for utility functions of the program.
  *

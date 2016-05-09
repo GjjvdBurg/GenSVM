@@ -6,7 +6,7 @@
  *
  * @details
  * This file contains functions for reading and writing model files, and data
- * files. 
+ * files.
  *
  */
 
@@ -18,12 +18,12 @@
 
 /**
  * @brief Read data from file
- * 
+ *
  * @details
  * Read the data from the data_file. The data matrix X is augmented
  * with a column of ones, to get the matrix Z. The data is expected
  * to follow a specific format, which is specified in the @ref spec_data_file.
- * The class labels are corrected internally to correspond to the interval 
+ * The class labels are corrected internally to correspond to the interval
  * [1 .. K], where K is the total number of classes.
  *
  * @todo
@@ -105,11 +105,11 @@ void gensvm_read_data(struct GenData *dataset, char *data_file)
 	}
 
 	if (nr < n * m) {
-		fprintf(stderr, "ERROR: not enough data found in %s\n", 
+		fprintf(stderr, "ERROR: not enough data found in %s\n",
 				data_file);
 		exit(0);
 	}
-	
+
 	// Set the column of ones
 	for (i=0; i<n; i++)
 		matrix_set(dataset->RAW, m+1, i, 0, 1.0);
@@ -145,7 +145,7 @@ void gensvm_read_model(struct GenModel *model, char *model_filename)
 
 	fid = fopen(model_filename, "r");
 	if (fid == NULL) {
-		fprintf(stderr, "Error opening model file %s\n", 
+		fprintf(stderr, "Error opening model file %s\n",
 				model_filename);
 		exit(1);
 	}
@@ -158,7 +158,7 @@ void gensvm_read_model(struct GenModel *model, char *model_filename)
 	model->lambda = get_fmt_double(fid, model_filename, "lambda = %lf");
 	model->kappa = get_fmt_double(fid, model_filename, "kappa = %lf");
 	model->epsilon = get_fmt_double(fid, model_filename, "epsilon = %lf");
-	model->weight_idx = (int) get_fmt_long(fid, model_filename, 
+	model->weight_idx = (int) get_fmt_long(fid, model_filename,
 			"weight_idx = %li");
 
 	// skip to data section
@@ -167,7 +167,7 @@ void gensvm_read_model(struct GenModel *model, char *model_filename)
 
 	// read filename of data file
 	if (fgets(buffer, MAX_LINE_LENGTH, fid) == NULL) {
-		fprintf(stderr, "Error reading model file %s\n", 
+		fprintf(stderr, "Error reading model file %s\n",
 				model_filename);
 		exit(1);
 	}
@@ -193,7 +193,7 @@ void gensvm_read_model(struct GenModel *model, char *model_filename)
 	}
 	if (nr != (model->m+1)*(model->K-1)) {
 		fprintf(stderr, "Error reading model file %s. "
-				"Not enough elements of V found.\n", 
+				"Not enough elements of V found.\n",
 				model_filename);
 		exit(1);
 	}
@@ -207,7 +207,7 @@ void gensvm_read_model(struct GenModel *model, char *model_filename)
  * UTC + offset. The model file further corresponds to the @ref
  * spec_model_file.
  *
- * @param[in] 	model 		GenModel which contains an estimate for 
+ * @param[in] 	model 		GenModel which contains an estimate for
  * 				GenModel::V
  * @param[in] 	output_filename the output file to write the model to
  *
@@ -221,7 +221,7 @@ void gensvm_write_model(struct GenModel *model, char *output_filename)
 	// open output file
 	fid = fopen(output_filename, "w");
 	if (fid == NULL) {
-		fprintf(stderr, "Error opening output file %s", 
+		fprintf(stderr, "Error opening output file %s",
 				output_filename);
 		exit(1);
 	}
@@ -246,8 +246,8 @@ void gensvm_write_model(struct GenModel *model, char *output_filename)
 	fprintf(fid, "Output:\n");
 	for (i=0; i<model->m+1; i++) {
 		for (j=0; j<model->K-1; j++) {
-			fprintf(fid, "%+15.16f ", 
-					matrix_get(model->V, 
+			fprintf(fid, "%+15.16f ",
+					matrix_get(model->V,
 						model->K-1, i, j));
 		}
 		fprintf(fid, "\n");
@@ -261,17 +261,17 @@ void gensvm_write_model(struct GenModel *model, char *output_filename)
  *
  * @details
  * Write the given predictions to an output file, such that the resulting file
- * corresponds to the @ref spec_data_file. 
+ * corresponds to the @ref spec_data_file.
  *
  * @param[in] 	data 		GenData with the original instances
- * @param[in] 	predy 		predictions of the class labels of the 
+ * @param[in] 	predy 		predictions of the class labels of the
  * 				instances in the given GenData. Note that the
  * 				order of the instances is assumed to be the
  * 				same.
  * @param[in] 	output_filename the file to which the predictions are written
  *
  */
-void gensvm_write_predictions(struct GenData *data, long *predy, 
+void gensvm_write_predictions(struct GenData *data, long *predy,
 		char *output_filename)
 {
 	long i, j;
@@ -279,18 +279,18 @@ void gensvm_write_predictions(struct GenData *data, long *predy,
 
 	fid = fopen(output_filename, "w");
 	if (fid == NULL) {
-		fprintf(stderr, "Error opening output file %s", 
+		fprintf(stderr, "Error opening output file %s",
 				output_filename);
 		exit(1);
 	}
-	
+
 	fprintf(fid, "%li\n", data->n);
 	fprintf(fid, "%li\n", data->m);
 
 	for (i=0; i<data->n; i++) {
-		for (j=0; j<data->m; j++) 
-			fprintf(fid, "%f ", 
-					matrix_get(data->Z, 
+		for (j=0; j<data->m; j++)
+			fprintf(fid, "%f ",
+					matrix_get(data->Z,
 						data->m+1, i, j+1));
 		fprintf(fid, "%li\n", predy[i]);
 	}

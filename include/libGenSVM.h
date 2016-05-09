@@ -11,16 +11,16 @@
  */
 
 /**
- * @todo 
+ * @todo
  * rename this file and libGenSVM.c to correspond with the lowercase convention.
  * Also change the name of the include guard.
- */ 
+ */
 #ifndef LIBGENSVM_H
 #define LIBGENSVM_H
 
 #include "globals.h"
 
-// forward declarations 
+// forward declarations
 struct GenData;
 struct GenModel;
 

@@ -31,7 +31,7 @@ struct GenModel {
 	double epsilon;
 	///< stopping criterion for the IM algorithm.
 	double p;
-	///< parameter for the L-p norm in the loss function	
+	///< parameter for the L-p norm in the loss function
 	double kappa;
 	///< parameter for the Huber hinge function
 	double lambda;
@@ -51,16 +51,16 @@ struct GenModel {
 	///< 3D simplex difference matrix
 	double *Q;
 	///< error matrix
-	double *H; 
+	double *H;
 	///< Huber weighted error matrix
 	double *R;
-	///< 0-1 auixiliary matrix, this matrix is n x K, with for row i a 0 on 
+	///< 0-1 auixiliary matrix, this matrix is n x K, with for row i a 0 on
 	///< column y[i]-1, and 1 everywhere else.
-	double *rho; 	
+	double *rho;
 	///< vector of instance weights
 	double training_error;
 	///< loss function value after training has finished
-	char *data_file; 
+	char *data_file;
 	///< filename of the data
 	KernelType kerneltype;
 	///< type of kernel used in the model
@@ -94,13 +94,13 @@ struct GenData {
  	long *y;
 	///< array of class labels, 1..K
 	double *Z;
-	///< augmented data matrix (either equal to RAW or to the eigenvectors 
+	///< augmented data matrix (either equal to RAW or to the eigenvectors
 	///< of the kernel matrix)
 	double *RAW;
 	///< augmented raw data matrix
 	double *Sigma;
-	KernelType kerneltype; 	
- 	double *kernelparam; 
+	KernelType kerneltype;
+ 	double *kernelparam;
 };
 
 #endif

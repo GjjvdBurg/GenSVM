@@ -5,7 +5,7 @@
  * @brief Defines main functions for use of kernels in GenSVM.
  *
  * @details
- * Functions for constructing different kernels using user-supplied 
+ * Functions for constructing different kernels using user-supplied
  * parameters. Also contains the functions for decomposing the
  * kernel matrix using several decomposition methods.
  *
@@ -34,7 +34,7 @@ void gensvm_kernel_preprocess(struct GenModel *model, struct GenData *data)
 		return;
 	}
 
-	int i;	
+	int i;
 	long r,
 	     n = data->n;
 	double *P = NULL,
@@ -55,7 +55,7 @@ void gensvm_kernel_preprocess(struct GenModel *model, struct GenData *data)
 
 	// build M and set to data (leave RAW intact)
 	gensvm_make_trainfactor(data, P, Sigma, r);
-	
+
 	// Set Sigma to data->Sigma (need it again for prediction)
 	if (data->Sigma != NULL)
 		free(data->Sigma);
@@ -81,7 +81,7 @@ void gensvm_kernel_preprocess(struct GenModel *model, struct GenData *data)
 			data->kernelparam[0] = model->kernelparam[0];
 			data->kernelparam[1] = model->kernelparam[1];
 	}
-	
+
 	free(K);
 	free(P);
 }
@@ -117,13 +117,13 @@ void gensvm_make_kernel(struct GenModel *model, struct GenData *data,
 			x1 = &data->RAW[i*(data->m+1)+1];
 			x2 = &data->RAW[j*(data->m+1)+1];
 			if (model->kerneltype == K_POLY)
-				value = gensvm_dot_poly(x1, x2, 
+				value = gensvm_dot_poly(x1, x2,
 						model->kernelparam, data->m);
 			else if (model->kerneltype == K_RBF)
-				value = gensvm_dot_rbf(x1, x2, 
+				value = gensvm_dot_rbf(x1, x2,
 						model->kernelparam, data->m);
 			else if (model->kerneltype == K_SIGMOID)
-				value = gensvm_dot_sigmoid(x1, x2, 
+				value = gensvm_dot_sigmoid(x1, x2,
 						model->kernelparam, data->m);
 			else {
 				fprintf(stderr, "Unknown kernel type in "
@@ -154,11 +154,11 @@ long gensvm_make_eigen(double *K, long n, double **P, double **Sigma)
 
 	IWORK = Malloc(int, 5*n);
 	IFAIL = Malloc(int, n);
-	
-	// highest precision eigenvalues, may reduce for speed	
+
+	// highest precision eigenvalues, may reduce for speed
 	abstol = 2.0*dlamch('S');
 
-	// first perform a workspace query to determine optimal size of the 
+	// first perform a workspace query to determine optimal size of the
 	// WORK array.
 	WORK = Malloc(double, 1);
 	status = dsyevx(
@@ -183,7 +183,7 @@ long gensvm_make_eigen(double *K, long n, double **P, double **Sigma)
 			IFAIL);
 	LWORK = WORK[0];
 
-	// allocate the requested memory for the eigendecomposition 
+	// allocate the requested memory for the eigendecomposition
 	WORK = (double *)realloc(WORK, LWORK*sizeof(double));
 	status = dsyevx(
 			'V',
@@ -211,7 +211,7 @@ long gensvm_make_eigen(double *K, long n, double **P, double **Sigma)
 		exit(1);
 	}
 
-	// Select the desired number of eigenvalues, depending on their size.  
+	// Select the desired number of eigenvalues, depending on their size.
 	// dsyevx sorts eigenvalues in ascending order.
 	max_eigen = tempSigma[n-1];
 	cutoff_idx = 0;
@@ -223,23 +223,23 @@ long gensvm_make_eigen(double *K, long n, double **P, double **Sigma)
 		}
 
 	num_eigen = n - cutoff_idx;
-	
+
 	*Sigma = Calloc(double, num_eigen);
-	
+
 	for (i=0; i<num_eigen; i++) {
 		(*Sigma)[i] = tempSigma[n-1 - i];
 	}
 
-	// revert P to row-major order and copy only the the columns 
+	// revert P to row-major order and copy only the the columns
 	// corresponding to the selected eigenvalues
-	*P = Calloc(double, n*num_eigen);	
+	*P = Calloc(double, n*num_eigen);
 	for (j=n-1; j>n-1-num_eigen; j--) {
 		for (i=0; i<n; i++) {
 			(*P)[i*num_eigen + (n-1)-j] = tempP[i + j*n];
 		}
 	}
 
-	free(tempSigma);	
+	free(tempSigma);
 	free(tempP);
 	free(IWORK);
 	free(IFAIL);
@@ -322,7 +322,7 @@ void gensvm_make_testfactor(struct GenData *testdata,
 	double value,
 	       *N = NULL,
 	       *M = NULL;
-	
+
 	n1 = traindata->n;
 	n2 = testdata->n;
 	r = traindata->r;
@@ -340,7 +340,7 @@ void gensvm_make_testfactor(struct GenData *testdata,
 		exit(1);
 	}
 
-	// copy M from traindata->Z because we need it in dgemm without column 
+	// copy M from traindata->Z because we need it in dgemm without column
 	// of 1's.
 	for (i=0; i<n1; i++)
 		for (j=0; j<r; j++)
@@ -370,7 +370,7 @@ void gensvm_make_testfactor(struct GenData *testdata,
 		for (i=0; i<n2; i++)
 			matrix_mul(N, r, i, j, value);
 	}
-	
+
 	// write N to Z with a column of ones
 	testdata->Z = Calloc(double, n2*(r+1));
 	if (testdata->Z == NULL) {
@@ -380,7 +380,7 @@ void gensvm_make_testfactor(struct GenData *testdata,
 	}
 	for (i=0; i<n2; i++) {
 		for (j=0; j<r; j++) {
-			matrix_set(testdata->Z, r+1, i, j+1, 
+			matrix_set(testdata->Z, r+1, i, j+1,
 					matrix_get(N, r, i, j));
 		}
 		matrix_set(testdata->Z, r+1, i, 0, 1.0);
@@ -394,7 +394,7 @@ void gensvm_make_testfactor(struct GenData *testdata,
 
 /**
  * @brief Compute the RBF kernel between two vectors
- * 
+ *
  * @details
  * The RBF kernel is computed between two vectors. This kernel is defined as
  * @f[
@@ -404,7 +404,7 @@ void gensvm_make_testfactor(struct GenData *testdata,
  *
  * @param[in] 	x1 		first vector
  * @param[in] 	x2 		second vector
- * @param[in] 	kernelparam 	array of kernel parameters (gamma is first 
+ * @param[in] 	kernelparam 	array of kernel parameters (gamma is first
  * 				element)
  * @param[in] 	n 		length of the vectors x1 and x2
  * @returns  			kernel evaluation
@@ -413,8 +413,8 @@ double gensvm_dot_rbf(double *x1, double *x2, double *kernelparam, long n)
 {
 	long i;
 	double value = 0.0;
-	
-	for (i=0; i<n; i++) 
+
+	for (i=0; i<n; i++)
 		value += (x1[i] - x2[i]) * (x1[i] - x2[i]);
 	value *= -kernelparam[0];
 	return exp(value);
@@ -424,7 +424,7 @@ double gensvm_dot_rbf(double *x1, double *x2, double *kernelparam, long n)
  * @brief Compute the polynomial kernel between two vectors
  *
  * @details
- * The polynomial kernel is computed between two vectors. This kernel is 
+ * The polynomial kernel is computed between two vectors. This kernel is
  * defined as
  * @f[
  * 	k(x_1, x_2) = ( \gamma \langle x_1, x_2 \rangle + c)^d
@@ -450,7 +450,7 @@ double gensvm_dot_poly(double *x1, double *x2, double *kernelparam, long n)
 
 /**
  * @brief Compute the sigmoid kernel between two vectors
- * 
+ *
  * @details
  * The sigmoid kernel is computed between two vectors. This kernel is defined
  * as

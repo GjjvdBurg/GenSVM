@@ -31,7 +31,7 @@ double elapsed_time(clock_t s_time, clock_t e_time)
  *
  * @details
  * Create a string for the current system time. Include an offset of UTC for
- * consistency. The format of the generated string is "DDD MMM D HH:MM:SS 
+ * consistency. The format of the generated string is "DDD MMM D HH:MM:SS
  * YYYY (UTC +HH:MM)", e.g. "Fri Aug 9, 12:34:56 2013 (UTC +02:00)".
  *
  * @param[in,out] 	buffer 	allocated string buffer, on exit contains

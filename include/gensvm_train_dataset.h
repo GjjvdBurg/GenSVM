@@ -74,8 +74,8 @@ struct Queue {
  *
  * @param traintype 		type of training to use
  * @param kerneltype 		type of kernel to use throughout training
- * @param repeats 		number of repeats to be done after the grid 
- * 				search to find the parameter set with the 
+ * @param repeats 		number of repeats to be done after the grid
+ * 				search to find the parameter set with the
  * 				most consistent high performance
  * @param folds 		number of folds in cross validation
  * @param Np 			size of the array of p values
@@ -87,7 +87,7 @@ struct Queue {
  * @param Nc 			size of the array of coef values
  * @param Nd 			size of the array of degree values
  * @param *weight_idxs 		array of weight_idxs
- * @param *ps 			array of p values 
+ * @param *ps 			array of p values
  * @param *lambdas 		array of lambda values
  * @param *kappas 		array of kappa values
  * @param *epsilons 		array of epsilon values

@@ -5,7 +5,7 @@
  * @brief Command line interface for training and testing with a GenSVM model
  *
  * @details
- * This is a command line program for training and testing on a single model 
+ * This is a command line program for training and testing on a single model
  * with specified model parameters.
  *
  */
@@ -126,13 +126,13 @@ int main(int argc, char **argv)
 	// start training
 	gensvm_optimize(model, traindata);
 
-	// if we also have a test set, predict labels and write to predictions 
+	// if we also have a test set, predict labels and write to predictions
 	// to an output file if specified
 	if (with_test) {
 		// predict labels
 		predy = Calloc(long, testdata->n);
 		gensvm_predict_labels(testdata, model, predy);
-	
+
 		if (testdata->y != NULL) {
 			performance = gensvm_prediction_perf(testdata, predy);
 			note("Predictive performance: %3.2f%%\n", performance);
@@ -181,7 +181,7 @@ void parse_command_line(int argc, char **argv, struct GenModel *model,
 	double gamma = 1.0,
 	       degree = 2.0,
 	       coef = 0.0;
-	
+
 	GENSVM_OUTPUT_FILE = stdout;
 
 	// parse options
