@@ -12,7 +12,6 @@
 #ifndef GENSVM_H
 #define GENSVM_H
 
-#include "globals.h"
 #include "types.h"
 
 /**

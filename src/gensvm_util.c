@@ -11,6 +11,7 @@
  */
 #include <stdarg.h>
 
+#include "globals.h"
 #include "gensvm_util.h"
 
 FILE *GENSVM_OUTPUT_FILE; 	///< The #GENSVM_OUTPUT_FILE specifies the

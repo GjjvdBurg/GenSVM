@@ -12,8 +12,6 @@
 #ifndef GENSVM_MATRIX_H
 #define GENSVM_MATRIX_H
 
-#include "globals.h"
-
 // Set a matrix element (RowMajor)
 #define matrix_set(M, cols, i, j, val) M[(i)*(cols)+j] = val
 

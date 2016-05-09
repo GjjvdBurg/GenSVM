@@ -13,8 +13,6 @@
 #ifndef GENSVM_TRAIN_H
 #define GENSVM_TRAIN_H
 
-#include "globals.h"
-
 //forward declarations
 struct GenData;
 struct GenModel;

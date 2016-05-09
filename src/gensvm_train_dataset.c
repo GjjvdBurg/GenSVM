@@ -12,6 +12,7 @@
 #include <math.h>
 #include <time.h>
 
+#include "globals.h"
 #include "libGenSVM.h"
 #include "gensvm.h"
 #include "gensvm_crossval.h"

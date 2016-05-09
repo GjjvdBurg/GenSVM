@@ -21,6 +21,7 @@
 
 #include <time.h>
 
+#include "globals.h"
 #include "gensvm.h"
 #include "gensvm_crossval.h"
 #include "gensvm_io.h"

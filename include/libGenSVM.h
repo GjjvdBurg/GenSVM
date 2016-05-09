@@ -18,8 +18,6 @@
 #ifndef LIBGENSVM_H
 #define LIBGENSVM_H
 
-#include "globals.h"
-
 // forward declarations
 struct GenData;
 struct GenModel;

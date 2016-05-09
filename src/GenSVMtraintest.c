@@ -12,6 +12,7 @@
 
 #include <time.h>
 
+#include "globals.h"
 #include "gensvm.h"
 #include "gensvm_io.h"
 #include "gensvm_init.h"

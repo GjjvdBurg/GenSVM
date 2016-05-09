@@ -15,7 +15,6 @@
 #ifndef GENSVM_TRAIN_DATASET_H
 #define GENSVM_TRAIN_DATASET_H
 
-#include "globals.h"
 #include "types.h"
 
 // forward declarations

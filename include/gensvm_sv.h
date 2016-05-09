@@ -12,8 +12,6 @@
 #ifndef GENSVM_SV_H
 #define GENSVM_SV_H
 
-#include "globals.h"
-
 long gensvm_num_sv(struct GenModel *model, struct GenData *data);
 
 #endif

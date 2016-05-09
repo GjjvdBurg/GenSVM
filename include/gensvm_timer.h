@@ -12,8 +12,6 @@
 #ifndef GENSVM_TIMER_H
 #define GENSVM_TIMER_H
 
-#include "globals.h"
-
 double elapsed_time(clock_t s_time, clock_t e_time);
 
 void get_time_string(char *buffer);

@@ -14,6 +14,7 @@
 #include <cblas.h>
 #include <math.h>
 
+#include "globals.h"
 #include "gensvm.h"
 #include "gensvm_kernel.h"
 #include "gensvm_lapack.h"

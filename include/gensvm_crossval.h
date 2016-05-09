@@ -13,8 +13,6 @@
 #ifndef GENSVM_CROSSVAL_H
 #define GENSVM_CROSSVAL_H
 
-#include "globals.h"
-
 // forward delaration
 struct GenData;
 

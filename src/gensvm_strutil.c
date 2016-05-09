@@ -9,6 +9,7 @@
  * format and checking start and ends of strings.
  */
 
+#include "globals.h"
 #include "gensvm_strutil.h"
 
 /**

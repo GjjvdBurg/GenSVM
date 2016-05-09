@@ -13,7 +13,6 @@
 #ifndef GENSVM_STRUTIL_H
 #define GENSVM_STRUTIL_H
 
-#include "globals.h"
 #include "types.h"
 
 bool str_startswith(const char *str, const char *pre);

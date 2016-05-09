@@ -12,8 +12,6 @@
 #ifndef GENSVM_UTIL_H
 #define GENSVM_UTIL_H
 
-#include "globals.h"
-
 // forward declarations
 struct GenData;
 struct GenModel;
