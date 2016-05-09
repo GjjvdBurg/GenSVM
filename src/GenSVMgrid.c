@@ -28,7 +28,7 @@
 #include "gensvm_pred.h"
 #include "gensvm_train.h"
 #include "gensvm_train_dataset.h"
-#include "strutil.h"
+#include "gensvm_strutil.h"
 #include "util.h"
 
 #define MINARGS 2

@@ -9,7 +9,7 @@
  * format and checking start and ends of strings.
  */
 
-#include "strutil.h"
+#include "gensvm_strutil.h"
 
 /**
  * @brief Check if a string starts with a prefix

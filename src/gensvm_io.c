@@ -13,7 +13,7 @@
 #include "gensvm.h"
 #include "gensvm_io.h"
 #include "gensvm_matrix.h"
-#include "strutil.h"
+#include "gensvm_strutil.h"
 #include "timer.h"
 
 /**

@@ -10,8 +10,8 @@
  *
  */
 
-#ifndef STRUTIL_H
-#define STRUTIL_H
+#ifndef GENSVM_STRUTIL_H
+#define GENSVM_STRUTIL_H
 
 #include "globals.h"
 #include "types.h"
