@@ -13,14 +13,6 @@
 #define GENSVM_TYPES_H
 
 /**
- * @brief Implementation of true and false
- */
-typedef enum {
-	false=0, /**< false keyword, corresponding to 0. */
-	true=1 /**< true keyword, corresponding to 1. */
-} bool;
-
-/**
  * @brief type of training used in parameter grid search
  */
 typedef enum {
