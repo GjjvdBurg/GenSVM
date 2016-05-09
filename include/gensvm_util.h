@@ -23,5 +23,6 @@ int gensvm_check_argv(int argc, char **argv, char *str);
 int gensvm_check_argv_eq(int argc, char **argv, char *str);
 
 void note(const char *fmt,...);
+void err(const char *fmt,...);
 
 #endif

@@ -126,3 +126,23 @@ void note(const char *fmt,...)
 	va_end(ap);
 	(*gensvm_print_string)(buf);
 }
+
+/**
+ * @brief Parse a formatted string and write it to standard error
+ *
+ * @details
+ * Shorthand for fprintf(stderr, ...)
+ *
+ * @param[in] 	fmt 	string format
+ * @param[in] 	... 	variable argument list for the string format
+ */
+void err(const char *fmt, ...)
+{
+	char buf[BUFSIZ];
+	va_list ap;
+	va_start(ap, fmt);
+	vsprintf(buf, fmt, ap);
+	va_end(ap);
+	fputs(buf, stderr);
+	fflush(stderr);
+}
