@@ -6,9 +6,8 @@
  *
  * @details
  * This header file contains defines and includes which are used in many
- * parts of the program. Most notable are the Calloc, Malloc and Memset
- * defines, which are commonly used to allocate memory. These functions
- * are shorthands for their lowercase counterparts.
+ * parts of the program. Most notably, it includes the gensvm_memory.h header
+ * which defines functions for safe memory allocation.
  *
  * Furthermore, a maximum and minimum function are defined here. These
  * functions have their own include guards, to ensure potential linked
@@ -24,11 +23,9 @@
 #include <stdbool.h>
 #include <string.h>
 
-#define MAX_LINE_LENGTH 1024
+#include "gensvm_memory.h"
 
-#define Calloc(type, n) (type *)calloc((n), sizeof(type))
-#define Malloc(type, n) (type *)malloc((n)*sizeof(type))
-#define Memset(var, type, n) memset(var, 0, (n)*sizeof(type))
+#define MAX_LINE_LENGTH 1024
 
 #ifndef MIN_MAX_DEFINE
 #define MIN_MAX_DEFINE

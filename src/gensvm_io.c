@@ -10,6 +10,7 @@
  *
  */
 
+#include "globals.h"
 #include "gensvm.h"
 #include "gensvm_io.h"
 #include "gensvm_matrix.h"

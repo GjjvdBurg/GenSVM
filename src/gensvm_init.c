@@ -15,6 +15,7 @@
 
 #include <math.h>
 
+#include "globals.h"
 #include "gensvm.h"
 #include "gensvm_init.h"
 

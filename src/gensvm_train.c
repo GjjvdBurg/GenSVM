@@ -13,6 +13,7 @@
 #include <math.h>
 #include <cblas.h>
 
+#include "globals.h"
 #include "libGenSVM.h"
 #include "gensvm.h"
 #include "gensvm_lapack.h"

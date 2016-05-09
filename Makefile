@@ -36,6 +36,7 @@ lib/libgensvm.a: \
 	src/gensvm_kernel.o \
 	src/gensvm_lapack.o \
 	src/gensvm_matrix.o \
+	src/gensvm_memory.o \
 	src/gensvm_pred.o \
 	src/gensvm_strutil.o \
 	src/gensvm_sv.o \
@@ -49,6 +50,7 @@ lib/libgensvm.a: \
 		src/gensvm_init.o \
 		src/gensvm_io.o \
 		src/gensvm_matrix.o \
+		src/gensvm_memory.o \
 		src/gensvm_kernel.o \
 		src/gensvm_lapack.o \
 		src/gensvm_pred.o \
