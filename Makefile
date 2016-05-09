@@ -3,6 +3,9 @@ CC=gcc
 CFLAGS=-Wall -O3 -DVERSION=$(VERSION) -g
 INCLUDE= -Iinclude
 LIB= -Llib
+DOXY=doxygen
+DOCDIR=doc
+DOXYFILE=$(DOCDIR)/Doxyfile
 
 EXECS=GenSVM_train GenSVM_grid gensvm
 
@@ -11,6 +14,19 @@ EXECS=GenSVM_train GenSVM_grid gensvm
 all: lib/libgensvm.a $(EXECS)
 
 override LDFLAGS+=-lcblas -llapack -lm
+
+debug: CFLAGS += -DDEBUG
+debug: all
+
+doc:
+	$(DOXY) $(DOXYFILE)
+
+clean:
+	rm -rf $(EXECS) *.o src/*.o lib/*.a
+	$(MAKE) -C tests clean
+
+test: lib/libgensvm.a
+	$(MAKE) -C test all
 
 lib/libgensvm.a: \
 	src/libGenSVM.o \
@@ -62,9 +78,6 @@ GenSVM_pred: src/GenSVMpred.c lib/libgensvm.a
 	@$(CC) -o GenSVM_pred src/GenSVMpred.c $(CFLAGS) $(INCLUDE) $(LIB) \
 		-lgensvm $(LDFLAGS)
 	@echo GenSVM_pred...
-
-clean:
-	rm -rf $(EXECS) *.o src/*.o lib/*.a
 
 src/%.o: src/%.c
 	@$(CC) $(CFLAGS) $(INCLUDE) $(LDFLAGS) -c $< -o $@
