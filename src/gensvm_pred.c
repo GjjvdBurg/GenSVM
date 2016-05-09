@@ -46,23 +46,8 @@ void gensvm_predict_labels(struct GenData *testdata, struct GenModel *model,
 
 	// allocate necessary memory
 	S = Calloc(double, K-1);
-	if (S == NULL) {
-		fprintf(stderr, "Failed to allocate memory for S in "
-				"gensvm_predict_labels.\n");
-		exit(1);
-	}
 	ZV = Calloc(double, n*(K-1));
-	if (ZV == NULL) {
-		fprintf(stderr, "Failed to allocate memory for ZV in "
-				"gensvm_predict_labels.\n");
-		exit(1);
-	}
 	U = Calloc(double, K*(K-1));
-	if (U == NULL) {
-		fprintf(stderr, "Failed to allocate memory for U in "
-				"gensvm_predict_labels.\n");
-		exit(1);
-	}
 
 	// Generate the simplex matrix
 	gensvm_simplex_gen(K, U);

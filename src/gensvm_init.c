@@ -98,64 +98,15 @@ void gensvm_allocate_model(struct GenModel *model)
 	long K = model->K;
 
 	model->W = Calloc(double, m*(K-1));
-	if (model->W == NULL) {
-		fprintf(stderr, "Failed to allocate memory for W.\n");
-		exit(1);
-	}
-
 	model->t = Calloc(double, K-1);
-	if (model->t == NULL) {
-		fprintf(stderr, "Failed to allocate memory for t.\n");
-		exit(1);
-	}
-
 	model->V = Calloc(double, (m+1)*(K-1));
-	if (model->V == NULL) {
-		fprintf(stderr, "Failed to allocate memory for V.\n");
-		exit(1);
-	}
-
 	model->Vbar = Calloc(double, (m+1)*(K-1));
-	if (model->Vbar == NULL) {
-		fprintf(stderr, "Failed to allocate memory for Vbar.\n");
-		exit(1);
-	}
-
 	model->U = Calloc(double, K*(K-1));
-	if (model->U == NULL) {
-		fprintf(stderr, "Failed to allocate memory for U.\n");
-		exit(1);
-	}
-
 	model->UU = Calloc(double, n*K*(K-1));
-	if (model->UU == NULL) {
-		fprintf(stderr, "Failed to allocate memory for UU.\n");
-		exit(1);
-	}
-
 	model->Q = Calloc(double, n*K);
-	if (model->Q == NULL) {
-		fprintf(stderr, "Failed to allocate memory for Q.\n");
-		exit(1);
-	}
-
 	model->H = Calloc(double, n*K);
-	if (model->H == NULL) {
-		fprintf(stderr, "Failed to allocate memory for H.\n");
-		exit(1);
-	}
-
 	model->R = Calloc(double, n*K);
-	if (model->R == NULL) {
-		fprintf(stderr, "Failed to allocate memory for R.\n");
-		exit(1);
-	}
-
 	model->rho = Calloc(double, n);
-	if (model->rho == NULL) {
-		fprintf(stderr, "Failed to allocate memory for rho.\n");
-		exit(1);
-	}
 }
 
 /**
@@ -179,80 +130,32 @@ void gensvm_reallocate_model(struct GenModel *model, long n, long m)
 	if (model->n == n && model->m == m)
 		return;
 	if (model->n != n) {
-		tmp = (double *) realloc(model->UU, n*K*(K-1)*sizeof(double));
-		if (tmp) {
-			Memset(tmp, double, n*K*(K-1));
-			model->UU = tmp;
-		} else {
-			fprintf(stderr, "Failed to reallocate UU\n");
-			exit(1);
-		}
+		Realloc(model->UU, double, n*K*(K-1));
+		Memset(tmp, double, n*K*(K-1));
 
-		tmp = (double *) realloc(model->Q, n*K*sizeof(double));
-		if (tmp) {
-			Memset(tmp, double, n*K);
-			model->Q = tmp;
-		} else {
-			fprintf(stderr, "Failed to reallocate Q\n");
-			exit(1);
-		}
+		Realloc(model->Q, double, n*K);
+		Memset(model->Q, double, n*K);
 
-		tmp = (double *) realloc(model->H, n*K*sizeof(double));
-		if (tmp) {
-			Memset(tmp, double, n*K);
-			model->H = tmp;
-		} else {
-			fprintf(stderr, "Failed to reallocate H\n");
-			exit(1);
-		}
+		Realloc(model->H, double, n*K);
+		Memset(model->H, double, n*K);
 
-		tmp = (double *) realloc(model->R, n*K*sizeof(double));
-		if (tmp) {
-			Memset(tmp, double, n*K);
-			model->R = tmp;
-		} else {
-			fprintf(stderr, "Failed to reallocate R\n");
-			exit(1);
-		}
+		Realloc(model->R, double, n*K);
+		Memset(model->R, double, n*K);
 
-		tmp = (double *) realloc(model->rho, n*sizeof(double));
-		if (tmp) {
-			Memset(tmp, double, n);
-			model->rho = tmp;
-		} else {
-			fprintf(stderr, "Failed to reallocte rho\n");
-			exit(1);
-		}
+		Realloc(model->rho, double, n);
+		Memset(model->rho, double, n);
 
 		model->n = n;
 	}
 	if (model->m != m) {
-		tmp = (double *) realloc(model->W, m*(K-1)*sizeof(double));
-		if (tmp) {
-			Memset(tmp, double, m*(K-1));
-			model->W = tmp;
-		} else {
-			fprintf(stderr, "Failed to reallocate W\n");
-			exit(1);
-		}
+		Realloc(model->W, double, m*(K-1));
+		Memset(model->W, double, m*(K-1));
 
-		tmp = (double *) realloc(model->V, (m+1)*(K-1)*sizeof(double));
-		if (tmp) {
-			Memset(tmp, double, (m+1)*(K-1));
-			model->V = tmp;
-		} else {
-			fprintf(stderr, "Failed to reallocate V\n");
-			exit(1);
-		}
+		Realloc(model->V, double, (m+1)*(K-1));
+		Memset(model->V, double, (m+1)*(K-1));
 
-		tmp = (double *) realloc(model->Vbar, (m+1)*(K-1)*sizeof(double));
-		if (tmp) {
-			Memset(tmp, double, (m+1)*(K-1));
-			model->Vbar = tmp;
-		} else {
-			fprintf(stderr, "Failed to reallocate Vbar\n");
-			exit(1);
-		}
+		Realloc(model->Vbar, double, (m+1)*(K-1));
+		Memset(model->Vbar, double, (m+1)*(K-1));
 
 		model->m = m;
 	}

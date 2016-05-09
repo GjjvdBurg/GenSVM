@@ -43,11 +43,6 @@ void gensvm_kernel_preprocess(struct GenModel *model, struct GenData *data)
 
 	// build the kernel matrix
 	K = Calloc(double, n*n);
-	if (K == NULL) {
-		fprintf(stderr, "Failed to allocate memory for K in "
-				"gensvm_kernel_preprocess.\n");
-		exit(1);
-	}
 	gensvm_make_kernel(model, data, K);
 
 	// generate the eigen decomposition
@@ -295,11 +290,6 @@ void gensvm_make_trainfactor(struct GenData *data, double *P, double *Sigma,
 
 	// allocate Z
 	data->Z = Calloc(double, n*(r+1));
-	if (data->Z == NULL) {
-		fprintf(stderr, "Failed to allocate memory for data->Z in "
-				"gensvm_make_trainfactor.\n");
-		exit(1);
-	}
 
 	// Write data->Z = [1 M] = [1 P*Sigma]
 	for (i=0; i<n; i++) {
@@ -328,17 +318,7 @@ void gensvm_make_testfactor(struct GenData *testdata,
 	r = traindata->r;
 
 	N = Calloc(double, n2*r);
-	if (N == NULL) {
-		fprintf(stderr, "Failed to allocate memory for N in "
-				"gensvm_make_testfactor.\n");
-		exit(1);
-	}
 	M = Calloc(double, n1*r);
-	if (M == NULL) {
-		fprintf(stderr, "Failed to allocate memory for M in "
-				"gensvm_make_testfactor.\n");
-		exit(1);
-	}
 
 	// copy M from traindata->Z because we need it in dgemm without column
 	// of 1's.
@@ -373,11 +353,6 @@ void gensvm_make_testfactor(struct GenData *testdata,
 
 	// write N to Z with a column of ones
 	testdata->Z = Calloc(double, n2*(r+1));
-	if (testdata->Z == NULL) {
-		fprintf(stderr, "Failed to allocate memory for testdata->Z in "
-				"gensvm_make_testfactor.\n");
-		exit(1);
-	}
 	for (i=0; i<n2; i++) {
 		for (j=0; j<r; j++) {
 			matrix_set(testdata->Z, r+1, i, j+1,
