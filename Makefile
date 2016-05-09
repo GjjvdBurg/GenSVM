@@ -9,7 +9,7 @@ DOXYFILE=$(DOCDIR)/Doxyfile
 
 EXECS=GenSVM_train GenSVM_grid gensvm
 
-.PHONY: all clean tar
+.PHONY: all clean doc test
 
 all: lib/libgensvm.a $(EXECS)
 
