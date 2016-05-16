@@ -2,10 +2,11 @@
  * @file gensvm_base.h
  * @author Gertjan van den Burg
  * @date May, 2016
- * @brief Definitions for GenData and GenModel structures
+ * @brief Header file for gensvm_base.c
  *
  * @details
- * Contains documentation and declarations of GenModel and GenData.
+ * Contains documentation and declarations of GenModel and GenData, and 
+ * function declarations for the functions in gensvm_base.c.
  *
  */
 
