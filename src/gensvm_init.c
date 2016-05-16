@@ -125,36 +125,35 @@ void gensvm_allocate_model(struct GenModel *model)
 void gensvm_reallocate_model(struct GenModel *model, long n, long m)
 {
 	long K = model->K;
-	double *tmp = NULL;
 
 	if (model->n == n && model->m == m)
 		return;
 	if (model->n != n) {
-		Realloc(model->UU, double, n*K*(K-1));
-		Memset(tmp, double, n*K*(K-1));
+		model->UU = Realloc(model->UU, double, n*K*(K-1));
+		Memset(model->UU, double, n*K*(K-1));
 
-		Realloc(model->Q, double, n*K);
+		model->Q = Realloc(model->Q, double, n*K);
 		Memset(model->Q, double, n*K);
 
-		Realloc(model->H, double, n*K);
+		model->H = Realloc(model->H, double, n*K);
 		Memset(model->H, double, n*K);
 
-		Realloc(model->R, double, n*K);
+		model->R = Realloc(model->R, double, n*K);
 		Memset(model->R, double, n*K);
 
-		Realloc(model->rho, double, n);
+		model->rho = Realloc(model->rho, double, n);
 		Memset(model->rho, double, n);
 
 		model->n = n;
 	}
 	if (model->m != m) {
-		Realloc(model->W, double, m*(K-1));
+		model->W = Realloc(model->W, double, m*(K-1));
 		Memset(model->W, double, m*(K-1));
 
-		Realloc(model->V, double, (m+1)*(K-1));
+		model->V = Realloc(model->V, double, (m+1)*(K-1));
 		Memset(model->V, double, (m+1)*(K-1));
 
-		Realloc(model->Vbar, double, (m+1)*(K-1));
+		model->Vbar = Realloc(model->Vbar, double, (m+1)*(K-1));
 		Memset(model->Vbar, double, (m+1)*(K-1));
 
 		model->m = m;
