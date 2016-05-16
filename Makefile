@@ -26,7 +26,7 @@ clean:
 	$(MAKE) -C tests clean
 
 test: lib/libgensvm.a
-	$(MAKE) -C test all
+	$(MAKE) -C tests all
 
 lib/libgensvm.a: \
 	src/libGenSVM.o \
