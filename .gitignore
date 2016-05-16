@@ -2,3 +2,9 @@
 *.swp
 GenSVM_train
 GenSVM_grid
+doc/*
+training/*
+codegrep*
+log*
+gensvm
+gensvm_grid

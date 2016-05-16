@@ -7,7 +7,6 @@
  */
 
 #include "globals.h" // imports gensvm_memory.h
-#include "gensvm_util.h"
 
 /**
  * @brief Wrapper for calloc() which warns when allocation fails
@@ -34,7 +33,7 @@ void *mycalloc(const char *file, int line, unsigned long size,
 	void *ptr = calloc(size, typesize);
 
 	if (!ptr) {
-		err("Could not allocate memory: %d bytes (%s:%d)\n",
+		fprintf(stderr, "Couldn't allocate memory: %lu bytes (%s:%d)\n",
 				size, file, line);
 		exit(EXIT_FAILURE);
 	}
@@ -63,7 +62,7 @@ void *mymalloc(const char *file, int line, unsigned long size)
 {
 	void *ptr = malloc(size);
 	if (!ptr) {
-		err("Could not allocate memory: %d bytes (%s:%d)\n",
+		fprintf(stderr, "Couldn't allocate memory: %lu bytes (%s:%d)\n",
 				size, file, line);
 		exit(EXIT_FAILURE);
 	}
@@ -93,7 +92,7 @@ void *myrealloc(const char *file, int line, unsigned long size, void *var)
 {
 	void *ptr = realloc(var, size);
 	if (!ptr) {
-		err("Could not reallocate memory: %d bytes (%s:%d)\n",
+		fprintf(stderr, "Couldn't reallocate memory: %lu bytes (%s:%d)\n",
 				size, file, line);
 		exit(EXIT_FAILURE);
 	}

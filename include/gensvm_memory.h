@@ -9,6 +9,8 @@
 #ifndef GENSVM_MEMORY_H
 #define GENSVM_MEMORY_H
 
+#include <stddef.h>
+
 #define Calloc(type, size) \
 	mycalloc(__FILE__, __LINE__, size, sizeof(type))
 #define Malloc(type, size) \

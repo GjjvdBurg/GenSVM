@@ -7,7 +7,7 @@ DOXY=doxygen
 DOCDIR=doc
 DOXYFILE=$(DOCDIR)/Doxyfile
 
-EXECS=GenSVM_train GenSVM_grid gensvm
+EXECS=gensvm gensvm_grid
 
 .PHONY: all clean doc test
 
@@ -29,58 +29,55 @@ test: lib/libgensvm.a
 	$(MAKE) -C tests all
 
 lib/libgensvm.a: \
-	src/libGenSVM.o \
-	src/gensvm_crossval.o \
+	src/gensvm_base.o \
+	src/gensvm_cmdarg.o \
+	src/gensvm_copy.o \
+	src/gensvm_cv_util.o \
+	src/gensvm_grid.o \
+	src/gensvm_gridsearch.o \
 	src/gensvm_init.o \
 	src/gensvm_io.o \
 	src/gensvm_kernel.o \
-	src/gensvm_lapack.o \
-	src/gensvm_matrix.o \
 	src/gensvm_memory.o \
+	src/gensvm_optimize.o \
 	src/gensvm_pred.o \
+	src/gensvm_print.o \
+	src/gensvm_queue.o \
+	src/gensvm_simplex.o \
 	src/gensvm_strutil.o \
 	src/gensvm_sv.o \
-	src/gensvm_train.o \
-	src/gensvm_train_dataset.o \
-	src/gensvm_timer.o \
-	src/gensvm_util.o
+	src/gensvm_task.o \
+	src/gensvm_timer.o
 	@ar rcs lib/libgensvm.a \
-		src/libGenSVM.o \
-		src/gensvm_crossval.o \
+		src/gensvm_base.o \
+		src/gensvm_cmdarg.o \
+		src/gensvm_copy.o \
+		src/gensvm_cv_util.o \
+		src/gensvm_grid.o \
+		src/gensvm_gridsearch.o \
 		src/gensvm_init.o \
 		src/gensvm_io.o \
-		src/gensvm_matrix.o \
-		src/gensvm_memory.o \
 		src/gensvm_kernel.o \
-		src/gensvm_lapack.o \
+		src/gensvm_memory.o \
+		src/gensvm_optimize.o \
 		src/gensvm_pred.o \
+		src/gensvm_print.o \
+		src/gensvm_queue.o \
+		src/gensvm_simplex.o \
 		src/gensvm_strutil.o \
 		src/gensvm_sv.o \
-		src/gensvm_train.o \
-		src/gensvm_train_dataset.o \
-		src/gensvm_timer.o \
-		src/gensvm_util.o
+		src/gensvm_task.o \
+		src/gensvm_timer.o
 	@echo libgensvm.a...
 
 gensvm: src/GenSVMtraintest.c lib/libgensvm.a
 	@$(CC) -o $@ $< $(CFLAGS) $(INCLUDE) $(LIB) -lgensvm $(LDFLAGS)
-	@echo gensvm...
+	@echo gensvm ...
 
-GenSVM_train: src/GenSVMtrain.c lib/libgensvm.a
-	@$(CC) -o GenSVM_train src/GenSVMtrain.c $(CFLAGS) $(INCLUDE) $(LIB)\
-		-lgensvm $(LDFLAGS)
-	@echo GenSVM_train...
-
-GenSVM_grid: src/GenSVMgrid.c lib/libgensvm.a
-	@$(CC) -o GenSVM_grid src/GenSVMgrid.c $(CFLAGS) $(INCLUDE) $(LIB) \
-		-lgensvm $(LDFLAGS)
-	@echo GenSVM_grid...
-
-GenSVM_pred: src/GenSVMpred.c lib/libgensvm.a
-	@$(CC) -o GenSVM_pred src/GenSVMpred.c $(CFLAGS) $(INCLUDE) $(LIB) \
-		-lgensvm $(LDFLAGS)
-	@echo GenSVM_pred...
+gensvm_grid: src/GenSVMgrid.c lib/libgensvm.a
+	@$(CC) -o $@ $< $(CFLAGS) $(INCLUDE) $(LIB) -lgensvm $(LDFLAGS)
+	@echo gensvm_grid ...
 
 src/%.o: src/%.c
 	@$(CC) $(CFLAGS) $(INCLUDE) $(LDFLAGS) -c $< -o $@
-	@echo $<...
+	@echo $< ...

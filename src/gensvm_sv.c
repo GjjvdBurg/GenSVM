@@ -10,8 +10,7 @@
  *
  */
 
-#include "gensvm.h"
-#include "gensvm_matrix.h"
+#include "gensvm_sv.h"
 
 /**
  * @brief Calculate the number of support vectors in a model

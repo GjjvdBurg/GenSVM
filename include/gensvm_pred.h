@@ -12,9 +12,9 @@
 #ifndef GENSVM_PRED_H
 #define GENSVM_PRED_H
 
-// forward declarations
-struct GenData;
-struct GenModel;
+// includes
+#include "gensvm_kernel.h"
+#include "gensvm_simplex.h"
 
 // function declarations
 void gensvm_predict_labels(struct GenData *testdata,

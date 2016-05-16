@@ -1,5 +1,5 @@
 /**
- * @file crossval.c
+ * @file gensvm_cv_util.c
  * @author Gertjan van den Burg
  * @date January 7, 2014
  * @brief Functions for cross validation
@@ -13,10 +13,7 @@
  *
  */
 
-#include "globals.h"
-#include "gensvm.h"
-#include "gensvm_crossval.h"
-#include "gensvm_matrix.h"
+#include "gensvm_cv_util.h"
 
 /**
  * @brief Create a cross validation split vector

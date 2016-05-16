@@ -1,8 +1,8 @@
 /**
- * @file crossval.h
+ * @file gensvm_cv_util.h
  * @author Gertjan van den Burg
  * @date January, 2014
- * @brief Header file for crossval.c
+ * @brief Header file for gensvm_cv_util.c
  *
  * @details
  * Contains function declarations for functions needed for performing cross
@@ -10,11 +10,10 @@
  *
  */
 
-#ifndef GENSVM_CROSSVAL_H
-#define GENSVM_CROSSVAL_H
+#ifndef GENSVM_CV_UTIL_H
+#define GENSVM_CV_UTIL_H
 
-// forward delaration
-struct GenData;
+#include "gensvm_base.h"
 
 void gensvm_make_cv_split(long N, long folds, long *cv_idx);
 void gensvm_get_tt_split(struct GenData *full_data, struct GenData *train_data,

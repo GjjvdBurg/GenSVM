@@ -1,8 +1,8 @@
 /**
- * @file strutil.h
+ * @file gensvm_strutil.h
  * @author Gertjan van den Burg
  * @date August, 2013
- * @brief Header file for strutil.c
+ * @brief Header file for gensvm_strutil.c
  *
  * @details
  * Function declarations for useful string functions used in parsing
@@ -13,7 +13,7 @@
 #ifndef GENSVM_STRUTIL_H
 #define GENSVM_STRUTIL_H
 
-#include "types.h"
+#include "globals.h"
 
 bool str_startswith(const char *str, const char *pre);
 bool str_endswith(const char *str, const char *suf);

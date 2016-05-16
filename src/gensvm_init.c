@@ -13,201 +13,100 @@
  *
  */
 
-#include <math.h>
-
 #include "gensvm_init.h"
 
-/**
- * @brief Initialize a GenModel structure
- *
- * @details
- * A GenModel structure is initialized and the default value for the
- * parameters are set. A pointer to the initialized model is returned.
- *
- * @returns 	initialized GenModel
- */
-struct GenModel *gensvm_init_model()
-{
-	struct GenModel *model = Malloc(struct GenModel, 1);
-
-	// set default values
-	model->p = 1.0;
-	model->lambda = pow(2, -8.0);
-	model->epsilon = 1e-6;
-	model->kappa = 0.0;
-	model->weight_idx = 1;
-	model->kerneltype = K_LINEAR;
-	model->kernelparam = NULL;
-
-	model->W = NULL;
-	model->t = NULL;
-	model->V = NULL;
-	model->Vbar = NULL;
-	model->U = NULL;
-	model->UU = NULL;
-	model->Q = NULL;
-	model->H = NULL;
-	model->R = NULL;
-	model->rho = NULL;
-	model->data_file = NULL;
-
-	return model;
-}
+inline double rnd() { return (double) rand()/0x7FFFFFFF; }
 
 /**
- * @brief Initialize a GenData structure
+ * @brief seed the matrix V from an existing model or using rand
  *
  * @details
- * A GenData structure is initialized and default values are set.
- * A pointer to the initialized data is returned.
+ * The matrix V must be seeded before the main_loop() can start.
+ * This can be done by either seeding it with random numbers or
+ * using the solution from a previous model on the same dataset
+ * as initial seed. The latter option usually allows for a
+ * significant improvement in the number of iterations necessary
+ * because the seeded model V is closer to the optimal V.
  *
- * @returns 	initialized GenData
- *
+ * @param[in] 		from_model 	GenModel from which to copy V
+ * @param[in,out] 	to_model 	GenModel to which V will be copied
  */
-struct GenData *gensvm_init_data()
+void gensvm_init_V(struct GenModel *from_model,
+	       	struct GenModel *to_model, struct GenData *data)
 {
-	struct GenData *data = Malloc(struct GenData, 1);
-	data->Sigma = NULL;
-	data->y = NULL;
-	data->Z = NULL;
-	data->RAW = NULL;
+	long i, j, k;
+	double cmin, cmax, value;
 
-	// set default values
-	data->kerneltype = K_LINEAR;
-	data->kernelparam = NULL;
+	long n = data->n;
+	long m = data->m;
+	long K = data->K;
 
-	return data;
-}
-
-/**
- * @brief Allocate memory for a GenModel
- *
- * @details
- * This function can be used to allocate the memory needed for a GenModel. All
- * arrays in the model are specified and initialized to 0.
- *
- * @param[in] 	model 	GenModel to allocate
- *
- */
-void gensvm_allocate_model(struct GenModel *model)
-{
-	long n = model->n;
-	long m = model->m;
-	long K = model->K;
-
-	model->W = Calloc(double, m*(K-1));
-	model->t = Calloc(double, K-1);
-	model->V = Calloc(double, (m+1)*(K-1));
-	model->Vbar = Calloc(double, (m+1)*(K-1));
-	model->U = Calloc(double, K*(K-1));
-	model->UU = Calloc(double, n*K*(K-1));
-	model->Q = Calloc(double, n*K);
-	model->H = Calloc(double, n*K);
-	model->R = Calloc(double, n*K);
-	model->rho = Calloc(double, n);
-}
-
-/**
- * @brief Reallocate memory for GenModel
- *
- * @details
- * This function can be used to reallocate existing memory for a GenModel,
- * upon a change in the model dimensions. This is used in combination with
- * kernels.
- *
- * @param[in] 	model 	GenModel to reallocate
- * @param[in] 	n 	new value of GenModel->n
- * @param[in] 	m 	new value of GenModel->m
- *
- */
-void gensvm_reallocate_model(struct GenModel *model, long n, long m)
-{
-	long K = model->K;
-
-	if (model->n == n && model->m == m)
-		return;
-	if (model->n != n) {
-		model->UU = Realloc(model->UU, double, n*K*(K-1));
-		Memset(model->UU, double, n*K*(K-1));
-
-		model->Q = Realloc(model->Q, double, n*K);
-		Memset(model->Q, double, n*K);
-
-		model->H = Realloc(model->H, double, n*K);
-		Memset(model->H, double, n*K);
-
-		model->R = Realloc(model->R, double, n*K);
-		Memset(model->R, double, n*K);
-
-		model->rho = Realloc(model->rho, double, n);
-		Memset(model->rho, double, n);
-
-		model->n = n;
-	}
-	if (model->m != m) {
-		model->W = Realloc(model->W, double, m*(K-1));
-		Memset(model->W, double, m*(K-1));
-
-		model->V = Realloc(model->V, double, (m+1)*(K-1));
-		Memset(model->V, double, (m+1)*(K-1));
-
-		model->Vbar = Realloc(model->Vbar, double, (m+1)*(K-1));
-		Memset(model->Vbar, double, (m+1)*(K-1));
-
-		model->m = m;
-	}
-}
-
-/**
- * @brief Free allocated GenModel struct
- *
- * @details
- * Simply free a previously allocated GenModel by freeing all its component
- * arrays. Note that the model struct itself is also freed here.
- *
- * @param[in] 	model 	GenModel to free
- *
- */
-void gensvm_free_model(struct GenModel *model)
-{
-	free(model->W);
-	free(model->t);
-	free(model->V);
-	free(model->Vbar);
-	free(model->U);
-	free(model->UU);
-	free(model->Q);
-	free(model->H);
-	free(model->rho);
-	free(model->R);
-	free(model->kernelparam);
-
-	free(model);
-}
-
-/**
- * @brief Free allocated GenData struct
- *
- * @details
- * Simply free a previously allocated GenData struct by freeing all its
- * components. Note that the data struct itself is also freed here.
- *
- * @param[in] 	data 	GenData struct to free
- *
- */
-void gensvm_free_data(struct GenData *data)
-{
-	if (data == NULL)
-		return;
-
-	if (data->Z == data->RAW) {
-		free(data->Z);
+	if (from_model == NULL) {
+		for (i=0; i<m+1; i++) {
+			cmin = 1e100;
+			cmax = -1e100;
+			for (k=0; k<n; k++) {
+				value = matrix_get(data->Z, m+1, k, i);
+				cmin = minimum(cmin, value);
+				cmax = maximum(cmax, value);
+			}
+			for (j=0; j<K-1; j++) {
+				cmin = (abs(cmin) < 1e-10) ? -1 : cmin;
+				cmax = (abs(cmax) < 1e-10) ? 1 : cmax;
+				value = 1.0/cmin + (1.0/cmax - 1.0/cmin)*rnd();
+				matrix_set(to_model->V, K-1, i, j, value);
+			}
+		}
 	} else {
-		free(data->Z);
-		free(data->RAW);
+		for (i=0; i<m+1; i++)
+			for (j=0; j<K-1; j++) {
+				value = matrix_get(from_model->V, K-1, i, j);
+				matrix_set(to_model->V, K-1, i, j, value);
+			}
 	}
-	free(data->kernelparam);
-	free(data->y);
-	free(data->Sigma);
-	free(data);
+}
+
+/**
+ * @brief Initialize instance weights
+ *
+ * @details
+ * Instance weights can for instance be used to add additional weights to
+ * instances of certain classes. Two default weight possibilities are
+ * implemented here. The first is unit weights, where each instance gets
+ * weight 1.
+ *
+ * The second are group size correction weights, which are calculated as
+ * @f[
+ * 	\rho_i = \frac{n}{Kn_k} ,
+ * @f]
+ * where @f$ n_k @f$ is the number of instances in group @f$ k @f$ and
+ * @f$ y_i = k @f$.
+ *
+ * @param[in] 		data 	GenData with the dataset
+ * @param[in,out] 	model 	GenModel with the weight specification. On
+ * 				exit GenModel::rho contains the instance
+ * 				weights.
+ */
+void gensvm_initialize_weights(struct GenData *data, struct GenModel *model)
+{
+	long *groups;
+	long i;
+
+	long n = model->n;
+	long K = model->K;
+
+	if (model->weight_idx == 1) {
+		for (i=0; i<n; i++)
+			model->rho[i] = 1.0;
+	}
+	else if (model->weight_idx == 2) {
+		groups = Calloc(long, K);
+		for (i=0; i<n; i++)
+			groups[data->y[i]-1]++;
+		for (i=0; i<n; i++)
+			model->rho[i] = ((double) n)/((double) (groups[data->y[i]-1]*K));
+	} else {
+		fprintf(stderr, "Unknown weight specification.\n");
+		exit(1);
+	}
 }

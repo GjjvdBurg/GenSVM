@@ -1,5 +1,5 @@
 /**
- * @file strutil.c
+ * @file gensvm_strutil.c
  * @author Gertjan van den Burg
  * @date January, 2014
  * @brief Utility functions for dealing with strings
@@ -9,7 +9,6 @@
  * format and checking start and ends of strings.
  */
 
-#include "globals.h"
 #include "gensvm_strutil.h"
 
 /**

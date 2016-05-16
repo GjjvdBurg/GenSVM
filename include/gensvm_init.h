@@ -1,28 +1,21 @@
 /**
  * @file gensvm_init.h
  * @author Gertjan van den Burg
- * @date January, 2014
+ * @date May, 2016
  * @brief Header file for gensvm_init.c
  *
  * @details
- * Contains function declarations for the initialization functions for
- * GenModel and GenData structures.
+ * Contains function declarations for the initialization functions for the
+ * model weights and model V matrix.
  */
 
 #ifndef GENSVM_INIT_H
 #define GENSVM_INIT_H
 
-// include
-#include "globals.h"
-#include "gensvm.h"
+#include "gensvm_base.h"
 
-struct GenModel *gensvm_init_model();
-
-struct GenData *gensvm_init_data();
-
-void gensvm_allocate_model(struct GenModel *model);
-void gensvm_reallocate_model(struct GenModel *model, long n, long m);
-void gensvm_free_model(struct GenModel *model);
-void gensvm_free_data(struct GenData *data);
+void gensvm_init_V(struct GenModel *from_model, struct GenModel *to_model,
+		struct GenData *data);
+void gensvm_initialize_weights(struct GenData *data, struct GenModel *model);
 
 #endif

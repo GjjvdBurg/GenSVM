@@ -14,12 +14,10 @@
 #ifndef GENSVM_KERNEL_H
 #define GENSVM_KERNEL_H
 
-// forward declarations
-struct GenData;
-struct GenModel;
+// includes
+#include "gensvm_base.h"
 
 // function declarations
-
 void gensvm_kernel_preprocess(struct GenModel *model, struct GenData *data);
 void gensvm_kernel_postprocess(struct GenModel *model,
 	       	struct GenData *traindata, struct GenData *testdata);
@@ -36,5 +34,9 @@ void gensvm_make_testfactor(struct GenData *testdata,
 double gensvm_dot_rbf(double *x1, double *x2, double *kernelparam, long n);
 double gensvm_dot_poly(double *x1, double *x2, double *kernelparam, long n);
 double gensvm_dot_sigmoid(double *x1, double *x2, double *kernelparam, long n);
-
+int dsyevx(char JOBZ, char RANGE, char UPLO, int N, double *A, int LDA,
+	       	double VL, double VU, int IL, int IU, double ABSTOL,
+		int *M, double *W, double *Z, int LDZ, double *WORK, int LWORK,
+		int *IWORK, int *IFAIL);
+double dlamch(char CMACH);
 #endif

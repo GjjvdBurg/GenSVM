@@ -9,10 +9,8 @@
  * output of data and model files. It also contains string functions.
  *
  */
-#include <stdarg.h>
 
-#include "globals.h"
-#include "gensvm_util.h"
+#include "gensvm_print.h"
 
 FILE *GENSVM_OUTPUT_FILE; 	///< The #GENSVM_OUTPUT_FILE specifies the
 				///< output stream to which all output is
@@ -24,65 +22,6 @@ FILE *GENSVM_OUTPUT_FILE; 	///< The #GENSVM_OUTPUT_FILE specifies the
 				///< temporarily be suppressed by importing
 				///< this variable through @c extern and
 				///< (temporarily) setting it to NULL.
-
-/**
- * @brief Check if any command line arguments contain string
- *
- * @details
- * Check if any of a given array of command line arguments contains a given
- * string. If the string is found, the index of the string in argv is
- * returned. If the string is not found, 0 is returned.
- *
- * This function is copied from MSVMpack/libMSVM.c.
- *
- * @param[in] 	argc 	number of command line arguments
- * @param[in] 	argv 	command line arguments
- * @param[in] 	str 	string to find in the arguments
- * @returns 		index of the string in the arguments if found, 0
- * 			otherwise
- */
-int gensvm_check_argv(int argc, char **argv, char *str)
-{
-	int i;
-	int arg_str = 0;
-	for (i=1; i<argc; i++)
-		if (strstr(argv[i], str) != NULL) {
-			arg_str = i;
-			break;
-		}
-
-	return arg_str;
-}
-
-/**
- * @brief Check if a command line argument equals a string
- *
- * @details
- * Check if any of the command line arguments is exactly equal to a given
- * string. If so, return the index of the corresponding command line argument.
- * If not, return 0.
- *
- * This function is copied from MSVMpack/libMSVM.c
- *
- * @param[in] 	argc 	number of command line arguments
- * @param[in] 	argv 	command line arguments
- * @param[in] 	str 	string to find in the arguments
- * @returns 		index of the command line argument that corresponds to
- * 			the string, 0 if none matches.
- */
-int gensvm_check_argv_eq(int argc, char **argv, char *str)
-{
-	int i;
-	int arg_str = 0;
-	for (i=1; i<argc; i++)
-		if (strcmp(argv[i], str) == 0) {
-			arg_str = i;
-			break;
-		}
-
-	return arg_str;
-}
-
 
 /**
  * @brief Print a given string to the specified output stream

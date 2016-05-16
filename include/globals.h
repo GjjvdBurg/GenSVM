@@ -18,12 +18,17 @@
 #ifndef GENSVM_GLOBALS_H
 #define GENSVM_GLOBALS_H
 
+#include "gensvm_memory.h"
+#include "types.h"
+
+#include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
 #include <string.h>
-
-#include "gensvm_memory.h"
+#include <math.h>
+#include <time.h>
+#include <cblas.h>
 
 #define MAX_LINE_LENGTH 1024
 
@@ -32,5 +37,23 @@
 #define maximum(a, b) (a) > (b) ? (a) : (b)
 #define minimum(a, b) (a) < (b) ? (a) : (b)
 #endif
+
+// Set a matrix element (RowMajor)
+#define matrix_set(M, cols, i, j, val) M[(i)*(cols)+j] = val
+
+// Get a matrix element (RowMajor)
+#define matrix_get(M, cols, i, j) M[(i)*(cols)+j]
+
+// Add to a matrix element (RowMajor)
+#define matrix_add(M, cols, i, j, val) M[(i)*(cols)+j] += val
+
+// Multiply a matrix element (RowMajor)
+#define matrix_mul(M, cols, i, j, val) M[(i)*(cols)+j] *= val
+
+// Set a 3D matrix element (N2 = second dim, N3 = third dim, RowMajor)
+#define matrix3_set(M, N2, N3, i, j, k, val) M[k+(N3)*(j+(N2)*(i))] = val
+
+// Get a 3D matrix element (N2 = second dim, N3 = third dim, RowMajor)
+#define matrix3_get(M, N2, N3, i, j, k) M[k+(N3)*(j+(N2)*(i))]
 
 #endif

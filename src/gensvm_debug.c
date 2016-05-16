@@ -1,19 +1,15 @@
 /**
- * @file gensvm_matrix.c
+ * @file gensvm_debug.c
  * @author Gertjan van den Burg
- * @date August, 2013
- * @brief Functions facilitating matrix access
+ * @date May, 2016
+ * @brief Functions facilitating debugging
  *
  * @details
- * The functions contained in this file are used when
- * accessing or writing to matrices. Seperate functions
- * exist of adding and multiplying existing matrix
- * elements, to ensure this is done in place.
+ * Defines functions useful for debugging matrices.
  *
  */
 
-#include "gensvm_matrix.h"
-#include "gensvm_util.h"
+#include "gensvm_debug.h"
 
 /**
  * @brief print a matrix

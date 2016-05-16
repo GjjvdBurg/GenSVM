@@ -12,9 +12,9 @@
 #ifndef GENSVM_IO_H
 #define GENSVM_IO_H
 
-// forward declarations
-struct GenData;
-struct GenModel;
+// includes
+#include "gensvm_base.h"
+#include "gensvm_strutil.h"
 
 // function declarations
 void gensvm_read_data(struct GenData *dataset, char *data_file);
@@ -24,5 +24,6 @@ void gensvm_write_model(struct GenModel *model, char *output_filename);
 
 void gensvm_write_predictions(struct GenData *data, long *predy,
 		char *output_filename);
+void gensvm_time_string(char *buffer);
 
 #endif

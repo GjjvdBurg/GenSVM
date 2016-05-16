@@ -8,9 +8,9 @@
  * This is a command line interface to the parameter grid search functionality
  * of the algorithm. The grid search is specified in a separate file, thereby
  * reducing the number of command line arguments. See
- * read_training_from_file() for documentation on the training file.
+ * read_grid_from_file() for documentation on the grid file.
  *
- * The program runs a grid search as specified in the training file. If
+ * The program runs a grid search as specified in the grid file. If
  * desired the grid search can incorporate consistency checks to find the
  * configuration among the best configurations which scores consistently high.
  * All output is written to stdout, unless the quiet mode is specified.
@@ -19,18 +19,9 @@
  *
  */
 
-#include <time.h>
-
-#include "globals.h"
-#include "gensvm.h"
-#include "gensvm_crossval.h"
+#include "gensvm_cmdarg.h"
 #include "gensvm_io.h"
-#include "gensvm_init.h"
-#include "gensvm_pred.h"
-#include "gensvm_strutil.h"
-#include "gensvm_train.h"
-#include "gensvm_train_dataset.h"
-#include "gensvm_util.h"
+#include "gensvm_gridsearch.h"
 
 #define MINARGS 2
 
@@ -39,10 +30,7 @@ extern FILE *GENSVM_OUTPUT_FILE;
 // function declarations
 void exit_with_help();
 void parse_command_line(int argc, char **argv, char *input_filename);
-void read_training_from_file(char *input_filename, struct Training *training);
-struct Training *gensvm_init_training();
-struct Queue *gensvm_init_queue();
-void gensvm_free_training(struct Training *training);
+void read_grid_from_file(char *input_filename, struct GenGrid *grid);
 
 /**
  * @brief Help function
@@ -50,7 +38,7 @@ void gensvm_free_training(struct Training *training);
 void exit_with_help()
 {
 	printf("This is GenSVM, version %1.1f\n\n", VERSION);
-	printf("Usage: trainGenSVMdataset [options] training_file\n");
+	printf("Usage: trainGenSVMdataset [options] grid_file\n");
 	printf("Options:\n");
 	printf("-h | -help : print this help.\n");
 	printf("-q : quiet mode (no output)\n");
@@ -62,7 +50,7 @@ void exit_with_help()
  * @brief Main interface function for trainGenSVMdataset
  *
  * @details
- * Main interface for the command line program. A given training file which
+ * Main interface for the command line program. A given grid file which
  * specifies a grid search over a single dataset is read. From this, a Queue
  * is created containing all Task instances that need to be performed in the
  * search. Depending on the type of dataset, either cross validation or
@@ -78,28 +66,28 @@ int main(int argc, char **argv)
 {
 	char input_filename[MAX_LINE_LENGTH];
 
-	struct Training *training = gensvm_init_training();
+	struct GenGrid *grid = gensvm_init_grid();
 	struct GenData *train_data = gensvm_init_data();
 	struct GenData *test_data = gensvm_init_data();
-	struct Queue *q = gensvm_init_queue();
+	struct GenQueue *q = gensvm_init_queue();
 
 	if (argc < MINARGS || gensvm_check_argv(argc, argv, "-help")
 			|| gensvm_check_argv_eq(argc, argv, "-h") )
 		exit_with_help();
 	parse_command_line(argc, argv, input_filename);
 
-	note("Reading training file\n");
-	read_training_from_file(input_filename, training);
+	note("Reading grid file\n");
+	read_grid_from_file(input_filename, grid);
 
-	note("Reading data from %s\n", training->train_data_file);
-	gensvm_read_data(train_data, training->train_data_file);
-	if (training->traintype == TT) {
-		note("Reading data from %s\n", training->test_data_file);
-		gensvm_read_data(test_data, training->test_data_file);
+	note("Reading data from %s\n", grid->train_data_file);
+	gensvm_read_data(train_data, grid->train_data_file);
+	if (grid->traintype == TT) {
+		note("Reading data from %s\n", grid->test_data_file);
+		gensvm_read_data(test_data, grid->test_data_file);
 	}
 
 	note("Creating queue\n");
-	make_queue(training, q, train_data, test_data);
+	gensvm_fill_queue(grid, q, train_data, test_data);
 
 	srand(time(NULL));
 
@@ -107,12 +95,12 @@ int main(int argc, char **argv)
 	start_training(q);
 	note("Training finished\n");
 
-	if (training->repeats > 0) {
-		consistency_repeats(q, training->repeats, training->traintype);
+	if (grid->repeats > 0) {
+		consistency_repeats(q, grid->repeats, grid->traintype);
 	}
 
-	free_queue(q);
-	gensvm_free_training(training);
+	gensvm_free_queue(q);
+	gensvm_free_grid(grid);
 	gensvm_free_data(train_data);
 	gensvm_free_data(test_data);
 
@@ -125,13 +113,13 @@ int main(int argc, char **argv)
  *
  * @details
  * Few arguments can be supplied to the command line. Only quiet mode can be
- * specified, or help can be requested. The filename of the training file is
- * read from the arguments. Parsing of the training file is done separately in
- * read_training_from_file().
+ * specified, or help can be requested. The filename of the grid file is
+ * read from the arguments. Parsing of the grid file is done separately in
+ * read_grid_from_file().
  *
  * @param[in] 	argc 		number of command line arguments
  * @param[in] 	argv 		array of command line arguments
- * @param[in] 	input_filename 	pre-allocated buffer for the training
+ * @param[in] 	input_filename 	pre-allocated buffer for the grid
  * 				filename.
  *
  */
@@ -181,21 +169,21 @@ KernelType parse_kernel_str(char *kernel_line)
 }
 
 /**
- * @brief Read the Training struct from file
+ * @brief Read the GenGrid struct from file
  *
  * @details
- * Read the Training struct from a file. The training file follows a specific
- * format specified in @ref spec_training_file.
+ * Read the GenGrid struct from a file. The grid file follows a specific
+ * format specified in @ref spec_grid_file.
  *
  * Commonly used string functions in this function are all_doubles_str() and
  * all_longs_str().
  *
- * @param[in] 	input_filename 	filename of the training file
- * @param[in] 	training 	Training structure to place the parsed
+ * @param[in] 	input_filename 	filename of the grid file
+ * @param[in] 	grid 	GenGrid structure to place the parsed
  * 				parameter grid.
  *
  */
-void read_training_from_file(char *input_filename, struct Training *training)
+void read_grid_from_file(char *input_filename, struct GenGrid *grid)
 {
 	long i, nr = 0;
 	FILE *fid;
@@ -207,108 +195,108 @@ void read_training_from_file(char *input_filename, struct Training *training)
 
 	fid = fopen(input_filename, "r");
 	if (fid == NULL) {
-		fprintf(stderr, "Error opening training file %s\n",
+		fprintf(stderr, "Error opening grid file %s\n",
 				input_filename);
 		exit(1);
 	}
-	training->traintype = CV;
+	grid->traintype = CV;
 	while ( fgets(buffer, MAX_LINE_LENGTH, fid) != NULL ) {
 		Memset(params, double,  MAX_LINE_LENGTH);
 		Memset(lparams, long, MAX_LINE_LENGTH);
 		if (str_startswith(buffer, "train:")) {
 			sscanf(buffer, "train: %s\n", train_filename);
-			training->train_data_file = Calloc(char,
+			grid->train_data_file = Calloc(char,
 					MAX_LINE_LENGTH);
-			strcpy(training->train_data_file, train_filename);
+			strcpy(grid->train_data_file, train_filename);
 		} else if (str_startswith(buffer, "test:")) {
 			sscanf(buffer, "test: %s\n", test_filename);
-			training->test_data_file = Calloc(char,
+			grid->test_data_file = Calloc(char,
 				       	MAX_LINE_LENGTH);
-			strcpy(training->test_data_file, test_filename);
-			training->traintype = TT;
+			strcpy(grid->test_data_file, test_filename);
+			grid->traintype = TT;
 		} else if (str_startswith(buffer, "p:")) {
 			nr = all_doubles_str(buffer, 2, params);
-			training->ps = Calloc(double, nr);
+			grid->ps = Calloc(double, nr);
 			for (i=0; i<nr; i++)
-				training->ps[i] = params[i];
-			training->Np = nr;
+				grid->ps[i] = params[i];
+			grid->Np = nr;
 		} else if (str_startswith(buffer, "lambda:")) {
 			nr = all_doubles_str(buffer, 7, params);
-			training->lambdas = Calloc(double, nr);
+			grid->lambdas = Calloc(double, nr);
 			for (i=0; i<nr; i++)
-				training->lambdas[i] = params[i];
-			training->Nl = nr;
+				grid->lambdas[i] = params[i];
+			grid->Nl = nr;
 		} else if (str_startswith(buffer, "kappa:")) {
 			nr = all_doubles_str(buffer, 6, params);
-			training->kappas = Calloc(double, nr);
+			grid->kappas = Calloc(double, nr);
 			for (i=0; i<nr; i++)
-				training->kappas[i] = params[i];
-			training->Nk = nr;
+				grid->kappas[i] = params[i];
+			grid->Nk = nr;
 		} else if (str_startswith(buffer, "epsilon:")) {
 			nr = all_doubles_str(buffer, 8, params);
-			training->epsilons = Calloc(double, nr);
+			grid->epsilons = Calloc(double, nr);
 			for (i=0; i<nr; i++)
-				training->epsilons[i] = params[i];
-			training->Ne = nr;
+				grid->epsilons[i] = params[i];
+			grid->Ne = nr;
 		} else if (str_startswith(buffer, "weight:")) {
 			nr = all_longs_str(buffer, 7, lparams);
-			training->weight_idxs = Calloc(int, nr);
+			grid->weight_idxs = Calloc(int, nr);
 			for (i=0; i<nr; i++)
-				training->weight_idxs[i] = lparams[i];
-			training->Nw = nr;
+				grid->weight_idxs[i] = lparams[i];
+			grid->Nw = nr;
 		} else if (str_startswith(buffer, "folds:")) {
 			nr = all_longs_str(buffer, 6, lparams);
-			training->folds = lparams[0];
+			grid->folds = lparams[0];
 			if (nr > 1)
 				fprintf(stderr, "Field \"folds\" only takes "
 						"one value. Additional "
 						"fields are ignored.\n");
 		} else if (str_startswith(buffer, "repeats:")) {
 			nr = all_longs_str(buffer, 8, lparams);
-			training->repeats = lparams[0];
+			grid->repeats = lparams[0];
 			if (nr > 1)
 				fprintf(stderr, "Field \"repeats\" only "
 						"takes one value. Additional "
 						"fields are ignored.\n");
 		} else if (str_startswith(buffer, "kernel:")) {
-			training->kerneltype = parse_kernel_str(buffer);
+			grid->kerneltype = parse_kernel_str(buffer);
 		} else if (str_startswith(buffer, "gamma:")) {
 			nr = all_doubles_str(buffer, 6, params);
-			if (training->kerneltype == K_LINEAR) {
+			if (grid->kerneltype == K_LINEAR) {
 				fprintf(stderr, "Field \"gamma\" ignored, "
 						"linear kernel is used.\n");
-				training->Ng = 0;
+				grid->Ng = 0;
 				break;
 			}
-			training->gammas = Calloc(double, nr);
+			grid->gammas = Calloc(double, nr);
 			for (i=0; i<nr; i++)
-				training->gammas[i] = params[i];
-			training->Ng = nr;
+				grid->gammas[i] = params[i];
+			grid->Ng = nr;
 		} else if (str_startswith(buffer, "coef:")) {
 			nr = all_doubles_str(buffer, 5, params);
-			if (training->kerneltype == K_LINEAR ||
-				training->kerneltype == K_RBF) {
+			if (grid->kerneltype == K_LINEAR ||
+				grid->kerneltype == K_RBF) {
 				fprintf(stderr, "Field \"coef\" ignored with "
 						"specified kernel.\n");
-				training->Nc = 0;
+				grid->Nc = 0;
 				break;
 			}
-			training->coefs = Calloc(double, nr);
+			grid->coefs = Calloc(double, nr);
 			for (i=0; i<nr; i++)
-				training->coefs[i] = params[i];
-			training->Nc = nr;
+				grid->coefs[i] = params[i];
+			grid->Nc = nr;
 		} else if (str_startswith(buffer, "degree:")) {
 			nr = all_doubles_str(buffer, 7, params);
-			if (training->kerneltype != K_POLY) {
+			if (grid->kerneltype != K_POLY) {
 				fprintf(stderr, "Field \"degree\" ignored "
 						"with specified kernel.\n");
-				training->Nd = 0;
+				grid->Nd = 0;
 				break;
 			}
-			training->degrees = Calloc(double, nr);
+			grid->degrees = Calloc(double, nr);
 			for (i=0; i<nr; i++)
-				training->degrees[i] = params[i];
-			training->Nd = nr;
+				grid->degrees[i] = params[i];
+			grid->Nd = nr;
 		} else {
 			fprintf(stderr, "Cannot find any parameters on line: "
 					"%s\n", buffer);
@@ -318,63 +306,4 @@ void read_training_from_file(char *input_filename, struct Training *training)
 	free(params);
 	free(lparams);
 	fclose(fid);
-}
-
-struct Training *gensvm_init_training()
-{
-	struct Training *training = Malloc(struct Training, 1);
-
-	// initialize to defaults
-	training->traintype = CV;
-	training->kerneltype = K_LINEAR;
-	training->repeats = 0;
-	training->folds = 10;
-	training->Np = 0;
-	training->Nl = 0;
-	training->Nk = 0;
-	training->Ne = 0;
-	training->Nw = 0;
-	training->Ng = 0;
-	training->Nc = 0;
-	training->Nd = 0;
-
-	// set arrays to NULL
-	training->weight_idxs = NULL;
-	training->ps = NULL;
-	training->lambdas = NULL;
-	training->kappas = NULL;
-	training->epsilons = NULL;
-	training->gammas = NULL;
-	training->coefs = NULL;
-	training->degrees = NULL;
-	training->train_data_file = NULL;
-	training->test_data_file = NULL;
-
-	return training;
-}
-
-struct Queue *gensvm_init_queue()
-{
-	struct Queue *q = Malloc(struct Queue, 1);
-
-	q->tasks = NULL;
-	q->N = 0;
-	q->i = 0;
-
-	return q;
-}
-
-void gensvm_free_training(struct Training *training)
-{
-	free(training->weight_idxs);
-	free(training->ps);
-	free(training->lambdas);
-	free(training->kappas);
-	free(training->epsilons);
-	free(training->gammas);
-	free(training->coefs);
-	free(training->degrees);
-	free(training->train_data_file);
-	free(training->test_data_file);
-	free(training);
 }

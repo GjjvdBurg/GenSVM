@@ -10,17 +10,11 @@
  *
  */
 
-#include <time.h>
-
-#include "globals.h"
-#include "gensvm.h"
+#include "gensvm_cmdarg.h"
 #include "gensvm_io.h"
 #include "gensvm_init.h"
-#include "gensvm_kernel.h"
-#include "gensvm_train.h"
+#include "gensvm_optimize.h"
 #include "gensvm_pred.h"
-#include "libGenSVM.h"
-#include "gensvm_util.h"
 
 #define MINARGS 2
 
@@ -118,10 +112,10 @@ int main(int argc, char **argv)
 	if (gensvm_check_argv_eq(argc, argv, "-s")) {
 		struct GenModel *seed_model = gensvm_init_model();
 		gensvm_read_model(seed_model, model_inputfile);
-		gensvm_seed_model_V(seed_model, model, traindata);
+		gensvm_init_V(seed_model, model, traindata);
 		gensvm_free_model(seed_model);
 	} else {
-		gensvm_seed_model_V(NULL, model, traindata);
+		gensvm_init_V(NULL, model, traindata);
 	}
 
 	// start training
@@ -274,4 +268,3 @@ void parse_command_line(int argc, char **argv, struct GenModel *model,
 			model->kernelparam[1] = coef;
 	}
 }
-

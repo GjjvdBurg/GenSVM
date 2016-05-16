@@ -11,14 +11,6 @@
  *
  */
 
-#include <cblas.h>
-#include <math.h>
-
-#include "globals.h"
-#include "libGenSVM.h"
-#include "gensvm.h"
-#include "gensvm_kernel.h"
-#include "gensvm_matrix.h"
 #include "gensvm_pred.h"
 
 /**
@@ -51,7 +43,7 @@ void gensvm_predict_labels(struct GenData *testdata, struct GenModel *model,
 	U = Calloc(double, K*(K-1));
 
 	// Generate the simplex matrix
-	gensvm_simplex_gen(K, U);
+	gensvm_simplex(K, U);
 
 	// Generate the simplex space vectors
 	cblas_dgemm(

@@ -10,17 +10,7 @@
  *
  */
 
-#include <math.h>
-#include <cblas.h>
-
-#include "globals.h"
-#include "libGenSVM.h"
-#include "gensvm.h"
-#include "gensvm_lapack.h"
-#include "gensvm_matrix.h"
-#include "gensvm_sv.h"
-#include "gensvm_train.h"
-#include "gensvm_util.h"
+#include "gensvm_optimize.h"
 
 /**
  * Maximum number of iterations of the algorithm.
@@ -71,7 +61,7 @@ void gensvm_optimize(struct GenModel *model, struct GenData *data)
 	note("\tepsilon = %g\n", model->epsilon);
 	note("\n");
 
-	gensvm_simplex_gen(model->K, model->U);
+	gensvm_simplex(model->K, model->U);
 	gensvm_simplex_diff(model, data);
 	gensvm_category_matrix(model, data);
 
@@ -535,4 +525,270 @@ void gensvm_get_update(struct GenModel *model, struct GenData *data, double *B,
 			matrix_set(model->V, K-1, i, j, value);
 		}
 	}
+}
+
+/**
+ * @brief Generate the category matrix
+ *
+ * @details
+ * Generate the category matrix R. The category matrix has 1's everywhere
+ * except at the column corresponding to the label of instance i, there the
+ * element is 0.
+ *
+ * @param[in,out] 	model 		corresponding GenModel
+ * @param[in] 		dataset 	corresponding GenData
+ *
+ */
+void gensvm_category_matrix(struct GenModel *model, struct GenData *dataset)
+{
+	long i, j;
+	long n = model->n;
+	long K = model->K;
+
+	for (i=0; i<n; i++) {
+		for (j=0; j<K; j++) {
+			if (dataset->y[i] != j+1)
+				matrix_set(model->R, K, i, j, 1.0);
+			else
+				matrix_set(model->R, K, i, j, 0.0);
+		}
+	}
+}
+
+/**
+ * @brief Generate the simplex difference matrix
+ *
+ * @details
+ * The simplex difference matrix is a 3D matrix which is constructed
+ * as follows. For each instance i, the difference vectors between the row of
+ * the simplex matrix corresponding to the class label of instance i and the
+ * other rows of the simplex matrix are calculated. These difference vectors
+ * are stored in a matrix, which is one horizontal slice of the 3D matrix.
+ *
+ * @param[in,out] 	model 	the corresponding GenModel
+ * @param[in] 		data 	the corresponding GenData
+ *
+ */
+void gensvm_simplex_diff(struct GenModel *model, struct GenData *data)
+{
+	long i, j, k;
+	double value;
+
+	long n = model->n;
+	long K = model->K;
+
+	for (i=0; i<n; i++) {
+		for (j=0; j<K-1; j++) {
+			for (k=0; k<K; k++) {
+				value = matrix_get(model->U, K-1, data->y[i]-1, j);
+				value -= matrix_get(model->U, K-1, k, j);
+				matrix3_set(model->UU, K-1, K, i, j, k, value);
+			}
+		}
+	}
+}
+
+/**
+ * @brief Use step doubling
+ *
+ * @details
+ * Step doubling can be used to speed up the maorization algorithm. Instead of
+ * using the value at the minimimum of the majorization function, the value
+ * ``opposite'' the majorization point is used. This can essentially cut the
+ * number of iterations necessary to reach the minimum in half.
+ *
+ * @param[in] 	model	GenModel containing the augmented parameters
+ */
+void gensvm_step_doubling(struct GenModel *model)
+{
+	long i, j;
+	double value;
+
+	long m = model->m;
+	long K = model->K;
+
+	for (i=0; i<m+1; i++) {
+		for (j=0; j<K-1; j++) {
+			matrix_mul(model->V, K-1, i, j, 2.0);
+			value = - matrix_get(model->Vbar, K-1, i, j);
+			matrix_add(model->V, K-1, i, j, value);
+		}
+	}
+}
+
+/**
+ * @brief Calculate the Huber hinge errors
+ *
+ * @details
+ * For each of the scalar errors in Q the Huber hinge errors are
+ * calculated. The Huber hinge is here defined as
+ * @f[
+ * 	h(q) =
+ * 		\begin{dcases}
+ * 			1 - q - \frac{\kappa + 1}{2} & \text{if } q \leq -\kappa \\
+ * 			\frac{1}{2(\kappa + 1)} ( 1 - q)^2 & \text{if } q \in (-\kappa, 1] \\
+ * 			0 & \text{if } q > 1
+ * 		\end{dcases}
+ * @f]
+ *
+ * @param[in,out] model 	the corresponding GenModel
+ */
+void gensvm_calculate_huber(struct GenModel *model)
+{
+	long i, j;
+	double q, value;
+
+	for (i=0; i<model->n; i++) {
+		for (j=0; j<model->K; j++) {
+			q = matrix_get(model->Q, model->K, i, j);
+			value = 0.0;
+			if (q <= -model->kappa) {
+				value = 1.0 - q - (model->kappa+1.0)/2.0;
+			} else if (q <= 1.0) {
+				value = 1.0/(2.0*model->kappa+2.0)*pow(1.0 - q,
+					       	2.0);
+			}
+			matrix_set(model->H, model->K, i, j, value);
+		}
+	}
+}
+
+/**
+ * @brief Calculate the scalar errors
+ *
+ * @details
+ * Calculate the scalar errors q based on the current estimate of V, and
+ * store these in Q. It is assumed that the memory for Q has already been
+ * allocated. In addition, the matrix ZV is calculated here. It is assigned
+ * to a pre-allocated block of memory, which is passed to this function.
+ *
+ * @param[in,out] 	model 	the corresponding GenModel
+ * @param[in] 		data 	the corresponding GenData
+ * @param[in,out] 	ZV 	a pointer to a memory block for ZV. On exit
+ * 				this block is updated with the new ZV matrix
+ * 				calculated with GenModel::V.
+ *
+ */
+void gensvm_calculate_errors(struct GenModel *model, struct GenData *data,
+	       	double *ZV)
+{
+	long i, j, k;
+	double a, value;
+
+	long n = model->n;
+	long m = model->m;
+	long K = model->K;
+
+	cblas_dgemm(
+			CblasRowMajor,
+			CblasNoTrans,
+			CblasNoTrans,
+			n,
+			K-1,
+			m+1,
+			1.0,
+			data->Z,
+			m+1,
+			model->V,
+			K-1,
+			0.0,
+			ZV,
+			K-1);
+
+	Memset(model->Q, double, n*K);
+	for (i=0; i<n; i++) {
+		for (j=0; j<K-1; j++) {
+			a = matrix_get(ZV, K-1, i, j);
+			for (k=0; k<K; k++) {
+				value = a * matrix3_get(model->UU, K-1, K, i,
+					       	j, k);
+				matrix_add(model->Q, K, i, k, value);
+			}
+		}
+	}
+}
+
+/**
+ * @brief Solve AX = B where A is symmetric positive definite.
+ *
+ * @details
+ * Solve a linear system of equations AX = B where A is symmetric positive
+ * definite. This function is a wrapper for the external  LAPACK routine 
+ * dposv.
+ *
+ * @param[in] 		UPLO 	which triangle of A is stored
+ * @param[in] 		N 	order of A
+ * @param[in] 		NRHS 	number of columns of B
+ * @param[in,out] 	A 	double precision array of size (LDA, N). On
+ * 				exit contains the upper or lower factor of the
+ * 				Cholesky factorization of A.
+ * @param[in] 		LDA 	leading dimension of A
+ * @param[in,out] 	B 	double precision array of size (LDB, NRHS). On
+ * 				exit contains the N-by-NRHS solution matrix X.
+ * @param[in] 		LDB 	the leading dimension of B
+ * @returns 			info parameter which contains the status of the
+ * 				computation:
+ * 					- =0: 	success
+ * 					- <0: 	if -i, the i-th argument had
+ * 						an illegal value
+ * 					- >0: 	if i, the leading minor of A
+ * 						was not positive definite
+ *
+ * See the LAPACK documentation at:
+ * http://www.netlib.org/lapack/explore-html/dc/de9/group__double_p_osolve.html
+ */
+int dposv(char UPLO, int N, int NRHS, double *A, int LDA, double *B,
+		int LDB)
+{
+	extern void dposv_(char *UPLO, int *Np, int *NRHSp, double *A,
+			int *LDAp, double *B, int *LDBp, int *INFOp);
+	int INFO;
+	dposv_(&UPLO, &N, &NRHS, A, &LDA, B, &LDB, &INFO);
+	return INFO;
+}
+
+/**
+ * @brief Solve a system of equations AX = B where A is symmetric.
+ *
+ * @details
+ * Solve a linear system of equations AX = B where A is symmetric. This
+ * function is a wrapper for the external LAPACK routine dsysv.
+ *
+ * @param[in] 		UPLO 	which triangle of A is stored
+ * @param[in] 		N 	order of A
+ * @param[in] 		NRHS 	number of columns of B
+ * @param[in,out] 	A 	double precision array of size (LDA, N). On
+ * 				exit contains the block diagonal matrix D and
+ * 				the multipliers used to obtain the factor U or
+ * 				L from the factorization A = U*D*U**T or
+ * 				A = L*D*L**T.
+ * @param[in] 		LDA 	leading dimension of A
+ * @param[in] 		IPIV 	integer array containing the details of D
+ * @param[in,out] 	B 	double precision array of size (LDB, NRHS). On
+ * 				exit contains the N-by-NRHS matrix X
+ * @param[in] 		LDB 	leading dimension of B
+ * @param[out] 		WORK 	double precision array of size max(1,LWORK). On
+ * 				exit, WORK(1) contains the optimal LWORK
+ * @param[in] 		LWORK 	the length of WORK, can be used for determining
+ * 				the optimal blocksize for dsystrf.
+ * @returns 			info parameter which contains the status of the
+ * 				computation:
+ * 					- =0: 	success
+ * 					- <0: 	if -i, the i-th argument had an
+ * 						illegal value
+ * 					- >0: 	if i, D(i, i) is exactly zero,
+ * 						no solution can be computed.
+ *
+ * See the LAPACK documentation at:
+ * http://www.netlib.org/lapack/explore-html/d6/d0e/group__double_s_ysolve.html
+ */
+int dsysv(char UPLO, int N, int NRHS, double *A, int LDA, int *IPIV,
+		double *B, int LDB, double *WORK, int LWORK)
+{
+	extern void dsysv_(char *UPLO, int *Np, int *NRHSp, double *A,
+			int *LDAp, int *IPIV, double *B, int *LDBp,
+			double *WORK, int *LWORK, int *INFOp);
+	int INFO;
+	dsysv_(&UPLO, &N, &NRHS, A, &LDA, IPIV, B, &LDB, WORK, &LWORK, &INFO);
+	return INFO;
 }
