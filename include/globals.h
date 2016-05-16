@@ -19,7 +19,7 @@
 #define GENSVM_GLOBALS_H
 
 #include "gensvm_memory.h"
-#include "types.h"
+#include "gensvm_types.h"
 
 #include <stdarg.h>
 #include <stdio.h>

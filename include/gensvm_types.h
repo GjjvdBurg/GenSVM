@@ -1,5 +1,5 @@
 /**
- * @file types.h
+ * @file gensvm_types.h
  * @author Gertjan van den Burg
  * @date August, 2013
  * @brief Definitions of common types
