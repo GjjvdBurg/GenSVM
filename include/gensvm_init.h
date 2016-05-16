@@ -12,9 +12,9 @@
 #ifndef GENSVM_INIT_H
 #define GENSVM_INIT_H
 
-// forward declaration
-struct GenData;
-struct GenModel;
+// include
+#include "globals.h"
+#include "gensvm.h"
 
 struct GenModel *gensvm_init_model();
 
