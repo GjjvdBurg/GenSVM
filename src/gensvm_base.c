@@ -194,6 +194,9 @@ void gensvm_reallocate_model(struct GenModel *model, long n, long m)
  */
 void gensvm_free_model(struct GenModel *model)
 {
+	if (model == NULL)
+		return;
+
 	free(model->W);
 	free(model->t);
 	free(model->V);

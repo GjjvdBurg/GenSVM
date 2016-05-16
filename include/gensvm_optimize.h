@@ -10,8 +10,8 @@
  *
  */
 
-#ifndef GENSVM_TRAIN_H
-#define GENSVM_TRAIN_H
+#ifndef GENSVM_OPTIMIZE_H
+#define GENSVM_OPTIMIZE_H
 
 #include "gensvm_sv.h"
 #include "gensvm_print.h"

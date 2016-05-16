@@ -47,7 +47,8 @@ lib/libgensvm.a: \
 	src/gensvm_strutil.o \
 	src/gensvm_sv.o \
 	src/gensvm_task.o \
-	src/gensvm_timer.o
+	src/gensvm_timer.o \
+	src/gensvm_train.o
 	@ar rcs lib/libgensvm.a \
 		src/gensvm_base.o \
 		src/gensvm_cmdarg.o \
@@ -67,7 +68,8 @@ lib/libgensvm.a: \
 		src/gensvm_strutil.o \
 		src/gensvm_sv.o \
 		src/gensvm_task.o \
-		src/gensvm_timer.o
+		src/gensvm_timer.o \
+		src/gensvm_train.o
 	@echo libgensvm.a...
 
 gensvm: src/GenSVMtraintest.c lib/libgensvm.a

@@ -1,5 +1,5 @@
 /**
- * @file gensvm_train.c
+ * @file gensvm_optimize.c
  * @author Gertjan van den Burg
  * @date August 9, 2013
  * @brief Main functions for training the GenSVM solution.
