@@ -149,50 +149,14 @@ long gensvm_make_eigen(double *K, long n, double **P, double **Sigma)
 	// first perform a workspace query to determine optimal size of the
 	// WORK array.
 	WORK = Malloc(double, 1);
-	status = dsyevx(
-			'V',
-			'A',
-			'U',
-			n,
-			K,
-			n,
-			0,
-			0,
-			0,
-			0,
-			abstol,
-			&M,
-			tempSigma,
-			tempP,
-			n,
-			WORK,
-			-1,
-			IWORK,
-			IFAIL);
+	status = dsyevx('V', 'A', 'U', n, K, n, 0, 0, 0, 0, abstol, &M,
+			tempSigma, tempP, n, WORK, -1, IWORK, IFAIL);
 	LWORK = WORK[0];
 
 	// allocate the requested memory for the eigendecomposition
 	WORK = (double *)realloc(WORK, LWORK*sizeof(double));
-	status = dsyevx(
-			'V',
-			'A',
-			'U',
-			n,
-			K,
-			n,
-			0,
-			0,
-			0,
-			0,
-			abstol,
-			&M,
-			tempSigma,
-			tempP,
-			n,
-			WORK,
-			LWORK,
-			IWORK,
-			IFAIL);
+	status = dsyevx('V', 'A', 'U', n, K, n, 0, 0, 0, 0, abstol, &M,
+			tempSigma, tempP, n, WORK, LWORK, IWORK, IFAIL);
 
 	if (status != 0) {
 		fprintf(stderr, "Nonzero exit status from dsyevx. Exiting...");
@@ -321,21 +285,8 @@ void gensvm_make_testfactor(struct GenData *testdata,
 				       	matrix_get(traindata->Z, r+1, i, j+1));
 
 	// Multiply K2 with M and store in N
-	cblas_dgemm(
-			CblasRowMajor,
-			CblasNoTrans,
-			CblasNoTrans,
-			n2,
-			r,
-			n1,
-			1.0,
-			K2,
-			n1,
-			M,
-			r,
-			0.0,
-			N,
-			r);
+	cblas_dgemm(CblasRowMajor, CblasNoTrans, CblasNoTrans, n2, r, n1, 1.0,
+			K2, n1, M, r, 0.0, N, r);
 
 	// Multiply N with Sigma^{-2}
 	for (j=0; j<r; j++) {
