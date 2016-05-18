@@ -6,7 +6,6 @@
  */
 
 #include "minunit.h"
-#include "gensvm_task.h"
 #include "gensvm_queue.h"
 
 char *test_init_free_queue()
