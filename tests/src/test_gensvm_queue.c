@@ -39,6 +39,8 @@ char *test_get_next_task()
 	t = get_next_task(q);
 	t = get_next_task(q);
 	mu_assert(t == task_3, "third task is not task_3");
+	t = get_next_task(q);
+	mu_assert(t == NULL, "next task is not NULL");
 
 	gensvm_free_queue(q);
 
