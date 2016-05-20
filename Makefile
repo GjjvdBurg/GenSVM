@@ -1,15 +1,17 @@
 VERSION=0.1
 CC=gcc
-CFLAGS=-Wall -O3 -DVERSION=$(VERSION) -g
+CFLAGS=-Wall -DVERSION=$(VERSION) -g -O3
 INCLUDE= -Iinclude
 LIB= -Llib
 DOXY=doxygen
 DOCDIR=doc
 DOXYFILE=$(DOCDIR)/Doxyfile
+LCOV=lcov
+GENHTML=genhtml
 
 EXECS=gensvm gensvm_grid
 
-.PHONY: all clean doc test
+.PHONY: all clean doc test cover
 
 all: lib/libgensvm.a $(EXECS)
 
@@ -22,11 +24,24 @@ doc:
 	$(DOXY) $(DOXYFILE)
 
 clean:
-	rm -rf $(EXECS) *.o src/*.o lib/*.a
+	rm -rf $(EXECS) *.o src/*.o lib/*.a *.{gcno,gcov} src/*.{gcno,gcda}
 	$(MAKE) -C tests clean
 
 test: lib/libgensvm.a
 	$(MAKE) -C tests all
+
+cover: CFLAGS += --coverage
+cover: LDFLAGS += --coverage -lgcov
+cover: CFLAGS := $(filter-out -O3,$(CFLAGS))
+cover: lib/libgensvm.a
+	$(LCOV) -c -i -d ./src/ -o ./cover/coverage.base
+	$(MAKE) -C tests cover
+	mkdir -p cover
+	$(LCOV) -c -d ./src/ -o ./cover/coverage.run
+	$(LCOV) -a ./cover/coverage.base -a ./cover/coverage.run \
+		-o ./cover/coverage.all
+	$(GENHTML) -o ./cover ./cover/coverage.all
+	rm -f src/*.{gcda,gcno} tests/*.{gcda,gcno}
 
 lib/libgensvm.a: \
 	src/gensvm_base.o \

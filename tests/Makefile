@@ -1,5 +1,5 @@
 CC=gcc
-CFLAGS=-Wall -O3 -g -rdynamic -DNDEBUG $(OPTFLAGS)
+CFLAGS=-Wall -g -rdynamic -DNDEBUG $(OPTFLAGS)
 INCLUDE=-I../include/ -I./include
 LIB=-L../lib
 
@@ -22,7 +22,12 @@ valgrind:
 		 --log-file=/tmp/valgrind-%p.log --track-origins=yes \
 		 --show-leak-kinds=all -v" $(MAKE)
 
+cover: CFLAGS += --coverage
+cover: LDFLAGS += -lgcov
+cover: all
+
 clean:
 	rm -rf $(TESTS)
 	rm -f ./tests.log
 	rm -f /tmp/valgrind*.log
+	rm -f *.gcno *.gcda *.gcov
