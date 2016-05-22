@@ -61,16 +61,21 @@ void next_line(FILE *fid, char *filename)
  * @param[in] 		filename 	name of the file
  * @param[in,out] 	buffer 		allocated buffer to read to
  */
-void get_line(FILE *fid, char *filename, char *buffer)
+char *get_line(FILE *fid, char *filename, char *buffer)
 {
-	if (fgets(buffer, MAX_LINE_LENGTH, fid) == NULL) {
+	char *retval = fgets(buffer, MAX_LINE_LENGTH, fid);
+	if (retval == NULL) {
 		fprintf(stderr, "Error reading file %s\n", filename);
-		exit(1);
 	}
+	return retval;
 }
 
 /**
  * @brief Read a double from file following a format
+ *
+ * @details
+ * This function reads a double value from a file. If no value can be found, a 
+ * warning is printed to stderr, and NAN is returned.
  *
  * @param[in] 	fid 		File opened for reading
  * @param[in] 	filename 	Name of the file
@@ -80,10 +85,13 @@ void get_line(FILE *fid, char *filename, char *buffer)
 double get_fmt_double(FILE *fid, char *filename, const char *fmt)
 {
 	char buffer[MAX_LINE_LENGTH];
-	double value;
+	double value = NAN;
+	int retval;
 
 	get_line(fid, filename, buffer);
-	sscanf(buffer, fmt, &value);
+	retval = sscanf(buffer, fmt, &value);
+	if (retval == 0)
+		fprintf(stderr, "No double read from file.\n");
 	return value;
 }
 
@@ -98,10 +106,13 @@ double get_fmt_double(FILE *fid, char *filename, const char *fmt)
 long get_fmt_long(FILE *fid, char *filename, const char *fmt)
 {
 	char buffer[MAX_LINE_LENGTH];
-	long value;
+	long value = 0;
+	int retval;
 
 	get_line(fid, filename, buffer);
-	sscanf(buffer, fmt, &value);
+	retval = sscanf(buffer, fmt, &value);
+	if (retval == 0)
+		fprintf(stderr, "No long read from file.\n");
 	return value;
 }
 
