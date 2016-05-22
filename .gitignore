@@ -8,3 +8,5 @@ codegrep*
 log*
 gensvm
 gensvm_grid
+*.gcno
+*.gcda
