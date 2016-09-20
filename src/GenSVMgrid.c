@@ -26,6 +26,7 @@
 #define MINARGS 2
 
 extern FILE *GENSVM_OUTPUT_FILE;
+extern FILE *GENSVM_ERROR_FILE;
 
 // function declarations
 void exit_with_help();
@@ -41,7 +42,7 @@ void exit_with_help()
 	printf("Usage: trainGenSVMdataset [options] grid_file\n");
 	printf("Options:\n");
 	printf("-h | -help : print this help.\n");
-	printf("-q : quiet mode (no output)\n");
+	printf("-q : quiet mode (no output, not even errors!)\n");
 
 	exit(EXIT_FAILURE);
 }
@@ -128,6 +129,7 @@ void parse_command_line(int argc, char **argv, char *input_filename)
 	int i;
 
 	GENSVM_OUTPUT_FILE = stdout;
+	GENSVM_ERROR_FILE = stderr;
 
 	for (i=1; i<argc; i++) {
 		if (argv[i][0] != '-') break;
@@ -136,6 +138,7 @@ void parse_command_line(int argc, char **argv, char *input_filename)
 		switch (argv[i-1][1]) {
 			case 'q':
 				GENSVM_OUTPUT_FILE = NULL;
+				GENSVM_ERROR_FILE = NULL;
 				i--;
 				break;
 			default:

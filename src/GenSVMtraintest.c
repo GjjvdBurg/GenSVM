@@ -18,6 +18,7 @@
 #define MINARGS 2
 
 extern FILE *GENSVM_OUTPUT_FILE;
+extern FILE *GENSVM_ERROR_FILE;
 
 // function declarations
 void exit_with_help();
@@ -45,7 +46,7 @@ void exit_with_help()
 			"file\n");
 	printf("-p p-value : set the value of p in the lp norm "
 			"(1.0 <= p <= 2.0)\n");
-	printf("-q : quiet mode (no output)\n");
+	printf("-q : quiet mode (no output, not even errors!)\n");
 	printf("-r rho : choose the weigth specification (1 = unit, 2 = "
 			"group)\n");
 	printf("-t type: kerneltype (0=LINEAR, 1=POLY, 2=RBF, 3=SIGMOID)\n");
@@ -153,6 +154,7 @@ void parse_command_line(int argc, char **argv, struct GenModel *model,
 	       coef = 0.0;
 
 	GENSVM_OUTPUT_FILE = stdout;
+	GENSVM_ERROR_FILE = stderr;
 
 	// parse options
 	for (i=1; i<argc; i++) {
@@ -205,9 +207,13 @@ void parse_command_line(int argc, char **argv, struct GenModel *model,
 				break;
 			case 'q':
 				GENSVM_OUTPUT_FILE = NULL;
+				GENSVM_ERROR_FILE = NULL;
 				i--;
 				break;
 			default:
+				// this one should always print explicitly to 
+				// stderr, even if '-q' is supplied, because 
+				// otherwise you can't debug cmdline flags.
 				fprintf(stderr, "Unknown option: -%c\n",
 						argv[i-1][1]);
 				exit_with_help();

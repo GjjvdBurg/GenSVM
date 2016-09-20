@@ -12,7 +12,7 @@
 
 #include "gensvm_print.h"
 
-FILE *GENSVM_OUTPUT_FILE; 	///< The #GENSVM_OUTPUT_FILE specifies the
+FILE *GENSVM_OUTPUT_FILE = NULL; 	///< The #GENSVM_OUTPUT_FILE specifies the
 				///< output stream to which all output is
 				///< written. This is done through the
 				///< internal (!)
@@ -22,6 +22,13 @@ FILE *GENSVM_OUTPUT_FILE; 	///< The #GENSVM_OUTPUT_FILE specifies the
 				///< temporarily be suppressed by importing
 				///< this variable through @c extern and
 				///< (temporarily) setting it to NULL.
+
+FILE *GENSVM_ERROR_FILE = NULL; 	///< The #GENSVM_ERROR_FILE specifies the
+				///< output stream to use when writing an
+				///< error.  Typically this is stderr, but
+				///< when unit testing we can temporarily
+				///< redirect this to check if the correct
+				///< output is written.
 
 /**
  * @brief Print a given string to the specified output stream
@@ -71,7 +78,7 @@ void note(const char *fmt,...)
  * @brief Parse a formatted string and write it to standard error
  *
  * @details
- * Shorthand for fprintf(stderr, ...)
+ * Shorthand for fprintf(GENSVM_ERROR_FILE, ...)
  *
  * @param[in] 	fmt 	string format
  * @param[in] 	... 	variable argument list for the string format
@@ -83,6 +90,8 @@ void err(const char *fmt, ...)
 	va_start(ap, fmt);
 	vsprintf(buf, fmt, ap);
 	va_end(ap);
-	fputs(buf, stderr);
-	fflush(stderr);
+	if (GENSVM_ERROR_FILE != NULL) {
+		fputs(buf, GENSVM_ERROR_FILE);
+		fflush(GENSVM_ERROR_FILE);
+	}
 }
