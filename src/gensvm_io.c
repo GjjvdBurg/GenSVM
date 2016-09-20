@@ -166,9 +166,11 @@ void gensvm_read_model(struct GenModel *model, char *model_filename)
 
 	fid = fopen(model_filename, "r");
 	if (fid == NULL) {
-		fprintf(stderr, "Error opening model file %s\n",
+		// LCOV_EXCL_START
+		err("[GenSVM Error]: Couldn't open model file %s\n",
 				model_filename);
-		exit(1);
+		exit(EXIT_FAILURE);
+		// LCOV_EXCL_STOP
 	}
 	// skip the first four lines
 	for (i=0; i<4; i++)
@@ -188,9 +190,11 @@ void gensvm_read_model(struct GenModel *model, char *model_filename)
 
 	// read filename of data file
 	if (fgets(buffer, MAX_LINE_LENGTH, fid) == NULL) {
-		fprintf(stderr, "Error reading model file %s\n",
+		// LCOV_EXCL_START
+		err("[GenSVM Error]: Error reading from model file %s\n",
 				model_filename);
-		exit(1);
+		exit(EXIT_FAILURE);
+		// LCOV_EXCL_STOP
 	}
 	sscanf(buffer, "filename = %s\n", data_filename);
 	model->data_file = data_filename;
@@ -213,10 +217,12 @@ void gensvm_read_model(struct GenModel *model, char *model_filename)
 		}
 	}
 	if (nr != (model->m+1)*(model->K-1)) {
-		fprintf(stderr, "Error reading model file %s. "
+		// LCOV_EXCL_START
+		err("[GenSVM Error] Error reading from model file %s. "
 				"Not enough elements of V found.\n",
 				model_filename);
-		exit(1);
+		exit(EXIT_FAILURE);
+		// LCOV_EXCL_STOP
 	}
 }
 
@@ -242,9 +248,11 @@ void gensvm_write_model(struct GenModel *model, char *output_filename)
 	// open output file
 	fid = fopen(output_filename, "w");
 	if (fid == NULL) {
-		fprintf(stderr, "Error opening output file %s",
+		// LCOV_EXCL_START
+		err("[GenSVM Error]: Error opening output file %s\n",
 				output_filename);
-		exit(1);
+		exit(EXIT_FAILURE);
+		// LCOV_EXCL_STOP
 	}
 	gensvm_time_string(timestr);
 
@@ -300,9 +308,11 @@ void gensvm_write_predictions(struct GenData *data, long *predy,
 
 	fid = fopen(output_filename, "w");
 	if (fid == NULL) {
-		fprintf(stderr, "Error opening output file %s",
+		// LCOV_EXCL_START
+		err("[GenSVM Error]: Error opening output file %s\n",
 				output_filename);
-		exit(1);
+		exit(EXIT_FAILURE);
+		// LCOV_EXCL_STOP
 	}
 
 	fprintf(fid, "%li\n", data->n);
@@ -341,15 +351,17 @@ void gensvm_time_string(char *buffer)
 	// get current time (in epoch)
 	current_time = time(NULL);
 	if (current_time == ((time_t)-1)) {
-		fprintf(stderr, "Failed to compute the current time.\n");
+		// LCOV_EXCL_START
+		err("[GenSVM Error]: Failed to compute the current time.\n");
 		return;
+		// LCOV_EXCL_STOP
 	}
 
 	// convert time to local time and create a string
 	lclt = localtime(&current_time);
 	strftime(timestr, MAX_LINE_LENGTH, "%c", lclt);
 	if (timestr == NULL) {
-		fprintf(stderr, "Failed to convert time to string.\n");
+		err("[GenSVM Error]: Failed to convert time to string.\n");
 		return;
 	}
 
