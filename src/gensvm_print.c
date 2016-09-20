@@ -1,8 +1,8 @@
 /**
- * @file util.c
+ * @file gensvm_print.c
  * @author Gertjan van den Burg
  * @date January, 2014
- * @brief Utility functions
+ * @brief Various print functions for printing to output streams
  *
  * @details
  * This file contains several utility functions for coordinating input and
@@ -15,8 +15,7 @@
 FILE *GENSVM_OUTPUT_FILE = NULL; 	///< The #GENSVM_OUTPUT_FILE specifies the
 				///< output stream to which all output is
 				///< written. This is done through the
-				///< internal (!)
-				///< function gensvm_print_string(). The
+				///< function note(). The
 				///< advantage of using a global output
 				///< stream variable is that the output can
 				///< temporarily be suppressed by importing
@@ -31,34 +30,12 @@ FILE *GENSVM_ERROR_FILE = NULL; 	///< The #GENSVM_ERROR_FILE specifies the
 				///< output is written.
 
 /**
- * @brief Print a given string to the specified output stream
- *
- * @details
- * This function is used to print a given string to the output stream
- * specified by #GENSVM_OUTPUT_FILE. The stream is flushed after the string
- * is written to the stream. If #GENSVM_OUTPUT_FILE is NULL, nothing is
- * written. Note that this function is only used by note(), it should never be
- * used directly.
- *
- * @param[in] 	s 	string to write to the stream
- *
- */
-static void gensvm_print_string(const char *s)
-{
-	if (GENSVM_OUTPUT_FILE != NULL) {
-		fputs(s, GENSVM_OUTPUT_FILE);
-		fflush(GENSVM_OUTPUT_FILE);
-	}
-}
-
-/**
  * @brief Parse a formatted string and write to the output stream
  *
  * @details
  * This function is a replacement of fprintf(), such that the output stream
  * does not have to be specified at each function call. The functionality is
- * exactly the same however. Writing the formatted string to the output stream
- * is handled by gensvm_print_string().
+ * exactly the same however.
  *
  * @param[in] 	fmt 	String format
  * @param[in] 	... 	variable argument list for the string format
@@ -71,7 +48,10 @@ void note(const char *fmt,...)
 	va_start(ap,fmt);
 	vsprintf(buf,fmt,ap);
 	va_end(ap);
-	(*gensvm_print_string)(buf);
+	if (GENSVM_OUTPUT_FILE != NULL) {
+		fputs(buf, GENSVM_OUTPUT_FILE);
+		fflush(GENSVM_OUTPUT_FILE);
+	}
 }
 
 /**
