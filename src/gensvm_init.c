@@ -90,7 +90,7 @@ void gensvm_init_V(struct GenModel *from_model,
  */
 void gensvm_initialize_weights(struct GenData *data, struct GenModel *model)
 {
-	long *groups;
+	long *groups = NULL;
 	long i;
 
 	long n = model->n;
@@ -105,11 +105,13 @@ void gensvm_initialize_weights(struct GenData *data, struct GenModel *model)
 		for (i=0; i<n; i++)
 			groups[data->y[i]-1]++;
 		for (i=0; i<n; i++)
-			model->rho[i] = ((double) n)/((double) (groups[data->y[i]-1]*K));
+			model->rho[i] = ((double) n)/((double) (
+						groups[data->y[i]-1]*K));
 	} else {
 		// LCOV_EXCL_START
 		err("[GenSVM Error]: Unknown weight specification.\n");
 		exit(EXIT_FAILURE);
 		// LCOV_EXCL_STOP
 	}
+	free(groups);
 }
