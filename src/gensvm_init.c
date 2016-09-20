@@ -14,6 +14,7 @@
  */
 
 #include "gensvm_init.h"
+#include "gensvm_print.h"
 
 inline double rnd() { return (double) rand()/0x7FFFFFFF; }
 
@@ -106,7 +107,9 @@ void gensvm_initialize_weights(struct GenData *data, struct GenModel *model)
 		for (i=0; i<n; i++)
 			model->rho[i] = ((double) n)/((double) (groups[data->y[i]-1]*K));
 	} else {
-		fprintf(stderr, "Unknown weight specification.\n");
-		exit(1);
+		// LCOV_EXCL_START
+		err("[GenSVM Error]: Unknown weight specification.\n");
+		exit(EXIT_FAILURE);
+		// LCOV_EXCL_STOP
 	}
 }

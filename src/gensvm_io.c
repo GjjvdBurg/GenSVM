@@ -12,6 +12,7 @@
  */
 
 #include "gensvm_io.h"
+#include "gensvm_print.h"
 
 /**
  * @brief Read data from file
@@ -43,9 +44,11 @@ void gensvm_read_data(struct GenData *dataset, char *data_file)
 	char buf[MAX_LINE_LENGTH];
 
 	if ((fid = fopen(data_file, "r")) == NULL) {
-		fprintf(stderr, "\nERROR: datafile %s could not be opened.\n",
+		// LCOV_EXCL_START
+		err("[GenSVM Error]: Datafile %s could not be opened.\n",
 				data_file);
-		exit(0);
+		exit(EXIT_FAILURE);
+		// LCOV_EXCL_STOP
 	}
 
 	// Read data dimensions
@@ -63,9 +66,12 @@ void gensvm_read_data(struct GenData *dataset, char *data_file)
 
 	// Check if there is a label at the end of the line
 	if (fgets(buf, MAX_LINE_LENGTH, fid) == NULL) {
-		fprintf(stderr, "ERROR: No label found on first line.\n");
-		exit(1);
+		// LCOV_EXCL_START
+		err("[GenSVM Error]: No label found on first line.\n");
+		exit(EXIT_FAILURE);
+		// LCOV_EXCL_STOP
 	}
+
 	if (sscanf(buf, "%lf", &value) > 0) {
 		dataset->y = Malloc(long, n);
 		dataset->y[0] = value;
@@ -99,12 +105,19 @@ void gensvm_read_data(struct GenData *dataset, char *data_file)
 				"value is: %ld\n",
 				data_file, min_y);
 		exit(0);
+		// LCOV_EXCL_START
+		err("[GenSVM Error]: Class labels should start from 1 and "
+				"have no gaps. Please reformat your data.\n");
+		exit(EXIT_FAILURE);
+		// LCOV_EXCL_STOP
 	}
 
 	if (nr < n * m) {
-		fprintf(stderr, "ERROR: not enough data found in %s\n",
+		// LCOV_EXCL_START
+		err("[GenSVM Error]: not enough data found in %s\n",
 				data_file);
-		exit(0);
+		exit(EXIT_FAILURE);
+		// LCOV_EXCL_STOP
 	}
 
 	// Set the column of ones

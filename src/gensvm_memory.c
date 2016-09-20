@@ -33,9 +33,11 @@ void *mycalloc(const char *file, int line, unsigned long size,
 	void *ptr = calloc(size, typesize);
 
 	if (!ptr) {
-		fprintf(stderr, "Couldn't allocate memory: %lu bytes (%s:%d)\n",
-				size, file, line);
+		// LCOV_EXCL_START
+		fprintf(stderr, "[GenSVM Error]: Couldn't allocate memory: "
+				"%lu bytes (%s:%d)\n", size, file, line);
 		exit(EXIT_FAILURE);
+		// LCOV_EXCL_STOP
 	}
 	return ptr;
 }
@@ -62,9 +64,11 @@ void *mymalloc(const char *file, int line, unsigned long size)
 {
 	void *ptr = malloc(size);
 	if (!ptr) {
-		fprintf(stderr, "Couldn't allocate memory: %lu bytes (%s:%d)\n",
-				size, file, line);
+		// LCOV_EXCL_START
+		fprintf(stderr, "[GenSVM Error]: Couldn't allocate memory: "
+				"%lu bytes (%s:%d)\n", size, file, line);
 		exit(EXIT_FAILURE);
+		// LCOV_EXCL_STOP
 	}
 	return ptr;
 }
@@ -92,9 +96,11 @@ void *myrealloc(const char *file, int line, unsigned long size, void *var)
 {
 	void *ptr = realloc(var, size);
 	if (!ptr) {
-		fprintf(stderr, "Couldn't reallocate memory: %lu bytes (%s:%d)\n",
-				size, file, line);
+		// LCOV_EXCL_START
+		fprintf(stderr, "[GenSVM Error]: Couldn't reallocate memory: "
+				"%lu bytes (%s:%d)\n", size, file, line);
 		exit(EXIT_FAILURE);
+		// LCOV_EXCL_STOP
 	}
 	return ptr;
 }

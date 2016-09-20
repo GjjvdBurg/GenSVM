@@ -12,6 +12,7 @@
  */
 
 #include "gensvm_kernel.h"
+#include "gensvm_print.h"
 
 /**
  * @brief Do the preprocessing steps needed to perform kernel GenSVM
@@ -114,9 +115,9 @@ void gensvm_make_kernel(struct GenModel *model, struct GenData *data,
 				value = gensvm_dot_sigmoid(x1, x2,
 						model->kernelparam, data->m);
 			else {
-				fprintf(stderr, "Unknown kernel type in "
+				err("[GenSVM Error]: Unknown kernel type in "
 						"gensvm_make_kernel\n");
-				exit(1);
+				exit(EXIT_FAILURE);
 			}
 			matrix_set(K, n, i, j, value);
 			matrix_set(K, n, j, i, value);
@@ -159,8 +160,8 @@ long gensvm_make_eigen(double *K, long n, double **P, double **Sigma)
 			tempSigma, tempP, n, WORK, LWORK, IWORK, IFAIL);
 
 	if (status != 0) {
-		fprintf(stderr, "Nonzero exit status from dsyevx. Exiting...");
-		exit(1);
+		err("[GenSVM Error]: Nonzero exit status from dsyevx.\n");
+		exit(EXIT_FAILURE);
 	}
 
 	// Select the desired number of eigenvalues, depending on their size.
@@ -230,9 +231,9 @@ void gensvm_make_crosskernel(struct GenModel *model,
 						model->kernelparam,
 					       	m);
 			else {
-				fprintf(stderr, "Unknown kernel type in "
+				err("[GenSVM Error]: Unknown kernel type in "
 						"gensvm_make_crosskernel\n");
-				exit(1);
+				exit(EXIT_FAILURE);
 			}
 			matrix_set((*K2), n_train, i, j, value);
 		}

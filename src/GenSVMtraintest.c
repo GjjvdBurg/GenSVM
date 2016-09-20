@@ -50,7 +50,7 @@ void exit_with_help()
 			"group)\n");
 	printf("-t type: kerneltype (0=LINEAR, 1=POLY, 2=RBF, 3=SIGMOID)\n");
 
-	exit(0);
+	exit(EXIT_FAILURE);
 }
 
 int main(int argc, char **argv)

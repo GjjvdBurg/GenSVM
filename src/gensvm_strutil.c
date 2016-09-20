@@ -10,6 +10,7 @@
  */
 
 #include "gensvm_strutil.h"
+#include "gensvm_print.h"
 
 /**
  * @brief Check if a string starts with a prefix
@@ -65,7 +66,7 @@ char *get_line(FILE *fid, char *filename, char *buffer)
 {
 	char *retval = fgets(buffer, MAX_LINE_LENGTH, fid);
 	if (retval == NULL) {
-		fprintf(stderr, "Error reading file %s\n", filename);
+		err("[GenSVM Error]: Error reading from file %s\n", filename);
 	}
 	return retval;
 }
@@ -91,7 +92,7 @@ double get_fmt_double(FILE *fid, char *filename, const char *fmt)
 	get_line(fid, filename, buffer);
 	retval = sscanf(buffer, fmt, &value);
 	if (retval == 0)
-		fprintf(stderr, "No double read from file.\n");
+		err("[GenSVM Error]: No double read from file.\n");
 	return value;
 }
 
@@ -112,7 +113,7 @@ long get_fmt_long(FILE *fid, char *filename, const char *fmt)
 	get_line(fid, filename, buffer);
 	retval = sscanf(buffer, fmt, &value);
 	if (retval == 0)
-		fprintf(stderr, "No long read from file.\n");
+		err("[GenSVM Error]: No long read from file.\n");
 	return value;
 }
 

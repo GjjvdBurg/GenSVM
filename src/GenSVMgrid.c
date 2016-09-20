@@ -43,7 +43,7 @@ void exit_with_help()
 	printf("-h | -help : print this help.\n");
 	printf("-q : quiet mode (no output)\n");
 
-	exit(0);
+	exit(EXIT_FAILURE);
 }
 
 /**
