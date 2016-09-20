@@ -15,7 +15,7 @@
 #ifndef GENSVM_GRID_H
 #define GENSVM_GRID_H
 
-#include "globals.h"
+#include "gensvm_globals.h"
 
 /**
  * @brief Structure for describing the entire grid search

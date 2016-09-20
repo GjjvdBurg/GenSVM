@@ -13,7 +13,7 @@
 #define GENSVM_PRINT_H
 
 // includes
-#include "globals.h"
+#include "gensvm_globals.h"
 
 // function declarations
 void note(const char *fmt,...);

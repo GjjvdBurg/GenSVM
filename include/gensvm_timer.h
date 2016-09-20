@@ -13,7 +13,7 @@
 #define GENSVM_TIMER_H
 
 // includes
-#include "globals.h"
+#include "gensvm_globals.h"
 
 // function declarations
 double gensvm_elapsed_time(clock_t s_time, clock_t e_time);

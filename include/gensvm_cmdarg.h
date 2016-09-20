@@ -12,7 +12,7 @@
 #ifndef GENSVM_CMDARG_H
 #define GENSVM_CMDARG_H
 
-#include "globals.h"
+#include "gensvm_globals.h"
 
 // function declarations
 int gensvm_check_argv(int argc, char **argv, char *str);

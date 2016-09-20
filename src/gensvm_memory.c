@@ -6,7 +6,7 @@
  *
  */
 
-#include "globals.h" // imports gensvm_memory.h
+#include "gensvm_globals.h" // imports gensvm_memory.h
 
 /**
  * @brief Wrapper for calloc() which warns when allocation fails

@@ -10,7 +10,7 @@
 #define GENSVM_SIMPLEX_H
 
 // includes
-#include "globals.h"
+#include "gensvm_globals.h"
 
 // forward declarations
 void gensvm_simplex(long K, double *U);

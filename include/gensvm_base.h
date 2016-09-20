@@ -14,7 +14,7 @@
 #define GENSVM_BASE_H
 
 // includes
-#include "globals.h"
+#include "gensvm_globals.h"
 
 // type declarations
 
