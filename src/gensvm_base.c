@@ -208,6 +208,7 @@ void gensvm_free_model(struct GenModel *model)
 	free(model->rho);
 	free(model->R);
 	free(model->kernelparam);
+	free(model->data_file);
 
 	free(model);
 }
