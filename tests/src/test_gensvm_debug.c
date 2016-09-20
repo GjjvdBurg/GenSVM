@@ -1,5 +1,5 @@
 /**
- * @file test_gensvm_io.c
+ * @file test_gensvm_debug.c
  * @author Gertjan van den Burg
  * @date September, 2016
  * @brief Unit tests for gensvm_io.c functions
@@ -12,7 +12,7 @@ extern FILE *GENSVM_OUTPUT_FILE;
 
 char *test_print_matrix()
 {
-	FILE *fid;
+	FILE *fid = NULL;
 	GENSVM_OUTPUT_FILE = fopen("./data/test_debug_print.txt", "w");
 
 	double *mat = Calloc(double, 3*2);

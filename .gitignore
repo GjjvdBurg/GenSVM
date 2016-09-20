@@ -11,3 +11,4 @@ gensvm_grid
 *.gcno
 *.gcda
 cover/*
+tests/bin/*
