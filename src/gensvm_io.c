@@ -34,12 +34,14 @@
 void gensvm_read_data(struct GenData *dataset, char *data_file)
 {
 	FILE *fid;
-	long i, j;
-	long n, m; // dimensions of data
-	long nr = 0; // used to check consistency of data
+	bool in_uniq;
+	long i, j, n, m,
+	     nr = 0,
+	     K = 0,
+	     max_y = -1,
+	     min_y = LONG_MAX;
 	double value;
-	long K = 0;
-	long min_y = 1000000;
+	long *uniq_y = NULL;
 
 	char buf[MAX_LINE_LENGTH];
 
@@ -64,7 +66,6 @@ void gensvm_read_data(struct GenData *dataset, char *data_file)
 		matrix_set(dataset->RAW, n, 0, j, value);
 	}
 
-	// Check if there is a label at the end of the line
 	if (fgets(buf, MAX_LINE_LENGTH, fid) == NULL) {
 		// LCOV_EXCL_START
 		err("[GenSVM Error]: No label found on first line.\n");
@@ -72,10 +73,14 @@ void gensvm_read_data(struct GenData *dataset, char *data_file)
 		// LCOV_EXCL_STOP
 	}
 
+	// Check if there is a label at the end of the line
 	if (sscanf(buf, "%lf", &value) > 0) {
 		dataset->y = Malloc(long, n);
 		dataset->y[0] = value;
-	} else if (dataset->y != NULL) {
+		K = 1;
+		uniq_y = Calloc(long, K);
+		uniq_y[0] = value;
+	} else {
 		free(dataset->y);
 		dataset->y = NULL;
 	}
@@ -89,22 +94,26 @@ void gensvm_read_data(struct GenData *dataset, char *data_file)
 		if (dataset->y != NULL) {
 			nr += fscanf(fid, "%lf", &value);
 			dataset->y[i] = (long) value;
-			K = maximum(K, value);
+
+			// this is to keep track of the unique values of y, so 
+			// we can warn when they're not encoded correctly
+			in_uniq = false;
+			for (j=0; j<K; j++) {
+				if (uniq_y[j] == dataset->y[i])
+					in_uniq = true;
+			}
+			if (!in_uniq) {
+				uniq_y = Realloc(uniq_y, long, K+1);
+				uniq_y[K++] = value;
+			}
+			max_y = maximum(max_y, value);
 			min_y = minimum(min_y, value);
 		}
 	}
 	fclose(fid);
 
 	// Correct labels: must be in [1, K]
-	if (min_y == 0) {
-		for (i=0; i<n; i++)
-			dataset->y[i]++;
-		K++;
-	} else if (min_y < 0 ) {
-		fprintf(stderr, "ERROR: wrong class labels in %s, minimum "
-				"value is: %ld\n",
-				data_file, min_y);
-		exit(0);
+	if (min_y < 1 || max_y > K) {
 		// LCOV_EXCL_START
 		err("[GenSVM Error]: Class labels should start from 1 and "
 				"have no gaps. Please reformat your data.\n");
@@ -129,6 +138,8 @@ void gensvm_read_data(struct GenData *dataset, char *data_file)
 	dataset->r = m;
 	dataset->K = K;
 	dataset->Z = dataset->RAW;
+
+	free(uniq_y);
 }
 
 
