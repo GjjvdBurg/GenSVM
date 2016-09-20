@@ -94,7 +94,7 @@ void gensvm_optimize(struct GenModel *model, struct GenData *data)
 	note("Optimization finished, iter = %li, loss = %15.16f, "
 			"rel. diff. = %15.16f\n", it-1, L,
 			(Lbar - L)/L);
-	note("Number of support vectors: %li\n", gensvm_num_sv(model, data));
+	note("Number of support vectors: %li\n", gensvm_num_sv(model));
 
 	model->training_error = (Lbar - L)/L;
 

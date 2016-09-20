@@ -16,6 +16,6 @@
 #include "gensvm_base.h"
 
 // function declarations
-long gensvm_num_sv(struct GenModel *model, struct GenData *data);
+long gensvm_num_sv(struct GenModel *model);
 
 #endif

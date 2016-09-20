@@ -26,18 +26,18 @@
  * @return 		number of support vectors with this solution
  *
  */
-long gensvm_num_sv(struct GenModel *model, struct GenData *data)
+long gensvm_num_sv(struct GenModel *model)
 {
 	long i, j, num_correct, num_sv = 0;
 	double value;
 
-	for (i=0; i<data->n; i++) {
+	for (i=0; i<model->n; i++) {
 		num_correct = 0;
-		for (j=0; j<data->K; j++) {
-			value = matrix_get(model->Q, data->K, i, j);
+		for (j=0; j<model->K; j++) {
+			value = matrix_get(model->Q, model->K, i, j);
 			num_correct += (value > 1);
 		}
-		num_sv += (num_correct < data->K - 1);
+		num_sv += (num_correct < model->K - 1);
 	}
 
 	return num_sv;
