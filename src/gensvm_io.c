@@ -197,7 +197,8 @@ void gensvm_read_model(struct GenModel *model, char *model_filename)
 		// LCOV_EXCL_STOP
 	}
 	sscanf(buffer, "filename = %s\n", data_filename);
-	model->data_file = data_filename;
+	model->data_file = Calloc(char, MAX_LINE_LENGTH);
+	strcpy(model->data_file, data_filename);
 
 	// read all data variables
 	model->n = get_fmt_long(fid, model_filename, "n = %li\n");
