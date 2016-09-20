@@ -21,13 +21,16 @@
  * @param[in] 	rows 	number of rows of M
  * @param[in] 	cols 	number of columns of M
  */
-void print_matrix(double *M, long rows, long cols)
+void gensvm_print_matrix(double *M, long rows, long cols)
 {
 	long i, j;
 
 	for (i=0; i<rows; i++) {
-		for (j=0; j<cols; j++)
-			note("%+6.6f ", matrix_get(M, cols, i, j));
+		for (j=0; j<cols; j++) {
+			if (j > 0)
+				note(" ");
+			note("%+6.6f", matrix_get(M, cols, i, j));
+		}
 		note("\n");
 	}
 	note("\n");

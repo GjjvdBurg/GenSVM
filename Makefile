@@ -48,6 +48,7 @@ lib/libgensvm.a: \
 	src/gensvm_cmdarg.o \
 	src/gensvm_copy.o \
 	src/gensvm_cv_util.o \
+	src/gensvm_debug.o \
 	src/gensvm_grid.o \
 	src/gensvm_gridsearch.o \
 	src/gensvm_init.o \
@@ -69,6 +70,7 @@ lib/libgensvm.a: \
 		src/gensvm_cmdarg.o \
 		src/gensvm_copy.o \
 		src/gensvm_cv_util.o \
+		src/gensvm_debug.o \
 		src/gensvm_grid.o \
 		src/gensvm_gridsearch.o \
 		src/gensvm_init.o \

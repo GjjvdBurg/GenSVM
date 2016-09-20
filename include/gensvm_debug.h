@@ -15,6 +15,6 @@
 
 #include "gensvm_print.h"
 
-void print_matrix(double *M, long rows, long cols);
+void gensvm_print_matrix(double *M, long rows, long cols);
 
 #endif
