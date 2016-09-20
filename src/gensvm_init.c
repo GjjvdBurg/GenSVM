@@ -16,10 +16,8 @@
 #include "gensvm_init.h"
 #include "gensvm_print.h"
 
-inline double rnd() { return (double) rand()/0x7FFFFFFF; }
-
 /**
- * @brief seed the matrix V from an existing model or using rand
+ * @brief Seed the matrix V from an existing model or using rand
  *
  * @details
  * The matrix V must be seeded before the main_loop() can start.
@@ -36,7 +34,7 @@ void gensvm_init_V(struct GenModel *from_model,
 	       	struct GenModel *to_model, struct GenData *data)
 {
 	long i, j, k;
-	double cmin, cmax, value;
+	double cmin, cmax, value, rnd;
 
 	long n = data->n;
 	long m = data->m;
@@ -54,7 +52,8 @@ void gensvm_init_V(struct GenModel *from_model,
 			for (j=0; j<K-1; j++) {
 				cmin = (abs(cmin) < 1e-10) ? -1 : cmin;
 				cmax = (abs(cmax) < 1e-10) ? 1 : cmax;
-				value = 1.0/cmin + (1.0/cmax - 1.0/cmin)*rnd();
+				rnd = ((double) rand()) / RAND_MAX;
+				value = 1.0/cmin + (1.0/cmax - 1.0/cmin)*rnd;
 				matrix_set(to_model->V, K-1, i, j, value);
 			}
 		}
