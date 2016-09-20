@@ -10,7 +10,7 @@
  * time, used in writing output files.
 *
  */
-
+#include <limits.h>
 #include "gensvm_io.h"
 #include "gensvm_print.h"
 
@@ -276,8 +276,9 @@ void gensvm_write_model(struct GenModel *model, char *output_filename)
 	fprintf(fid, "Output:\n");
 	for (i=0; i<model->m+1; i++) {
 		for (j=0; j<model->K-1; j++) {
-			fprintf(fid, "%+15.16f ",
-					matrix_get(model->V,
+			if (j > 0)
+				fprintf(fid, " ");
+			fprintf(fid, "%+15.16f", matrix_get(model->V,
 						model->K-1, i, j));
 		}
 		fprintf(fid, "\n");
@@ -321,9 +322,8 @@ void gensvm_write_predictions(struct GenData *data, long *predy,
 
 	for (i=0; i<data->n; i++) {
 		for (j=0; j<data->m; j++)
-			fprintf(fid, "%f ",
-					matrix_get(data->Z,
-						data->m+1, i, j+1));
+			fprintf(fid, "%.16f ", matrix_get(data->Z, data->m+1, i,
+						j+1));
 		fprintf(fid, "%li\n", predy[i]);
 	}
 
