@@ -1,0 +1,20 @@
+Output file for GenSVM (version 0.1)
+Generated on: Tue Sep 20 16:30:03 2016 (UTC +02:00)
+
+Model:
+p = 0.9032800000000000
+lambda = 0.0130000000000000
+kappa = 1.1832000000000000
+epsilon = 1e-08
+weight_idx = 1
+
+Data:
+filename = ./data/test_file_read_data.txt
+n = 10
+m = 2
+K = 3
+
+Output:
++0.4989893785603748 +0.0599082796573645
++0.7918204761759593 +0.6456613497110559
++0.9711956316284261 +0.5010714686310176
