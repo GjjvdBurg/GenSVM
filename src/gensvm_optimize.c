@@ -185,12 +185,12 @@ double gensvm_get_loss(struct GenModel *model, struct GenData *data,
  * diagonal matrix A with elements
  * @f[
  * 	A_{i, i} = \frac{1}{n} \rho_i \sum_{j \neq k} \left[
- * 		\varepsilon_i a_{ijk}^{(p)} + (1 - \varepsilon_i) \omega_i
+ * 		\varepsilon_i a_{ijk}^{(1)} + (1 - \varepsilon_i) \omega_i
  * 		a_{ijk}^{(p)} \right],
  * @f]
  * where @f$ k = y_i @f$.
- * Since this matrix is only used to calculate the matrix @f$ Z' A Z @f$, it is
- * efficient to update a matrix ZAZ through consecutive rank 1 updates with
+ * Since this matrix is only used to calculate the matrix @f$ Z' A Z @f$, it
+ * is efficient to update a matrix ZAZ through consecutive rank 1 updates with
  * a single element of A and the corresponding row of Z. The BLAS function
  * dsyr is used for this.
  *
@@ -221,7 +221,8 @@ double gensvm_get_loss(struct GenModel *model, struct GenData *data,
  *
  * @param [in,out] 	model 	model to be updated
  * @param [in] 		data 	data used in model
- * @param [in] 		B 	pre-allocated matrix used for linear coefficients
+ * @param [in] 		B 	pre-allocated matrix used for linear
+ * 				coefficients
  * @param [in] 		ZAZ 	pre-allocated matrix used in system
  * @param [in] 		ZAZV 	pre-allocated matrix used in system solving
  * @param [in] 		ZAZVT 	pre-allocated matrix used in system solving
@@ -538,7 +539,7 @@ void gensvm_get_update(struct GenModel *model, struct GenData *data, double *B,
  * @param[in] 		dataset 	corresponding GenData
  *
  */
-void gensvm_category_matrix(struct GenModel *model, struct GenData *dataset)
+void gensvm_category_matrix(struct GenModel *model, struct GenData *data)
 {
 	long i, j;
 	long n = model->n;
@@ -546,7 +547,7 @@ void gensvm_category_matrix(struct GenModel *model, struct GenData *dataset)
 
 	for (i=0; i<n; i++) {
 		for (j=0; j<K; j++) {
-			if (dataset->y[i] != j+1)
+			if (data->y[i] != j+1)
 				matrix_set(model->R, K, i, j, 1.0);
 			else
 				matrix_set(model->R, K, i, j, 0.0);
@@ -564,6 +565,9 @@ void gensvm_category_matrix(struct GenModel *model, struct GenData *dataset)
  * other rows of the simplex matrix are calculated. These difference vectors
  * are stored in a matrix, which is one horizontal slice of the 3D matrix.
  *
+ * We use the indices i, j, k for the three dimensions n, K-1, K of UU. Then 
+ * the i,j,k -th element of UU is equal to U(y[i]-1, j) - U(k, j).
+ *
  * @param[in,out] 	model 	the corresponding GenModel
  * @param[in] 		data 	the corresponding GenData
  *
@@ -579,7 +583,8 @@ void gensvm_simplex_diff(struct GenModel *model, struct GenData *data)
 	for (i=0; i<n; i++) {
 		for (j=0; j<K-1; j++) {
 			for (k=0; k<K; k++) {
-				value = matrix_get(model->U, K-1, data->y[i]-1, j);
+				value = matrix_get(model->U, K-1,
+						data->y[i]-1, j);
 				value -= matrix_get(model->U, K-1, k, j);
 				matrix3_set(model->UU, K-1, K, i, j, k, value);
 			}
@@ -624,8 +629,10 @@ void gensvm_step_doubling(struct GenModel *model)
  * @f[
  * 	h(q) =
  * 		\begin{dcases}
- * 			1 - q - \frac{\kappa + 1}{2} & \text{if } q \leq -\kappa \\
- * 			\frac{1}{2(\kappa + 1)} ( 1 - q)^2 & \text{if } q \in (-\kappa, 1] \\
+ * 			1 - q - \frac{\kappa + 1}{2} & \text{if } q \leq 
+ * 			-\kappa \\
+ * 			\frac{1}{2(\kappa + 1)} ( 1 - q)^2 & \text{if } q \in 
+ * 			(-\kappa, 1] \\
  * 			0 & \text{if } q > 1
  * 		\end{dcases}
  * @f]

@@ -27,7 +27,8 @@
 	exit(result != 0);\
 }
 
-#define mu_test_missing() printf("\033[33;1mWARNING: Test missing\033[0m\n");
+#define mu_test_missing() printf("\033[33;1mWARNING: Test missing\033[0m\n");\
+	tests_run--;
 
 int tests_run;
 
