@@ -10,3 +10,4 @@ gensvm
 gensvm_grid
 *.gcno
 *.gcda
+cover/*
