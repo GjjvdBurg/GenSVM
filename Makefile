@@ -11,6 +11,11 @@ GENHTML=genhtml
 
 EXECS=gensvm gensvm_grid
 
+# Should be a cleaner way to do this if we rename the exec sources
+EXECS_C=src/GenSVMtraintest.c src/GenSVMgrid.c
+SRC=$(filter-out $(EXECS_C),$(wildcard src/*.c))
+OBJ=$(patsubst %.c,%.o,$(SRC))
+
 .PHONY: all clean doc test cover
 
 all: lib/libgensvm.a $(EXECS)
@@ -43,50 +48,8 @@ cover: lib/libgensvm.a
 	$(GENHTML) -o ./cover ./cover/coverage.all
 	rm -f src/*.{gcda,gcno} tests/*.{gcda,gcno}
 
-lib/libgensvm.a: \
-	src/gensvm_base.o \
-	src/gensvm_cmdarg.o \
-	src/gensvm_copy.o \
-	src/gensvm_cv_util.o \
-	src/gensvm_debug.o \
-	src/gensvm_grid.o \
-	src/gensvm_gridsearch.o \
-	src/gensvm_init.o \
-	src/gensvm_io.o \
-	src/gensvm_kernel.o \
-	src/gensvm_memory.o \
-	src/gensvm_optimize.o \
-	src/gensvm_pred.o \
-	src/gensvm_print.o \
-	src/gensvm_queue.o \
-	src/gensvm_simplex.o \
-	src/gensvm_strutil.o \
-	src/gensvm_sv.o \
-	src/gensvm_task.o \
-	src/gensvm_timer.o \
-	src/gensvm_train.o
-	@ar rcs lib/libgensvm.a \
-		src/gensvm_base.o \
-		src/gensvm_cmdarg.o \
-		src/gensvm_copy.o \
-		src/gensvm_cv_util.o \
-		src/gensvm_debug.o \
-		src/gensvm_grid.o \
-		src/gensvm_gridsearch.o \
-		src/gensvm_init.o \
-		src/gensvm_io.o \
-		src/gensvm_kernel.o \
-		src/gensvm_memory.o \
-		src/gensvm_optimize.o \
-		src/gensvm_pred.o \
-		src/gensvm_print.o \
-		src/gensvm_queue.o \
-		src/gensvm_simplex.o \
-		src/gensvm_strutil.o \
-		src/gensvm_sv.o \
-		src/gensvm_task.o \
-		src/gensvm_timer.o \
-		src/gensvm_train.o
+lib/libgensvm.a: $(OBJ)
+	@ar rcs lib/libgensvm.a $(OBJ)
 	@echo libgensvm.a...
 
 gensvm: src/GenSVMtraintest.c lib/libgensvm.a
