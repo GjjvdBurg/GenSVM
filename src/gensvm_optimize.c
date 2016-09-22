@@ -387,13 +387,6 @@ void gensvm_get_update(struct GenModel *model, struct GenData *data, double *B,
 				ZAZ,
 				m+1);
 	}
-	// Copy upper to lower (necessary because we need to switch
-	// to Col-Major order for LAPACK).
-	/*
-	for (i=0; i<m+1; i++)
-		for (j=0; j<m+1; j++)
-			matrix_set(ZAZ, m+1, j, i, matrix_get(ZAZ, m+1, i, j));
-	*/
 
 	// Calculate the right hand side of the system we
 	// want to solve.
