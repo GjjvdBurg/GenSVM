@@ -1,13 +1,27 @@
-GenSVM
-======
+GenSVM C Package				{#mainpage}
+================
 
-A Generalized Multiclass Support Vector Machine
+GenSVM: A Generalized Multiclass Support Vector Machine.
 
+Author: Gertjan van den Burg (<gertjanvandenburg@gmail.com>)
 
-Dependencies
+Version: 0.1
+
+Introduction
 ------------
 
-* BLAS
-* LAPACK
+This is the introduction
 
+Usage
+-----
 
+Describe the usage of the program here
+
+License
+-------
+
+Put some license information here
+
+Reference
+---------
+Reference to the published paper, include BibTeX entry as code block here.
