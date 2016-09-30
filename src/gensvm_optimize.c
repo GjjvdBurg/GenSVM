@@ -41,8 +41,8 @@
  */
 void gensvm_optimize(struct GenModel *model, struct GenData *data)
 {
-	long i, j, it = 0;
-	double L, Lbar, value;
+	long it = 0;
+	double L, Lbar;
 
 	long n = model->n;
 	long m = model->m;
@@ -102,15 +102,6 @@ void gensvm_optimize(struct GenModel *model, struct GenData *data)
 	note("Number of support vectors: %li\n", gensvm_num_sv(model));
 
 	model->training_error = (Lbar - L)/L;
-
-	for (i=0; i<K-1; i++)
-		model->t[i] = matrix_get(model->V, K-1, 0, i);
-	for (i=1; i<m+1; i++) {
-		for (j=0; j<K-1; j++) {
-			value = matrix_get(model->V, K-1, i, j);
-			matrix_set(model->W, K-1, i-1, j, value);
-		}
-	}
 	free(B);
 	free(ZV);
 	free(ZAZ);

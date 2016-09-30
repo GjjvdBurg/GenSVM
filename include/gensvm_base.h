@@ -74,10 +74,6 @@ struct GenModel {
 	///< parameter for the Huber hinge function
 	double lambda;
 	///< regularization parameter in the loss function
-	double *W;
-	///< weight matrix
-	double *t;
-	///< translation vector
 	double *V;
 	///< augmented weight matrix
 	double *Vbar;

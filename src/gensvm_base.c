@@ -88,8 +88,6 @@ struct GenModel *gensvm_init_model()
 	model->kerneltype = K_LINEAR;
 	model->kernelparam = NULL;
 
-	model->W = NULL;
-	model->t = NULL;
 	model->V = NULL;
 	model->Vbar = NULL;
 	model->U = NULL;
@@ -119,8 +117,6 @@ void gensvm_allocate_model(struct GenModel *model)
 	long m = model->m;
 	long K = model->K;
 
-	model->W = Calloc(double, m*(K-1));
-	model->t = Calloc(double, K-1);
 	model->V = Calloc(double, (m+1)*(K-1));
 	model->Vbar = Calloc(double, (m+1)*(K-1));
 	model->U = Calloc(double, K*(K-1));
@@ -169,9 +165,6 @@ void gensvm_reallocate_model(struct GenModel *model, long n, long m)
 		model->n = n;
 	}
 	if (model->m != m) {
-		model->W = Realloc(model->W, double, m*(K-1));
-		Memset(model->W, double, m*(K-1));
-
 		model->V = Realloc(model->V, double, (m+1)*(K-1));
 		Memset(model->V, double, (m+1)*(K-1));
 
@@ -197,8 +190,6 @@ void gensvm_free_model(struct GenModel *model)
 	if (model == NULL)
 		return;
 
-	free(model->W);
-	free(model->t);
 	free(model->V);
 	free(model->Vbar);
 	free(model->U);
