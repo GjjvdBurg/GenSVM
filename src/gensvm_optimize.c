@@ -18,6 +18,11 @@
 #define MAX_ITER 1000000000
 
 /**
+ * Iteration frequency with which to print to stdout
+ */
+#define PRINT_ITER 100
+
+/**
  * @brief The main training loop for GenSVM
  *
  * @details
@@ -79,7 +84,7 @@ void gensvm_optimize(struct GenModel *model, struct GenData *data)
 		Lbar = L;
 		L = gensvm_get_loss(model, data, ZV);
 
-		if (it%100 == 0)
+		if (it%PRINT_ITER == 0)
 			note("iter = %li, L = %15.16f, Lbar = %15.16f, "
 			     "reldiff = %15.16f\n", it, L, Lbar, (Lbar - L)/L);
 		it++;
