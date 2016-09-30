@@ -31,7 +31,7 @@ void gensvm_predict_labels(struct GenData *testdata, struct GenModel *model,
 		long *predy)
 {
 	long i, j, k, n, m, K, label;
-	double norm, min_dist, *S, *ZV, *U;
+	double norm, min_dist, *S, *ZV;
 
 	n = testdata->n;
 	m = testdata->r;
@@ -40,10 +40,9 @@ void gensvm_predict_labels(struct GenData *testdata, struct GenModel *model,
 	// allocate necessary memory
 	S = Calloc(double, K-1);
 	ZV = Calloc(double, n*(K-1));
-	U = Calloc(double, K*(K-1));
 
 	// Generate the simplex matrix
-	gensvm_simplex(K, U);
+	gensvm_simplex(model);
 
 	// Generate the simplex space vectors
 	cblas_dgemm(
@@ -70,7 +69,7 @@ void gensvm_predict_labels(struct GenData *testdata, struct GenModel *model,
 		for (j=0; j<K; j++) {
 			for (k=0; k<K-1; k++) {
 				S[k] = matrix_get(ZV, K-1, i, k) -
-					matrix_get(U, K-1, j, k);
+					matrix_get(model->U, K-1, j, k);
 			}
 			norm = cblas_dnrm2(K-1, S, 1);
 			if (norm < min_dist) {
@@ -82,7 +81,6 @@ void gensvm_predict_labels(struct GenData *testdata, struct GenModel *model,
 	}
 
 	free(ZV);
-	free(U);
 	free(S);
 }
 

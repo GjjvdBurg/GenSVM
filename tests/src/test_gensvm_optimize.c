@@ -196,8 +196,8 @@ char *test_gensvm_get_loss_1()
 
 	gensvm_allocate_model(model);
 	gensvm_initialize_weights(data, model);
-	gensvm_simplex(model->K, model->U);
-	gensvm_simplex_diff(model, data);
+	gensvm_simplex(model);
+	gensvm_simplex_diff(model);
 
 	matrix_set(model->V, model->K-1, 0, 0, 0.6019309459245683);
 	matrix_set(model->V, model->K-1, 0, 1, 0.0063825200426701);
@@ -294,8 +294,8 @@ char *test_gensvm_get_loss_2()
 
 	gensvm_allocate_model(model);
 	gensvm_initialize_weights(data, model);
-	gensvm_simplex(model->K, model->U);
-	gensvm_simplex_diff(model, data);
+	gensvm_simplex(model);
+	gensvm_simplex_diff(model);
 
 	matrix_set(model->V, model->K-1, 0, 0, 0.6019309459245683);
 	matrix_set(model->V, model->K-1, 0, 1, 0.0063825200426701);
@@ -365,19 +365,19 @@ char *test_gensvm_calculate_omega()
 	matrix_set(model->H, model->K, 4, 2, 0.8184193969741095);
 
 	// start test code //
-	mu_assert(fabs(gensvm_calculate_omega(model, 0) -
+	mu_assert(fabs(gensvm_calculate_omega(model, data, 0) -
 				0.7394076262220608) < 1e-14,
 			"Incorrect omega at 0");
-	mu_assert(fabs(gensvm_calculate_omega(model, 1) -
+	mu_assert(fabs(gensvm_calculate_omega(model, data, 1) -
 				0.7294526264247443) < 1e-14,
 			"Incorrect omega at 1");
-	mu_assert(fabs(gensvm_calculate_omega(model, 2) -
+	mu_assert(fabs(gensvm_calculate_omega(model, data, 2) -
 				0.6802499471888741) < 1e-14,
 			"Incorrect omega at 2");
-	mu_assert(fabs(gensvm_calculate_omega(model, 3) -
+	mu_assert(fabs(gensvm_calculate_omega(model, data, 3) -
 				0.6886792032441273) < 1e-14,
 			"Incorrect omega at 3");
-	mu_assert(fabs(gensvm_calculate_omega(model, 4) -
+	mu_assert(fabs(gensvm_calculate_omega(model, data, 4) -
 				0.8695329737474283) < 1e-14,
 			"Incorrect omega at 4");
 
@@ -593,8 +593,8 @@ char *test_gensvm_update_B()
 	model->kappa = 0.5;
 
 	gensvm_allocate_model(model);
-	gensvm_simplex(model->K, model->U);
-	gensvm_simplex_diff(model, data);
+	gensvm_simplex(model);
+	gensvm_simplex_diff(model);
 	gensvm_initialize_weights(data, model);
 
 	// start test code //
@@ -639,6 +639,7 @@ char *test_gensvm_get_Avalue_update_B()
 	mu_test_missing();
 	return NULL;
 }
+*/
 
 char *test_gensvm_get_update()
 {
@@ -709,8 +710,8 @@ char *test_gensvm_get_update()
 	// initialize matrices
 	gensvm_allocate_model(model);
 	gensvm_initialize_weights(data, model);
-	gensvm_simplex(model->K, model->U);
-	gensvm_simplex_diff(model, data);
+	gensvm_simplex(model);
+	gensvm_simplex_diff(model);
 
 	// initialize V
 	matrix_set(model->V, model->K-1, 0, 0, -0.7593642121025029);
@@ -729,7 +730,7 @@ char *test_gensvm_get_update()
 	double *ZAZVT = Calloc(double, (m+1)*(K-1));
 
 	// these need to be prepared for the update call
-	gensvm_calculate_errors(model, data);
+	gensvm_calculate_errors(model, data, ZV);
 	gensvm_calculate_huber(model);
 
 	// run the actual update call
@@ -774,182 +775,8 @@ char *test_gensvm_get_update()
 	return NULL;
 }
 
-char *test_gensvm_simplex_diff()
-{
-	struct GenData *data = gensvm_init_data();
-	struct GenModel *model = gensvm_init_model();
+	free(ZV);
 
-	int n = 8,
-	    m = 3,
-	    K = 3;
-	model->n = n;
-	model->m = m;
-	model->K = K;
-	data->n = n;
-	data->m = m;
-	data->K = K;
-
-	data->y = Calloc(long, n);
-
-	gensvm_allocate_model(model);
-	gensvm_simplex(model->K, model->U);
-
-	data->y[0] = 2;
-	data->y[1] = 1;
-	data->y[2] = 3;
-	data->y[3] = 2;
-	data->y[4] = 3;
-	data->y[5] = 3;
-	data->y[6] = 1;
-	data->y[7] = 2;
-
-	// start test code //
-	gensvm_simplex_diff(model, data);
-
-	mu_assert(fabs(matrix3_get(model->UU, K-1, K, 0, 0, 0) -
-				1.0000000000000000) < 1e-14,
-			"Incorrect value at UU(0, 0, 0)");
-	mu_assert(fabs(matrix3_get(model->UU, K-1, K, 0, 0, 1) -
-				0.0000000000000000) < 1e-14,
-			"Incorrect value at UU(0, 0, 1)");
-	mu_assert(fabs(matrix3_get(model->UU, K-1, K, 0, 0, 2) -
-				0.5000000000000000) < 1e-14,
-			"Incorrect value at UU(0, 0, 2)");
-	mu_assert(fabs(matrix3_get(model->UU, K-1, K, 0, 1, 0) -
-				0.0000000000000000) < 1e-14,
-			"Incorrect value at UU(0, 1, 0)");
-	mu_assert(fabs(matrix3_get(model->UU, K-1, K, 0, 1, 1) -
-				0.0000000000000000) < 1e-14,
-			"Incorrect value at UU(0, 1, 1)");
-	mu_assert(fabs(matrix3_get(model->UU, K-1, K, 0, 1, 2) -
-				-0.8660254037844388) < 1e-14,
-			"Incorrect value at UU(0, 1, 2)");
-	mu_assert(fabs(matrix3_get(model->UU, K-1, K, 1, 0, 0) -
-				0.0000000000000000) < 1e-14,
-			"Incorrect value at UU(1, 0, 0)");
-	mu_assert(fabs(matrix3_get(model->UU, K-1, K, 1, 0, 1) -
-				-1.0000000000000000) < 1e-14,
-			"Incorrect value at UU(1, 0, 1)");
-	mu_assert(fabs(matrix3_get(model->UU, K-1, K, 1, 0, 2) -
-				-0.5000000000000000) < 1e-14,
-			"Incorrect value at UU(1, 0, 2)");
-	mu_assert(fabs(matrix3_get(model->UU, K-1, K, 1, 1, 0) -
-				0.0000000000000000) < 1e-14,
-			"Incorrect value at UU(1, 1, 0)");
-	mu_assert(fabs(matrix3_get(model->UU, K-1, K, 1, 1, 1) -
-				0.0000000000000000) < 1e-14,
-			"Incorrect value at UU(1, 1, 1)");
-	mu_assert(fabs(matrix3_get(model->UU, K-1, K, 1, 1, 2) -
-				-0.8660254037844388) < 1e-14,
-			"Incorrect value at UU(1, 1, 2)");
-	mu_assert(fabs(matrix3_get(model->UU, K-1, K, 2, 0, 0) -
-				0.5000000000000000) < 1e-14,
-			"Incorrect value at UU(2, 0, 0)");
-	mu_assert(fabs(matrix3_get(model->UU, K-1, K, 2, 0, 1) -
-				-0.5000000000000000) < 1e-14,
-			"Incorrect value at UU(2, 0, 1)");
-	mu_assert(fabs(matrix3_get(model->UU, K-1, K, 2, 0, 2) -
-				0.0000000000000000) < 1e-14,
-			"Incorrect value at UU(2, 0, 2)");
-	mu_assert(fabs(matrix3_get(model->UU, K-1, K, 2, 1, 0) -
-				0.8660254037844388) < 1e-14,
-			"Incorrect value at UU(2, 1, 0)");
-	mu_assert(fabs(matrix3_get(model->UU, K-1, K, 2, 1, 1) -
-				0.8660254037844388) < 1e-14,
-			"Incorrect value at UU(2, 1, 1)");
-	mu_assert(fabs(matrix3_get(model->UU, K-1, K, 2, 1, 2) -
-				0.0000000000000000) < 1e-14,
-			"Incorrect value at UU(2, 1, 2)");
-	mu_assert(fabs(matrix3_get(model->UU, K-1, K, 3, 0, 0) -
-				1.0000000000000000) < 1e-14,
-			"Incorrect value at UU(3, 0, 0)");
-	mu_assert(fabs(matrix3_get(model->UU, K-1, K, 3, 0, 1) -
-				0.0000000000000000) < 1e-14,
-			"Incorrect value at UU(3, 0, 1)");
-	mu_assert(fabs(matrix3_get(model->UU, K-1, K, 3, 0, 2) -
-				0.5000000000000000) < 1e-14,
-			"Incorrect value at UU(3, 0, 2)");
-	mu_assert(fabs(matrix3_get(model->UU, K-1, K, 3, 1, 0) -
-				0.0000000000000000) < 1e-14,
-			"Incorrect value at UU(3, 1, 0)");
-	mu_assert(fabs(matrix3_get(model->UU, K-1, K, 3, 1, 1) -
-				0.0000000000000000) < 1e-14,
-			"Incorrect value at UU(3, 1, 1)");
-	mu_assert(fabs(matrix3_get(model->UU, K-1, K, 3, 1, 2) -
-				-0.8660254037844388) < 1e-14,
-			"Incorrect value at UU(3, 1, 2)");
-	mu_assert(fabs(matrix3_get(model->UU, K-1, K, 4, 0, 0) -
-				0.5000000000000000) < 1e-14,
-			"Incorrect value at UU(4, 0, 0)");
-	mu_assert(fabs(matrix3_get(model->UU, K-1, K, 4, 0, 1) -
-				-0.5000000000000000) < 1e-14,
-			"Incorrect value at UU(4, 0, 1)");
-	mu_assert(fabs(matrix3_get(model->UU, K-1, K, 4, 0, 2) -
-				0.0000000000000000) < 1e-14,
-			"Incorrect value at UU(4, 0, 2)");
-	mu_assert(fabs(matrix3_get(model->UU, K-1, K, 4, 1, 0) -
-				0.8660254037844388) < 1e-14,
-			"Incorrect value at UU(4, 1, 0)");
-	mu_assert(fabs(matrix3_get(model->UU, K-1, K, 4, 1, 1) -
-				0.8660254037844388) < 1e-14,
-			"Incorrect value at UU(4, 1, 1)");
-	mu_assert(fabs(matrix3_get(model->UU, K-1, K, 4, 1, 2) -
-				0.0000000000000000) < 1e-14,
-			"Incorrect value at UU(4, 1, 2)");
-	mu_assert(fabs(matrix3_get(model->UU, K-1, K, 5, 0, 0) -
-				0.5000000000000000) < 1e-14,
-			"Incorrect value at UU(5, 0, 0)");
-	mu_assert(fabs(matrix3_get(model->UU, K-1, K, 5, 0, 1) -
-				-0.5000000000000000) < 1e-14,
-			"Incorrect value at UU(5, 0, 1)");
-	mu_assert(fabs(matrix3_get(model->UU, K-1, K, 5, 0, 2) -
-				0.0000000000000000) < 1e-14,
-			"Incorrect value at UU(5, 0, 2)");
-	mu_assert(fabs(matrix3_get(model->UU, K-1, K, 5, 1, 0) -
-				0.8660254037844388) < 1e-14,
-			"Incorrect value at UU(5, 1, 0)");
-	mu_assert(fabs(matrix3_get(model->UU, K-1, K, 5, 1, 1) -
-				0.8660254037844388) < 1e-14,
-			"Incorrect value at UU(5, 1, 1)");
-	mu_assert(fabs(matrix3_get(model->UU, K-1, K, 5, 1, 2) -
-				0.0000000000000000) < 1e-14,
-			"Incorrect value at UU(5, 1, 2)");
-	mu_assert(fabs(matrix3_get(model->UU, K-1, K, 6, 0, 0) -
-				0.0000000000000000) < 1e-14,
-			"Incorrect value at UU(6, 0, 0)");
-	mu_assert(fabs(matrix3_get(model->UU, K-1, K, 6, 0, 1) -
-				-1.0000000000000000) < 1e-14,
-			"Incorrect value at UU(6, 0, 1)");
-	mu_assert(fabs(matrix3_get(model->UU, K-1, K, 6, 0, 2) -
-				-0.5000000000000000) < 1e-14,
-			"Incorrect value at UU(6, 0, 2)");
-	mu_assert(fabs(matrix3_get(model->UU, K-1, K, 6, 1, 0) -
-				0.0000000000000000) < 1e-14,
-			"Incorrect value at UU(6, 1, 0)");
-	mu_assert(fabs(matrix3_get(model->UU, K-1, K, 6, 1, 1) -
-				0.0000000000000000) < 1e-14,
-			"Incorrect value at UU(6, 1, 1)");
-	mu_assert(fabs(matrix3_get(model->UU, K-1, K, 6, 1, 2) -
-				-0.8660254037844388) < 1e-14,
-			"Incorrect value at UU(6, 1, 2)");
-	mu_assert(fabs(matrix3_get(model->UU, K-1, K, 7, 0, 0) -
-				1.0000000000000000) < 1e-14,
-			"Incorrect value at UU(7, 0, 0)");
-	mu_assert(fabs(matrix3_get(model->UU, K-1, K, 7, 0, 1) -
-				0.0000000000000000) < 1e-14,
-			"Incorrect value at UU(7, 0, 1)");
-	mu_assert(fabs(matrix3_get(model->UU, K-1, K, 7, 0, 2) -
-				0.5000000000000000) < 1e-14,
-			"Incorrect value at UU(7, 0, 2)");
-	mu_assert(fabs(matrix3_get(model->UU, K-1, K, 7, 1, 0) -
-				0.0000000000000000) < 1e-14,
-			"Incorrect value at UU(7, 1, 0)");
-	mu_assert(fabs(matrix3_get(model->UU, K-1, K, 7, 1, 1) -
-				0.0000000000000000) < 1e-14,
-			"Incorrect value at UU(7, 1, 1)");
-	mu_assert(fabs(matrix3_get(model->UU, K-1, K, 7, 1, 2) -
-				-0.8660254037844388) < 1e-14,
-			"Incorrect value at UU(7, 1, 2)");
 	// end test code //
 
 	gensvm_free_model(model);
@@ -1021,8 +848,8 @@ char *test_gensvm_calculate_errors()
 	model->m = m;
 	model->K = K;
 	gensvm_allocate_model(model);
-	gensvm_simplex(model->K, model->U);
-	gensvm_simplex_diff(model, data);
+	gensvm_simplex(model);
+	gensvm_simplex_diff(model);
 
 	matrix_set(model->V, model->K-1, 0, 0, 0.6019309459245683);
 	matrix_set(model->V, model->K-1, 0, 1, 0.0063825200426701);
@@ -1629,7 +1456,6 @@ char *all_tests()
 	mu_run_test(test_gensvm_get_Avalue_update_B);
 
 	mu_run_test(test_gensvm_get_update);
-	mu_run_test(test_gensvm_simplex_diff);
 	mu_run_test(test_gensvm_calculate_errors);
 	mu_run_test(test_gensvm_calculate_huber);
 	mu_run_test(test_gensvm_step_doubling);

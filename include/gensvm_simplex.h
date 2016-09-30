@@ -10,9 +10,10 @@
 #define GENSVM_SIMPLEX_H
 
 // includes
-#include "gensvm_globals.h"
+#include "gensvm_base.h"
 
 // forward declarations
-void gensvm_simplex(long K, double *U);
+void gensvm_simplex(struct GenModel *model);
+void gensvm_simplex_diff(struct GenModel *model);
 
 #endif

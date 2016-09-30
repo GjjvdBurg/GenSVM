@@ -66,9 +66,8 @@ void gensvm_optimize(struct GenModel *model, struct GenData *data)
 	note("\tepsilon = %g\n", model->epsilon);
 	note("\n");
 
-	gensvm_simplex(model->K, model->U);
-	gensvm_simplex_diff(model, data);
 	gensvm_simplex(model);
+	gensvm_simplex_diff(model);
 
 	L = gensvm_get_loss(model, data, ZV);
 	Lbar = L + 2.0*model->epsilon*L;
@@ -576,39 +575,6 @@ void gensvm_get_update(struct GenModel *model, struct GenData *data,
 	}
 }
 
-/**
- * @brief Generate the simplex difference matrix
- *
- * @details
- * The simplex difference matrix is a 3D matrix which is constructed
- * as follows. For each instance i, the difference vectors between the row of
- * the simplex matrix corresponding to the class label of instance i and the
- * other rows of the simplex matrix are calculated. These difference vectors
- * are stored in a matrix, which is one horizontal slice of the 3D matrix.
- *
- * We use the indices i, j, k for the three dimensions n, K-1, K of UU. Then
- * the i,j,k -th element of UU is equal to U(y[i]-1, j) - U(k, j).
- *
- * @param[in,out] 	model 	the corresponding GenModel
- * @param[in] 		data 	the corresponding GenData
- *
- */
-void gensvm_simplex_diff(struct GenModel *model, struct GenData *data)
-{
-	long i, j, k;
-	double value;
-
-	long n = model->n;
-	long K = model->K;
-
-	for (i=0; i<n; i++) {
-		for (j=0; j<K-1; j++) {
-			for (k=0; k<K; k++) {
-				value = matrix_get(model->U, K-1,
-						data->y[i]-1, j);
-				value -= matrix_get(model->U, K-1, k, j);
-				matrix3_set(model->UU, K-1, K, i, j, k, value);
-			}
 		}
 	}
 }
@@ -689,21 +655,17 @@ void gensvm_calculate_huber(struct GenModel *model)
  * allocated. In addition, the matrix ZV is calculated here. It is assigned
  * to a pre-allocated block of memory, which is passed to this function.
  *
- * @todo
- * Transform UU to small UU then fix that here
- *
  * @param[in,out] 	model 	the corresponding GenModel
  * @param[in] 		data 	the corresponding GenData
  * @param[in,out] 	ZV 	a pointer to a memory block for ZV. On exit
  * 				this block is updated with the new ZV matrix
  * 				calculated with GenModel::V
- *
  */
 void gensvm_calculate_errors(struct GenModel *model, struct GenData *data,
 		double *ZV)
 {
-	long i, j, k;
-	double zv, value;
+	long i, j;
+	double q, *uu_row;
 
 	long n = model->n;
 	long m = model->m;
@@ -725,15 +687,13 @@ void gensvm_calculate_errors(struct GenModel *model, struct GenData *data,
 			ZV,
 			K-1);
 
-	Memset(model->Q, double, n*K);
 	for (i=0; i<n; i++) {
-		for (j=0; j<K-1; j++) {
-			zv = matrix_get(ZV, K-1, i, j);
-			for (k=0; k<K; k++) {
-				value = zv * matrix3_get(model->UU, K-1, K, i,
-						j, k);
-				matrix_add(model->Q, K, i, k, value);
-			}
+		for (j=0; j<K; j++) {
+			if (j == (data->y[i]-1))
+				continue;
+			uu_row = &model->UU[((data->y[i]-1)*K+j)*(K-1)];
+			q = cblas_ddot(K-1, &ZV[i*(K-1)], 1, uu_row, 1);
+			matrix_set(model->Q, K, i, j, q);
 		}
 	}
 }

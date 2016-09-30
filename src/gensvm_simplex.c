@@ -25,21 +25,58 @@
  * @param[in] 		K 	number of classes
  * @param[in,out] 	U 	simplex matrix of size K * (K-1)
  */
-void gensvm_simplex(long K, double *U)
+void gensvm_simplex(struct GenModel *model)
 {
-	long i, j;
+	long i, j, K = model->K;
+
 	for (i=0; i<K; i++) {
 		for (j=0; j<K-1; j++) {
 			if (i <= j) {
-				matrix_set(U, K-1, i, j,
+				matrix_set(model->U, K-1, i, j,
 					       	-1.0/sqrt(2.0*(j+1)*(j+2)));
 			} else if (i == j+1) {
-				matrix_set(U, K-1, i, j,
+				matrix_set(model->U, K-1, i, j,
 					       	sqrt((j+1)/(2.0*(j+2))));
 			} else {
-				matrix_set(U, K-1, i, j, 0.0);
+				matrix_set(model->U, K-1, i, j, 0.0);
 			}
 		}
 	}
 }
 
+/**
+ * @brief Generate the simplex difference matrix
+ *
+ * @details
+ * The simplex difference matrix is a 2D block matrix which is constructed
+ * as follows. For each class i, we have a block of K rows and K-1 columns.
+ * Each row in the block for class i contains a row vector with the difference
+ * of the simplex matrix, U(i, :) - U(j, :).
+ *
+ * In the paper the notation @f$\boldsymbol{\delta}_{kj}'@f$ is used for the
+ * difference vector of @f$\textbf{u}_k' - \textbf{u}_j'@f$, where
+ * @f$\textbf{u}_k'@f$ corresponds to row k of @f$\textbf{U}@f$. Due to the
+ * indexing in the paper being 1-based and C indexing is 0 based, the vector
+ * @f$\boldsymbol{\delta}_{kj}'@f$ corresponds to the row (k-1)*K+(j-1) in the
+ * UU matrix generated here.
+ *
+ * @param[in,out] 	model 	the corresponding GenModel
+ *
+ */
+void gensvm_simplex_diff(struct GenModel *model)
+{
+	long i, j, l, K = model->K;
+	double value;
+
+	// UU is a 2D block matrix, where block i has the differences:
+	// U(i, :) - U(j, :) for all j
+	for (i=0; i<K; i++) {
+		for (j=0; j<K; j++) {
+			for (l=0; l<K-1; l++) {
+				value = matrix_get(model->U, K-1, i, l);
+				value -= matrix_get(model->U, K-1, j, l);
+				matrix_set(model->UU, K-1, i*K+j, l, value);
+			}
+		}
+	}
+}

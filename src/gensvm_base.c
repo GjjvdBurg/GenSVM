@@ -119,7 +119,7 @@ void gensvm_allocate_model(struct GenModel *model)
 	model->V = Calloc(double, (m+1)*(K-1));
 	model->Vbar = Calloc(double, (m+1)*(K-1));
 	model->U = Calloc(double, K*(K-1));
-	model->UU = Calloc(double, n*K*(K-1));
+	model->UU = Calloc(double, K*K*(K-1));
 	model->Q = Calloc(double, n*K);
 	model->H = Calloc(double, n*K);
 	model->rho = Calloc(double, n);
@@ -145,9 +145,6 @@ void gensvm_reallocate_model(struct GenModel *model, long n, long m)
 	if (model->n == n && model->m == m)
 		return;
 	if (model->n != n) {
-		model->UU = Realloc(model->UU, double, n*K*(K-1));
-		Memset(model->UU, double, n*K*(K-1));
-
 		model->Q = Realloc(model->Q, double, n*K);
 		Memset(model->Q, double, n*K);
 

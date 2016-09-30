@@ -82,7 +82,7 @@ struct GenModel {
 	double *U;
 	///< simplex matrix
 	double *UU;
-	///< 3D simplex difference matrix
+	///< simplex difference matrix
 	double *Q;
 	///< error matrix
 	double *H;
