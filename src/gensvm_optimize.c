@@ -168,6 +168,247 @@ double gensvm_get_loss(struct GenModel *model, struct GenData *data,
 }
 
 /**
+ * @brief Calculate the value of omega for a single instance
+ *
+ * @details
+ * This function calculates the value of the @f$ \omega_i @f$ variable for a
+ * single instance, where
+ * @f[
+ * 	\omega_i = \frac{1}{p} \left( \sum_{j \neq y_i} h^p\left(
+ * 	\overline{q}_i^{(y_i j)} \right)  \right)^{1/p-1}
+ * @f]
+ * Note that his function uses the precalculated values from GenModel::H and
+ * GenModel::R to speed up the computation.
+ *
+ * @param[in] 	model 	GenModel structure with the current model
+ * @param[in] 	i 	index of the instance for which to calculate omega
+ * @returns 		the value of omega for instance i
+ *
+ */
+double gensvm_calculate_omega(struct GenModel *model, long i)
+{
+	long j;
+	double h, r, omega = 0.0,
+	       p = model->p;
+
+	for (j=0; j<model->K; j++) {
+		h = matrix_get(model->H, model->K, i, j);
+		r = matrix_get(model->R, model->K, i, j);
+		omega += pow(h, p)*r;
+	}
+	omega = (1.0/p)*pow(omega, 1.0/p - 1.0);
+
+	return omega;
+}
+
+/**
+ * @brief Check if we can do simple majorization for a given instance
+ *
+ * @details
+ * A simple majorization is possible if at most one of the Huberized hinge
+ * errors is nonzero for an instance. This is checked here. For this we
+ * compute the product of the Huberized error for all @f$j \neq y_i@f$ and
+ * check if strictly less than 2 are nonzero. See also the @ref update_math.
+ *
+ * @param[in] 	model 	GenModel structure with the current model
+ * @param[in] 	i 	index of the instance for which to check
+ * @returns 		whether or not we can do simple majorization
+ *
+ */
+bool gensvm_majorize_is_simple(struct GenModel *model, long i)
+{
+	long j;
+	double h, r, value = 0;
+	for (j=0; j<model->K; j++) {
+		h = matrix_get(model->H, model->K, i, j);
+		r = matrix_get(model->R, model->K, i, j);
+		value += (h*r > 0) ? 1 : 0;
+		if (value > 1)
+			return false;
+	}
+	return true;
+}
+
+/**
+ * @brief Compute majorization coefficients for non-simple instance
+ *
+ * @details
+ * In this function we compute the majorization coefficients needed for an
+ * instance with a non-simple majorization (@f$\varepsilon_i = 0@f$). In this
+ * function, we distinguish a number of cases depending on the value of
+ * GenModel::p and the respective value of @f$\overline{q}_i^{(y_ij)}@f$. Note
+ * that the linear coefficient is of the form @f$b - a\overline{q}@f$, but
+ * often the second term is included in the definition of @f$b@f$, so it can
+ * be optimized out. The output argument \p b_aq contains this difference
+ * therefore in one go. More details on this function can be found in the @ref
+ * update_math. See also gensvm_calculate_ab_simple().
+ *
+ * @param[in] 	model 	GenModel structure with the current model
+ * @param[in] 	i 	index for the instance
+ * @param[in] 	j 	index for the class
+ * @param[out] 	*a 	output argument for the quadratic coefficient
+ * @param[out]  *b_aq 	output argument for the linear coefficient.
+ *
+ */
+void gensvm_calculate_ab_non_simple(struct GenModel *model, long i, long j,
+		double *a, double *b_aq)
+{
+	double q = matrix_get(model->Q, model->K, i, j);
+	double p = model->p;
+	double kappa = model->kappa;
+	const double a2g2 = 0.25*p*(2.0*p - 1.0)*pow((kappa+1.0)/2.0,p-2.0);
+
+	if (2.0 - model->p < 1e-2) {
+		if (q <= - kappa) {
+			*b_aq = 0.5 - kappa/2.0 - q;
+		} else if ( q <= 1.0) {
+			*b_aq = pow(1.0 - q, 3.0)/(2.0*pow(kappa + 1.0, 2.0));
+		} else {
+			*b_aq = 0;
+		}
+		*a = 1.5;
+	} else {
+		if (q <= (p + kappa - 1.0)/(p - 2.0)) {
+			*a = 0.25*pow(p, 2.0)*pow(0.5 - kappa/2.0 - q, p - 2.0);
+		} else if (q <= 1.0) {
+			*a = a2g2;
+		} else {
+			*a = 0.25*pow(p, 2.0)*pow((p/(p - 2.0))*(0.5 -
+						kappa/2.0 - q), p - 2.0);
+			*b_aq = (*a)*(2.0*q + kappa - 1.0)/(p - 2.0) +
+				0.5*p*pow(p/(p - 2.0)*(0.5 - kappa/2.0 - q),
+						p - 1.0);
+		}
+		if (q <= -kappa) {
+			*b_aq = 0.5*p*pow(0.5 - kappa/2.0 - q, p - 1.0);
+		} else if ( q <= 1.0) {
+			*b_aq = p*pow(1.0 - q, 2.0*p - 1.0)/pow(2*kappa+2.0, p);
+		}
+	}
+}
+
+/**
+ * @brief Compute majorization coefficients for simple instances
+ *
+ * @details
+ * In this function we compute the majorization coefficients needed for an
+ * instance with a simple majorization. This corresponds to the non-simple
+ * majorization for the case where GenModel::p equals 1. Due to this condition
+ * the majorization coefficients are quite simple to compute.  Note that the
+ * linear coefficient of the majorization is of the form @f$b -
+ * a\overline{q}@f$, but often the second term is included in the definition
+ * of @f$b@f$, so it can be optimized out. For more details see the @ref
+ * update_math, and gensvm_calculate_ab_non_simple().
+ *
+ * @param[in] 	model 	GenModel structure with the current model
+ * @param[in] 	i 	index for the instance
+ * @param[in] 	j 	index for the class
+ * @param[out] 	*a 	output argument for the quadratic coefficient
+ * @param[out] 	*b_aq 	output argument for the linear coefficient
+ *
+ */
+void gensvm_calculate_ab_simple(struct GenModel *model, long i, long j,
+		double *a, double *b_aq)
+{
+	double q = matrix_get(model->Q, model->K, i, j);
+
+	if (q <= - model->kappa) {
+		*a = 0.25/(0.5 - model->kappa/2.0 - q);
+		*b_aq = 0.5;
+	} else if (q <= 1.0) {
+		*a = 1.0/(2.0*model->kappa + 2.0);
+		*b_aq = (1.0 - q)*(*a);
+	} else {
+		*a = -0.25/(0.5 - model->kappa/2.0 - q);
+		*b_aq = 0;
+	}
+}
+
+/**
+ * @brief Update the relevant elements of the B matrix with given coefficients
+ *
+ * @details
+ * This function updates the row of the B matrix for the given instance \p i,
+ * with the provided linear coefficient \p b_aq. Each row of the B matrix is a
+ * sum of \p b_aq values for class \p j, multiplied with their respective
+ * simplex-difference vectors @f$\boldsymbol{\delta_{y_ij}}'@f$. This function
+ * adds to the row of B for a single class \p j, it should therefore be
+ * repeatedly called for each class to get the correct outcome. Note that the
+ * sum should be done over all @f$j \neq y_i@f$, but since the simplex
+ * difference vector @f$\boldsymbol{\delta_{jj}}'@f$ is zero, we do not need
+ * an extra restriction for this. For more details see @ref update_math.
+ *
+ * @param[in] 		model 	GenModel structure with the current model
+ * @param[in] 		i 	index of the instance
+ * @param[in] 		j 	index for the class
+ * @param[in] 		b_aq 	linear coefficient update for this i, j
+ * @param[in] 		omega 	value of omega to multiply with
+ * @param[in,out] 	B 	matrix of linear coefficients
+ *
+ */
+void gensvm_update_B(struct GenModel *model, long i, long j, double b_aq,
+		double omega, double *B)
+{
+	long k;
+	double Bvalue;
+	const double factor = (model->rho[i]*omega*b_aq)/((double) model->n);
+
+	for (k=0; k<model->K-1; k++) {
+		Bvalue = factor * matrix3_get(model->UU, model->K-1, model->K,
+				i, k, j);
+		matrix_add(B, model->K-1, i, k, Bvalue);
+	}
+}
+
+/**
+ * @brief Update the B matrix for an instance and compute the alpha_i
+ *
+ * @details
+ * This computes the @f$\alpha_i@f$ value for an instance, while
+ * simultaneously updating the row of the B matrix corresponding to that
+ * instance. The advantage of doing this at the same time is that we can
+ * compute the a and b values simultaneously in the
+ * gensvm_calculate_ab_simple() and gensvm_calculate_ab_non_simple()
+ * functions.
+ *
+ * The computation is done by first checking whether simple majorization is
+ * possible for this instance. If so, the @f$\omega_i@f$ value is set to 1.0,
+ * otherwise this value is computed. If simple majorization is possible, the
+ * coefficients a and b_aq are computed by gensvm_calculate_ab_simple(),
+ * otherwise they're computed by gensvm_calculate_ab_non_simple(). Next, the
+ * relevant row of the B matrix is updated, and part of the value of
+ * @f$\alpha_i@f$ is computed. The final value of @f$\alpha_i@f$ is returned.
+ *
+ * @param[in] 		model 	GenModel structure with the current model
+ * @param[in] 		i 	index of the instance to update
+ * @param[in,out] 	B 	B matrix of linear coefficients
+ * @returns 			the @f$\alpha_i@f$ value of this instance
+ *
+ */
+double gensvm_get_Avalue_update_B(struct GenModel *model, long i, double *B)
+{
+	bool simple;
+	long j;
+	double omega, a, b_aq, Avalue = 0.0;
+	const double in = 1.0/((double) model->n);
+
+	simple = gensvm_majorize_is_simple(model, i);
+	omega = simple ? 1.0 : gensvm_calculate_omega(model, i);
+
+	for (j=0; j<model->K; j++) {
+		if (simple) {
+			gensvm_calculate_ab_simple(model, i, j, &a, &b_aq);
+		} else {
+			gensvm_calculate_ab_non_simple(model, i, j, &a, &b_aq);
+		}
+		gensvm_update_B(model, i, j, b_aq, omega, B);
+		Avalue += a*matrix_get(model->R, model->K, i, j);
+	}
+	Avalue *= omega * in * model->rho[i];
+	return Avalue;
+}
+
+/**
  * @brief Perform a single step of the majorization algorithm to update V
  *
  * @details
@@ -227,209 +468,47 @@ double gensvm_get_loss(struct GenModel *model, struct GenData *data,
  * @param [in] 		ZAZV 	pre-allocated matrix used in system solving
  * @param [in] 		ZAZVT 	pre-allocated matrix used in system solving
  */
-void gensvm_get_update(struct GenModel *model, struct GenData *data, double *B,
-		double *ZAZ, double *ZAZV, double *ZAZVT)
+void gensvm_get_update(struct GenModel *model, struct GenData *data,
+		double *B, double *ZAZ, double *ZAZV, double *ZAZVT)
 {
-	int status, class;
-	long i, j, k;
-	double Avalue, Bvalue;
-	double omega, value, a, b, q, h, r;
+	int status;
+	long i, j;
+	double Avalue;
+	double value;
 
 	long n = model->n;
 	long m = model->m;
 	long K = model->K;
 
-	double kappa = model->kappa;
-	double p = model->p;
-	double *rho = model->rho;
-
-	// constants which are used often throughout
-	const double a2g2 = 0.25*p*(2.0*p - 1.0)*pow((kappa+1.0)/2.0,p-2.0);
-	const double in = 1.0/((double) n);
-
 	// clear matrices
 	Memset(B, double, n*(K-1));
 	Memset(ZAZ, double, (m+1)*(m+1));
 
-	b = 0;
 	for (i=0; i<n; i++) {
-		value = 0;
-		omega = 0;
-		for (j=0; j<K; j++) {
-			h = matrix_get(model->H, K, i, j);
-			r = matrix_get(model->R, K, i, j);
-			value += (h*r > 0) ? 1 : 0;
-			omega += pow(h, p)*r;
-		}
-		class = (value <= 1.0) ? 1 : 0;
-		omega = (1.0/p)*pow(omega, 1.0/p - 1.0);
-
-		Avalue = 0;
-		if (class == 1) {
-			for (j=0; j<K; j++) {
-				q = matrix_get(model->Q, K, i, j);
-				if (q <= -kappa) {
-					a = 0.25/(0.5 - kappa/2.0 - q);
-					b = 0.5;
-				} else if (q <= 1.0) {
-					a = 1.0/(2.0*kappa + 2.0);
-					b = (1.0 - q)*a;
-				} else {
-					a = -0.25/(0.5 - kappa/2.0 - q);
-					b = 0;
-				}
-				for (k=0; k<K-1; k++) {
-					Bvalue = in*rho[i]*b*matrix3_get(
-						model->UU, K-1, K, i, k, j);
-					matrix_add(B, K-1, i, k, Bvalue);
-				}
-				Avalue += a*matrix_get(model->R, K, i, j);
-			}
-		} else {
-			if (2.0 - p < 0.0001) {
-				for (j=0; j<K; j++) {
-					q = matrix_get(model->Q, K, i, j);
-					if (q <= -kappa) {
-						b = 0.5 - kappa/2.0 - q;
-					} else if ( q <= 1.0) {
-						b = pow(1.0 - q, 3.0)/(
-							2.0*pow(kappa + 1.0,
-								2.0));
-					} else {
-						b = 0;
-					}
-					for (k=0; k<K-1; k++) {
-						Bvalue = in*rho[i]*omega*b*
-							matrix3_get(
-								model->UU,
-								K-1,
-							       	K,
-								i,
-								k,
-								j);
-						matrix_add(
-								B,
-								K-1,
-								i,
-								k,
-								Bvalue);
-					}
-				}
-				Avalue = 1.5*(K - 1.0);
-			} else {
-				for (j=0; j<K; j++) {
-					q = matrix_get(model->Q, K, i, j);
-					if (q <= (p + kappa - 1.0)/(p - 2.0)) {
-						a = 0.25*pow(p, 2.0)*pow(
-							0.5 - kappa/2.0 - q,
-						       		p - 2.0);
-					} else if (q <= 1.0) {
-						a = a2g2;
-					} else {
-						a = 0.25*pow(p, 2.0)*pow(
-							(p/(p - 2.0))*
-							(0.5 - kappa/2.0 - q),
-							p - 2.0);
-						b = a*(2.0*q + kappa - 1.0)/
-							(p - 2.0) +
-							0.5*p*pow(
-								p/(p - 2.0)*
-								(0.5 - kappa/
-								 2.0 - q),
-								p - 1.0);
-					}
-					if (q <= -kappa) {
-						b = 0.5*p*pow(
-							0.5 - kappa/2.0 - q,
-							p - 1.0);
-					} else if ( q <= 1.0) {
-						b = p*pow(1.0 - q,
-								2.0*p - 1.0)/
-							pow(2*kappa+2.0, p);
-					}
-					for (k=0; k<K-1; k++) {
-						Bvalue = in*rho[i]*omega*b*
-							matrix3_get(
-								model->UU,
-								K-1,
-								K,
-								i,
-								k,
-								j);
-						matrix_add(
-								B,
-								K-1,
-								i,
-								k,
-								Bvalue);
-					}
-					Avalue += a*matrix_get(model->R,
-						       	K, i, j);
-				}
-			}
-			Avalue *= omega;
-		}
-		Avalue *= in * rho[i];
+		Avalue = gensvm_get_Avalue_update_B(model, i, B);
 
 		// Now we calculate the matrix ZAZ. Since this is
 		// guaranteed to be symmetric, we only calculate the
 		// upper part of the matrix, and then copy this over
 		// to the lower part after all calculations are done.
-		// Note that the use of dsym is faster than dspr, even
+		// Note that the use of dsyr is faster than dspr, even
 		// though dspr uses less memory.
-		cblas_dsyr(
-				CblasRowMajor,
-				CblasUpper,
-				m+1,
-				Avalue,
-				&data->Z[i*(m+1)],
-				1,
-				ZAZ,
-				m+1);
+		cblas_dsyr(CblasRowMajor, CblasUpper, m+1, Avalue,
+				&data->Z[i*(m+1)], 1, ZAZ, m+1);
 	}
 
 	// Calculate the right hand side of the system we
 	// want to solve.
-	cblas_dsymm(
-			CblasRowMajor,
-			CblasLeft,
-			CblasUpper,
-			m+1,
-			K-1,
-			1.0,
-			ZAZ,
-			m+1,
-			model->V,
-			K-1,
-			0.0,
-			ZAZV,
-			K-1);
+	cblas_dsymm(CblasRowMajor, CblasLeft, CblasUpper, m+1, K-1, 1.0, ZAZ,
+			m+1, model->V, K-1, 0.0, ZAZV, K-1);
 
-	cblas_dgemm(
-			CblasRowMajor,
-			CblasTrans,
-			CblasNoTrans,
-			m+1,
-			K-1,
-			n,
-			1.0,
-			data->Z,
-			m+1,
-			B,
-			K-1,
-			1.0,
-			ZAZV,
-			K-1);
+	cblas_dgemm(CblasRowMajor, CblasTrans, CblasNoTrans, m+1, K-1, n, 1.0,
+			data->Z, m+1, B, K-1, 1.0, ZAZV, K-1);
 
-	/*
-	 * Add lambda to all diagonal elements except the first one. Recall
-	 * that ZAZ is of size m+1 and is symmetric.
-	 */
-	i = 0;
-	for (j=0; j<m; j++) {
-		i += (m+1) + 1;
+	// Add lambda to all diagonal elements except the first one. Recall
+	// that ZAZ is of size m+1 and is symmetric.
+	for (i=m+2; i<=m*(m+2); i+=m+2)
 		ZAZ[i] += model->lambda;
-	}
 
 	// For the LAPACK call we need to switch to Column-
 	// Major order. This is unnecessary for the matrix
@@ -443,15 +522,7 @@ void gensvm_get_update(struct GenModel *model, struct GenData *data, double *B,
 	// because we have used the upper part in the BLAS
 	// calls above in Row-major order, and Lapack uses
 	// column major order.
-
-	status = dposv(
-			'L',
-			m+1,
-			K-1,
-			ZAZ,
-			m+1,
-			ZAZVT,
-			m+1);
+	status = dposv('L', m+1, K-1, ZAZ, m+1, ZAZVT, m+1);
 
 	if (status != 0) {
 		// This step should not be necessary, as the matrix
@@ -459,31 +530,15 @@ void gensvm_get_update(struct GenModel *model, struct GenData *data, double *B,
 		// is included for safety.
 		err("[GenSVM Warning]: Received nonzero status from "
 				"dposv: %i\n", status);
-		int *IPIV = malloc((m+1)*sizeof(int));
-		double *WORK = malloc(1*sizeof(double));
-		status = dsysv(
-				'L',
-				m+1,
-				K-1,
-				ZAZ,
-				m+1,
-				IPIV,
-				ZAZVT,
-				m+1,
-				WORK,
+		int *IPIV = Malloc(int, m+1);
+		double *WORK = Malloc(double, 1);
+		status = dsysv('L', m+1, K-1, ZAZ, m+1, IPIV, ZAZVT, m+1, WORK,
 				-1);
-		WORK = (double *)realloc(WORK, WORK[0]*sizeof(double));
-		status = dsysv(
-				'L',
-				m+1,
-				K-1,
-				ZAZ,
-				m+1,
-				IPIV,
-				ZAZVT,
-				m+1,
-				WORK,
-				sizeof(WORK)/sizeof(double));
+
+		int LWORK = WORK[0];
+		WORK = Realloc(WORK, double, LWORK);
+		status = dsysv('L', m+1, K-1, ZAZ, m+1, IPIV, ZAZVT, m+1, WORK,
+				LWORK);
 		if (status != 0)
 			err("[GenSVM Warning]: Received nonzero "
 					"status from dsysv: %i\n", status);
@@ -558,7 +613,7 @@ void gensvm_category_matrix(struct GenModel *model, struct GenData *data)
  * other rows of the simplex matrix are calculated. These difference vectors
  * are stored in a matrix, which is one horizontal slice of the 3D matrix.
  *
- * We use the indices i, j, k for the three dimensions n, K-1, K of UU. Then 
+ * We use the indices i, j, k for the three dimensions n, K-1, K of UU. Then
  * the i,j,k -th element of UU is equal to U(y[i]-1, j) - U(k, j).
  *
  * @param[in,out] 	model 	the corresponding GenModel
@@ -622,9 +677,9 @@ void gensvm_step_doubling(struct GenModel *model)
  * @f[
  * 	h(q) =
  * 		\begin{dcases}
- * 			1 - q - \frac{\kappa + 1}{2} & \text{if } q \leq 
+ * 			1 - q - \frac{\kappa + 1}{2} & \text{if } q \leq
  * 			-\kappa \\
- * 			\frac{1}{2(\kappa + 1)} ( 1 - q)^2 & \text{if } q \in 
+ * 			\frac{1}{2(\kappa + 1)} ( 1 - q)^2 & \text{if } q \in
  * 			(-\kappa, 1] \\
  * 			0 & \text{if } q > 1
  * 		\end{dcases}
@@ -665,14 +720,14 @@ void gensvm_calculate_huber(struct GenModel *model)
  * @param[in] 		data 	the corresponding GenData
  * @param[in,out] 	ZV 	a pointer to a memory block for ZV. On exit
  * 				this block is updated with the new ZV matrix
- * 				calculated with GenModel::V.
+ * 				calculated with GenModel::V
  *
  */
 void gensvm_calculate_errors(struct GenModel *model, struct GenData *data,
-	       	double *ZV)
+		double *ZV)
 {
 	long i, j, k;
-	double a, value;
+	double zv, value;
 
 	long n = model->n;
 	long m = model->m;
@@ -690,17 +745,17 @@ void gensvm_calculate_errors(struct GenModel *model, struct GenData *data,
 			m+1,
 			model->V,
 			K-1,
-			0.0,
+			0,
 			ZV,
 			K-1);
 
 	Memset(model->Q, double, n*K);
 	for (i=0; i<n; i++) {
 		for (j=0; j<K-1; j++) {
-			a = matrix_get(ZV, K-1, i, j);
+			zv = matrix_get(ZV, K-1, i, j);
 			for (k=0; k<K; k++) {
-				value = a * matrix3_get(model->UU, K-1, K, i,
-					       	j, k);
+				value = zv * matrix3_get(model->UU, K-1, K, i,
+						j, k);
 				matrix_add(model->Q, K, i, k, value);
 			}
 		}
@@ -712,7 +767,7 @@ void gensvm_calculate_errors(struct GenModel *model, struct GenData *data,
  *
  * @details
  * Solve a linear system of equations AX = B where A is symmetric positive
- * definite. This function is a wrapper for the external  LAPACK routine 
+ * definite. This function is a wrapper for the external  LAPACK routine
  * dposv.
  *
  * @param[in] 		UPLO 	which triangle of A is stored

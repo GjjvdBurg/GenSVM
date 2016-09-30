@@ -209,14 +209,460 @@ char *test_gensvm_get_loss_2()
 	gensvm_free_model(model);
 	gensvm_free_data(data);
 
+char *test_gensvm_calculate_omega()
+{
+	struct GenModel *model = gensvm_init_model();
+	struct GenData *data = gensvm_init_data();
+
+	int n = 5,
+	    m = 3,
+	    K = 3;
+
+	data->n = n;
+	data->m = m;
+	data->K = K;
+
+	data->y = Calloc(long, n);
+	data->y[0] = 2;
+	data->y[1] = 1;
+	data->y[2] = 3;
+	data->y[3] = 2;
+	data->y[4] = 3;
+
+	model->n = n;
+	model->m = m;
+	model->K = K;
+	model->p = 1.213;
+	gensvm_allocate_model(model);
+	gensvm_category_matrix(model, data);
+
+	matrix_set(model->H, model->K, 0, 0, 0.8465725800087526);
+	matrix_set(model->H, model->K, 0, 1, 1.2876921677680249);
+	matrix_set(model->H, model->K, 0, 2, 1.0338561593991831);
+	matrix_set(model->H, model->K, 1, 0, 1.1891038526621391);
+	matrix_set(model->H, model->K, 1, 1, 0.4034192031226095);
+	matrix_set(model->H, model->K, 1, 2, 1.5298894170910078);
+	matrix_set(model->H, model->K, 2, 0, 1.3505111116922732);
+	matrix_set(model->H, model->K, 2, 1, 1.4336863304586636);
+	matrix_set(model->H, model->K, 2, 2, 1.7847533480330757);
+	matrix_set(model->H, model->K, 3, 0, 1.7712504341475415);
+	matrix_set(model->H, model->K, 3, 1, 1.6905146737773038);
+	matrix_set(model->H, model->K, 3, 2, 0.8189336598535132);
+	matrix_set(model->H, model->K, 4, 0, 0.6164203008844277);
+	matrix_set(model->H, model->K, 4, 1, 0.2456444285093894);
+	matrix_set(model->H, model->K, 4, 2, 0.8184193969741095);
+
+	// start test code //
+	mu_assert(fabs(gensvm_calculate_omega(model, 0) -
+				0.7394076262220608) < 1e-14,
+			"Incorrect omega at 0");
+	mu_assert(fabs(gensvm_calculate_omega(model, 1) -
+				0.7294526264247443) < 1e-14,
+			"Incorrect omega at 1");
+	mu_assert(fabs(gensvm_calculate_omega(model, 2) -
+				0.6802499471888741) < 1e-14,
+			"Incorrect omega at 2");
+	mu_assert(fabs(gensvm_calculate_omega(model, 3) -
+				0.6886792032441273) < 1e-14,
+			"Incorrect omega at 3");
+	mu_assert(fabs(gensvm_calculate_omega(model, 4) -
+				0.8695329737474283) < 1e-14,
+			"Incorrect omega at 4");
+
+	// end test code //
+
+	gensvm_free_model(model);
+	gensvm_free_data(data);
 
 	return NULL;
+}
+
+char *test_gensvm_majorize_is_simple()
+{
+	struct GenModel *model = gensvm_init_model();
+	struct GenData *data = gensvm_init_data();
+
+	int n = 5,
+	    m = 3,
+	    K = 3;
+
+	data->n = n;
+	data->m = m;
+	data->K = K;
+
+	data->y = Calloc(long, n);
+	data->y[0] = 2;
+	data->y[1] = 1;
+	data->y[2] = 3;
+	data->y[3] = 2;
+	data->y[4] = 3;
+
+	model->n = n;
+	model->m = m;
+	model->K = K;
+	model->p = 1.213;
+	gensvm_allocate_model(model);
+	gensvm_category_matrix(model, data);
+
+	matrix_set(model->H, model->K, 0, 0, 0.8465725800087526);
+	matrix_set(model->H, model->K, 0, 1, 1.2876921677680249);
+	matrix_set(model->H, model->K, 0, 2, 1.0338561593991831);
+	matrix_set(model->H, model->K, 1, 0, 1.1891038526621391);
+	matrix_set(model->H, model->K, 1, 1, 0.4034192031226095);
+	matrix_set(model->H, model->K, 1, 2, 0.0);
+	matrix_set(model->H, model->K, 2, 0, 0.5);
+	matrix_set(model->H, model->K, 2, 1, 0.0);
+	matrix_set(model->H, model->K, 2, 2, 1.1);
+	matrix_set(model->H, model->K, 3, 0, 0.0);
+	matrix_set(model->H, model->K, 3, 1, 0.0);
+	matrix_set(model->H, model->K, 3, 2, 0.8189336598535132);
+	matrix_set(model->H, model->K, 4, 0, 0.6164203008844277);
+	matrix_set(model->H, model->K, 4, 1, 0.2456444285093894);
+	matrix_set(model->H, model->K, 4, 2, 0.8184193969741095);
+
+	// start test code //
+	mu_assert(gensvm_majorize_is_simple(model, 0) == false,
+			"Incorrect simple at 0");
+	mu_assert(gensvm_majorize_is_simple(model, 1) == true,
+			"Incorrect simple at 1");
+	mu_assert(gensvm_majorize_is_simple(model, 2) == true,
+			"Incorrect simple at 2");
+	mu_assert(gensvm_majorize_is_simple(model, 3) == true,
+			"Incorrect simple at 3");
+	mu_assert(gensvm_majorize_is_simple(model, 4) == false,
+			"Incorrect simple at 4");
+
+	// end test code //
+
+	gensvm_free_model(model);
+	gensvm_free_data(data);
+	return NULL;
+}
+
+char *test_gensvm_calculate_ab_non_simple()
+{
+	struct GenModel *model = gensvm_init_model();
+	int n = 1,
+	    m = 1,
+	    K = 1;
+
+	model->n = n;
+	model->m = m;
+	model->K = K;
+	model->kappa = 0.5;
+
+	gensvm_allocate_model(model);
+
+	// start test code //
+	double a, b_aq;
+
+	// tests with p = 2
+	model->p = 2.0;
+	matrix_set(model->Q, K, 0, 0, -1.0);
+	gensvm_calculate_ab_non_simple(model, 0, 0, &a, &b_aq);
+	mu_assert(fabs(a - 1.5) < 1e-14, "Incorrect value for a (1)");
+	mu_assert(fabs(b_aq - 1.25) < 1e-14, "Incorrect value for b (1)");
+
+	matrix_set(model->Q, K, 0, 0, 0.5);
+	gensvm_calculate_ab_non_simple(model, 0, 0, &a, &b_aq);
+	mu_assert(fabs(a - 1.5) < 1e-14, "Incorrect value for a (2)");
+	mu_assert(fabs(b_aq - 0.0277777777777778) < 1e-14,
+			"Incorrect value for b (2)");
+
+	matrix_set(model->Q, K, 0, 0, 2.0);
+	gensvm_calculate_ab_non_simple(model, 0, 0, &a, &b_aq);
+	mu_assert(fabs(a - 1.5) < 1e-14, "Incorrect value for a (3)");
+	mu_assert(fabs(b_aq - 0.0) < 1e-14, "Incorrect value for b (3)");
+
+	// tests with p != 2 (namely, 1.5)
+	// Note that here (p + kappa - 1)/(p - 2) = -2
+	//
+	// We distinguish: q <= (p + kappa - 1)/(p - 2)
+	// 		   q in (p + kappa - 1)/(p - 2), -kappa]
+	// 		   q in (-kappa, 1]
+	// 		   q > 1
+	model->p = 1.5;
+	matrix_set(model->Q, K, 0, 0, -3.0);
+	gensvm_calculate_ab_non_simple(model, 0, 0, &a, &b_aq);
+	mu_assert(fabs(a - 0.312018860376691) < 1e-14,
+			"Incorrect value for a (4)");
+	mu_assert(fabs(b_aq - 1.35208172829900) < 1e-14,
+			"Incorrect value for b (4)");
+
+	matrix_set(model->Q, K, 0, 0, -1.0);
+	gensvm_calculate_ab_non_simple(model, 0, 0, &a, &b_aq);
+	mu_assert(fabs(a - 0.866025403784439) < 1e-14,
+			"Incorrect value for a (5)");
+	mu_assert(fabs(b_aq - 0.838525491562421) < 1e-14,
+			"Incorrect value for b (5)");
+
+	matrix_set(model->Q, K, 0, 0, 0.5);
+	gensvm_calculate_ab_non_simple(model, 0, 0, &a, &b_aq);
+	mu_assert(fabs(a - 0.866025403784439) < 1e-14,
+			"Incorrect value for a (6)");
+	mu_assert(fabs(b_aq - 0.0721687836487032) < 1e-14,
+			"Incorrect value for b (6)");
+
+	matrix_set(model->Q, K, 0, 0, 2.0);
+	gensvm_calculate_ab_non_simple(model, 0, 0, &a, &b_aq);
+	mu_assert(fabs(a - 0.245495126515491) < 1e-14,
+			"Incorrect value for a (7)");
+	mu_assert(fabs(b_aq - 0.0) < 1e-14,
+			"Incorrect value for b (7)");
+	// end test code //
+
+	gensvm_free_model(model);
+
+	return NULL;
+}
+
+char *test_gensvm_calculate_ab_simple()
+{
+	struct GenModel *model = gensvm_init_model();
+	int n = 1,
+	    m = 1,
+	    K = 1;
+
+	model->n = n;
+	model->m = m;
+	model->K = K;
+	model->kappa = 0.5;
+
+	gensvm_allocate_model(model);
+
+	// start test code //
+	double a, b_aq;
+
+	matrix_set(model->Q, K, 0, 0, -1.5);
+	gensvm_calculate_ab_simple(model, 0, 0, &a, &b_aq);
+	mu_assert(fabs(a - 0.142857142857143) < 1e-14,
+			"Incorrect value for a (1)");
+	mu_assert(fabs(b_aq - 0.5) < 1e-14,
+			"Incorrect value for b (1)");
+
+	matrix_set(model->Q, K, 0, 0, 0.75);
+	gensvm_calculate_ab_simple(model, 0, 0, &a, &b_aq);
+	mu_assert(fabs(a - 0.333333333333333) < 1e-14,
+			"Incorrect value for a (2)");
+	mu_assert(fabs(b_aq - 0.0833333333333333) < 1e-14,
+			"Incorrect value for b (2)");
+
+	matrix_set(model->Q, K, 0, 0, 2.0);
+	gensvm_calculate_ab_simple(model, 0, 0, &a, &b_aq);
+	mu_assert(fabs(a - 0.142857142857143) < 1e-14,
+			"Incorrect value for a (3)");
+	mu_assert(fabs(b_aq - 0.0) < 1e-14,
+			"Incorrect value for b (3)");
+
+	// end test code //
+	gensvm_free_model(model);
+
+	return NULL;
+}
+
+char *test_gensvm_get_update()
+char *test_gensvm_update_B()
+{
+	struct GenData *data = gensvm_init_data();
+	struct GenModel *model = gensvm_init_model();
+	int n = 3,
+	    m = 2,
+	    K = 3;
+
+	data->n = n;
+	data->m = m;
+	data->K = K;
+	data->y = Calloc(long, K);
+	data->y[0] = 1;
+	data->y[1] = 2;
+	data->y[2] = 3;
+
+	model->n = n;
+	model->m = m;
+	model->K = K;
+	model->kappa = 0.5;
+
+	gensvm_allocate_model(model);
+	gensvm_simplex(model->K, model->U);
+	gensvm_simplex_diff(model, data);
+	gensvm_category_matrix(model, data);
+	gensvm_initialize_weights(data, model);
+
+	// start test code //
+	double *B = Calloc(double, n*(K-1));
+	double omega = 1.0;
+
+	gensvm_update_B(model, 0, 0, 0.75, omega, B);
+	gensvm_update_B(model, 0, 1, 0.1, omega, B);
+	gensvm_update_B(model, 0, 2, 0.25, omega, B);
+	mu_assert(fabs(matrix_get(B, K-1, 0, 0) - -0.0750000000000000) < 1e-14,
+			"Incorrect value of B at 0, 0 (1)");
+	mu_assert(fabs(matrix_get(B, K-1, 0, 1) - -0.0721687836487032) < 1e-14,
+			"Incorrect value of B at 0, 1 (1)");
+
+	omega = 0.213;
+	gensvm_update_B(model, 1, 0, 0.75, omega, B);
+	gensvm_update_B(model, 1, 1, 0.1, omega, B);
+	gensvm_update_B(model, 1, 2, 0.25, omega, B);
+	mu_assert(fabs(matrix_get(B, K-1, 1, 0) - 0.0621250000000000) < 1e-14,
+			"Incorrect value of B at 0, 0 (2)");
+	mu_assert(fabs(matrix_get(B, K-1, 1, 1) - -0.0153719509171738) < 1e-14,
+			"Incorrect value of B at 0, 1 (2)");
+
+	model->rho[2] = 1.213;
+	gensvm_update_B(model, 2, 0, 0.75, omega, B);
+	gensvm_update_B(model, 2, 1, 0.1, omega, B);
+	gensvm_update_B(model, 2, 2, 0.25, omega, B);
+	mu_assert(fabs(matrix_get(B, K-1, 2, 0) - 0.0279899750000000) < 1e-14,
+			"Incorrect value of B at 0, 0 (3)");
+	mu_assert(fabs(matrix_get(B, K-1, 2, 1) - 0.0633969999726082) < 1e-14,
+			"Incorrect value of B at 0, 1 (3)");
+	// end test code //
+
+	gensvm_free_data(data);
+	gensvm_free_model(model);
+
+	return NULL;
+}
+
+char *test_gensvm_get_Avalue_update_B()
+{
+	mu_test_missing();
 	return NULL;
 }
 
 char *test_gensvm_get_update()
 {
-	mu_test_missing();
+	struct GenModel *model = gensvm_init_model();
+	struct GenData *data = gensvm_init_data();
+	int n = 8,
+	    m = 3,
+	    K = 3;
+
+	// initialize data
+	data->n = n;
+	data->m = m;
+	data->K = K;
+
+	data->y = Calloc(long, n);
+	data->y[0] = 2;
+	data->y[1] = 1;
+	data->y[2] = 3;
+	data->y[3] = 2;
+	data->y[4] = 3;
+	data->y[5] = 3;
+	data->y[6] = 1;
+	data->y[7] = 2;
+
+	data->Z = Calloc(double, n*(m+1));
+	matrix_set(data->Z, data->m+1, 0, 0, 1.0000000000000000);
+	matrix_set(data->Z, data->m+1, 0, 1, 0.6437306339619082);
+	matrix_set(data->Z, data->m+1, 0, 2, -0.3276778319121999);
+	matrix_set(data->Z, data->m+1, 0, 3, 0.1564053473463392);
+	matrix_set(data->Z, data->m+1, 1, 0, 1.0000000000000000);
+	matrix_set(data->Z, data->m+1, 1, 1, -0.8683091763200105);
+	matrix_set(data->Z, data->m+1, 1, 2, -0.6910830836015162);
+	matrix_set(data->Z, data->m+1, 1, 3, -0.9675430665130734);
+	matrix_set(data->Z, data->m+1, 2, 0, 1.0000000000000000);
+	matrix_set(data->Z, data->m+1, 2, 1, -0.5024888699077029);
+	matrix_set(data->Z, data->m+1, 2, 2, -0.9649738292750712);
+	matrix_set(data->Z, data->m+1, 2, 3, 0.0776560791351473);
+	matrix_set(data->Z, data->m+1, 3, 0, 1.0000000000000000);
+	matrix_set(data->Z, data->m+1, 3, 1, 0.8206429991392579);
+	matrix_set(data->Z, data->m+1, 3, 2, -0.7255681388968501);
+	matrix_set(data->Z, data->m+1, 3, 3, -0.9475952272877165);
+	matrix_set(data->Z, data->m+1, 4, 0, 1.0000000000000000);
+	matrix_set(data->Z, data->m+1, 4, 1, 0.3426050950418613);
+	matrix_set(data->Z, data->m+1, 4, 2, -0.5340602451864306);
+	matrix_set(data->Z, data->m+1, 4, 3, -0.7159704241662815);
+	matrix_set(data->Z, data->m+1, 5, 0, 1.0000000000000000);
+	matrix_set(data->Z, data->m+1, 5, 1, -0.3077314049206620);
+	matrix_set(data->Z, data->m+1, 5, 2, 0.1141288036288195);
+	matrix_set(data->Z, data->m+1, 5, 3, -0.7060114827535847);
+	matrix_set(data->Z, data->m+1, 6, 0, 1.0000000000000000);
+	matrix_set(data->Z, data->m+1, 6, 1, 0.6301294373610109);
+	matrix_set(data->Z, data->m+1, 6, 2, -0.9983027363627769);
+	matrix_set(data->Z, data->m+1, 6, 3, -0.9365684178444004);
+	matrix_set(data->Z, data->m+1, 7, 0, 1.0000000000000000);
+	matrix_set(data->Z, data->m+1, 7, 1, -0.0665379368401439);
+	matrix_set(data->Z, data->m+1, 7, 2, -0.1781385556871763);
+	matrix_set(data->Z, data->m+1, 7, 3, -0.7292593770500276);
+
+	// initialize model
+	model->n = n;
+	model->m = m;
+	model->K = K;
+	model->p = 1.1;
+	model->lambda = 0.123;
+	model->weight_idx = 1;
+	model->kappa = 0.5;
+
+	// initialize matrices
+	gensvm_allocate_model(model);
+	gensvm_initialize_weights(data, model);
+	gensvm_simplex(model->K, model->U);
+	gensvm_simplex_diff(model, data);
+	gensvm_category_matrix(model, data);
+
+	// initialize V
+	matrix_set(model->V, model->K-1, 0, 0, -0.7593642121025029);
+	matrix_set(model->V, model->K-1, 0, 1, -0.5497320698504756);
+	matrix_set(model->V, model->K-1, 1, 0, 0.2982680646268177);
+	matrix_set(model->V, model->K-1, 1, 1, -0.2491408622891925);
+	matrix_set(model->V, model->K-1, 2, 0, -0.3118572761092807);
+	matrix_set(model->V, model->K-1, 2, 1, 0.5461219445756100);
+	matrix_set(model->V, model->K-1, 3, 0, -0.3198994238626641);
+	matrix_set(model->V, model->K-1, 3, 1, 0.7134997072555367);
+
+	// start test code //
+	double *B = Calloc(double, n*(K-1));
+	double *ZAZ = Calloc(double, (m+1)*(m+1));
+	double *ZAZV = Calloc(double, (m+1)*(K-1));
+	double *ZAZVT = Calloc(double, (m+1)*(K-1));
+
+	// these need to be prepared for the update call
+	gensvm_calculate_errors(model, data);
+	gensvm_calculate_huber(model);
+
+	// run the actual update call
+	gensvm_get_update(model, data, B, ZAZ, ZAZV, ZAZVT);
+
+	// test values
+	mu_assert(fabs(matrix_get(model->V, model->K-1, 0, 0) -
+				-0.1323791019594062) < 1e-14,
+			"Incorrect value of model->V at 0, 0");
+	mu_assert(fabs(matrix_get(model->V, model->K-1, 0, 1) -
+				-0.3598407983154332) < 1e-14,
+			"Incorrect value of model->V at 0, 1");
+	mu_assert(fabs(matrix_get(model->V, model->K-1, 1, 0) -
+				0.3532993103400935) < 1e-14,
+			"Incorrect value of model->V at 1, 0");
+	mu_assert(fabs(matrix_get(model->V, model->K-1, 1, 1) -
+				-0.4094572388475382) < 1e-14,
+			"Incorrect value of model->V at 1, 1");
+	mu_assert(fabs(matrix_get(model->V, model->K-1, 2, 0) -
+				0.1313169839871234) < 1e-14,
+			"Incorrect value of model->V at 2, 0");
+	mu_assert(fabs(matrix_get(model->V, model->K-1, 2, 1) -
+				0.2423439972728328) < 1e-14,
+			"Incorrect value of model->V at 2, 1");
+	mu_assert(fabs(matrix_get(model->V, model->K-1, 3, 0) -
+				0.0458431025455224) < 1e-14,
+			"Incorrect value of model->V at 3, 0");
+	mu_assert(fabs(matrix_get(model->V, model->K-1, 3, 1) -
+				0.4390030236354089) < 1e-14,
+			"Incorrect value of model->V at 3, 1");
+
+	free(B);
+	free(ZAZ);
+	free(ZAZV);
+	free(ZAZVT);
+
+	// end test code //
+
+	gensvm_free_model(model);
+	gensvm_free_data(data);
+
 	return NULL;
 }
 
@@ -827,7 +1273,7 @@ char *test_dposv()
 	double *A = Calloc(double, n*n);
 	double *B = Calloc(double, n*m);
 
-	// We're only storing the upper triangular part of the symmetric 
+	// We're only storing the upper triangular part of the symmetric
 	// matrix A.
 	matrix_set(A, n, 0, 0, 6.2522023496540386);
 	matrix_set(A, n, 0, 1, 1.2760969977888754);
@@ -883,13 +1329,13 @@ char *test_dposv()
 	B[28] = 0.5923112589693547;
 	B[29] = 0.2243481938151050;
 
-	// note the 'L' here denotes the lower triangular part of A. Above we 
-	// stored the upper triangular part of A in row-major order, so that's 
+	// note the 'L' here denotes the lower triangular part of A. Above we
+	// stored the upper triangular part of A in row-major order, so that's
 	// the lower triangular part in column-major order, which Lapack uses.
 	int status = dposv('L', n, m, A, n, B, n);
 	mu_assert(status == 0, "dposv didn't return status success");
 
-	// Since B now contains the solution in Column-Major order, we have to 
+	// Since B now contains the solution in Column-Major order, we have to
 	// check it in that order.
 
 	mu_assert(fabs(B[0] - 0.0770250502756885) < 1e-14,
@@ -1025,8 +1471,8 @@ char *test_dsysv()
 	B[28] = 0.9179697263236190;
 	B[29] = 0.6532254399609347;
 
-	// run dsysv, note that Lapack expects matrices to be in column-major 
-	// order, so we can use the 'L' notation for the triangle of A, since 
+	// run dsysv, note that Lapack expects matrices to be in column-major
+	// order, so we can use the 'L' notation for the triangle of A, since
 	// we've stored the upper triangle in Row-Major order.
 
 	int *IPIV = Calloc(int, n);
@@ -1042,7 +1488,7 @@ char *test_dsysv()
 	status = dsysv('L', n, m, A, n, IPIV, B, n, WORK, LWORK);
 	mu_assert(status == 0, "dsysv didn't return status success");
 
-	// Since B now contains the solution in Column-Major order, we have to 
+	// Since B now contains the solution in Column-Major order, we have to
 	// check it in that order
 
 	mu_assert(fabs(B[0] - 3.0915448286548806) < 1e-14,
@@ -1123,6 +1569,14 @@ char *all_tests()
 	mu_run_test(test_gensvm_optimize);
 	mu_run_test(test_gensvm_get_loss_1);
 	mu_run_test(test_gensvm_get_loss_2);
+
+	mu_run_test(test_gensvm_calculate_omega);
+	mu_run_test(test_gensvm_majorize_is_simple);
+	mu_run_test(test_gensvm_calculate_ab_non_simple);
+	mu_run_test(test_gensvm_calculate_ab_simple);
+	mu_run_test(test_gensvm_update_B);
+	mu_run_test(test_gensvm_get_Avalue_update_B);
+
 	mu_run_test(test_gensvm_get_update);
 	mu_run_test(test_gensvm_category_matrix);
 	mu_run_test(test_gensvm_simplex_diff);
