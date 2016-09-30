@@ -721,6 +721,9 @@ void gensvm_calculate_huber(struct GenModel *model)
  * allocated. In addition, the matrix ZV is calculated here. It is assigned
  * to a pre-allocated block of memory, which is passed to this function.
  *
+ * @todo
+ * Transform UU to small UU then fix that here
+ *
  * @param[in,out] 	model 	the corresponding GenModel
  * @param[in] 		data 	the corresponding GenData
  * @param[in,out] 	ZV 	a pointer to a memory block for ZV. On exit

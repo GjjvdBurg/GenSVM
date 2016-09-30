@@ -9,12 +9,6 @@ m = 5;
 tmp = rand(n);
 A = tmp + tmp' + n*eye(n);
 
-% Since we're testing the lower part of A, delete the upper triangel
-
-%idx = triu(ones(n)) - eye(n);
-%idx = logical(idx);
-%A(idx) = NaN;
-
 for i=1:size(A, 1)
   for j=1:size(A, 2)
     if j >= i % only print the upper part

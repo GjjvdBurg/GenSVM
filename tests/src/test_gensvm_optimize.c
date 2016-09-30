@@ -9,9 +9,121 @@
 #include "gensvm_optimize.h"
 #include "gensvm_init.h"
 
+#include "gensvm_debug.h"
+
+extern FILE *GENSVM_OUTPUT_FILE;
+extern FILE *GENSVM_ERROR_FILE;
+
 char *test_gensvm_optimize()
 {
-	mu_test_missing();
+	struct GenModel *model = gensvm_init_model();
+	struct GenModel *seed_model = gensvm_init_model();
+	struct GenData *data = gensvm_init_data();
+
+	int n = 8,
+	    m = 3,
+	    K = 4;
+	data->n = n;
+	data->m = m;
+	data->r = m;
+	data->K = K;
+
+	model->n = n;
+	model->m = m;
+	model->K = K;
+
+	seed_model->n = n;
+	seed_model->m = m;
+	seed_model->K = K;
+
+	data->Z = Malloc(double, n*(m+1));
+	data->y = Malloc(long, n);
+
+	matrix_set(data->Z, data->m+1, 0, 0, 1.0);
+	matrix_set(data->Z, data->m+1, 0, 1, 0.8740239771176158);
+	matrix_set(data->Z, data->m+1, 0, 2, 0.3231542341162253);
+	matrix_set(data->Z, data->m+1, 0, 3, 0.2533980609669184);
+	matrix_set(data->Z, data->m+1, 1, 0, 1.0);
+	matrix_set(data->Z, data->m+1, 1, 1, 0.3433368959379667);
+	matrix_set(data->Z, data->m+1, 1, 2, 0.2945713387329698);
+	matrix_set(data->Z, data->m+1, 1, 3, 0.3042498181639990);
+	matrix_set(data->Z, data->m+1, 2, 0, 1.0);
+	matrix_set(data->Z, data->m+1, 2, 1, 0.6513609117457242);
+	matrix_set(data->Z, data->m+1, 2, 2, 0.7738077314847138);
+	matrix_set(data->Z, data->m+1, 2, 3, 0.4426344045213226);
+	matrix_set(data->Z, data->m+1, 3, 0, 1.0);
+	matrix_set(data->Z, data->m+1, 3, 1, 0.7223733317092962);
+	matrix_set(data->Z, data->m+1, 3, 2, 0.9718611208972370);
+	matrix_set(data->Z, data->m+1, 3, 3, 0.0796059591969125);
+	matrix_set(data->Z, data->m+1, 4, 0, 1.0);
+	matrix_set(data->Z, data->m+1, 4, 1, 0.3014806706103061);
+	matrix_set(data->Z, data->m+1, 4, 2, 0.1728058294642182);
+	matrix_set(data->Z, data->m+1, 4, 3, 0.0851401652628196);
+	matrix_set(data->Z, data->m+1, 5, 0, 1.0);
+	matrix_set(data->Z, data->m+1, 5, 1, 0.5114600128301799);
+	matrix_set(data->Z, data->m+1, 5, 2, 0.3319865781913825);
+	matrix_set(data->Z, data->m+1, 5, 3, 0.3330906711041684);
+	matrix_set(data->Z, data->m+1, 6, 0, 1.0);
+	matrix_set(data->Z, data->m+1, 6, 1, 0.5824718351045201);
+	matrix_set(data->Z, data->m+1, 6, 2, 0.7224023004247955);
+	matrix_set(data->Z, data->m+1, 6, 3, 0.0937250920308128);
+	matrix_set(data->Z, data->m+1, 7, 0, 1.0);
+	matrix_set(data->Z, data->m+1, 7, 1, 0.8228264179835741);
+	matrix_set(data->Z, data->m+1, 7, 2, 0.4580785175957617);
+	matrix_set(data->Z, data->m+1, 7, 3, 0.7585636149680212);
+
+	data->y[0] = 2;
+	data->y[1] = 1;
+	data->y[2] = 3;
+	data->y[3] = 2;
+	data->y[4] = 3;
+	data->y[5] = 2;
+	data->y[6] = 4;
+	data->y[7] = 1;
+
+	model->p = 1.2143;
+	model->kappa = 0.90298;
+	model->lambda = 0.00219038;
+	model->epsilon = 1e-15;
+
+	gensvm_allocate_model(model);
+	gensvm_allocate_model(seed_model);
+	matrix_set(seed_model->V, K-1, 0, 0, 0.3294151808829250);
+	matrix_set(seed_model->V, K-1, 0, 1, 0.8400578887926284);
+	matrix_set(seed_model->V, K-1, 0, 2, 0.9336268164013294);
+	matrix_set(seed_model->V, K-1, 1, 0, 0.6047157463292797);
+	matrix_set(seed_model->V, K-1, 1, 1, 0.1390735925868357);
+	matrix_set(seed_model->V, K-1, 1, 2, 0.6579825380479839);
+	matrix_set(seed_model->V, K-1, 2, 0, 0.7628723943431572);
+	matrix_set(seed_model->V, K-1, 2, 1, 0.3505528063594583);
+	matrix_set(seed_model->V, K-1, 2, 2, 0.1221488022463632);
+	matrix_set(seed_model->V, K-1, 3, 0, 0.4561071643209315);
+	matrix_set(seed_model->V, K-1, 3, 1, 0.0840834388268874);
+	matrix_set(seed_model->V, K-1, 3, 2, 0.5312457860071739);
+
+	gensvm_init_V(seed_model, model, data);
+	gensvm_initialize_weights(data, model);
+
+	model->rho[0] = 0.3294151808829250;
+	model->rho[1] = 0.6047157463292797;
+	model->rho[2] = 0.7628723943431572;
+	model->rho[3] = 0.4561071643209315;
+	model->rho[4] = 0.8400578887926284;
+	model->rho[5] = 0.1390735925868357;
+	model->rho[6] = 0.3505528063594583;
+	model->rho[7] = 0.0840834388268874;
+
+	// start test code //
+	GENSVM_OUTPUT_FILE = stdout;
+	gensvm_optimize(model, data);
+
+	gensvm_print_matrix(model->V, model->m+1, model->K-1);
+
+	// end test code //
+
+	gensvm_free_data(data);
+	gensvm_free_model(model);
+
 	return NULL;
 }
 
@@ -208,6 +320,9 @@ char *test_gensvm_get_loss_2()
 
 	gensvm_free_model(model);
 	gensvm_free_data(data);
+
+	return NULL;
+}
 
 char *test_gensvm_calculate_omega()
 {
@@ -460,7 +575,6 @@ char *test_gensvm_calculate_ab_simple()
 	return NULL;
 }
 
-char *test_gensvm_get_update()
 char *test_gensvm_update_B()
 {
 	struct GenData *data = gensvm_init_data();
