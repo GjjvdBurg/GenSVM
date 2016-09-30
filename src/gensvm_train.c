@@ -31,11 +31,11 @@ void gensvm_train(struct GenModel *model, struct GenData *data,
 	model->m = data->m;
 	model->K = data->K;
 
-	// initialize the V matrix (potentially with a seed model)
-	gensvm_init_V(seed_model, model, data);
-
 	// allocate model
 	gensvm_allocate_model(model);
+
+	// initialize the V matrix (potentially with a seed model)
+	gensvm_init_V(seed_model, model, data);
 
 	// preprocess kernel
 	gensvm_kernel_preprocess(model, data);
