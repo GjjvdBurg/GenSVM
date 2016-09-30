@@ -123,7 +123,9 @@ char *test_gensvm_optimize()
 
 	gensvm_free_data(data);
 	gensvm_free_model(model);
+	gensvm_free_model(seed_model);
 
+	mu_test_missing();
 	return NULL;
 }
 
@@ -571,6 +573,7 @@ char *test_gensvm_calculate_ab_simple()
 	return NULL;
 }
 
+/*
 char *test_gensvm_update_B()
 {
 	struct GenData *data = gensvm_init_data();
@@ -724,17 +727,14 @@ char *test_gensvm_get_update()
 	matrix_set(model->V, model->K-1, 3, 1, 0.7134997072555367);
 
 	// start test code //
-	double *B = Calloc(double, n*(K-1));
-	double *ZAZ = Calloc(double, (m+1)*(m+1));
-	double *ZAZV = Calloc(double, (m+1)*(K-1));
-	double *ZAZVT = Calloc(double, (m+1)*(K-1));
+	double *ZV = Calloc(double, n*(K-1));
 
 	// these need to be prepared for the update call
 	gensvm_calculate_errors(model, data, ZV);
 	gensvm_calculate_huber(model);
 
 	// run the actual update call
-	gensvm_get_update(model, data, B, ZAZ, ZAZV, ZAZVT);
+	gensvm_get_update(model, data);
 
 	// test values
 	mu_assert(fabs(matrix_get(model->V, model->K-1, 0, 0) -
@@ -761,19 +761,6 @@ char *test_gensvm_get_update()
 	mu_assert(fabs(matrix_get(model->V, model->K-1, 3, 1) -
 				0.4390030236354089) < 1e-14,
 			"Incorrect value of model->V at 3, 1");
-
-	free(B);
-	free(ZAZ);
-	free(ZAZV);
-	free(ZAZVT);
-
-	// end test code //
-
-	gensvm_free_model(model);
-	gensvm_free_data(data);
-
-	return NULL;
-}
 
 	free(ZV);
 
@@ -1444,23 +1431,22 @@ char *test_dsysv()
 char *all_tests()
 {
 	mu_suite_start();
-	mu_run_test(test_gensvm_optimize);
-	mu_run_test(test_gensvm_get_loss_1);
-	mu_run_test(test_gensvm_get_loss_2);
 
+	mu_run_test(test_gensvm_calculate_errors);
 	mu_run_test(test_gensvm_calculate_omega);
 	mu_run_test(test_gensvm_majorize_is_simple);
 	mu_run_test(test_gensvm_calculate_ab_non_simple);
 	mu_run_test(test_gensvm_calculate_ab_simple);
-	mu_run_test(test_gensvm_update_B);
-	mu_run_test(test_gensvm_get_Avalue_update_B);
-
-	mu_run_test(test_gensvm_get_update);
-	mu_run_test(test_gensvm_calculate_errors);
+	mu_run_test(test_gensvm_get_loss_1);
+	mu_run_test(test_gensvm_get_loss_2);
 	mu_run_test(test_gensvm_calculate_huber);
 	mu_run_test(test_gensvm_step_doubling);
+
 	mu_run_test(test_dposv);
 	mu_run_test(test_dsysv);
+
+	mu_run_test(test_gensvm_get_update);
+	mu_run_test(test_gensvm_optimize);
 
 	return NULL;
 }

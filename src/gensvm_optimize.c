@@ -32,8 +32,7 @@
  * weight matrix.
  *
  * In this function, step doubling is used in the majorization algorithm after
- * a burn-in of 50 iterations. If the training is finished, GenModel::t and
- * GenModel::W are extracted from GenModel::V.
+ * a burn-in of 50 iterations.
  *
  * @param[in,out] 	model 	the GenModel to be trained. Contains optimal
  * 				V on exit.
@@ -48,11 +47,7 @@ void gensvm_optimize(struct GenModel *model, struct GenData *data)
 	long m = model->m;
 	long K = model->K;
 
-	double *B = Calloc(double, n*(K-1));
 	double *ZV = Calloc(double, n*(K-1));
-	double *ZAZ = Calloc(double, (m+1)*(m+1));
-	double *ZAZV = Calloc(double, (m+1)*(K-1));
-	double *ZAZVT = Calloc(double, (m+1)*(K-1));
 
 	note("Starting main loop.\n");
 	note("Dataset:\n");
@@ -74,9 +69,9 @@ void gensvm_optimize(struct GenModel *model, struct GenData *data)
 
 	while ((it < MAX_ITER) && (Lbar - L)/L > model->epsilon)
 	{
-		// ensure V contains newest V and Vbar contains V from
+		// ensures V contains newest V and Vbar contains V from
 		// previous
-		gensvm_get_update(model, data, B, ZAZ, ZAZV, ZAZVT);
+		gensvm_get_update(model, data);
 		if (it > 50)
 			gensvm_step_doubling(model);
 
@@ -101,11 +96,7 @@ void gensvm_optimize(struct GenModel *model, struct GenData *data)
 	note("Number of support vectors: %li\n", gensvm_num_sv(model));
 
 	model->training_error = (Lbar - L)/L;
-	free(B);
 	free(ZV);
-	free(ZAZ);
-	free(ZAZV);
-	free(ZAZVT);
 }
 
 /**
@@ -325,50 +316,14 @@ void gensvm_calculate_ab_simple(struct GenModel *model, long i, long j,
 }
 
 /**
- * @brief Update the relevant elements of the B matrix with given coefficients
+ * @brief Compute the alpha_i and beta_i for an instance
  *
  * @details
- * This function updates the row of the B matrix for the given instance \p i,
- * with the provided linear coefficient \p b_aq. Each row of the B matrix is a
- * sum of \p b_aq values for class \p j, multiplied with their respective
- * simplex-difference vectors @f$\boldsymbol{\delta_{y_ij}}'@f$. This function
- * adds to the row of B for a single class \p j, it should therefore be
- * repeatedly called for each class to get the correct outcome. Note that the
- * sum should be done over all @f$j \neq y_i@f$, but since the simplex
- * difference vector @f$\boldsymbol{\delta_{jj}}'@f$ is zero, we do not need
- * an extra restriction for this. For more details see @ref update_math.
- *
- * @param[in] 		model 	GenModel structure with the current model
- * @param[in] 		i 	index of the instance
- * @param[in] 		j 	index for the class
- * @param[in] 		b_aq 	linear coefficient update for this i, j
- * @param[in] 		omega 	value of omega to multiply with
- * @param[in,out] 	B 	matrix of linear coefficients
- *
- */
-void gensvm_update_B(struct GenModel *model, long i, long j, double b_aq,
-		double omega, double *B)
-{
-	long k;
-	double Bvalue;
-	const double factor = (model->rho[i]*omega*b_aq)/((double) model->n);
-
-	for (k=0; k<model->K-1; k++) {
-		Bvalue = factor * matrix3_get(model->UU, model->K-1, model->K,
-				i, k, j);
-		matrix_add(B, model->K-1, i, k, Bvalue);
-	}
-}
-
-/**
- * @brief Update the B matrix for an instance and compute the alpha_i
- *
- * @details
- * This computes the @f$\alpha_i@f$ value for an instance, while
- * simultaneously updating the row of the B matrix corresponding to that
- * instance. The advantage of doing this at the same time is that we can
- * compute the a and b values simultaneously in the
- * gensvm_calculate_ab_simple() and gensvm_calculate_ab_non_simple()
+ * This computes the @f$\alpha_i@f$ value for an instance, and simultaneously 
+ * updating the row of the B matrix corresponding to that
+ * instance (the @f$\boldsymbol{\beta}_i'@f$). The advantage of doing this at 
+ * the same time is that we can compute the a and b values simultaneously in 
+ * the gensvm_calculate_ab_simple() and gensvm_calculate_ab_non_simple()
  * functions.
  *
  * The computation is done by first checking whether simple majorization is
@@ -376,36 +331,56 @@ void gensvm_update_B(struct GenModel *model, long i, long j, double b_aq,
  * otherwise this value is computed. If simple majorization is possible, the
  * coefficients a and b_aq are computed by gensvm_calculate_ab_simple(),
  * otherwise they're computed by gensvm_calculate_ab_non_simple(). Next, the
- * relevant row of the B matrix is updated, and part of the value of
- * @f$\alpha_i@f$ is computed. The final value of @f$\alpha_i@f$ is returned.
+ * beta_i updated through the efficient BLAS daxpy function, and part of the 
+ * value of @f$\alpha_i@f$ is computed. The final value of @f$\alpha_i@f$ is 
+ * returned.
  *
  * @param[in] 		model 	GenModel structure with the current model
  * @param[in] 		i 	index of the instance to update
- * @param[in,out] 	B 	B matrix of linear coefficients
+ * @param[out] 		beta	beta vector of linear coefficients (assumed to
+ * 				be allocated elsewhere, initialized here)
  * @returns 			the @f$\alpha_i@f$ value of this instance
  *
  */
-double gensvm_get_Avalue_update_B(struct GenModel *model, long i, double *B)
+double gensvm_get_alpha_beta(struct GenModel *model, struct GenData *data,
+		long i, double *beta)
 {
 	bool simple;
-	long j;
-	double omega, a, b_aq, Avalue = 0.0;
+	long j,
+	     K = model->K;
+	double omega, a, b_aq = 0.0,
+	       alpha = 0.0;
+	double *uu_row;
 	const double in = 1.0/((double) model->n);
 
-	simple = gensvm_majorize_is_simple(model, i);
-	omega = simple ? 1.0 : gensvm_calculate_omega(model, i);
+	simple = gensvm_majorize_is_simple(model, data, i);
+	omega = simple ? 1.0 : gensvm_calculate_omega(model, data, i);
 
-	for (j=0; j<model->K; j++) {
+	Memset(beta, double, K-1);
+	for (j=0; j<K; j++) {
+		// skip the class y_i = k
+		if (j == (data->y[i]-1))
+			continue;
+
+		// calculate the a_ijk and (b_ijk - a_ijk q_i^(kj)) values
 		if (simple) {
 			gensvm_calculate_ab_simple(model, i, j, &a, &b_aq);
 		} else {
 			gensvm_calculate_ab_non_simple(model, i, j, &a, &b_aq);
 		}
-		gensvm_update_B(model, i, j, b_aq, omega, B);
-		Avalue += a*matrix_get(model->R, model->K, i, j);
+
+		// daxpy on Brow and UU
+		// daxpy does: y = a*x + y
+		// so y = Brow, UU_row = x, a = factor
+		b_aq *= model->rho[i] * omega * in;
+		uu_row = &model->UU[((data->y[i]-1)*K+j)*(K-1)];
+		cblas_daxpy(K-1, b_aq, uu_row, 1, beta, 1);
+
+		// increment Avalue
+		alpha += a;
 	}
-	Avalue *= omega * in * model->rho[i];
-	return Avalue;
+	alpha *= omega * model->rho[i] * in;
+	return alpha;
 }
 
 /**
@@ -457,8 +432,7 @@ double gensvm_get_Avalue_update_B(struct GenModel *model, long i, double *B)
  * solving this system is done through dposv().
  *
  * @todo
- * Consider allocating IPIV and WORK at a higher level, they probably don't
- * change much during the iterations.
+ * Consider using CblasColMajor everywhere
  *
  * @param [in,out] 	model 	model to be updated
  * @param [in] 		data 	data used in model
@@ -468,76 +442,77 @@ double gensvm_get_Avalue_update_B(struct GenModel *model, long i, double *B)
  * @param [in] 		ZAZV 	pre-allocated matrix used in system solving
  * @param [in] 		ZAZVT 	pre-allocated matrix used in system solving
  */
-void gensvm_get_update(struct GenModel *model, struct GenData *data,
-		double *B, double *ZAZ, double *ZAZV, double *ZAZVT)
+void gensvm_get_update(struct GenModel *model, struct GenData *data)
 {
 	int status;
 	long i, j;
-	double Avalue;
-	double value;
+	double alpha;
 
 	long n = model->n;
 	long m = model->m;
 	long K = model->K;
 
-	// clear matrices
-	Memset(B, double, n*(K-1));
-	Memset(ZAZ, double, (m+1)*(m+1));
+	// allocate working matrices and vectors
+	double *ZB = Calloc(double, (m+1)*(K-1)),
+	       *ZAZ = Calloc(double, (m+1)*(m+1)),
+	       *ZBc = Calloc(double, (m+1)*(K-1)),
+	       *beta = Calloc(double, K-1);
 
+	// generate Z'*A*Z and Z'*B by rank 1 operations
 	for (i=0; i<n; i++) {
-		Avalue = gensvm_get_Avalue_update_B(model, i, B);
+		alpha = gensvm_get_alpha_beta(model, data, i, beta);
 
-		// Now we calculate the matrix ZAZ. Since this is
-		// guaranteed to be symmetric, we only calculate the
-		// upper part of the matrix, and then copy this over
-		// to the lower part after all calculations are done.
-		// Note that the use of dsyr is faster than dspr, even
-		// though dspr uses less memory.
-		cblas_dsyr(CblasRowMajor, CblasUpper, m+1, Avalue,
+		// rank 1 update of symmetric matrix Z'*A*Z (A is diagonal)
+		// Note: only the upper triangular part is calculated
+		cblas_dsyr(CblasRowMajor, CblasUpper, m+1, alpha,
 				&data->Z[i*(m+1)], 1, ZAZ, m+1);
+
+		// rank 1 update of matrix Z'*B
+		// Note: LDA is the second dimension of ZB because of
+		// Row-Major order
+		cblas_dger(CblasRowMajor, m+1, K-1, 1, &data->Z[i*(m+1)], 1,
+				beta, 1, ZB, K-1);
 	}
 
-	// Calculate the right hand side of the system we
-	// want to solve.
-	cblas_dsymm(CblasRowMajor, CblasLeft, CblasUpper, m+1, K-1, 1.0, ZAZ,
-			m+1, model->V, K-1, 0.0, ZAZV, K-1);
+	// Calculate right-hand side of system we want to solve
+	// dsymm performs ZB := 1.0 * (ZAZ) * Vbar + 1.0 * ZB
+	// the right-hand side is thus stored in ZB after this call
+	// Note: LDB and LDC are second dimensions of the matrices due to
+	// Row-Major order
+	cblas_dsymm(CblasRowMajor, CblasLeft, CblasUpper, m+1, K-1, 1, ZAZ,
+			m+1, model->V, K-1, 1.0, ZB, K-1);
 
-	cblas_dgemm(CblasRowMajor, CblasTrans, CblasNoTrans, m+1, K-1, n, 1.0,
-			data->Z, m+1, B, K-1, 1.0, ZAZV, K-1);
-
+	// Calculate left-hand side of system we want to solve
 	// Add lambda to all diagonal elements except the first one. Recall
 	// that ZAZ is of size m+1 and is symmetric.
 	for (i=m+2; i<=m*(m+2); i+=m+2)
 		ZAZ[i] += model->lambda;
 
-	// For the LAPACK call we need to switch to Column-
-	// Major order. This is unnecessary for the matrix
-	// ZAZ because it is symmetric. The matrix ZAZV
-	// must be converted however.
+	// Lapack uses column-major order, so we transform the ZB matrix to
+	// correspond to this.
 	for (i=0; i<m+1; i++)
 		for (j=0; j<K-1; j++)
-			ZAZVT[j*(m+1)+i] = ZAZV[i*(K-1)+j];
+			ZBc[j*(m+1)+i] = ZB[i*(K-1)+j];
 
-	// We use the lower ('L') part of the matrix ZAZ,
-	// because we have used the upper part in the BLAS
-	// calls above in Row-major order, and Lapack uses
-	// column major order.
-	status = dposv('L', m+1, K-1, ZAZ, m+1, ZAZVT, m+1);
+	// Solve the system using dposv. Note that above the upper triangular
+	// part has always been used in row-major order for ZAZ. This
+	// corresponds to the lower triangular part in column-major order.
+	status = dposv('L', m+1, K-1, ZAZ, m+1, ZBc, m+1);
 
+	// Use dsysv as fallback, for when the ZAZ matrix is not positive
+	// semi-definite for some reason (perhaps due to rounding errors).
+	// This step shouldn't be necessary but is included for safety.
 	if (status != 0) {
-		// This step should not be necessary, as the matrix
-		// ZAZ is positive semi-definite by definition. It
-		// is included for safety.
 		err("[GenSVM Warning]: Received nonzero status from "
 				"dposv: %i\n", status);
 		int *IPIV = Malloc(int, m+1);
 		double *WORK = Malloc(double, 1);
-		status = dsysv('L', m+1, K-1, ZAZ, m+1, IPIV, ZAZVT, m+1, WORK,
+		status = dsysv('L', m+1, K-1, ZAZ, m+1, IPIV, ZBc, m+1, WORK,
 				-1);
 
 		int LWORK = WORK[0];
 		WORK = Realloc(WORK, double, LWORK);
-		status = dsysv('L', m+1, K-1, ZAZ, m+1, IPIV, ZAZVT, m+1, WORK,
+		status = dsysv('L', m+1, K-1, ZAZ, m+1, IPIV, ZBc, m+1, WORK,
 				LWORK);
 		if (status != 0)
 			err("[GenSVM Warning]: Received nonzero "
@@ -546,37 +521,26 @@ void gensvm_get_update(struct GenModel *model, struct GenData *data,
 		free(IPIV);
 	}
 
-	// Return to Row-major order. The matrix ZAZVT contains the solution
-	// after the dposv/dsysv call.
+	// the solution is now stored in ZBc, in column-major order. Here we
+	// convert this back to row-major order
 	for (i=0; i<m+1; i++)
 		for (j=0; j<K-1; j++)
-			ZAZV[i*(K-1)+j] = ZAZVT[j*(m+1)+i];
+			ZB[i*(K-1)+j] = ZBc[j*(m+1)+i];
 
-	// Store the previous V in Vbar, assign the new V
-	// (which is stored in ZAZVT) to the model, and give ZAZVT the
-	// address of Vbar. This should ensure that we keep
-	// re-using assigned memory instead of reallocating at every
-	// update.
-	/* See this answer: http://stackoverflow.com/q/13246615/
-	 * For now we'll just do it by value until the rest is figured out.
-	ptr = model->Vbar;
-	model->Vbar = model->V;
-	model->V = ZAZVT;
-	ZAZVT = ptr;
-	*/
-
+	// copy the old V to Vbar and the new solution to V
 	for (i=0; i<m+1; i++) {
 		for (j=0; j<K-1; j++) {
-			value = matrix_get(model->V, K-1, i, j);
-			matrix_set(model->Vbar, K-1, i, j, value);
-			value = matrix_get(ZAZV, K-1, i, j);
-			matrix_set(model->V, K-1, i, j, value);
+			matrix_set(model->Vbar, K-1, i, j,
+					matrix_get(model->V, K-1, i, j));
+			matrix_set(model->V, K-1, i, j,
+					matrix_get(ZB, K-1, i, j));
 		}
 	}
-}
 
-		}
-	}
+	free(ZB);
+	free(ZAZ);
+	free(ZBc);
+	free(beta);
 }
 
 /**

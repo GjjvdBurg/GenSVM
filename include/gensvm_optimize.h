@@ -30,12 +30,10 @@ void gensvm_calculate_ab_non_simple(struct GenModel *model, long i, long j,
 		double *a, double *b_aq);
 void gensvm_calculate_ab_simple(struct GenModel *model, long i, long j,
 		double *a, double *b_aq);
-void gensvm_update_B(struct GenModel *model, long i, long j, double b_aq,
-		double omega, double *B);
-double gensvm_get_Avalue_update_B(struct GenModel *model, long i, double *B);
+double gensvm_get_alpha_beta(struct GenModel *model, struct GenData *data,
+		long i, double *beta);
 
-void gensvm_get_update(struct GenModel *model, struct GenData *data,
-		double *B, double *ZAZ, double *ZAZV, double *ZAZVT);
+void gensvm_get_update(struct GenModel *model, struct GenData *data);
 void gensvm_calculate_errors(struct GenModel *model, struct GenData *data,
 		double *ZV);
 void gensvm_calculate_huber(struct GenModel *model);
