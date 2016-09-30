@@ -63,7 +63,7 @@ void gensvm_read_data(struct GenData *dataset, char *data_file)
 	// Read first line of data
 	for (j=1; j<m+1; j++) {
 		nr += fscanf(fid, "%lf", &value);
-		matrix_set(dataset->RAW, n, 0, j, value);
+		matrix_set(dataset->RAW, m+1, 0, j, value);
 	}
 
 	if (fgets(buf, MAX_LINE_LENGTH, fid) == NULL) {
