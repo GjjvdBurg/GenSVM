@@ -94,7 +94,6 @@ struct GenModel *gensvm_init_model()
 	model->UU = NULL;
 	model->Q = NULL;
 	model->H = NULL;
-	model->R = NULL;
 	model->rho = NULL;
 	model->data_file = NULL;
 
@@ -123,7 +122,6 @@ void gensvm_allocate_model(struct GenModel *model)
 	model->UU = Calloc(double, n*K*(K-1));
 	model->Q = Calloc(double, n*K);
 	model->H = Calloc(double, n*K);
-	model->R = Calloc(double, n*K);
 	model->rho = Calloc(double, n);
 }
 
@@ -155,9 +153,6 @@ void gensvm_reallocate_model(struct GenModel *model, long n, long m)
 
 		model->H = Realloc(model->H, double, n*K);
 		Memset(model->H, double, n*K);
-
-		model->R = Realloc(model->R, double, n*K);
-		Memset(model->R, double, n*K);
 
 		model->rho = Realloc(model->rho, double, n);
 		Memset(model->rho, double, n);
@@ -197,7 +192,6 @@ void gensvm_free_model(struct GenModel *model)
 	free(model->Q);
 	free(model->H);
 	free(model->rho);
-	free(model->R);
 	free(model->kernelparam);
 	free(model->data_file);
 

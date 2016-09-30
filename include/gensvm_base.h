@@ -87,9 +87,6 @@ struct GenModel {
 	///< error matrix
 	double *H;
 	///< Huber weighted error matrix
-	double *R;
-	///< 0-1 auixiliary matrix, this matrix is n x K, with for row i a 0 on
-	///< column y[i]-1, and 1 everywhere else.
 	double *rho;
 	///< vector of instance weights
 	double training_error;

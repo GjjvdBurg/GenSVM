@@ -198,7 +198,6 @@ char *test_gensvm_get_loss_1()
 	gensvm_initialize_weights(data, model);
 	gensvm_simplex(model->K, model->U);
 	gensvm_simplex_diff(model, data);
-	gensvm_category_matrix(model, data);
 
 	matrix_set(model->V, model->K-1, 0, 0, 0.6019309459245683);
 	matrix_set(model->V, model->K-1, 0, 1, 0.0063825200426701);
@@ -297,7 +296,6 @@ char *test_gensvm_get_loss_2()
 	gensvm_initialize_weights(data, model);
 	gensvm_simplex(model->K, model->U);
 	gensvm_simplex_diff(model, data);
-	gensvm_category_matrix(model, data);
 
 	matrix_set(model->V, model->K-1, 0, 0, 0.6019309459245683);
 	matrix_set(model->V, model->K-1, 0, 1, 0.0063825200426701);
@@ -349,7 +347,6 @@ char *test_gensvm_calculate_omega()
 	model->K = K;
 	model->p = 1.213;
 	gensvm_allocate_model(model);
-	gensvm_category_matrix(model, data);
 
 	matrix_set(model->H, model->K, 0, 0, 0.8465725800087526);
 	matrix_set(model->H, model->K, 0, 1, 1.2876921677680249);
@@ -417,7 +414,6 @@ char *test_gensvm_majorize_is_simple()
 	model->K = K;
 	model->p = 1.213;
 	gensvm_allocate_model(model);
-	gensvm_category_matrix(model, data);
 
 	matrix_set(model->H, model->K, 0, 0, 0.8465725800087526);
 	matrix_set(model->H, model->K, 0, 1, 1.2876921677680249);
@@ -436,15 +432,15 @@ char *test_gensvm_majorize_is_simple()
 	matrix_set(model->H, model->K, 4, 2, 0.8184193969741095);
 
 	// start test code //
-	mu_assert(gensvm_majorize_is_simple(model, 0) == false,
+	mu_assert(gensvm_majorize_is_simple(model, data, 0) == false,
 			"Incorrect simple at 0");
-	mu_assert(gensvm_majorize_is_simple(model, 1) == true,
+	mu_assert(gensvm_majorize_is_simple(model, data, 1) == true,
 			"Incorrect simple at 1");
-	mu_assert(gensvm_majorize_is_simple(model, 2) == true,
+	mu_assert(gensvm_majorize_is_simple(model, data, 2) == true,
 			"Incorrect simple at 2");
-	mu_assert(gensvm_majorize_is_simple(model, 3) == true,
+	mu_assert(gensvm_majorize_is_simple(model, data, 3) == true,
 			"Incorrect simple at 3");
-	mu_assert(gensvm_majorize_is_simple(model, 4) == false,
+	mu_assert(gensvm_majorize_is_simple(model, data, 4) == false,
 			"Incorrect simple at 4");
 
 	// end test code //
@@ -599,7 +595,6 @@ char *test_gensvm_update_B()
 	gensvm_allocate_model(model);
 	gensvm_simplex(model->K, model->U);
 	gensvm_simplex_diff(model, data);
-	gensvm_category_matrix(model, data);
 	gensvm_initialize_weights(data, model);
 
 	// start test code //
@@ -716,7 +711,6 @@ char *test_gensvm_get_update()
 	gensvm_initialize_weights(data, model);
 	gensvm_simplex(model->K, model->U);
 	gensvm_simplex_diff(model, data);
-	gensvm_category_matrix(model, data);
 
 	// initialize V
 	matrix_set(model->V, model->K-1, 0, 0, -0.7593642121025029);
@@ -771,63 +765,6 @@ char *test_gensvm_get_update()
 	free(ZAZ);
 	free(ZAZV);
 	free(ZAZVT);
-
-	// end test code //
-
-	gensvm_free_model(model);
-	gensvm_free_data(data);
-
-	return NULL;
-}
-
-char *test_gensvm_category_matrix()
-{
-	struct GenModel *model = gensvm_init_model();
-	struct GenData *data = gensvm_init_data();
-
-	int n = 5,
-	    m = 3,
-	    K = 3;
-
-	data->n = n;
-	data->m = m;
-	data->K = K;
-
-	model->n = n;
-	model->m = m;
-	model->K = K;
-
-	gensvm_allocate_model(model);
-	data->y = Calloc(long, data->n);
-	data->y[0] = 1;
-	data->y[1] = 2;
-	data->y[2] = 3;
-	data->y[3] = 2;
-	data->y[4] = 1;
-
-	// start test code //
-
-	gensvm_category_matrix(model, data);
-
-	mu_assert(matrix_get(model->R, K, 0, 0) == 0, "Incorrect R at 0, 0");
-	mu_assert(matrix_get(model->R, K, 0, 1) == 1, "Incorrect R at 0, 1");
-	mu_assert(matrix_get(model->R, K, 0, 2) == 1, "Incorrect R at 0, 2");
-
-	mu_assert(matrix_get(model->R, K, 1, 0) == 1, "Incorrect R at 1, 0");
-	mu_assert(matrix_get(model->R, K, 1, 1) == 0, "Incorrect R at 1, 1");
-	mu_assert(matrix_get(model->R, K, 1, 2) == 1, "Incorrect R at 1, 2");
-
-	mu_assert(matrix_get(model->R, K, 2, 0) == 1, "Incorrect R at 2, 0");
-	mu_assert(matrix_get(model->R, K, 2, 1) == 1, "Incorrect R at 2, 1");
-	mu_assert(matrix_get(model->R, K, 2, 2) == 0, "Incorrect R at 2, 2");
-
-	mu_assert(matrix_get(model->R, K, 3, 0) == 1, "Incorrect R at 3, 0");
-	mu_assert(matrix_get(model->R, K, 3, 1) == 0, "Incorrect R at 3, 1");
-	mu_assert(matrix_get(model->R, K, 3, 2) == 1, "Incorrect R at 3, 2");
-
-	mu_assert(matrix_get(model->R, K, 4, 0) == 0, "Incorrect R at 4, 0");
-	mu_assert(matrix_get(model->R, K, 4, 1) == 1, "Incorrect R at 4, 1");
-	mu_assert(matrix_get(model->R, K, 4, 2) == 1, "Incorrect R at 4, 2");
 
 	// end test code //
 
@@ -1692,7 +1629,6 @@ char *all_tests()
 	mu_run_test(test_gensvm_get_Avalue_update_B);
 
 	mu_run_test(test_gensvm_get_update);
-	mu_run_test(test_gensvm_category_matrix);
 	mu_run_test(test_gensvm_simplex_diff);
 	mu_run_test(test_gensvm_calculate_errors);
 	mu_run_test(test_gensvm_calculate_huber);

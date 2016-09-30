@@ -68,7 +68,7 @@ void gensvm_optimize(struct GenModel *model, struct GenData *data)
 
 	gensvm_simplex(model->K, model->U);
 	gensvm_simplex_diff(model, data);
-	gensvm_category_matrix(model, data);
+	gensvm_simplex(model);
 
 	L = gensvm_get_loss(model, data, ZV);
 	Lbar = L + 2.0*model->epsilon*L;
@@ -141,9 +141,10 @@ double gensvm_get_loss(struct GenModel *model, struct GenData *data,
 		rowvalue = 0;
 		value = 0;
 		for (j=0; j<K; j++) {
+			if (j == (data->y[i]-1))
+				continue;
 			value = matrix_get(model->H, K, i, j);
 			value = pow(value, model->p);
-			value *= matrix_get(model->R, K, i, j);
 			rowvalue += value;
 		}
 		rowvalue = pow(rowvalue, 1.0/(model->p));
@@ -181,16 +182,18 @@ double gensvm_get_loss(struct GenModel *model, struct GenData *data,
  * @returns 		the value of omega for instance i
  *
  */
-double gensvm_calculate_omega(struct GenModel *model, long i)
+double gensvm_calculate_omega(struct GenModel *model, struct GenData *data,
+		long i)
 {
 	long j;
-	double h, r, omega = 0.0,
+	double h, omega = 0.0,
 	       p = model->p;
 
 	for (j=0; j<model->K; j++) {
+		if (j == (data->y[i]-1))
+			continue;
 		h = matrix_get(model->H, model->K, i, j);
-		r = matrix_get(model->R, model->K, i, j);
-		omega += pow(h, p)*r;
+		omega += pow(h, p);
 	}
 	omega = (1.0/p)*pow(omega, 1.0/p - 1.0);
 
@@ -211,14 +214,16 @@ double gensvm_calculate_omega(struct GenModel *model, long i)
  * @returns 		whether or not we can do simple majorization
  *
  */
-bool gensvm_majorize_is_simple(struct GenModel *model, long i)
+bool gensvm_majorize_is_simple(struct GenModel *model, struct GenData *data,
+		long i)
 {
 	long j;
-	double h, r, value = 0;
+	double h, value = 0;
 	for (j=0; j<model->K; j++) {
+		if (j == (data->y[i]-1))
+			continue;
 		h = matrix_get(model->H, model->K, i, j);
-		r = matrix_get(model->R, model->K, i, j);
-		value += (h*r > 0) ? 1 : 0;
+		value += (h > 0) ? 1 : 0;
 		if (value > 1)
 			return false;
 	}
@@ -567,34 +572,6 @@ void gensvm_get_update(struct GenModel *model, struct GenData *data,
 			matrix_set(model->Vbar, K-1, i, j, value);
 			value = matrix_get(ZAZV, K-1, i, j);
 			matrix_set(model->V, K-1, i, j, value);
-		}
-	}
-}
-
-/**
- * @brief Generate the category matrix
- *
- * @details
- * Generate the category matrix R. The category matrix has 1's everywhere
- * except at the column corresponding to the label of instance i, there the
- * element is 0.
- *
- * @param[in,out] 	model 		corresponding GenModel
- * @param[in] 		dataset 	corresponding GenData
- *
- */
-void gensvm_category_matrix(struct GenModel *model, struct GenData *data)
-{
-	long i, j;
-	long n = model->n;
-	long K = model->K;
-
-	for (i=0; i<n; i++) {
-		for (j=0; j<K; j++) {
-			if (data->y[i] != j+1)
-				matrix_set(model->R, K, i, j, 1.0);
-			else
-				matrix_set(model->R, K, i, j, 0.0);
 		}
 	}
 }

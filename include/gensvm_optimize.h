@@ -22,8 +22,10 @@ void gensvm_optimize(struct GenModel *model, struct GenData *data);
 double gensvm_get_loss(struct GenModel *model, struct GenData *data,
 		double *ZV);
 
-double gensvm_calculate_omega(struct GenModel *model, long i);
-bool gensvm_majorize_is_simple(struct GenModel *model, long i);
+double gensvm_calculate_omega(struct GenModel *model, struct GenData *data,
+		long i);
+bool gensvm_majorize_is_simple(struct GenModel *model, struct GenData *data, 
+		long i);
 void gensvm_calculate_ab_non_simple(struct GenModel *model, long i, long j,
 		double *a, double *b_aq);
 void gensvm_calculate_ab_simple(struct GenModel *model, long i, long j,
@@ -34,8 +36,6 @@ double gensvm_get_Avalue_update_B(struct GenModel *model, long i, double *B);
 
 void gensvm_get_update(struct GenModel *model, struct GenData *data,
 		double *B, double *ZAZ, double *ZAZV, double *ZAZVT);
-void gensvm_category_matrix(struct GenModel *model, struct GenData *data);
-void gensvm_simplex_diff(struct GenModel *model, struct GenData *dataset);
 void gensvm_calculate_errors(struct GenModel *model, struct GenData *data,
 		double *ZV);
 void gensvm_calculate_huber(struct GenModel *model);
