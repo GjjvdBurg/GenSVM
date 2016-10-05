@@ -1,7 +1,7 @@
 /**
  * @file gensvm_grid.c
  * @author Gertjan van den Burg
- * @date Mayy, 2016
+ * @date May, 2016
  * @brief Functions for initializing GenGrid structures
  *
  * @details

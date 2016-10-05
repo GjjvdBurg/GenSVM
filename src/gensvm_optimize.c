@@ -369,9 +369,9 @@ double gensvm_get_alpha_beta(struct GenModel *model, struct GenData *data,
 			gensvm_calculate_ab_non_simple(model, i, j, &a, &b_aq);
 		}
 
-		// daxpy on Brow and UU
+		// daxpy on beta and UU
 		// daxpy does: y = a*x + y
-		// so y = Brow, UU_row = x, a = factor
+		// so y = beta, UU_row = x, a = factor
 		b_aq *= model->rho[i] * omega * in;
 		uu_row = &model->UU[((data->y[i]-1)*K+j)*(K-1)];
 		cblas_daxpy(K-1, b_aq, uu_row, 1, beta, 1);
@@ -436,11 +436,6 @@ double gensvm_get_alpha_beta(struct GenModel *model, struct GenData *data,
  *
  * @param [in,out] 	model 	model to be updated
  * @param [in] 		data 	data used in model
- * @param [in] 		B 	pre-allocated matrix used for linear
- * 				coefficients
- * @param [in] 		ZAZ 	pre-allocated matrix used in system
- * @param [in] 		ZAZV 	pre-allocated matrix used in system solving
- * @param [in] 		ZAZVT 	pre-allocated matrix used in system solving
  */
 void gensvm_get_update(struct GenModel *model, struct GenData *data)
 {
