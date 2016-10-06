@@ -283,7 +283,7 @@ void consistency_repeats(struct GenQueue *q, long repeats, TrainType traintype)
 		       **test_folds = NULL;
 	struct GenModel *model = gensvm_init_model();
 	struct GenTask *task = NULL;
-	clock_t loop_s, loop_e;
+	struct timespec loop_s, loop_e;
 
 	nq = create_top_queue(q);
 	N = nq->N;
@@ -328,11 +328,11 @@ void consistency_repeats(struct GenQueue *q, long repeats, TrainType traintype)
 						test_folds[f]);
 			}
 
-			loop_s = clock();
+			Timer(loop_s);
 			p = gensvm_cross_validation(model, train_folds, test_folds,
 					task->folds, task->train_data->n);
-			loop_e = clock();
-			time[i] += gensvm_elapsed_time(loop_s, loop_e);
+			Timer(loop_e);
+			time[i] += gensvm_elapsed_time(&loop_s, &loop_e);
 			matrix_set(perf, repeats, i, r, p);
 			mean[i] += p/((double) repeats);
 			note("%3.3f\t", p);
@@ -476,7 +476,7 @@ void start_training(struct GenQueue *q)
 	struct GenTask *task = get_next_task(q);
 	struct GenTask *prevtask = NULL;
 	struct GenModel *model = gensvm_init_model();
-	clock_t main_s, main_e, loop_s, loop_e;
+	struct timespec main_s, main_e, loop_s, loop_e;
 
 	// in principle this can change between tasks, but this shouldn't be
 	// the case TODO
@@ -500,7 +500,7 @@ void start_training(struct GenQueue *q)
 			       	test_folds[f], cv_idx, f);
 	}
 
-	main_s = clock();
+	Timer(main_s);
 	while (task) {
 		make_model_from_task(task, model);
 		if (kernel_changed(task, prevtask)) {
@@ -519,24 +519,24 @@ void start_training(struct GenQueue *q)
 		}
 		print_progress_string(task, q->N);
 
-		loop_s = clock();
+		Timer(loop_s);
 		perf = gensvm_cross_validation(model, train_folds, test_folds,
 				folds, task->train_data->n);
-		loop_e = clock();
+		Timer(loop_e);
 		current_max = maximum(current_max, perf);
 
 		note("\t%3.3f%% (%3.3fs)\t(best = %3.3f%%)\n", perf,
-				gensvm_elapsed_time(loop_s, loop_e),
+				gensvm_elapsed_time(&loop_s, &loop_e),
 			       	current_max);
 
 		q->tasks[task->ID]->performance = perf;
 		prevtask = task;
 		task = get_next_task(q);
 	}
-	main_e = clock();
+	Timer(main_e);
 
 	note("\nTotal elapsed training time: %8.8f seconds\n",
-			gensvm_elapsed_time(main_s, main_e));
+			gensvm_elapsed_time(&main_s, &main_e));
 
 	// make sure no double free occurs with the copied kernelparam
 	model->kernelparam = NULL;

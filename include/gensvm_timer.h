@@ -15,7 +15,10 @@
 // includes
 #include "gensvm_globals.h"
 
+/// Timer macro for easily recording time
+#define Timer(spec) clock_gettime(CLOCK_MONOTONIC_RAW, &spec)
+
 // function declarations
-double gensvm_elapsed_time(clock_t s_time, clock_t e_time);
+double gensvm_elapsed_time(struct timespec *start, struct timespec *stop);
 
 #endif
