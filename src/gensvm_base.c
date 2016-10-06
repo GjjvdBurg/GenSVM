@@ -195,3 +195,86 @@ void gensvm_free_model(struct GenModel *model)
 	free(model);
 }
 
+/**
+ * @brief Initialize the workspace structure
+ *
+ * @details
+ * During the computations in gensvm_get_update(), a number of matrices need 
+ * to be allocated which are used to store intermediate results. To avoid 
+ * reallocating these matrices at every call to gensvm_get_update(), we create 
+ * here a workspace with these matrices. This workspace is created once by 
+ * gensvm_optimize(), and is passed to gensvm_get_update() and 
+ * gensvm_get_loss(). See the documentation of the GenWork structure for 
+ * information on each allocated field.
+ *
+ * @param[in] 	model 	a GenModel with the dimensionality of the problem
+ * @returns 		an allocated GenWork instance
+ *
+ */
+struct GenWork *gensvm_init_work(struct GenModel *model)
+{
+	long n = model->n;
+	long m = model->m;
+	long K = model->K;
+
+	struct GenWork *work = Malloc(struct GenWork, 1);
+	work->n = n;
+	work->m = m;
+	work->K = K;
+
+	work->LZ = Calloc(double, n*(m+1));
+	work->ZB = Calloc(double, (m+1)*(K-1)),
+	work->ZBc = Calloc(double, (m+1)*(K-1)),
+	work->ZAZ = Calloc(double, (m+1)*(m+1)),
+	work->ZV = Calloc(double, n*(K-1));
+	work->beta = Calloc(double, K-1);
+
+	return work;
+}
+
+/**
+ * @brief Free an allocated GenWork instance
+ *
+ * @details
+ * This function simply frees every matrix allocated for in the GenWork 
+ * workspace.
+ *
+ * @param[in] 	work 	a pointer to an allocated GenWork instance
+ *
+ */
+void gensvm_free_work(struct GenWork *work)
+{
+	free(work->LZ);
+	free(work->ZB);
+	free(work->ZBc);
+	free(work->ZAZ);
+	free(work->ZV);
+	free(work->beta);
+	free(work);
+}
+
+/**
+ * @brief Reset all matrices of a GenWork instance
+ *
+ * @details
+ * In the gensvm_get_update() function, it is expected for some matrices that 
+ * all their entries are initialized to 0. This function sets the memory for 
+ * each of the matrices in the GenWork workspace to 0 to facilitate this.
+ *
+ * @param[in,out] 	work 	an initialized GenWork instance. On exit, the
+ * 				matrices of the GenWork instance are all 
+ * 				initialized to 0.
+ */
+void gensvm_reset_work(struct GenWork *work)
+{
+	long n = work->n;
+	long m = work->m;
+	long K = work->K;
+
+	Memset(work->LZ, double, n*(m+1));
+	Memset(work->ZB, double, (m+1)*(K-1)),
+	Memset(work->ZBc, double, (m+1)*(K-1)),
+	Memset(work->ZAZ, double, (m+1)*(m+1)),
+	Memset(work->ZV, double, n*(K-1));
+	Memset(work->beta, double, K-1);
+}

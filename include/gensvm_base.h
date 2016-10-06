@@ -99,12 +99,43 @@ struct GenModel {
 	///< array of kernel parameters, size depends on kernel type
 };
 
+/**
+ * @brief A structure to hold the GenSVM workspace
+ *
+ */
+struct GenWork {
+	long n;
+	///< number of instances for the workspace
+	long m;
+	///< number of features for the workspace
+	long K;
+	///< number of classes for the workspace
+
+	double *LZ;
+	///< n x (m+1) working matrix for the Z'*A*Z calculation
+	double *ZB;
+	///< (m+1) x (K-1) working matrix for the Z'*B calculation
+	double *ZBc;
+	///< (K-1) x (m+1) working matrix for the Z'*B calculation
+	double *ZAZ;
+	///< (m+1) x (m+1) working matrix for the Z'*A*Z calculation
+	double *ZV;
+	///< n x (K-1) working matrix for the Z * V calculation
+	double *beta;
+	///< K-1 working vector for a row of the B matrix
+};
+
 // function declarations
 struct GenModel *gensvm_init_model();
 void gensvm_allocate_model(struct GenModel *model);
 void gensvm_reallocate_model(struct GenModel *model, long n, long m);
 void gensvm_free_model(struct GenModel *model);
+
 struct GenData *gensvm_init_data();
 void gensvm_free_data(struct GenData *data);
+
+struct GenWork *gensvm_init_work(struct GenModel *model);
+void gensvm_free_work(struct GenWork *work);
+void gensvm_reset_work(struct GenWork *work);
 
 #endif

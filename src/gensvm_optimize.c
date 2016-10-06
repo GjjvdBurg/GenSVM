@@ -47,8 +47,10 @@ void gensvm_optimize(struct GenModel *model, struct GenData *data)
 	long m = model->m;
 	long K = model->K;
 
-	double *ZV = Calloc(double, n*(K-1));
+	// initialize the workspace
+	struct GenWork *work = gensvm_init_work(model);
 
+	// print some info on the dataset and model configuration
 	note("Starting main loop.\n");
 	note("Dataset:\n");
 	note("\tn = %i\n", n);
@@ -61,28 +63,33 @@ void gensvm_optimize(struct GenModel *model, struct GenData *data)
 	note("\tepsilon = %g\n", model->epsilon);
 	note("\n");
 
+	// compute necessary simplex vectors
 	gensvm_simplex(model);
 	gensvm_simplex_diff(model);
 
-	L = gensvm_get_loss(model, data, ZV);
+	// get initial loss
+	L = gensvm_get_loss(model, data, work);
 	Lbar = L + 2.0*model->epsilon*L;
 
+	// run main loop
 	while ((it < MAX_ITER) && (Lbar - L)/L > model->epsilon)
 	{
 		// ensures V contains newest V and Vbar contains V from
 		// previous
-		gensvm_get_update(model, data);
+		gensvm_get_update(model, data, work);
 		if (it > 50)
 			gensvm_step_doubling(model);
 
 		Lbar = L;
-		L = gensvm_get_loss(model, data, ZV);
+		L = gensvm_get_loss(model, data, work);
 
 		if (it%PRINT_ITER == 0)
 			note("iter = %li, L = %15.16f, Lbar = %15.16f, "
 			     "reldiff = %15.16f\n", it, L, Lbar, (Lbar - L)/L);
 		it++;
 	}
+
+	// print warnings if necessary
 	if (L > Lbar)
 		err("[GenSVM Warning]: Negative step occurred in "
 				"majorization.\n");
@@ -90,13 +97,19 @@ void gensvm_optimize(struct GenModel *model, struct GenData *data)
 		err("[GenSVM Warning]: maximum number of iterations "
 				"reached.\n");
 
+	// print final iteration count and loss
 	note("Optimization finished, iter = %li, loss = %15.16f, "
 			"rel. diff. = %15.16f\n", it-1, L,
 			(Lbar - L)/L);
+
+	// compute and print the number of SVs in the model
 	note("Number of support vectors: %li\n", gensvm_num_sv(model));
 
+	// store the training error in the model
 	model->training_error = (Lbar - L)/L;
-	free(ZV);
+
+	// free the workspace
+	gensvm_free_work(work);
 }
 
 /**
@@ -110,12 +123,11 @@ void gensvm_optimize(struct GenModel *model, struct GenData *data)
  * @param[in] 		model 	GenModel structure which holds the current
  * 				estimate V
  * @param[in]  		data 	GenData structure
- * @param[in,out] 	ZV 	pre-allocated matrix ZV which is updated on
- * 				output
+ * @param[in] 		work 	allocated workspace with the ZV matrix to use
  * @returns 			the current value of the loss function
  */
-double gensvm_get_loss(struct GenModel *model, struct GenData *data,
-		double *ZV)
+double gensvm_get_loss(struct GenModel *model, struct GenData *data, 
+		struct GenWork *work)
 {
 	long i, j;
 	long n = model->n;
@@ -124,7 +136,7 @@ double gensvm_get_loss(struct GenModel *model, struct GenData *data,
 
 	double value, rowvalue, loss = 0.0;
 
-	gensvm_calculate_errors(model, data, ZV);
+	gensvm_calculate_errors(model, data, work->ZV);
 	gensvm_calculate_huber(model);
 
 	for (i=0; i<n; i++) {
@@ -434,10 +446,12 @@ double gensvm_get_alpha_beta(struct GenModel *model, struct GenData *data,
  * @todo
  * Consider using CblasColMajor everywhere
  *
- * @param [in,out] 	model 	model to be updated
- * @param [in] 		data 	data used in model
+ * @param[in,out] 	model 	model to be updated
+ * @param[in] 		data 	data used in model
+ * @param[in] 		work 	allocated workspace to use
  */
-void gensvm_get_update(struct GenModel *model, struct GenData *data)
+void gensvm_get_update(struct GenModel *model, struct GenData *data, 
+		struct GenWork *work)
 {
 	int status;
 	long i, j;
@@ -447,52 +461,53 @@ void gensvm_get_update(struct GenModel *model, struct GenData *data)
 	long m = model->m;
 	long K = model->K;
 
-	// allocate working matrices and vectors
-	double *ZB = Calloc(double, (m+1)*(K-1)),
-	       *ZAZ = Calloc(double, (m+1)*(m+1)),
-	       *ZBc = Calloc(double, (m+1)*(K-1)),
-	       *beta = Calloc(double, K-1);
+	gensvm_reset_work(work);
 
 	// generate Z'*A*Z and Z'*B by rank 1 operations
 	for (i=0; i<n; i++) {
-		alpha = gensvm_get_alpha_beta(model, data, i, beta);
+		alpha = gensvm_get_alpha_beta(model, data, i, work->beta);
 
-		// rank 1 update of symmetric matrix Z'*A*Z (A is diagonal)
-		// Note: only the upper triangular part is calculated
-		cblas_dsyr(CblasRowMajor, CblasUpper, m+1, alpha,
-				&data->Z[i*(m+1)], 1, ZAZ, m+1);
+		// calculate row of matrix LZ, which is a scalar 
+		// multiplication of sqrt(alpha_i) and row z_i' of Z
+		cblas_daxpy(m+1, sqrt(alpha), &data->Z[i*(m+1)], 1, 
+				&work->LZ[i*(m+1)], 1);
 
 		// rank 1 update of matrix Z'*B
 		// Note: LDA is the second dimension of ZB because of
 		// Row-Major order
 		cblas_dger(CblasRowMajor, m+1, K-1, 1, &data->Z[i*(m+1)], 1,
-				beta, 1, ZB, K-1);
+				work->beta, 1, work->ZB, K-1);
 	}
+
+	// calculate Z'*A*Z by symmetric multiplication of LZ with itself 
+	// (ZAZ = (LZ)' * (LZ)
+	cblas_dsyrk(CblasRowMajor, CblasUpper, CblasTrans, m+1, n, 1.0,
+			work->LZ, m+1, 0.0, work->ZAZ, m+1);
 
 	// Calculate right-hand side of system we want to solve
 	// dsymm performs ZB := 1.0 * (ZAZ) * Vbar + 1.0 * ZB
 	// the right-hand side is thus stored in ZB after this call
 	// Note: LDB and LDC are second dimensions of the matrices due to
 	// Row-Major order
-	cblas_dsymm(CblasRowMajor, CblasLeft, CblasUpper, m+1, K-1, 1, ZAZ,
-			m+1, model->V, K-1, 1.0, ZB, K-1);
+	cblas_dsymm(CblasRowMajor, CblasLeft, CblasUpper, m+1, K-1, 1, 
+			work->ZAZ, m+1, model->V, K-1, 1.0, work->ZB, K-1);
 
 	// Calculate left-hand side of system we want to solve
 	// Add lambda to all diagonal elements except the first one. Recall
 	// that ZAZ is of size m+1 and is symmetric.
 	for (i=m+2; i<=m*(m+2); i+=m+2)
-		ZAZ[i] += model->lambda;
+		work->ZAZ[i] += model->lambda;
 
 	// Lapack uses column-major order, so we transform the ZB matrix to
 	// correspond to this.
 	for (i=0; i<m+1; i++)
 		for (j=0; j<K-1; j++)
-			ZBc[j*(m+1)+i] = ZB[i*(K-1)+j];
+			work->ZBc[j*(m+1)+i] = work->ZB[i*(K-1)+j];
 
 	// Solve the system using dposv. Note that above the upper triangular
 	// part has always been used in row-major order for ZAZ. This
 	// corresponds to the lower triangular part in column-major order.
-	status = dposv('L', m+1, K-1, ZAZ, m+1, ZBc, m+1);
+	status = dposv('L', m+1, K-1, work->ZAZ, m+1, work->ZBc, m+1);
 
 	// Use dsysv as fallback, for when the ZAZ matrix is not positive
 	// semi-definite for some reason (perhaps due to rounding errors).
@@ -502,13 +517,13 @@ void gensvm_get_update(struct GenModel *model, struct GenData *data)
 				"dposv: %i\n", status);
 		int *IPIV = Malloc(int, m+1);
 		double *WORK = Malloc(double, 1);
-		status = dsysv('L', m+1, K-1, ZAZ, m+1, IPIV, ZBc, m+1, WORK,
-				-1);
+		status = dsysv('L', m+1, K-1, work->ZAZ, m+1, IPIV, work->ZBc, 
+				m+1, WORK, -1);
 
 		int LWORK = WORK[0];
 		WORK = Realloc(WORK, double, LWORK);
-		status = dsysv('L', m+1, K-1, ZAZ, m+1, IPIV, ZBc, m+1, WORK,
-				LWORK);
+		status = dsysv('L', m+1, K-1, work->ZAZ, m+1, IPIV, work->ZBc, 
+				m+1, WORK, LWORK);
 		if (status != 0)
 			err("[GenSVM Warning]: Received nonzero "
 					"status from dsysv: %i\n", status);
@@ -520,7 +535,7 @@ void gensvm_get_update(struct GenModel *model, struct GenData *data)
 	// convert this back to row-major order
 	for (i=0; i<m+1; i++)
 		for (j=0; j<K-1; j++)
-			ZB[i*(K-1)+j] = ZBc[j*(m+1)+i];
+			work->ZB[i*(K-1)+j] = work->ZBc[j*(m+1)+i];
 
 	// copy the old V to Vbar and the new solution to V
 	for (i=0; i<m+1; i++) {
@@ -528,14 +543,9 @@ void gensvm_get_update(struct GenModel *model, struct GenData *data)
 			matrix_set(model->Vbar, K-1, i, j,
 					matrix_get(model->V, K-1, i, j));
 			matrix_set(model->V, K-1, i, j,
-					matrix_get(ZB, K-1, i, j));
+					matrix_get(work->ZB, K-1, i, j));
 		}
 	}
-
-	free(ZB);
-	free(ZAZ);
-	free(ZBc);
-	free(beta);
 }
 
 /**

@@ -73,6 +73,95 @@ char *test_init_free_data_3()
 	return NULL;
 }
 
+char *test_init_free_work()
+{
+	struct GenModel *model = gensvm_init_model();
+	model->n = 10;
+	model->m = 4;
+	model->K = 3;
+
+	struct GenWork *work = gensvm_init_work(model);
+
+	mu_assert(model->n == work->n, "n variable copied incorrectly");
+	mu_assert(model->m == work->m, "m variable copied incorrectly");
+	mu_assert(model->K == work->K, "K variable copied incorrectly");
+
+	mu_assert(work->LZ != NULL, "LZ variable is NULL");
+	mu_assert(work->ZB != NULL, "ZB variable is NULL");
+	mu_assert(work->ZBc != NULL, "ZBc variable is NULL");
+	mu_assert(work->ZAZ != NULL, "ZAZ variable is NULL");
+	mu_assert(work->ZV != NULL, "ZV variable is NULL");
+	mu_assert(work->beta != NULL, "beta variable is NULL");
+
+	gensvm_free_model(model);
+	gensvm_free_work(work);
+
+	return NULL;
+}
+
+void fill_with_noise(double *ptr, int elem)
+{
+	int i;
+	for (i=0; i<elem; i++) {
+		ptr[i] = ((double) rand())/((double) RAND_MAX);
+	}
+}
+
+bool all_elements_zero(double *ptr, int elem)
+{
+	int i;
+	for (i=0; i<elem; i++) {
+		if (ptr[i] != 0)
+			return false;
+	}
+	return true;
+}
+
+char *test_reset_work()
+{
+	struct GenModel *model = gensvm_init_model();
+	int n = 10,
+	    m = 4,
+	    K = 3;
+
+	model->n = n;
+	model->m = m;
+	model->K = K;
+
+	struct GenWork *work = gensvm_init_work(model);
+
+	// start test code //
+	fill_with_noise(work->LZ, n*(m+1));
+	fill_with_noise(work->ZB, (m+1)*(K-1));
+	fill_with_noise(work->ZBc, (m+1)*(K-1));
+	fill_with_noise(work->ZAZ, (m+1)*(m+1));
+	fill_with_noise(work->ZV, n*(K-1));
+	fill_with_noise(work->beta, K-1);
+
+	gensvm_reset_work(work);
+
+	mu_assert(all_elements_zero(work->LZ, n*(m+1)), 
+			"Not all elements of LZ are zero");
+	mu_assert(all_elements_zero(work->ZB, (m+1)*(K-1)),
+			"Not all elements of ZB are zero");
+	mu_assert(all_elements_zero(work->ZBc, (m+1)*(K-1)),
+				"Not all elements of ZBc are zero");
+	mu_assert(all_elements_zero(work->ZAZ, (m+1)*(m+1)),
+				"Not all elements of ZAZ are zero");
+	mu_assert(all_elements_zero(work->ZV, n*(K-1)),
+			"Not all elements of ZV are zero");
+	mu_assert(all_elements_zero(work->beta, K-1),
+			"Not all elements of beta are zero");
+
+	// end test code //
+
+	gensvm_free_model(model);
+	gensvm_free_work(work);
+
+	return NULL;
+}
+
+
 char *all_tests()
 {
 	mu_suite_start();
@@ -80,9 +169,13 @@ char *all_tests()
 	mu_run_test(test_init_free_model_2);
 	mu_run_test(test_allocate_free_model);
 	mu_run_test(test_reallocate_free_model);
+
 	mu_run_test(test_init_free_data_1);
 	mu_run_test(test_init_free_data_2);
 	mu_run_test(test_init_free_data_3);
+
+	mu_run_test(test_init_free_work);
+	mu_run_test(test_reset_work);
 
 	return NULL;
 }

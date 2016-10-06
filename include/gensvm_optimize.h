@@ -19,8 +19,8 @@
 
 // function declarations
 void gensvm_optimize(struct GenModel *model, struct GenData *data);
-double gensvm_get_loss(struct GenModel *model, struct GenData *data,
-		double *ZV);
+double gensvm_get_loss(struct GenModel *model, struct GenData *data, 
+		struct GenWork *work);
 
 double gensvm_calculate_omega(struct GenModel *model, struct GenData *data,
 		long i);
@@ -33,7 +33,8 @@ void gensvm_calculate_ab_simple(struct GenModel *model, long i, long j,
 double gensvm_get_alpha_beta(struct GenModel *model, struct GenData *data,
 		long i, double *beta);
 
-void gensvm_get_update(struct GenModel *model, struct GenData *data);
+void gensvm_get_update(struct GenModel *model, struct GenData *data, 
+		struct GenWork *work);
 void gensvm_calculate_errors(struct GenModel *model, struct GenData *data,
 		double *ZV);
 void gensvm_calculate_huber(struct GenModel *model);
