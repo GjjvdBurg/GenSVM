@@ -1,5 +1,5 @@
 /**
- * @file gensvm_train_dataset.c
+ * @file gensvm_gridsearch.c
  * @author Gertjan van den Burg
  * @date January, 2014
  * @brief Functions for finding the optimal parameters for the dataset

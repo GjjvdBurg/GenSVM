@@ -1,3 +1,16 @@
+/**
+ * @file minunit.h
+ * @brief Minimal unit testing framework for C
+ * @author Zed Shaw
+ *
+ * @details
+ * This unit testing framework comes from Zed Shaw's book Learn C The Hard 
+ * Way, and are evolved from the "minunit" code snippets by Jera Design. I've 
+ * added a mu_test_missing() macro to deal with missing unit tests.
+ *
+ * @sa dbg.h
+ */
+
 #undef NDEBUG
 #ifndef _minunit_h
 #define _minunit_h

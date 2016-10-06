@@ -1,3 +1,15 @@
+/**
+ * @file dbg.h
+ * @brief Debug macros for the minunit framework
+ * @author Zed Shaw
+ *
+ * @details
+ * These debug macros come from Zed Shaw's book Learn C The Hard Way, and are 
+ * used for the testing framework of GenSVM.
+ *
+ * @sa minunit.h
+ */
+
 #ifndef __dbg_h__
 #define __dbg_h__
 

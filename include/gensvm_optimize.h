@@ -1,5 +1,5 @@
 /**
- * @file gensvm_train.h
+ * @file gensvm_optimize.h
  * @author Gertjan van den Burg
  * @date August, 2013
  * @brief Header file for gensvm_train.c
