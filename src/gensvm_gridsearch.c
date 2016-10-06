@@ -37,7 +37,7 @@ void gensvm_fill_queue(struct GenGrid *grid, struct GenQueue *queue,
 {
 	long i, j, k;
 	long N, cnt = 0;
-	struct GenTask *task;
+	struct GenTask *task = NULL;
 	queue->i = 0;
 
 	N = grid->Np;
@@ -203,7 +203,7 @@ double prctile(double *values, long N, double p)
 struct GenQueue *create_top_queue(struct GenQueue *q)
 {
 	long i, k, N = 0;
-	double boundary, *perf;
+	double boundary, *perf = NULL;
 	struct GenQueue *nq = Malloc(struct GenQueue, 1);
 
 	// find the 95th percentile of performance
@@ -271,10 +271,16 @@ struct GenQueue *create_top_queue(struct GenQueue *q)
  */
 void consistency_repeats(struct GenQueue *q, long repeats, TrainType traintype)
 {
-	long i, f, r, N, *cv_idx;
-	double p, pi, pr, pt, *time, *std, *mean, *perf;
-	struct GenQueue *nq;
-	struct GenData **train_folds, **test_folds;
+	bool breakout;
+	long i, f, r, N, *cv_idx = NULL;
+	double p, pi, pr, pt,
+	       *time = NULL,
+	       *std = NULL,
+	       *mean = NULL,
+	       *perf = NULL;
+	struct GenQueue *nq = NULL;
+	struct GenData **train_folds = NULL,
+		       **test_folds = NULL;
 	struct GenModel *model = gensvm_init_model();
 	struct GenTask *task = NULL;
 	clock_t loop_s, loop_e;
@@ -338,7 +344,10 @@ void consistency_repeats(struct GenQueue *q, long repeats, TrainType traintype)
 				gensvm_free_data(test_folds[f]);
 			}
 			free(train_folds);
+			train_folds = NULL;
+
 			free(test_folds);
+			test_folds = NULL;
 		}
 		for (r=0; r<repeats; r++) {
 			std[i] += pow(matrix_get(perf, repeats, i, r) - mean[i],
@@ -362,7 +371,7 @@ void consistency_repeats(struct GenQueue *q, long repeats, TrainType traintype)
 	note("ID\tweights\tepsilon\t\tp\t\tkappa\t\tlambda\t\t"
 			"mean_perf\tstd_perf\ttime_perf\n");
 	p = 0.0;
-	bool breakout = false;
+	breakout = false;
 	while (breakout == false) {
 		pi = prctile(mean, N, (100.0-p));
 		pr = prctile(std, N, p);
@@ -453,6 +462,9 @@ bool kernel_changed(struct GenTask *newtask, struct GenTask *oldtask)
  * make_queue().
  *
  * The performance found by cross validation is stored in the GenTask struct.
+ *
+ * @todo
+ * Make sure folds can't change between tasks
  *
  * @param[in,out] 	q 	GenQueue with GenTask instances to run
  */
@@ -559,10 +571,10 @@ double gensvm_cross_validation(struct GenModel *model,
 	      	struct GenData **train_folds, struct GenData **test_folds,
 		int folds, long n_total)
 {
-	FILE *fid;
+	FILE *fid = NULL;
 
 	int f;
-	long *predy;
+	long *predy = NULL;
 	double performance, total_perf = 0;
 
 	for (f=0; f<folds; f++) {

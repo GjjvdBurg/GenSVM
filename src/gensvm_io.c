@@ -33,7 +33,7 @@
  */
 void gensvm_read_data(struct GenData *dataset, char *data_file)
 {
-	FILE *fid;
+	FILE *fid = NULL;
 	bool in_uniq;
 	long i, j, n, m,
 	     nr = 0,
@@ -159,7 +159,7 @@ void gensvm_read_data(struct GenData *dataset, char *data_file)
 void gensvm_read_model(struct GenModel *model, char *model_filename)
 {
 	long i, j, nr = 0;
-	FILE *fid;
+	FILE *fid = NULL;
 	char buffer[MAX_LINE_LENGTH];
 	char data_filename[MAX_LINE_LENGTH];
 	double value = 0;
@@ -242,7 +242,7 @@ void gensvm_read_model(struct GenModel *model, char *model_filename)
  */
 void gensvm_write_model(struct GenModel *model, char *output_filename)
 {
-	FILE *fid;
+	FILE *fid = NULL;
 	long i, j;
 	char timestr[MAX_LINE_LENGTH];
 
@@ -306,7 +306,7 @@ void gensvm_write_predictions(struct GenData *data, long *predy,
 		char *output_filename)
 {
 	long i, j;
-	FILE *fid;
+	FILE *fid = NULL;
 
 	fid = fopen(output_filename, "w");
 	if (fid == NULL) {
@@ -347,7 +347,7 @@ void gensvm_time_string(char *buffer)
 	int diff, hours, minutes;
 	char timestr[MAX_LINE_LENGTH];
 	time_t current_time, lt, gt;
-	struct tm *lclt;
+	struct tm *lclt = NULL;
 
 	// get current time (in epoch)
 	current_time = time(NULL);

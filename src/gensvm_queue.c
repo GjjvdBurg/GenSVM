@@ -46,6 +46,7 @@ void gensvm_free_queue(struct GenQueue *q)
 	}
 	free(q->tasks);
 	free(q);
+	q = NULL;
 }
 
 /**

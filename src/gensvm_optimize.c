@@ -362,7 +362,7 @@ double gensvm_get_alpha_beta(struct GenModel *model, struct GenData *data,
 	     K = model->K;
 	double omega, a, b_aq = 0.0,
 	       alpha = 0.0;
-	double *uu_row;
+	double *uu_row = NULL;
 	const double in = 1.0/((double) model->n);
 
 	simple = gensvm_majorize_is_simple(model, data, i);
@@ -528,7 +528,9 @@ void gensvm_get_update(struct GenModel *model, struct GenData *data,
 			err("[GenSVM Warning]: Received nonzero "
 					"status from dsysv: %i\n", status);
 		free(WORK);
+		WORK = NULL;
 		free(IPIV);
+		IPIV = NULL;
 	}
 
 	// the solution is now stored in ZBc, in column-major order. Here we
@@ -634,7 +636,7 @@ void gensvm_calculate_errors(struct GenModel *model, struct GenData *data,
 		double *ZV)
 {
 	long i, j;
-	double q, *uu_row;
+	double q, *uu_row = NULL;
 
 	long n = model->n;
 	long m = model->m;

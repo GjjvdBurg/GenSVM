@@ -46,13 +46,18 @@ void gensvm_kernel_preprocess(struct GenModel *model, struct GenData *data)
 	gensvm_make_trainfactor(data, P, Sigma, r);
 
 	// Set Sigma to data->Sigma (need it again for prediction)
-	if (data->Sigma != NULL)
+	if (data->Sigma != NULL) {
 		free(data->Sigma);
+		data->Sigma = NULL;
+	}
 	data->Sigma = Sigma;
 
 	// write kernel params to data
 	data->kerneltype = model->kerneltype;
+
 	free(data->kernelparam);
+	data->kernelparam = NULL;
+
 	switch (model->kerneltype) {
 		case K_LINEAR:
 			break;
@@ -99,7 +104,8 @@ void gensvm_make_kernel(struct GenModel *model, struct GenData *data,
 	long i, j;
 	long n = data->n;
 	double value;
-	double *x1, *x2;
+	double *x1 = NULL,
+	       *x2 = NULL;
 
 	for (i=0; i<n; i++) {
 		for (j=i; j<n; j++) {
@@ -134,9 +140,11 @@ void gensvm_make_kernel(struct GenModel *model, struct GenData *data,
  */
 long gensvm_make_eigen(double *K, long n, double **P, double **Sigma)
 {
-	int M, status, LWORK, *IWORK, *IFAIL;
+	int M, status, LWORK,
+	    *IWORK = NULL,
+	    *IFAIL = NULL;
 	long i, j, num_eigen, cutoff_idx;
-	double max_eigen, abstol, *WORK;
+	double max_eigen, abstol, *WORK = NULL;
 
 	double *tempSigma = Malloc(double, n);
 	double *tempP = Malloc(double, n*n);
@@ -210,7 +218,8 @@ void gensvm_make_crosskernel(struct GenModel *model,
 	long n_test = data_test->n;
 	long m = data_test->m;
 	double value;
-	double *x1, *x2;
+	double *x1 = NULL,
+	       *x2 = NULL;
 
 	*K2 = Calloc(double, n_test*n_train);
 

@@ -64,6 +64,7 @@ void gensvm_free_data(struct GenData *data)
 	free(data->y);
 	free(data->Sigma);
 	free(data);
+	data = NULL;
 }
 
 /**
@@ -193,6 +194,7 @@ void gensvm_free_model(struct GenModel *model)
 	free(model->data_file);
 
 	free(model);
+	model = NULL;
 }
 
 /**
@@ -251,6 +253,7 @@ void gensvm_free_work(struct GenWork *work)
 	free(work->ZV);
 	free(work->beta);
 	free(work);
+	work = NULL;
 }
 
 /**

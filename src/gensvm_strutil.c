@@ -75,7 +75,7 @@ char *get_line(FILE *fid, char *filename, char *buffer)
  * @brief Read a double from file following a format
  *
  * @details
- * This function reads a double value from a file. If no value can be found, a 
+ * This function reads a double value from a file. If no value can be found, a
  * warning is printed to stderr, and NAN is returned.
  *
  * @param[in] 	fid 		File opened for reading
@@ -135,7 +135,8 @@ long all_doubles_str(char *buffer, long offset, double *all_doubles)
 {
 	double value;
 	long i = 0;
-	char *start, *end;
+	char *start = NULL,
+	     *end = NULL;
 
 	start = buffer + offset;
 	while (true) {
@@ -170,7 +171,8 @@ long all_longs_str(char *buffer, long offset, long *all_longs)
 {
 	long value;
 	long i = 0;
-	char *start, *end;
+	char *start = NULL,
+	     *end = NULL;
 
 	start = buffer + offset;
 	while (true) {

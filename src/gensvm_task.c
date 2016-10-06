@@ -52,4 +52,5 @@ void gensvm_free_task(struct GenTask *t)
 {
 	free(t->kernelparam);
 	free(t);
+	t = NULL;
 }

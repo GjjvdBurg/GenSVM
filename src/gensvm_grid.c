@@ -59,4 +59,5 @@ void gensvm_free_grid(struct GenGrid *grid)
 	free(grid->train_data_file);
 	free(grid->test_data_file);
 	free(grid);
+	grid = NULL;
 }

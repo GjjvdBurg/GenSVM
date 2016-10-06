@@ -31,7 +31,9 @@ void gensvm_predict_labels(struct GenData *testdata, struct GenModel *model,
 		long *predy)
 {
 	long i, j, k, n, m, K, label;
-	double norm, min_dist, *S, *ZV;
+	double norm, min_dist,
+	       *S = NULL,
+	       *ZV = NULL;
 
 	n = testdata->n;
 	m = testdata->r;
