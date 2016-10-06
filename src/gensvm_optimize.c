@@ -455,7 +455,7 @@ void gensvm_get_update(struct GenModel *model, struct GenData *data,
 {
 	int status;
 	long i, j;
-	double alpha;
+	double alpha, sqalpha;
 
 	long n = model->n;
 	long m = model->m;
@@ -469,8 +469,13 @@ void gensvm_get_update(struct GenModel *model, struct GenData *data,
 
 		// calculate row of matrix LZ, which is a scalar 
 		// multiplication of sqrt(alpha_i) and row z_i' of Z
-		cblas_daxpy(m+1, sqrt(alpha), &data->Z[i*(m+1)], 1, 
-				&work->LZ[i*(m+1)], 1);
+		// Note that we use the fact that the first column of Z is 
+		// always 1, by only computing the product for m values and 
+		// copying the first element over.
+		sqalpha = sqrt(alpha);
+		work->LZ[i*(m+1)] = sqalpha;
+		cblas_daxpy(m, sqalpha, &data->Z[i*(m+1)+1], 1, 
+				&work->LZ[i*(m+1)+1], 1);
 
 		// rank 1 update of matrix Z'*B
 		// Note: LDA is the second dimension of ZB because of
