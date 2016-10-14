@@ -1,8 +1,8 @@
 /**
- * @file test_gensvm_optimize.c
+ * @file test_gensvm_update.c
  * @author Gertjan van den Burg
  * @date September, 2016
- * @brief Unit tests for gensvm_optimize.c functions
+ * @brief Unit tests for gensvm_update.c functions
  */
 
 #include "minunit.h"

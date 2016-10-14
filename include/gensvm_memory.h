@@ -2,7 +2,10 @@
  * @file gensvm_memory.h
  * @author Gertjan van den Burg
  * @date May, 2016
- * @brief Global definitions
+ * @brief Header file for gensvm_memory.c
+ *
+ * @details
+ * Contains macro definitions for easy memory access.
  *
  */
 

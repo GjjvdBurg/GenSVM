@@ -3,7 +3,7 @@
  * @file gensvm_debug.h
  * @author Gertjan van den Burg
  * @date May, 2016
- * @brief Header for useful debug functions
+ * @brief Header file for gensvm_debug.c
  *
  * @details
  * Contains defines useful for debugging.

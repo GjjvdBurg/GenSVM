@@ -27,8 +27,14 @@
  * significant improvement in the number of iterations necessary
  * because the seeded model V is closer to the optimal V.
  *
+ * When no seed model is supplied, the rows of V are seeded with random 
+ * numbers between the inverse of the minimum and the inverse of the maximum 
+ * of the corresponding column of Z. This is done to center the product of the 
+ * two in the simplex space.
+ *
  * @param[in] 		from_model 	GenModel from which to copy V
  * @param[in,out] 	to_model 	GenModel to which V will be copied
+ * @param[in] 		data 		GenData structure with the data
  */
 void gensvm_init_V(struct GenModel *from_model,
 	       	struct GenModel *to_model, struct GenData *data)

@@ -2,7 +2,7 @@
  * @file gensvm_grid.h
  * @author Gertjan van den Burg
  * @date May, 2016
- * @brief Structs necessary for the grid search
+ * @brief Header file for gensvm_grid.c
  *
  * @details
  * The grid search for the optimal parameters is done through a queue.

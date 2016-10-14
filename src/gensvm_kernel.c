@@ -98,6 +98,21 @@ void gensvm_kernel_postprocess(struct GenModel *model,
 	free(K2);
 }
 
+/**
+ * @brief Compute the kernel matrix
+ *
+ * @details
+ * This function computes the kernel matrix of a data matrix based on the 
+ * requested kernel type and the kernel parameters. The potential types of 
+ * kernel functions are document in KernelType. This function uses a naive 
+ * multiplication and computes the entire upper triangle of the kernel matrix, 
+ * then copies this over to the lower triangle.
+ *
+ * @param[in] 	model 	a GenModel structure with the model
+ * @param[in] 	data 	a GenData structure with the data
+ * @param[out]	K 	an nxn preallocated kernel matrix
+ *
+ */
 void gensvm_make_kernel(struct GenModel *model, struct GenData *data,
 	       	double *K)
 {
@@ -132,11 +147,17 @@ void gensvm_make_kernel(struct GenModel *model, struct GenData *data,
 }
 
 /**
- * @brief Find the (reduced) eigendecomposition of a kernel matrix.
+ * @brief Find the (reduced) eigendecomposition of a kernel matrix
  *
- * @details.
- * tbd
+ * @todo
+ * Document this function
  *
+ * @param[in] K
+ * @param[in] n
+ * @param[out] P
+ * @param[out] Sigma
+ *
+ * @return
  */
 long gensvm_make_eigen(double *K, long n, double **P, double **Sigma)
 {

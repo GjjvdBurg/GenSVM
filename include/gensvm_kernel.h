@@ -2,7 +2,7 @@
  * @file gensvm_kernel.h
  * @author Gertjan van den Burg
  * @date January, 2014
- * @brief Header file for kernel functionality
+ * @brief Header file for gensvm_kernel.c
  *
  * @details
  * Contains function declarations for computing the kernel matrix

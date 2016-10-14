@@ -1,5 +1,5 @@
 /**
- * @page spec_training_file Training Input File Specification
+ * @page spec_grid_file Grid Input File Specification
  *
  * This page specifies the training file that can be parsed by
  * read_training_from_file(). Below is an example training file.

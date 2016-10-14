@@ -23,7 +23,7 @@
  * norm. The nearest simplex vertex determines the predicted class label,
  * which is recorded in predy.
  *
- * @param[in] 	data 		GenData to predict labels for
+ * @param[in] 	testdata 	GenData to predict labels for
  * @param[in] 	model 		GenModel with optimized V
  * @param[out] 	predy 		pre-allocated vector to record predictions in
  */

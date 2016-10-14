@@ -1,5 +1,5 @@
 /**
- * @file globals.h
+ * @file gensvm_globals.h
  * @author Gertjan van den Burg
  * @date January, 2014
  * @brief Global definitions

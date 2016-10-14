@@ -21,8 +21,7 @@
  * other classes).  All objects for which this is not the case are thus support
  * vectors.
  *
- * @param[in] 	model 	GenModel with solution
- * @param[in] 	data 	GenData to be used
+ * @param[in] 	model 	GenModel with solution and up-to-date Q matrix
  * @return 		number of support vectors with this solution
  *
  */

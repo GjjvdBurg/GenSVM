@@ -15,7 +15,7 @@
 /**
  * @brief Calculate the time between two time recordings
  *
- * @detail
+ * @details
  * This function should be used with time recordings done by clock_gettime() 
  * using CLOCK_MONOTONIC_RAW. For this, the Timer() macro has been defined in 
  * the header file. Example usage:

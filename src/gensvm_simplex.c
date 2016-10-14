@@ -16,14 +16,12 @@
  * @brief Generate matrix of simplex vertex coordinates
  *
  * @details
- * Generate the simplex matrix. Each row of the created
- * matrix contains the coordinate vector of a single
- * vertex of the K-simplex in K-1 dimensions. The simplex
- * generated is a special simplex with edges of length 1.
- * The simplex matrix U must already have been allocated.
+ * Generate the simplex matrix. Each row of the created matrix contains the 
+ * coordinate vector of a single vertex of the K-simplex in K-1 dimensions.  
+ * The simplex generated is a special simplex with edges of length 1. The 
+ * simplex matrix U of the GenModel must already have been allocated.
  *
- * @param[in] 		K 	number of classes
- * @param[in,out] 	U 	simplex matrix of size K * (K-1)
+ * @param[in,out] 	model 	a GenModel structure
  */
 void gensvm_simplex(struct GenModel *model)
 {

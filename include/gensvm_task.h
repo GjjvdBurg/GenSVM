@@ -2,7 +2,7 @@
  * @file gensvm_task.h
  * @author Gertjan van den Burg
  * @date August, 2013
- * @brief Struct for a single task in the queue
+ * @brief Header file for gensvm_task.c
  *
  * @details
  * The grid search for the optimal parameters is done through a queue.

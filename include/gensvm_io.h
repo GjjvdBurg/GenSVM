@@ -2,7 +2,7 @@
  * @file gensvm_io.h
  * @author Gertjan van den Burg
  * @date January, 2014
- * @brief Header files for gensvm_io.c
+ * @brief Header file for gensvm_io.c
  *
  * @details
  * Function declarations for input/output functions.

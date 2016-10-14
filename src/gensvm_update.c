@@ -38,6 +38,7 @@
  * GenModel::R to speed up the computation.
  *
  * @param[in] 	model 	GenModel structure with the current model
+ * @param[in] 	data 	GenData structure with the data (used for y)
  * @param[in] 	i 	index of the instance for which to calculate omega
  * @returns 		the value of omega for instance i
  *
@@ -70,6 +71,7 @@ double gensvm_calculate_omega(struct GenModel *model, struct GenData *data,
  * check if strictly less than 2 are nonzero. See also the @ref update_math.
  *
  * @param[in] 	model 	GenModel structure with the current model
+ * @param[in] 	data 	GenData structure with the data (used for y)
  * @param[in] 	i 	index of the instance for which to check
  * @returns 		whether or not we can do simple majorization
  *
@@ -206,6 +208,7 @@ void gensvm_calculate_ab_simple(struct GenModel *model, long i, long j,
  * returned.
  *
  * @param[in] 		model 	GenModel structure with the current model
+ * @param[in] 		data 	GenData structure with the data
  * @param[in] 		i 	index of the instance to update
  * @param[out] 		beta	beta vector of linear coefficients (assumed to
  * 				be allocated elsewhere, initialized here)

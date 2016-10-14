@@ -1,8 +1,8 @@
 /**
- * @file timer.h
+ * @file gensvm_timer.h
  * @author Gertjan van den Burg
  * @date August, 2013
- * @brief Header file for timer.c
+ * @brief Header file for gensvm_timer.c
  *
  * @details
  * Function declaration for timer function used to measure computation time.
