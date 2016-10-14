@@ -14,6 +14,7 @@
 
 // includes
 #include "gensvm_base.h"
+#include "gensvm_print.h"
 #include "gensvm_strutil.h"
 
 // function declarations

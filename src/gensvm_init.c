@@ -33,30 +33,67 @@
 void gensvm_init_V(struct GenModel *from_model,
 	       	struct GenModel *to_model, struct GenData *data)
 {
-	long i, j, k;
+	long i, j, k, jj_start, jj_end, jj;
 	double cmin, cmax, value, rnd;
+	double *col_min = NULL,
+	       *col_max = NULL;
 
 	long n = data->n;
 	long m = data->m;
 	long K = data->K;
 
 	if (from_model == NULL) {
-		for (i=0; i<m+1; i++) {
-			cmin = 1e100;
-			cmax = -1e100;
-			for (k=0; k<n; k++) {
-				value = matrix_get(data->Z, m+1, k, i);
-				cmin = minimum(cmin, value);
-				cmax = maximum(cmax, value);
+		col_min = Calloc(double, m+1);
+		col_max = Calloc(double, m+1);
+		for (j=0; j<m+1; j++) {
+			col_min[j] = 1.0e100;
+			col_max[j] = -1.0e100;
+		}
+
+		if (data->Z == NULL) {
+			// sparse matrix
+			int *visit_count = Calloc(int, m+1);
+			for (i=0; i<n; i++) {
+				jj_start = data->spZ->ia[i];
+				jj_end = data->spZ->ia[i+1];
+				for (jj=jj_start; jj<jj_end; jj++) {
+					j = data->spZ->ja[jj];
+					value = data->spZ->values[jj];
+
+					col_min[j] = minimum(col_min[j], value);
+					col_max[j] = maximum(col_max[j], value);
+					visit_count[j]++;
+				}
 			}
-			for (j=0; j<K-1; j++) {
-				cmin = (abs(cmin) < 1e-10) ? -1 : cmin;
-				cmax = (abs(cmax) < 1e-10) ? 1 : cmax;
-				rnd = ((double) rand()) / RAND_MAX;
-				value = 1.0/cmin + (1.0/cmax - 1.0/cmin)*rnd;
-				matrix_set(to_model->V, K-1, i, j, value);
+			// correction in case the minimum or maximum is 0
+			for (j=0; j<m+1; j++) {
+				if (visit_count[j] < n) {
+					col_min[j] = minimum(col_min[j], 0.0);
+					col_max[j] = maximum(col_max[j], 0.0);
+				}
+			}
+			free(visit_count);
+		} else {
+			// dense matrix
+			for (i=0; i<n; i++) {
+				for (j=0; j<m+1; j++) {
+					value = matrix_get(data->Z, m+1, i, j);
+					col_min[j] = minimum(col_min[j], value);
+					col_max[j] = maximum(col_max[j], value);
+				}
 			}
 		}
+		for (j=0; j<m+1; j++) {
+			cmin = (fabs(col_min[j]) < 1e-10) ? -1 : col_min[j];
+			cmax = (fabs(col_max[j]) < 1e-10) ? 1 : col_max[j];
+			for (k=0; k<K-1; k++) {
+				rnd = ((double) rand()) / ((double) RAND_MAX);
+				value = 1.0/cmin + (1.0/cmax - 1.0/cmin)*rnd;
+				matrix_set(to_model->V, K-1, j, k, value);
+			}
+		}
+		free(col_min);
+		free(col_max);
 	} else {
 		for (i=0; i<m+1; i++)
 			for (j=0; j<K-1; j++) {

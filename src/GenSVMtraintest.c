@@ -83,7 +83,10 @@ int main(int argc, char **argv)
 	strcpy(model->data_file, training_inputfile);
 
 	// seed the random number generator
-	srand(time(NULL));
+	//srand(time(NULL));
+	//
+	// XXX temporary
+	srand(2135);
 
 	// load a seed model from file if it is specified
 	if (gensvm_check_argv_eq(argc, argv, "-s")) {

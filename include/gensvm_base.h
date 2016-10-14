@@ -14,7 +14,7 @@
 #define GENSVM_BASE_H
 
 // includes
-#include "gensvm_globals.h"
+#include "gensvm_sparse.h"
 
 // type declarations
 
@@ -26,6 +26,7 @@
  * @param m 		number of predictors
  * @param *y 		pointer to vector of class labels
  * @param *Z 		pointer to augmented data matrix
+ * @param *spZ 		pointer to the sparse augmented data matrix
  * @param *RAW 		pointer to augmented raw data matrix
  * @param *J 		pointer to regularization vector
  * @param kerneltype 	kerneltype used in GenData::Z
@@ -46,6 +47,8 @@ struct GenData {
 	double *Z;
 	///< augmented data matrix (either equal to RAW or to the eigenvectors
 	///< of the kernel matrix)
+	struct GenSparse *spZ;
+	///< sparse representation of the augmented data matrix
 	double *RAW;
 	///< augmented raw data matrix
 	double *Sigma;

@@ -12,7 +12,6 @@
  */
 #include <limits.h>
 #include "gensvm_io.h"
-#include "gensvm_print.h"
 
 /**
  * @brief Read data from file
@@ -138,6 +137,15 @@ void gensvm_read_data(struct GenData *dataset, char *data_file)
 	dataset->r = m;
 	dataset->K = K;
 	dataset->Z = dataset->RAW;
+
+	if (gensvm_could_sparse(dataset->Z, n, m+1)) {
+		note("Converting to sparse ... ");
+		dataset->spZ = gensvm_dense_to_sparse(dataset->Z, n, m+1);
+		note("done.\n");
+		free(dataset->RAW);
+		dataset->RAW = NULL;
+		dataset->Z = NULL;
+	}
 
 	free(uniq_y);
 }

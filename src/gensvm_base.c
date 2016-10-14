@@ -30,6 +30,7 @@ struct GenData *gensvm_init_data()
 	data->Sigma = NULL;
 	data->y = NULL;
 	data->Z = NULL;
+	data->spZ = NULL;
 	data->RAW = NULL;
 
 	// set default values
@@ -53,6 +54,9 @@ void gensvm_free_data(struct GenData *data)
 {
 	if (data == NULL)
 		return;
+
+	if (data->spZ != NULL)
+		gensvm_free_sparse(data->spZ);
 
 	if (data->Z == data->RAW) {
 		free(data->Z);
