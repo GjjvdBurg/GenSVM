@@ -9,8 +9,8 @@
  *
  */
 
-#ifndef GENSVM_PRED_H
-#define GENSVM_PRED_H
+#ifndef GENSVM_PREDICT_H
+#define GENSVM_PREDICT_H
 
 // includes
 #include "gensvm_kernel.h"

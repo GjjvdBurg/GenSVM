@@ -20,7 +20,7 @@
 #include "gensvm_init.h"
 #include "gensvm_grid.h"
 #include "gensvm_optimize.h"
-#include "gensvm_pred.h"
+#include "gensvm_predict.h"
 #include "gensvm_queue.h"
 #include "gensvm_timer.h"
 

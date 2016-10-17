@@ -11,7 +11,7 @@
  *
  */
 
-#include "gensvm_pred.h"
+#include "gensvm_predict.h"
 
 /**
  * @brief Predict class labels of data given and output in predy

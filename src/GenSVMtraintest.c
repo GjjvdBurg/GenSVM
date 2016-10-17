@@ -13,7 +13,7 @@
 #include "gensvm_cmdarg.h"
 #include "gensvm_io.h"
 #include "gensvm_train.h"
-#include "gensvm_pred.h"
+#include "gensvm_predict.h"
 
 #define MINARGS 2
 

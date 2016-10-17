@@ -5,7 +5,7 @@
  * @brief Unit tests for gensvm_pred.c functions
  */
 #include "minunit.h"
-#include "gensvm_pred.h"
+#include "gensvm_predict.h"
 
 /**
  * This testcase is designed as follows: 12 evenly spaced points are plotted 
