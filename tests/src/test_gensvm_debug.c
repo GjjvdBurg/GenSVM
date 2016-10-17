@@ -13,7 +13,8 @@ extern FILE *GENSVM_OUTPUT_FILE;
 char *test_print_matrix()
 {
 	FILE *fid = NULL;
-	GENSVM_OUTPUT_FILE = fopen("./data/test_debug_print.txt", "w");
+	const char *filename = "./data/test_debug_dense.txt";
+	GENSVM_OUTPUT_FILE = fopen(filename, "w");
 
 	double *mat = Calloc(double, 3*2);
 	matrix_set(mat, 2, 0, 0, -0.241053050258449);
@@ -28,19 +29,19 @@ char *test_print_matrix()
 	fclose(GENSVM_OUTPUT_FILE);
 
 	char buffer[MAX_LINE_LENGTH];
-	fid = fopen("./data/test_debug_print.txt", "r");
+	fid = fopen(filename, "r");
 
 	fgets(buffer, MAX_LINE_LENGTH, fid);
 	mu_assert(strcmp(buffer, "-0.241053 -0.599809\n") == 0,
-		       	"Line doesn't contain expected content (0).\n");
+		       	"Line doesn't contain expected content (0).");
 
 	fgets(buffer, MAX_LINE_LENGTH, fid);
 	mu_assert(strcmp(buffer, "+0.893318 -0.344058\n") == 0,
-		       	"Line doesn't contain expected content (1).\n");
+		       	"Line doesn't contain expected content (1).");
 
 	fgets(buffer, MAX_LINE_LENGTH, fid);
 	mu_assert(strcmp(buffer, "+0.933948 -0.474352\n") == 0,
-		       	"Line doesn't contain expected content (2).\n");
+		       	"Line doesn't contain expected content (2).");
 
 	fclose(fid);
 	// end test code //
@@ -49,10 +50,59 @@ char *test_print_matrix()
 	return NULL;
 }
 
+char *test_print_sparse()
+{
+	FILE *fid = NULL;
+	double *A = Calloc(double, 4*4);
+	A[4] = 5;
+	A[5] = 8;
+	A[10] = 3;
+	A[13] = 6;
+	struct GenSparse *sp = gensvm_dense_to_sparse(A, 4, 4);
+	const char *filename = "./data/test_debug_sparse.txt";
+	GENSVM_OUTPUT_FILE = fopen(filename, "w");
+
+	// start test code //
+	gensvm_print_sparse(sp);
+	fclose(GENSVM_OUTPUT_FILE);
+
+	char buffer[MAX_LINE_LENGTH];
+	fid = fopen(filename, "r");
+
+	fgets(buffer, MAX_LINE_LENGTH, fid);
+	mu_assert(strcmp(buffer, "Sparse Matrix:\n") == 0,
+			"Line doesn't contain expected content (0).");
+
+	fgets(buffer, MAX_LINE_LENGTH, fid);
+	mu_assert(strcmp(buffer, "\tnnz = 4, rows = 4, cols = 4\n") == 0,
+			"Line doesn't contain expected content (1).");
+
+	fgets(buffer, MAX_LINE_LENGTH, fid);
+	mu_assert(strcmp(buffer, "\tvalues = [ 5.000000, 8.000000, "
+				"3.000000, 6.000000 ]\n") == 0,
+			"Line doesn't contain expected content (2).");
+
+	fgets(buffer, MAX_LINE_LENGTH, fid);
+	mu_assert(strcmp(buffer, "\tIA = [ 0, 0, 2, 3, 4 ]\n") == 0,
+			"Line doesn't contain expected content (3).");
+
+	fgets(buffer, MAX_LINE_LENGTH, fid);
+	mu_assert(strcmp(buffer, "\tJA = [ 0, 1, 2, 1 ]\n") == 0,
+			"Line doesn't contain expected content (4).");
+
+	fclose(fid);
+	// end test code //
+	gensvm_free_sparse(sp);
+	free(A);
+
+	return NULL;
+}
+
 char *all_tests()
 {
 	mu_suite_start();
 	mu_run_test(test_print_matrix);
+	mu_run_test(test_print_sparse);
 
 	return NULL;
 }
