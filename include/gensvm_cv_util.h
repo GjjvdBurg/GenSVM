@@ -18,5 +18,11 @@
 void gensvm_make_cv_split(long N, long folds, long *cv_idx);
 void gensvm_get_tt_split(struct GenData *full_data, struct GenData *train_data,
 		struct GenData *test_data, long *cv_idx, long fold_idx);
+void gensvm_get_tt_split_dense(struct GenData *full_data,
+		struct GenData *train_data, struct GenData *test_data,
+		long *cv_idx, long fold_idx);
+void gensvm_get_tt_split_sparse(struct GenData *full_data,
+		struct GenData *train_data, struct GenData *test_data,
+		long *cv_idx, long fold_idx);
 
 #endif
