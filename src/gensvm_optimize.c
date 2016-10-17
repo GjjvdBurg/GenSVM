@@ -257,10 +257,7 @@ void gensvm_calculate_errors(struct GenModel *model, struct GenData *data,
 	long n = model->n;
 	long K = model->K;
 
-	if (data->spZ == NULL)
-		gensvm_calculate_ZV_dense(model, data, ZV);
-	else
-		gensvm_calculate_ZV_sparse(model, data, ZV);
+	gensvm_calculate_ZV(model, data, ZV);
 
 	for (i=0; i<n; i++) {
 		for (j=0; j<K; j++) {
@@ -271,43 +268,5 @@ void gensvm_calculate_errors(struct GenModel *model, struct GenData *data,
 			matrix_set(model->Q, K, i, j, q);
 		}
 	}
-}
-
-void gensvm_calculate_ZV_sparse(struct GenModel *model, 
-		struct GenData *data, double *ZV)
-{
-	long i, j, jj, jj_start, jj_end, K,
-	    n_row = data->spZ->n_row;
-	double z_ij;
-
-	K = model->K;
-
-	int *Zia = data->spZ->ia;
-	int *Zja = data->spZ->ja;
-	double *vals = data->spZ->values;
-
-	for (i=0; i<n_row; i++) {
-		jj_start = Zia[i];
-		jj_end = Zia[i+1];
-
-		for (jj=jj_start; jj<jj_end; jj++) {
-			j = Zja[jj];
-			z_ij = vals[jj];
-
-			cblas_daxpy(K-1, z_ij, &model->V[j*(K-1)], 1, 
-					&ZV[i*(K-1)], 1);
-		}
-	}
-}
-
-void gensvm_calculate_ZV_dense(struct GenModel *model, 
-		struct GenData *data, double *ZV)
-{
-	long n = model->n;
-	long m = model->m;
-	long K = model->K;
-
-	cblas_dgemm(CblasRowMajor, CblasNoTrans, CblasNoTrans, n, K-1, m+1, 
-			1.0, data->Z, m+1, model->V, K-1, 0, ZV, K-1);
 }
 

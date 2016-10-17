@@ -16,6 +16,7 @@
 #include "gensvm_sv.h"
 #include "gensvm_simplex.h"
 #include "gensvm_update.h"
+#include "gensvm_zv.h"
 
 // function declarations
 void gensvm_optimize(struct GenModel *model, struct GenData *data);

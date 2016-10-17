@@ -30,13 +30,12 @@
 void gensvm_predict_labels(struct GenData *testdata, struct GenModel *model,
 		long *predy)
 {
-	long i, j, k, n, m, K, label;
+	long i, j, k, n, K, label;
 	double norm, min_dist,
 	       *S = NULL,
 	       *ZV = NULL;
 
 	n = testdata->n;
-	m = testdata->r;
 	K = model->K;
 
 	// allocate necessary memory
@@ -47,21 +46,7 @@ void gensvm_predict_labels(struct GenData *testdata, struct GenModel *model,
 	gensvm_simplex(model);
 
 	// Generate the simplex space vectors
-	cblas_dgemm(
-			CblasRowMajor,
-			CblasNoTrans,
-			CblasNoTrans,
-			n,
-			K-1,
-			m+1,
-			1.0,
-			testdata->Z,
-			m+1,
-			model->V,
-			K-1,
-			0.0,
-			ZV,
-			K-1);
+	gensvm_calculate_ZV(model, testdata, ZV);
 
 	// Calculate the distance to each of the vertices of the simplex.
 	// The closest vertex defines the class label
