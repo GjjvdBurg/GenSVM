@@ -54,7 +54,7 @@ void gensvm_free_sparse(struct GenSparse *sp)
  * @brief Count the number of nonzeros in a matrix
  *
  * @details
- * This is a utility function to count the number of nonzeros in a dense 
+ * This is a utility function to count the number of nonzeros in a dense
  * matrix. This is simply done by comparing with 0.0.
  *
  * @param[in] 	A 	a dense matrix (RowMajor order)
@@ -78,9 +78,9 @@ long gensvm_count_nnz(double *A, long rows, long cols)
  * @details
  * It is only worth to convert to a sparse matrix if the amount of sparsity is
  * sufficient. For this to be the case, the number of nonzeros must be
- * smaller than @f$(n(m - 1) - 1)/2@f$. This is tested here. If the amount of
- * nonzero entries is small enough, the function returns the number of
- * nonzeros. If it is too big, it returns -1.
+ * smaller than @f$(n_{row}(n_{col} - 1) - 1)/2@f$. This is tested here. If
+ * the amount of nonzero entries is small enough, the function returns the
+ * number of nonzeros. If it is too big, it returns -1.
  *
  * @param[in] 	A 	matrix in dense format (RowMajor order)
  * @param[in] 	rows 	number of rows of A
@@ -178,4 +178,3 @@ double *gensvm_sparse_to_dense(struct GenSparse *A)
 
 	return B;
 }
-

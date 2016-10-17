@@ -1,8 +1,8 @@
 /**
- * @file test_gensvm_pred.c
+ * @file test_gensvm_predict.c
  * @author Gertjan van den Burg
  * @date September, 2016
- * @brief Unit tests for gensvm_pred.c functions
+ * @brief Unit tests for gensvm_predict.c functions
  */
 #include "minunit.h"
 #include "gensvm_predict.h"

@@ -41,11 +41,7 @@
  * <a href="https://en.wikipedia.org/wiki/Sparse_matrix">Wikipedia</a> for 
  * more details. The total storage requirement for this format is 
  * 2*nnz+n_row+1, so it only makes sense to use this format if the number of 
- * nonzeros is smaller than @f$(n(m - 1) - 1)/2@f$.
- *
- * @note
- * We use @f$n@f$ for rows, and @f$m@f$ for columns, to conform to GenSVM 
- * notation. This is in exact contrast with the Wikipedia page.
+ * nonzeros is smaller than @f$(n_{row}(n_{col} - 1) - 1)/2@f$.
  *
  * @param nnz 		number of nonzero elements
  * @param n_row 	rows of the matrix
@@ -65,7 +61,7 @@ struct GenSparse {
 	double *values;
 	///< actual nonzero values, should be of length nnz
 	int *ia;
-	///< cumulative row lengths, should be of length n+1
+	///< cumulative row lengths, should be of length n_row+1
 	int *ja;
 	///< column indices, should be of length nnz
 };

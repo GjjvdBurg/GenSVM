@@ -50,10 +50,4 @@
 // Multiply a matrix element (RowMajor)
 #define matrix_mul(M, cols, i, j, val) M[(i)*(cols)+j] *= val
 
-// Set a 3D matrix element (N2 = second dim, N3 = third dim, RowMajor)
-#define matrix3_set(M, N2, N3, i, j, k, val) M[k+(N3)*(j+(N2)*(i))] = val
-
-// Get a 3D matrix element (N2 = second dim, N3 = third dim, RowMajor)
-#define matrix3_get(M, N2, N3, i, j, k) M[k+(N3)*(j+(N2)*(i))]
-
 #endif

@@ -1,8 +1,8 @@
 /**
- * @file gensvm_pred.h
+ * @file gensvm_predict.h
  * @author Gertjan van den Burg
  * @date August, 2013
- * @brief Header file for gensvm_pred.c
+ * @brief Header file for gensvm_predict.c
  *
  * @details
  * Contains function declarations for prediction functions.
