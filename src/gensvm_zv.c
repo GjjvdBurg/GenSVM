@@ -106,7 +106,8 @@ void gensvm_calculate_ZV_sparse(struct GenModel *model,
 void gensvm_calculate_ZV_dense(struct GenModel *model,
 		struct GenData *data, double *ZV)
 {
-	long n = model->n;
+	// use n from data, assume m and K are the same between model and data
+	long n = data->n;
 	long m = model->m;
 	long K = model->K;
 
