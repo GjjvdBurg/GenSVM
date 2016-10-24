@@ -1,12 +1,31 @@
 /**
  * @file gensvm_gridsearch.c
- * @author Gertjan van den Burg
- * @date January, 2014
+ * @author G.J.J. van den Burg
+ * @date 2014-01-07
  * @brief Functions for finding the optimal parameters for the dataset
  *
  * @details
  * The GenSVM algorithm takes a number of parameters. The functions in
  * this file are used to find the optimal parameters.
+ *
+ * @copyright
+ Copyright 2016, G.J.J. van den Burg.
+
+ This file is part of GenSVM.
+
+ GenSVM is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
+
+ GenSVM is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with GenSVM. If not, see <http://www.gnu.org/licenses/>.
+
  */
 
 #include "gensvm_gridsearch.h"
@@ -351,7 +370,7 @@ void consistency_repeats(struct GenQueue *q, long repeats, TrainType traintype)
 		}
 		for (r=0; r<repeats; r++) {
 			std[i] += pow(matrix_get(perf, repeats, i, r) - mean[i],
-				       	2.0);
+					2.0);
 		}
 		if (r > 1) {
 			std[i] /= ((double) repeats) - 1.0;
@@ -360,7 +379,7 @@ void consistency_repeats(struct GenQueue *q, long repeats, TrainType traintype)
 			std[i] = 0.0;
 		}
 		note("(m = %3.3f, s = %3.3f, t = %3.3f)\n", mean[i], std[i],
-			       	time[i]);
+				time[i]);
 		task = get_next_task(nq);
 		i++;
 	}
@@ -378,8 +397,8 @@ void consistency_repeats(struct GenQueue *q, long repeats, TrainType traintype)
 		pt = prctile(time, N, p);
 		for (i=0; i<N; i++)
 			if ((pi - mean[i] < 0.0001) &&
-			    (std[i] - pr < 0.0001) &&
-			    (time[i] - pt < 0.0001)) {
+					(std[i] - pr < 0.0001) &&
+					(time[i] - pt < 0.0001)) {
 				note("(%li)\tw = %li\te = %f\tp = %f\t"
 						"k = %f\tl = %f\t"
 						"mean: %3.3f\tstd: %3.3f\t"
@@ -463,9 +482,6 @@ bool kernel_changed(struct GenTask *newtask, struct GenTask *oldtask)
  *
  * The performance found by cross validation is stored in the GenTask struct.
  *
- * @todo
- * Make sure folds can't change between tasks
- *
  * @param[in,out] 	q 	GenQueue with GenTask instances to run
  */
 
@@ -478,8 +494,6 @@ void start_training(struct GenQueue *q)
 	struct GenModel *model = gensvm_init_model();
 	struct timespec main_s, main_e, loop_s, loop_e;
 
-	// in principle this can change between tasks, but this shouldn't be
-	// the case TODO
 	folds = task->folds;
 
 	model->n = 0;
@@ -497,7 +511,7 @@ void start_training(struct GenQueue *q)
 		train_folds[f] = gensvm_init_data();
 		test_folds[f] = gensvm_init_data();
 		gensvm_get_tt_split(task->train_data, train_folds[f],
-			       	test_folds[f], cv_idx, f);
+				test_folds[f], cv_idx, f);
 	}
 
 	Timer(main_s);
@@ -511,9 +525,9 @@ void start_training(struct GenQueue *q)
 				if (test_folds[f]->Z != test_folds[f]->RAW)
 					free(test_folds[f]->Z);
 				gensvm_kernel_preprocess(model,
-					       	train_folds[f]);
+						train_folds[f]);
 				gensvm_kernel_postprocess(model,
-					       	train_folds[f], test_folds[f]);
+						train_folds[f], test_folds[f]);
 			}
 			note(".\n");
 		}
@@ -527,7 +541,7 @@ void start_training(struct GenQueue *q)
 
 		note("\t%3.3f%% (%3.3fs)\t(best = %3.3f%%)\n", perf,
 				gensvm_elapsed_time(&loop_s, &loop_e),
-			       	current_max);
+				current_max);
 
 		q->tasks[task->ID]->performance = perf;
 		prevtask = task;
@@ -568,7 +582,7 @@ void start_training(struct GenQueue *q)
  * cross validation
  */
 double gensvm_cross_validation(struct GenModel *model,
-	      	struct GenData **train_folds, struct GenData **test_folds,
+		struct GenData **train_folds, struct GenData **test_folds,
 		int folds, long n_total)
 {
 	FILE *fid = NULL;

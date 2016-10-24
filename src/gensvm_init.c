@@ -1,16 +1,34 @@
 /**
  * @file gensvm_init.c
- * @author Gertjan van den Burg
- * @date January 7, 2014
+ * @author G.J.J. van den Burg
+ * @date 2014-01-07
  * @brief Functions for initializing model and data structures
- *
  * @details
+ *
  * This file contains functions for initializing a GenModel instance
  * and a GenData instance. In addition, default values for these
  * structures are defined here (and only here). Functions for allocating
  * memory for the model structure and freeing of the model and data structures
  * are also included.
  *
+ * @copyright
+ Copyright 2016, G.J.J. van den Burg.
+
+ This file is part of GenSVM.
+
+ GenSVM is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
+
+ GenSVM is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with GenSVM. If not, see <http://www.gnu.org/licenses/>.
+
  */
 
 #include "gensvm_init.h"
