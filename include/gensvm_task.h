@@ -67,5 +67,6 @@ struct GenTask {
 
 struct GenTask *gensvm_init_task();
 void gensvm_free_task(struct GenTask *task);
+void gensvm_task_to_model(struct GenTask *task, struct GenModel *model);
 
 #endif

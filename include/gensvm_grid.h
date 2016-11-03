@@ -67,8 +67,9 @@
 struct GenGrid {
 	TrainType traintype;
 	KernelType kerneltype;
-	long repeats;
 	long folds;
+	long repeats;
+	double percentile;
 	long Np;
 	long Nl;
 	long Nk;

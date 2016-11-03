@@ -38,8 +38,9 @@ struct GenGrid *gensvm_init_grid()
 	// initialize to defaults
 	grid->traintype = CV;
 	grid->kerneltype = K_LINEAR;
-	grid->repeats = 0;
 	grid->folds = 10;
+	grid->repeats = 0;
+	grid->percentile = 95.0;
 	grid->Np = 0;
 	grid->Nl = 0;
 	grid->Nk = 0;

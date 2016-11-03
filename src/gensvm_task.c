@@ -72,3 +72,27 @@ void gensvm_free_task(struct GenTask *t)
 	free(t);
 	t = NULL;
 }
+
+/**
+ * @brief Copy parameters from GenTask to GenModel
+ *
+ * @details
+ * A GenTask struct only contains the parameters of the GenModel to be estimated.
+ * This function is used to copy these parameters.
+ *
+ * @param[in] 		task 	GenTask instance with parameters
+ * @param[in,out] 	model 	GenModel to which the parameters are copied
+ */
+void gensvm_task_to_model(struct GenTask *task, struct GenModel *model)
+{
+	// copy basic model parameters
+	model->weight_idx = task->weight_idx;
+	model->epsilon = task->epsilon;
+	model->p = task->p;
+	model->kappa = task->kappa;
+	model->lambda = task->lambda;
+
+	// copy kernel parameters
+	model->kerneltype = task->kerneltype;
+	model->kernelparam = task->kernelparam;
+}

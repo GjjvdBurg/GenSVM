@@ -40,6 +40,7 @@
 #include "gensvm_cmdarg.h"
 #include "gensvm_io.h"
 #include "gensvm_gridsearch.h"
+#include "gensvm_consistency.h"
 
 #define MINARGS 2
 
@@ -111,11 +112,11 @@ int main(int argc, char **argv)
 	srand(time(NULL));
 
 	note("Starting training\n");
-	start_training(q);
+	gensvm_train_queue(q);
 	note("Training finished\n");
 
 	if (grid->repeats > 0) {
-		consistency_repeats(q, grid->repeats, grid->traintype);
+		gensvm_consistency_repeats(q, grid->repeats, grid->percentile);
 	}
 
 	gensvm_free_queue(q);
@@ -277,6 +278,13 @@ void read_grid_from_file(char *input_filename, struct GenGrid *grid)
 			grid->repeats = lparams[0];
 			if (nr > 1)
 				fprintf(stderr, "Field \"repeats\" only "
+						"takes one value. Additional "
+						"fields are ignored.\n");
+		} else if (str_startswith(buffer, "percentile:")) {
+			nr = all_doubles_str(buffer, 11, params);
+			grid->percentile = params[0];
+			if (nr > 1)
+				fprintf(stderr, "Field \"percentile\" only "
 						"takes one value. Additional "
 						"fields are ignored.\n");
 		} else if (str_startswith(buffer, "kernel:")) {
