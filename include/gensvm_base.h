@@ -140,6 +140,8 @@ struct GenWork {
 	///< (K-1) x (m+1) working matrix for the Z'*B calculation
 	double *ZAZ;
 	///< (m+1) x (m+1) working matrix for the Z'*A*Z calculation
+	double *tmpZAZ;
+	///< (m+1) x (m+1) temporary working matrix for the Z'*A*Z calculation
 	double *ZV;
 	///< n x (K-1) working matrix for the Z * V calculation
 	double *beta;

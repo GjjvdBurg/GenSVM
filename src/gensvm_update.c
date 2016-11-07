@@ -27,6 +27,12 @@
 #include "gensvm_update.h"
 
 /**
+ * Number of rows in a single block for the ZAZ calculation in 
+ * gensvm_get_ZAZ_ZB_sparse().
+ */
+#define BLOCK_SIZE 512
+
+/**
  * @brief Calculate the value of omega for a single instance
  *
  * @details
@@ -454,6 +460,13 @@ void gensvm_get_ZAZ_ZB_dense(struct GenModel *model, struct GenData *data,
  * Z'*B matrix row-wise for each non-zero element of a row of Z, using a BLAS 
  * daxpy call.
  *
+ * This function calculates the matrix product Z'*A*Z in separate blocks, 
+ * based on the number of rows defined in the BLOCK_SIZE variable. This is 
+ * done to improve numerical precision for very large datasets. Due to 
+ * rounding errors, precision can become an issue for these large datasets, 
+ * when separate blocks are used and added to the result separately, this can 
+ * be alleviated a little bit. See also: http://stackoverflow.com/q/40286989
+ *
  * @sa
  * gensvm_get_ZAZ_ZB()
  * gensvm_get_ZAZ_ZB_dense()
@@ -466,33 +479,56 @@ void gensvm_get_ZAZ_ZB_dense(struct GenModel *model, struct GenData *data,
 void gensvm_get_ZAZ_ZB_sparse(struct GenModel *model, struct GenData *data,
 		struct GenWork *work)
 {
-	long i, j, k, jj, kk, jj_start, jj_end, K,
-	     n_row = data->spZ->n_row,
+	int *Zia = NULL,
+	    *Zja = NULL;
+	long b, i, j, k, K, jj, kk, jj_start, jj_end, blk_start, blk_end,
+	     rem_size, n_blocks, n_row = data->spZ->n_row,
 	     n_col = data->spZ->n_col;
-	double alpha, z_ij;
+	double temp, alpha, z_ij, *vals = NULL;
 
 	K = model->K;
+	Zia = data->spZ->ia;
+	Zja = data->spZ->ja;
+	vals = data->spZ->values;
 
-	int *Zia = data->spZ->ia;
-	int *Zja = data->spZ->ja;
-	double *vals = data->spZ->values;
+	// calculate ZAZ using blocks of rows of Z. This helps avoiding 
+	// rounding errors, which increases precision, and in turn helps 
+	// convergion of the IM algorithm.
+	// see also: http://stackoverflow.com/q/40286989/
+	n_blocks = floor(n_row / BLOCK_SIZE);
+	rem_size = n_row % BLOCK_SIZE;
 
-	for (i=0; i<n_row; i++) {
-		alpha = gensvm_get_alpha_beta(model, data, i, work->beta);
+	for (b=0; b<=n_blocks; b++) {
+		blk_start = b * BLOCK_SIZE;
+		blk_end = blk_start;
+		blk_end += (b == n_blocks) ? rem_size : BLOCK_SIZE;
 
-		jj_start = Zia[i];
-		jj_end = Zia[i+1];
+		Memset(work->tmpZAZ, double, n_col*n_col);
+		for (i=blk_start; i<blk_end; i++) {
+			alpha = gensvm_get_alpha_beta(model, data, i, 
+					work->beta);
+			jj_start = Zia[i];
+			jj_end = Zia[i+1];
 
-		for (jj=jj_start; jj<jj_end; jj++) {
-			j = Zja[jj];
-			z_ij = vals[jj];
-			cblas_daxpy(K-1, z_ij, work->beta, 1,
-					&work->ZB[j*(K-1)], 1);
-			z_ij *= alpha;
-			for (kk=jj; kk<jj_end; kk++) {
-				k = Zja[kk];
-				matrix_add(work->ZAZ, n_col, j, k,
-						z_ij*vals[kk]);
+			for (jj=jj_start; jj<jj_end; jj++) {
+				j = Zja[jj];
+				z_ij = vals[jj];
+				cblas_daxpy(K-1, z_ij, work->beta, 1,
+						&work->ZB[j*(K-1)], 1);
+				z_ij *= alpha;
+				for (kk=jj; kk<jj_end; kk++) {
+					matrix_add(work->tmpZAZ, n_col, j, 
+							Zja[kk], 
+							z_ij * vals[kk]);
+				}
+			}
+		}
+
+		// copy the intermediate results over to the actual ZAZ matrix
+		for (j=0; j<n_col; j++) {
+			for (k=j; k<n_col; k++) {
+				temp = matrix_get(work->tmpZAZ, n_col, j, k);
+				matrix_add(work->ZAZ, n_col, j, k, temp);
 			}
 		}
 	}
