@@ -110,6 +110,7 @@ struct GenModel *gensvm_init_model()
 	model->weight_idx = 1;
 	model->kerneltype = K_LINEAR;
 	model->kernelparam = NULL;
+	model->kernel_eigen_cutoff = 1e-8;
 
 	model->V = NULL;
 	model->Vbar = NULL;

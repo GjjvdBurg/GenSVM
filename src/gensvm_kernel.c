@@ -32,13 +32,34 @@
 #include "gensvm_kernel.h"
 #include "gensvm_print.h"
 
-#ifndef GENSVM_EIGEN_CUTOFF
- /**
-  * Mimimum ratio between an eigenvalue and the largest eigenvalue for it to 
-  * be included in the reduced eigendecomposition
-  */
- #define GENSVM_EIGEN_CUTOFF 1e-8
-#endif
+void gensvm_kernel_copy_kernelparam_to_data(struct GenModel *model, 
+		struct GenData *data)
+{
+	int i;
+	data->kerneltype = model->kerneltype;
+
+	free(data->kernelparam);
+	data->kernelparam = NULL;
+
+	switch (model->kerneltype) {
+		case K_LINEAR:
+			break;
+		case K_POLY:
+			data->kernelparam = Calloc(double, 3);
+			for (i=0; i<3; i++)
+				data->kernelparam[i] = model->kernelparam[i];
+			break;
+		case K_RBF:
+			data->kernelparam = Calloc(double, 1);
+			data->kernelparam[0] = model->kernelparam[0];
+			break;
+		case K_SIGMOID:
+			data->kernelparam = Calloc(double, 2);
+			data->kernelparam[0] = model->kernelparam[0];
+			data->kernelparam[1] = model->kernelparam[1];
+	}
+}
+
 
 /**
  * @brief Do the preprocessing steps needed to perform kernel GenSVM
@@ -67,7 +88,6 @@ void gensvm_kernel_preprocess(struct GenModel *model, struct GenData *data)
 		return;
 	}
 
-	int i;
 	long r, n = data->n;
 	double *P = NULL,
 	       *Sigma = NULL,
@@ -78,7 +98,8 @@ void gensvm_kernel_preprocess(struct GenModel *model, struct GenData *data)
 	gensvm_kernel_compute(model, data, K);
 
 	// generate the eigen decomposition
-	r = gensvm_kernel_eigendecomp(K, n, &P, &Sigma);
+	r = gensvm_kernel_eigendecomp(K, n, model->kernel_eigen_cutoff, &P, 
+			&Sigma);
 
 	// build M and set to data (leave RAW intact)
 	gensvm_kernel_trainfactor(data, P, Sigma, r);
@@ -91,28 +112,7 @@ void gensvm_kernel_preprocess(struct GenModel *model, struct GenData *data)
 	data->Sigma = Sigma;
 
 	// write kernel params to data
-	data->kerneltype = model->kerneltype;
-
-	free(data->kernelparam);
-	data->kernelparam = NULL;
-
-	switch (model->kerneltype) {
-		case K_LINEAR:
-			break;
-		case K_POLY:
-			data->kernelparam = Calloc(double, 3);
-			for (i=0; i<3; i++)
-				data->kernelparam[i] = model->kernelparam[i];
-			break;
-		case K_RBF:
-			data->kernelparam = Calloc(double, 1);
-			data->kernelparam[0] = model->kernelparam[0];
-			break;
-		case K_SIGMOID:
-			data->kernelparam = Calloc(double, 2);
-			data->kernelparam[0] = model->kernelparam[0];
-			data->kernelparam[1] = model->kernelparam[1];
-	}
+	gensvm_kernel_copy_kernelparam_to_data(model, data);
 
 	free(K);
 	free(P);
@@ -186,9 +186,11 @@ void gensvm_kernel_compute(struct GenModel *model, struct GenData *data,
 				value = gensvm_kernel_dot_sigmoid(x1, x2,
 						model->kernelparam, data->m);
 			else {
+				// LCOV_EXCL_START
 				err("[GenSVM Error]: Unknown kernel type in "
 						"gensvm_make_kernel\n");
 				exit(EXIT_FAILURE);
+				// LCOV_EXCL_STOP
 			}
 			matrix_set(K, n, i, j, value);
 			matrix_set(K, n, j, i, value);
@@ -203,18 +205,20 @@ void gensvm_kernel_compute(struct GenModel *model, struct GenData *data,
  * Compute the reduced eigendecomposition of the kernel matrix. This uses the 
  * LAPACK function dsyevx to do the computation. Only those 
  * eigenvalues/eigenvectors are kept for which the ratio between the 
- * eigenvalue and the largest eigenvalue is larger than GENSVM_EIGEN_CUTOFF.  
- * This function uses the highest precision eigenvalues, twice the underflow 
- * threshold (see dsyevx documentation). 
+ * eigenvalue and the largest eigenvalue is larger than cutoff.  This function 
+ * uses the highest precision eigenvalues, twice the underflow threshold (see 
+ * dsyevx documentation). 
  *
  * @param[in] 		K 	the kernel matrix
  * @param[in] 		n 	the dimension of the kernel matrix
+ * @param[in] 		cutoff 	mimimum ratio of eigenvalue to largest
+ * 				eigenvalue for the eigenvector to be included
  * @param[out] 		P 	on exit contains the eigenvectors
  * @param[out] 		Sigma 	on exit contains the eigenvalues
  *
  * @return 			the number of eigenvalues kept
  */
-long gensvm_kernel_eigendecomp(double *K, long n, double **P_ret,
+long gensvm_kernel_eigendecomp(double *K, long n, double cutoff, double **P_ret,
 		double **Sigma_ret)
 {
 	int M, status, LWORK, *IWORK = NULL,
@@ -246,8 +250,10 @@ long gensvm_kernel_eigendecomp(double *K, long n, double **P_ret,
 			tempSigma, tempP, n, WORK, LWORK, IWORK, IFAIL);
 
 	if (status != 0) {
+		// LCOV_EXCL_START
 		err("[GenSVM Error]: Nonzero exit status from dsyevx.\n");
 		exit(EXIT_FAILURE);
+		// LCOV_EXCL_STOP
 	}
 
 	// Select the desired number of eigenvalues, depending on their size.
@@ -256,7 +262,7 @@ long gensvm_kernel_eigendecomp(double *K, long n, double **P_ret,
 	cutoff_idx = 0;
 
 	for (i=0; i<n; i++) {
-		if (tempSigma[i]/max_eigen > GENSVM_EIGEN_CUTOFF) {
+		if (tempSigma[i]/max_eigen > cutoff) {
 			cutoff_idx = i;
 			break;
 		}
@@ -333,9 +339,11 @@ double *gensvm_kernel_cross(struct GenModel *model, struct GenData *data_train,
 				value = gensvm_kernel_dot_sigmoid(x1, x2,
 						model->kernelparam, m);
 			else {
+				// LCOV_EXCL_START
 				err("[GenSVM Error]: Unknown kernel type in "
 						"gensvm_make_crosskernel\n");
 				exit(EXIT_FAILURE);
+				// LCOV_EXCL_STOP
 			}
 			matrix_set(K2, n_train, i, j, value);
 		}

@@ -36,13 +36,15 @@
 #include "gensvm_base.h"
 
 // function declarations
+void gensvm_kernel_copy_kernelparam_to_data(struct GenModel *model, 
+		struct GenData *data);
 void gensvm_kernel_preprocess(struct GenModel *model, struct GenData *data);
 void gensvm_kernel_postprocess(struct GenModel *model,
 	       	struct GenData *traindata, struct GenData *testdata);
 void gensvm_kernel_compute(struct GenModel *model, struct GenData *data,
 		double *K);
-long gensvm_kernel_eigendecomp(double *K, long n, double **P_ret,
-		double **Sigma_ret);
+long gensvm_kernel_eigendecomp(double *K, long n, double cutoff, 
+		double **P_ret, double **Sigma_ret);
 double *gensvm_kernel_cross(struct GenModel *model, struct GenData *data_train,
 		struct GenData *data_test);
 void gensvm_kernel_trainfactor(struct GenData *data, double *P, double *Sigma,

@@ -118,6 +118,9 @@ struct GenModel {
 	///< type of kernel used in the model
 	double *kernelparam;
 	///< array of kernel parameters, size depends on kernel type
+	double kernel_eigen_cutoff;
+	///< cutoff value for the ratio of eigenvalues in the reduced 
+	//eigendecomposition.
 };
 
 /**
