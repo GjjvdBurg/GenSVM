@@ -74,6 +74,52 @@ void gensvm_free_task(struct GenTask *t)
 }
 
 /**
+ * @brief Deepcopy a GenTask struct
+ *
+ * @details
+ * Create a deep copy of a GenTask struct. The kernelparameters are copied to 
+ * a new array. Note that the datasets belonging to the tasks are not copied, 
+ * only the pointers to the datasets.
+ *
+ * @param[in] 	t 	input GenTask struct to copy
+ *
+ * @return 		a deepcopy of the input GenTask
+ */
+struct GenTask *gensvm_copy_task(struct GenTask *t)
+{
+	struct GenTask *nt = gensvm_init_task();
+	nt->weight_idx = t->weight_idx;
+	nt->folds = t->folds;
+	nt->ID = t->ID;
+	nt->p = t->p;
+	nt->kappa = t->kappa;
+	nt->lambda = t->lambda;
+	nt->epsilon = t->epsilon;
+	nt->train_data = t->train_data;
+	nt->test_data = t->test_data;
+	nt->performance = t->performance;
+
+	nt->kerneltype = t->kerneltype;
+	if (nt->kerneltype == K_LINEAR) {
+		nt->kernelparam = NULL;
+	} else if (nt->kerneltype == K_RBF) {
+		nt->kernelparam = Malloc(double, 1);
+		nt->kernelparam[0] = t->kernelparam[0];
+	} else if (nt->kerneltype == K_POLY) {
+		nt->kernelparam = Malloc(double, 3);
+		nt->kernelparam[0] = t->kernelparam[0];
+		nt->kernelparam[1] = t->kernelparam[1];
+		nt->kernelparam[2] = t->kernelparam[2];
+	} else if (nt->kerneltype == K_SIGMOID) {
+		nt->kernelparam = Malloc(double, 2);
+		nt->kernelparam[0] = t->kernelparam[0];
+		nt->kernelparam[1] = t->kernelparam[1];
+	}
+
+	return nt;
+}
+
+/**
  * @brief Copy parameters from GenTask to GenModel
  *
  * @details
@@ -94,5 +140,19 @@ void gensvm_task_to_model(struct GenTask *task, struct GenModel *model)
 
 	// copy kernel parameters
 	model->kerneltype = task->kerneltype;
-	model->kernelparam = task->kernelparam;
+	if (model->kerneltype == K_LINEAR) {
+		model->kernelparam = NULL;
+	} else if (model->kerneltype == K_RBF) {
+		model->kernelparam = Malloc(double, 1);
+		model->kernelparam[0] = task->kernelparam[0];
+	} else if (model->kerneltype == K_POLY) {
+		model->kernelparam = Malloc(double, 3);
+		model->kernelparam[0] = task->kernelparam[0];
+		model->kernelparam[1] = task->kernelparam[1];
+		model->kernelparam[2] = task->kernelparam[2];
+	} else if (model->kerneltype == K_SIGMOID) {
+		model->kernelparam = Malloc(double, 2);
+		model->kernelparam[0] = task->kernelparam[0];
+		model->kernelparam[1] = task->kernelparam[1];
+	}
 }

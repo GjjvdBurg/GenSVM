@@ -61,7 +61,7 @@ struct GenQueue *gensvm_top_queue(struct GenQueue *q, double percentile)
 	long i, k, N = 0;
 	double boundary,
 	       *perf = Calloc(double, q->N);
-	struct GenQueue *nq = Malloc(struct GenQueue, 1);
+	struct GenQueue *nq = gensvm_init_queue();
 
 	// find the desired percentile of performance
 	for (i=0; i<q->N; i++) {
@@ -82,7 +82,7 @@ struct GenQueue *gensvm_top_queue(struct GenQueue *q, double percentile)
 	k = 0;
 	for (i=0; i<q->N; i++) {
 		if (q->tasks[i]->performance >= boundary)
-			nq->tasks[k++] = q->tasks[i];
+			nq->tasks[k++] = gensvm_copy_task(q->tasks[i]);
 	}
 	nq->N = N;
 	nq->i = 0;
@@ -257,8 +257,8 @@ void gensvm_consistency_repeats(struct GenQueue *q, long repeats,
 	// make sure no double free occurs with the copied kernelparam
 	model->kernelparam = NULL;
 	gensvm_free_model(model);
-	free(nq->tasks);
-	free(nq);
+	gensvm_free_queue(nq);
+
 	free(perf);
 	free(std);
 	free(mean);
