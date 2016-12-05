@@ -30,9 +30,6 @@
 
 #include "gensvm_debug.h"
 
-extern FILE *GENSVM_OUTPUT_FILE;
-extern FILE *GENSVM_ERROR_FILE;
-
 char *test_gensvm_optimize()
 {
 	struct GenModel *model = gensvm_init_model();
@@ -123,20 +120,55 @@ char *test_gensvm_optimize()
 	gensvm_init_V(seed_model, model, data);
 	gensvm_initialize_weights(data, model);
 
-	model->rho[0] = 0.3294151808829250;
-	model->rho[1] = 0.6047157463292797;
-	model->rho[2] = 0.7628723943431572;
-	model->rho[3] = 0.4561071643209315;
-	model->rho[4] = 0.8400578887926284;
-	model->rho[5] = 0.1390735925868357;
-	model->rho[6] = 0.3505528063594583;
-	model->rho[7] = 0.0840834388268874;
+	model->rho[0] = 0.3607870295944514;
+	model->rho[1] = 0.2049421299461539;
+	model->rho[2] = 0.0601488725348535;
+	model->rho[3] = 0.4504181439770731;
+	model->rho[4] = 0.0925063643277065;
+	model->rho[5] = 0.2634120202183680;
+	model->rho[6] = 0.8675978657103286;
+	model->rho[7] = 0.1633697022472280;
 
 	// start test code //
-	GENSVM_OUTPUT_FILE = stdout;
 	gensvm_optimize(model, data);
 
-	gensvm_print_matrix(model->V, model->m+1, model->K-1);
+	double eps = 1e-13;
+	mu_assert(fabs(matrix_get(model->V, model->K-1, 0, 0) -
+				-0.3268931274065331) < eps,
+			"Incorrect model->V at 0, 0");
+	mu_assert(fabs(matrix_get(model->V, model->K-1, 0, 1) -
+				0.1117992620472728) < eps,
+			"Incorrect model->V at 0, 1");
+	mu_assert(fabs(matrix_get(model->V, model->K-1, 0, 2) -
+				0.1988823609241294) < eps,
+			"Incorrect model->V at 0, 2");
+	mu_assert(fabs(matrix_get(model->V, model->K-1, 1, 0) -
+				1.2997452108481067) < eps,
+			"Incorrect model->V at 1, 0");
+	mu_assert(fabs(matrix_get(model->V, model->K-1, 1, 1) -
+				-0.7171806413563449) < eps,
+			"Incorrect model->V at 1, 1");
+	mu_assert(fabs(matrix_get(model->V, model->K-1, 1, 2) -
+				-0.4657948105281003) < eps,
+			"Incorrect model->V at 1, 2");
+	mu_assert(fabs(matrix_get(model->V, model->K-1, 2, 0) -
+				0.4408949033586493) < eps,
+			"Incorrect model->V at 2, 0");
+	mu_assert(fabs(matrix_get(model->V, model->K-1, 2, 1) -
+				0.0257888242538633) < eps,
+			"Incorrect model->V at 2, 1");
+	mu_assert(fabs(matrix_get(model->V, model->K-1, 2, 2) -
+				1.1285833836998647) < eps,
+			"Incorrect model->V at 2, 2");
+	mu_assert(fabs(matrix_get(model->V, model->K-1, 3, 0) -
+				-1.1983357619969028) < eps,
+			"Incorrect model->V at 3, 0");
+	mu_assert(fabs(matrix_get(model->V, model->K-1, 3, 1) -
+				-0.4872684816635944) < eps,
+			"Incorrect model->V at 3, 1");
+	mu_assert(fabs(matrix_get(model->V, model->K-1, 3, 2) -
+				-1.3711836483504121) < eps,
+			"Incorrect model->V at 3, 2");
 
 	// end test code //
 
@@ -144,7 +176,6 @@ char *test_gensvm_optimize()
 	gensvm_free_model(model);
 	gensvm_free_model(seed_model);
 
-	mu_test_missing();
 	return NULL;
 }
 

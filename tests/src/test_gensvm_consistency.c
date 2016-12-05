@@ -32,9 +32,9 @@ char *test_doublesort()
 	double a = 1.0;
 	double b = 2.0;
 
-	mu_assert(doublesort(&b, &a) == true, "Incorrect doublesort (1)");
-	mu_assert(doublesort(&a, &b) == false, "Incorrect doublesort (2)");
-	mu_assert(doublesort(&a, &a) == false, "Incorrect doublesort (3)");
+	mu_assert(gensvm_dsort(&b, &a) == true, "Incorrect doublesort (1)");
+	mu_assert(gensvm_dsort(&a, &b) == false, "Incorrect doublesort (2)");
+	mu_assert(gensvm_dsort(&a, &a) == false, "Incorrect doublesort (3)");
 
 	return NULL;
 }
@@ -122,6 +122,13 @@ char *test_top_queue()
 	return NULL;
 }
 
+char *test_consistency_repeats()
+{
+	mu_test_missing();
+
+	return NULL;
+}
+
 char *all_tests()
 {
 	mu_suite_start();
@@ -129,6 +136,7 @@ char *all_tests()
 	mu_run_test(test_percentile_1);
 	mu_run_test(test_percentile);
 	mu_run_test(test_top_queue);
+	mu_run_test(test_consistency_repeats);
 
 	return NULL;
 }

@@ -39,8 +39,8 @@
  * Read the data from the data_file. The data matrix X is augmented
  * with a column of ones, to get the matrix Z. The data is expected
  * to follow a specific format, which is specified in the @ref spec_data_file.
- * The class labels are corrected internally to correspond to the interval
- * [1 .. K], where K is the total number of classes.
+ * The class labels are checked to make sure they correspond to the interval
+ * [1 .. K], where K is the total number of classes, without any gaps.
  *
  * @todo
  * Make sure that this function allows datasets without class labels for

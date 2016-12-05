@@ -272,7 +272,7 @@ void gensvm_consistency_repeats(struct GenQueue *q, long repeats,
  * @param[in] 	elem2 	number 2
  * @returns 		comparison of number 1 larger than number 2
  */
-int doublesort(const void *elem1, const void *elem2)
+int gensvm_dsort(const void *elem1, const void *elem2)
 {
 	const double t1 = (*(double *) elem1);
 	const double t2 = (*(double *) elem2);
@@ -304,7 +304,7 @@ double gensvm_percentile(double *values, long N, double p)
 	for (i=0; i<N; i++)
 		local[i] = values[i];
 
-	qsort(local, N, sizeof(double), doublesort);
+	qsort(local, N, sizeof(double), gensvm_dsort);
 	p /= 100.0;
 	p = p*N + 0.5;
 	pi = maximum(minimum(floor(p), N-1), 1);
@@ -315,4 +315,3 @@ double gensvm_percentile(double *values, long N, double p)
 
 	return boundary;
 }
-

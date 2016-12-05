@@ -27,6 +27,8 @@ set_vector(rho);
 
 V = [t'; W];
 
+assert_matrix(V, "model->V", "model->K-1");
+
 end
 
 function set_matrix(A)
@@ -41,4 +43,15 @@ function set_vector(a)
   for i=1:numel(a)
     fprintf('A[%i] = %.16f;\n', i-1, a(i));
   end
+end
+
+function assert_matrix(A, name, cols)
+  for ii=1:size(A, 1)
+    for jj=1:size(A, 2)
+          fprintf(["mu_assert(fabs(matrix_get(%s, %s, %i, %i) -\n%.16f) <", ...
+                   " eps,\n\"Incorrect %s at %i, %i\");\n"], name, cols, ...
+                   ii-1, jj-1, A(ii, jj), name, ii-1, jj-1);
+    end
+  end
+  fprintf("\n");
 end
