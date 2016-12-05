@@ -3,7 +3,7 @@ CFLAGS=-Wall -g -rdynamic -DNDEBUG $(OPTFLAGS)
 INCLUDE=-I../include/ -I./include
 LIB=-L../lib
 
-override LDFLAGS+=-lgensvm -lm -lcblas -llapack -latlas
+override LDFLAGS+=-lm -lcblas -llapack -latlas -lgensvm
 
 TEST_SRC=$(wildcard src/test_*.c)
 TESTS=$(patsubst src/%.c,bin/%,$(TEST_SRC))

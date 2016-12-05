@@ -39,19 +39,22 @@
 void gensvm_kernel_preprocess(struct GenModel *model, struct GenData *data);
 void gensvm_kernel_postprocess(struct GenModel *model,
 	       	struct GenData *traindata, struct GenData *testdata);
-void gensvm_make_kernel(struct GenModel *model, struct GenData *data,
+void gensvm_kernel_compute(struct GenModel *model, struct GenData *data,
 		double *K);
-long gensvm_make_eigen(double *K, long n, double **P, double **Sigma);
-void gensvm_make_crosskernel(struct GenModel *model,
-		struct GenData *data_train, struct GenData *data_test,
-		double **K2);
-void gensvm_make_trainfactor(struct GenData *data, double *P, double *Sigma,
+long gensvm_kernel_eigendecomp(double *K, long n, double **P_ret,
+		double **Sigma_ret);
+double *gensvm_kernel_cross(struct GenModel *model, struct GenData *data_train,
+		struct GenData *data_test);
+void gensvm_kernel_trainfactor(struct GenData *data, double *P, double *Sigma,
 		long r);
-void gensvm_make_testfactor(struct GenData *testdata,
+void gensvm_kernel_testfactor(struct GenData *testdata,
 	       	struct GenData *traindata, double *K2);
-double gensvm_dot_rbf(double *x1, double *x2, double *kernelparam, long n);
-double gensvm_dot_poly(double *x1, double *x2, double *kernelparam, long n);
-double gensvm_dot_sigmoid(double *x1, double *x2, double *kernelparam, long n);
+double gensvm_kernel_dot_rbf(double *x1, double *x2, double *kernelparam,
+		long n);
+double gensvm_kernel_dot_poly(double *x1, double *x2, double *kernelparam,
+		long n);
+double gensvm_kernel_dot_sigmoid(double *x1, double *x2, double *kernelparam,
+		long n);
 int dsyevx(char JOBZ, char RANGE, char UPLO, int N, double *A, int LDA,
 	       	double VL, double VU, int IL, int IU, double ABSTOL,
 		int *M, double *W, double *Z, int LDZ, double *WORK, int LWORK,

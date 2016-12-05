@@ -27,16 +27,37 @@
  You should have received a copy of the GNU General Public License
  along with GenSVM. If not, see <http://www.gnu.org/licenses/>.
 
- */
+*/
 
 #include "gensvm_kernel.h"
 #include "gensvm_print.h"
+
+#ifndef GENSVM_EIGEN_CUTOFF
+ /**
+  * Mimimum ratio between an eigenvalue and the largest eigenvalue for it to 
+  * be included in the reduced eigendecomposition
+  */
+ #define GENSVM_EIGEN_CUTOFF 1e-8
+#endif
 
 /**
  * @brief Do the preprocessing steps needed to perform kernel GenSVM
  *
  * @details
- * tdb
+ * To achieve nonlinearity through kernels in GenSVM, a preprocessing step is
+ * needed. This preprocessing step computes the full kernel matrix, and an
+ * eigendecomposition of this matrix. Next, it computes a matrix @f$\textbf{M}
+ * = \textbf{P}\boldsymbol{\Sigma}@f$ which takes the role as data matrix in
+ * the optimization algorithm.
+ *
+ * @sa
+ * gensvm_kernel_compute(), gensvm_kernel_eigendecomp(), 
+ * gensvm_kernel_trainfactor(), gensvm_kernel_postprocess()
+ *
+ * @param[in] 		model 	input GenSVM model
+ * @param[in,out] 	data 	input structure with the data. On exit,
+ * 				contains the training factor in GenData::Z,
+ * 				and the original data in GenData::RAW
  *
  */
 void gensvm_kernel_preprocess(struct GenModel *model, struct GenData *data)
@@ -47,21 +68,20 @@ void gensvm_kernel_preprocess(struct GenModel *model, struct GenData *data)
 	}
 
 	int i;
-	long r,
-	     n = data->n;
+	long r, n = data->n;
 	double *P = NULL,
 	       *Sigma = NULL,
 	       *K = NULL;
 
 	// build the kernel matrix
 	K = Calloc(double, n*n);
-	gensvm_make_kernel(model, data, K);
+	gensvm_kernel_compute(model, data, K);
 
 	// generate the eigen decomposition
-	r = gensvm_make_eigen(K, n, &P, &Sigma);
+	r = gensvm_kernel_eigendecomp(K, n, &P, &Sigma);
 
 	// build M and set to data (leave RAW intact)
-	gensvm_make_trainfactor(data, P, Sigma, r);
+	gensvm_kernel_trainfactor(data, P, Sigma, r);
 
 	// Set Sigma to data->Sigma (need it again for prediction)
 	if (data->Sigma != NULL) {
@@ -98,6 +118,19 @@ void gensvm_kernel_preprocess(struct GenModel *model, struct GenData *data)
 	free(P);
 }
 
+/**
+ * @brief Compute the kernel postprocessing factor
+ *
+ * @details
+ * This function computes the postprocessing factor needed to do predictions 
+ * with kernels in GenSVM. This is a wrapper around gensvm_kernel_cross() and 
+ * gensvm_kernel_testfactor().
+ *
+ * @param[in] 		model 		a GenSVM model
+ * @param[in] 		traindata 	the training dataset
+ * @param[in,out] 	testdata 	the test dataset. On exit, GenData::Z
+ * 					contains the testfactor
+ */
 void gensvm_kernel_postprocess(struct GenModel *model,
 		struct GenData *traindata, struct GenData *testdata)
 {
@@ -107,11 +140,10 @@ void gensvm_kernel_postprocess(struct GenModel *model,
 	}
 
 	// build the cross kernel matrix between train and test
-	double *K2 = NULL;
-	gensvm_make_crosskernel(model, traindata, testdata, &K2);
+	double *K2 = gensvm_kernel_cross(model, traindata, testdata);
 
 	// generate the data matrix N = K2 * M * Sigma^{-2}
-	gensvm_make_testfactor(testdata, traindata, K2);
+	gensvm_kernel_testfactor(testdata, traindata, K2);
 
 	free(K2);
 }
@@ -120,10 +152,10 @@ void gensvm_kernel_postprocess(struct GenModel *model,
  * @brief Compute the kernel matrix
  *
  * @details
- * This function computes the kernel matrix of a data matrix based on the 
- * requested kernel type and the kernel parameters. The potential types of 
- * kernel functions are document in KernelType. This function uses a naive 
- * multiplication and computes the entire upper triangle of the kernel matrix, 
+ * This function computes the kernel matrix of a data matrix based on the
+ * requested kernel type and the kernel parameters. The potential types of
+ * kernel functions are document in KernelType. This function uses a naive
+ * multiplication and computes the entire upper triangle of the kernel matrix,
  * then copies this over to the lower triangle.
  *
  * @param[in] 	model 	a GenModel structure with the model
@@ -131,8 +163,8 @@ void gensvm_kernel_postprocess(struct GenModel *model,
  * @param[out]	K 	an nxn preallocated kernel matrix
  *
  */
-void gensvm_make_kernel(struct GenModel *model, struct GenData *data,
-	       	double *K)
+void gensvm_kernel_compute(struct GenModel *model, struct GenData *data,
+		double *K)
 {
 	long i, j;
 	long n = data->n;
@@ -145,13 +177,13 @@ void gensvm_make_kernel(struct GenModel *model, struct GenData *data,
 			x1 = &data->RAW[i*(data->m+1)+1];
 			x2 = &data->RAW[j*(data->m+1)+1];
 			if (model->kerneltype == K_POLY)
-				value = gensvm_dot_poly(x1, x2,
+				value = gensvm_kernel_dot_poly(x1, x2,
 						model->kernelparam, data->m);
 			else if (model->kerneltype == K_RBF)
-				value = gensvm_dot_rbf(x1, x2,
+				value = gensvm_kernel_dot_rbf(x1, x2,
 						model->kernelparam, data->m);
 			else if (model->kerneltype == K_SIGMOID)
-				value = gensvm_dot_sigmoid(x1, x2,
+				value = gensvm_kernel_dot_sigmoid(x1, x2,
 						model->kernelparam, data->m);
 			else {
 				err("[GenSVM Error]: Unknown kernel type in "
@@ -167,23 +199,30 @@ void gensvm_make_kernel(struct GenModel *model, struct GenData *data,
 /**
  * @brief Find the (reduced) eigendecomposition of a kernel matrix
  *
- * @todo
- * Document this function
+ * @details
+ * Compute the reduced eigendecomposition of the kernel matrix. This uses the 
+ * LAPACK function dsyevx to do the computation. Only those 
+ * eigenvalues/eigenvectors are kept for which the ratio between the 
+ * eigenvalue and the largest eigenvalue is larger than GENSVM_EIGEN_CUTOFF.  
+ * This function uses the highest precision eigenvalues, twice the underflow 
+ * threshold (see dsyevx documentation). 
  *
- * @param[in] K
- * @param[in] n
- * @param[out] P
- * @param[out] Sigma
+ * @param[in] 		K 	the kernel matrix
+ * @param[in] 		n 	the dimension of the kernel matrix
+ * @param[out] 		P 	on exit contains the eigenvectors
+ * @param[out] 		Sigma 	on exit contains the eigenvalues
  *
- * @return
+ * @return 			the number of eigenvalues kept
  */
-long gensvm_make_eigen(double *K, long n, double **P, double **Sigma)
+long gensvm_kernel_eigendecomp(double *K, long n, double **P_ret,
+		double **Sigma_ret)
 {
-	int M, status, LWORK,
-	    *IWORK = NULL,
+	int M, status, LWORK, *IWORK = NULL,
 	    *IFAIL = NULL;
 	long i, j, num_eigen, cutoff_idx;
-	double max_eigen, abstol, *WORK = NULL;
+	double max_eigen, abstol, *WORK = NULL,
+	       *Sigma = NULL,
+	       *P = NULL;
 
 	double *tempSigma = Malloc(double, n);
 	double *tempP = Malloc(double, n*n);
@@ -216,26 +255,26 @@ long gensvm_make_eigen(double *K, long n, double **P, double **Sigma)
 	max_eigen = tempSigma[n-1];
 	cutoff_idx = 0;
 
-	for (i=0; i<n; i++)
-		if (tempSigma[i]/max_eigen > 1e-8 ) {
+	for (i=0; i<n; i++) {
+		if (tempSigma[i]/max_eigen > GENSVM_EIGEN_CUTOFF) {
 			cutoff_idx = i;
 			break;
 		}
+	}
 
 	num_eigen = n - cutoff_idx;
 
-	*Sigma = Calloc(double, num_eigen);
-
+	Sigma = Calloc(double, num_eigen);
 	for (i=0; i<num_eigen; i++) {
-		(*Sigma)[i] = tempSigma[n-1 - i];
+		Sigma[i] = tempSigma[n-1 - i];
 	}
 
 	// revert P to row-major order and copy only the the columns
 	// corresponding to the selected eigenvalues
-	*P = Calloc(double, n*num_eigen);
+	P = Calloc(double, n*num_eigen);
 	for (j=n-1; j>n-1-num_eigen; j--) {
 		for (i=0; i<n; i++) {
-			(*P)[i*num_eigen + (n-1)-j] = tempP[i + j*n];
+			P[i*num_eigen + (n-1)-j] = tempP[i + j*n];
 		}
 	}
 
@@ -245,51 +284,83 @@ long gensvm_make_eigen(double *K, long n, double **P, double **Sigma)
 	free(IFAIL);
 	free(WORK);
 
+	*Sigma_ret = Sigma;
+	*P_ret = P;
+
 	return num_eigen;
 }
 
-void gensvm_make_crosskernel(struct GenModel *model,
-	       	struct GenData *data_train, struct GenData *data_test,
-	       	double **K2)
+/**
+ * @brief Compute the kernel crossproduct between two datasets
+ *
+ * @details
+ * Given a training set @f$\textbf{X}@f$ with feature space mapping 
+ * @f$\boldsymbol{\Phi}@f$ and a test set @f$\textbf{X}_2@f$ with feature 
+ * space mapping @f$\boldsymbol{\Phi}_2@f$, the crosskernel @f$\textbf{K}_2@f$ 
+ * is given by @f$\textbf{K}_2 = \boldsymbol{\Phi}_2 \boldsymbol{\Phi}'@f$.  
+ * Thus, an element in row @f$i@f$ and column @f$j@f$ in @f$\textbf{K}_2@f$ 
+ * equals the kernel product between the @f$i@f$-th row of @f$\textbf{X}_2@f$ 
+ * and the @f$j@f$-th row of @f$\textbf{X}@f$.
+ *
+ * @param[in] 	model 		the GenSVM model
+ * @param[in] 	data_train 	the training dataset
+ * @param[in] 	data_test 	the test dataset
+ *
+ * @return  	the matrix @f$\textbf{K}_2@f$
+ */
+double *gensvm_kernel_cross(struct GenModel *model, struct GenData *data_train,
+		struct GenData *data_test)
 {
 	long i, j;
 	long n_train = data_train->n;
 	long n_test = data_test->n;
 	long m = data_test->m;
-	double value;
-	double *x1 = NULL,
-	       *x2 = NULL;
-
-	*K2 = Calloc(double, n_test*n_train);
+	double value, *x1 = NULL,
+	       *x2 = NULL,
+	       *K2 = Calloc(double, n_test * n_train);
 
 	for (i=0; i<n_test; i++) {
 		for (j=0; j<n_train; j++) {
 			x1 = &data_test->RAW[i*(m+1)+1];
 			x2 = &data_train->RAW[j*(m+1)+1];
 			if (model->kerneltype == K_POLY)
-				value = gensvm_dot_poly(x1, x2,
-						model->kernelparam,
-					       	m);
+				value = gensvm_kernel_dot_poly(x1, x2,
+						model->kernelparam, m);
 			else if (model->kerneltype == K_RBF)
-				value = gensvm_dot_rbf(x1, x2,
-						model->kernelparam,
-					       	m);
+				value = gensvm_kernel_dot_rbf(x1, x2,
+						model->kernelparam, m);
 			else if (model->kerneltype == K_SIGMOID)
-				value = gensvm_dot_sigmoid(x1, x2,
-						model->kernelparam,
-					       	m);
+				value = gensvm_kernel_dot_sigmoid(x1, x2,
+						model->kernelparam, m);
 			else {
 				err("[GenSVM Error]: Unknown kernel type in "
 						"gensvm_make_crosskernel\n");
 				exit(EXIT_FAILURE);
 			}
-			matrix_set((*K2), n_train, i, j, value);
+			matrix_set(K2, n_train, i, j, value);
 		}
 	}
+	return K2;
 }
 
-void gensvm_make_trainfactor(struct GenData *data, double *P, double *Sigma,
-	       	long r)
+/**
+ * @brief Compute the training factor as part of kernel preprocessing
+ *
+ * @details
+ * This function computes the matrix product @f$\textbf{M} = 
+ * \textbf{P}\boldsymbol{\Sigma}@f$ and stores the result in GenData::Z, 
+ * preceded by a column of ones. It also sets GenData::r to the number of 
+ * eigenvectors that were includedin P and Sigma. Note that P and Sigma 
+ * correspond to the reduced eigendecomposition of the kernel matrix.
+ *
+ * @param[in,out] 	data 	a GenData structure. On exit, GenData::Z and
+ * 				GenData::r are updated as described above.
+ * @param[in] 		P 	the eigenvectors
+ * @param[in] 		Sigma 	the eigenvalues
+ * @param[in] 		r 	the number of eigenvalues and eigenvectors
+ */
+void gensvm_kernel_trainfactor(struct GenData *data, double *P, double *Sigma,
+		long r)
 {
 	long i, j, n = data->n;
 	double value;
@@ -311,12 +382,29 @@ void gensvm_make_trainfactor(struct GenData *data, double *P, double *Sigma,
 	data->r = r;
 }
 
-void gensvm_make_testfactor(struct GenData *testdata,
-	       	struct GenData *traindata, double *K2)
+/**
+ * @brief Calculate the matrix product for the testfactor
+ *
+ * @details
+ * To predict class labels when kernels are used, a transformation of the
+ * testdata has to be performed to get the simplex space vectors. This
+ * transformation is based on the matrix @f$\textbf{K}_2@f$ (as calculated by
+ * gensvm_make_crosskernel()) and the matrices @f$\textbf{M} = 
+ * \textbf{P}*\boldsymbol{\Sigma}@f$) and @f$\boldsymbol{\Sigma}@f$. The 
+ * testfactor is equal to @f$\textbf{K}_2 \textbf{M} 
+ * \boldsymbol{\Sigma}^{-2}@f$.
+ *
+ * @param[out] 	testdata 	a GenData struct with the testdata, contains
+ * 				the testfactor in GenData::Z on exit preceded 
+ * 				by a column of ones.
+ * @param[in] 	traindata 	a GenData struct with the training data
+ * @param[in] 	K2 		crosskernel between the train and test data
+ */
+void gensvm_kernel_testfactor(struct GenData *testdata,
+		struct GenData *traindata, double *K2)
 {
 	long n1, n2, r, i, j;
-	double value,
-	       *N = NULL,
+	double value, *N = NULL,
 	       *M = NULL;
 
 	n1 = traindata->n;
@@ -328,10 +416,12 @@ void gensvm_make_testfactor(struct GenData *testdata,
 
 	// copy M from traindata->Z because we need it in dgemm without column
 	// of 1's.
-	for (i=0; i<n1; i++)
-		for (j=0; j<r; j++)
-			matrix_set(M, r, i, j,
-				       	matrix_get(traindata->Z, r+1, i, j+1));
+	for (i=0; i<n1; i++) {
+		for (j=0; j<r; j++) {
+			value = matrix_get(traindata->Z, r+1, i, j+1);
+			matrix_set(M, r, i, j, value);
+		}
+	}
 
 	// Multiply K2 with M and store in N
 	cblas_dgemm(CblasRowMajor, CblasNoTrans, CblasNoTrans, n2, r, n1, 1.0,
@@ -377,7 +467,8 @@ void gensvm_make_testfactor(struct GenData *testdata,
  * @param[in] 	n 		length of the vectors x1 and x2
  * @returns  			kernel evaluation
  */
-double gensvm_dot_rbf(double *x1, double *x2, double *kernelparam, long n)
+double gensvm_kernel_dot_rbf(double *x1, double *x2, double *kernelparam,
+		long n)
 {
 	long i;
 	double value = 0.0;
@@ -405,15 +496,13 @@ double gensvm_dot_rbf(double *x1, double *x2, double *kernelparam, long n)
  * @param[in] 	n 		length of the vectors x1 and x2
  * @returns 			kernel evaluation
  */
-double gensvm_dot_poly(double *x1, double *x2, double *kernelparam, long n)
+double gensvm_kernel_dot_poly(double *x1, double *x2, double *kernelparam,
+		long n)
 {
-	long i;
-	double value = 0.0;
-	for (i=0; i<n; i++)
-		value += x1[i]*x2[i];
+	double value = cblas_ddot(n, x1, 1, x2, 1);
 	value *= kernelparam[0];
 	value += kernelparam[1];
-	return pow(value, ((int) kernelparam[2]));
+	return pow(value, kernelparam[2]);
 }
 
 /**
@@ -433,12 +522,10 @@ double gensvm_dot_poly(double *x1, double *x2, double *kernelparam, long n)
  * @param[in] 	n 		length of the vectors x1 and x2
  * @returns 			kernel evaluation
  */
-double gensvm_dot_sigmoid(double *x1, double *x2, double *kernelparam, long n)
+double gensvm_kernel_dot_sigmoid(double *x1, double *x2, double *kernelparam,
+		long n)
 {
-	long i;
-	double value = 0.0;
-	for (i=0; i<n; i++)
-		value += x1[i]*x2[i];
+	double value = cblas_ddot(n, x1, 1, x2, 1);
 	value *= kernelparam[0];
 	value += kernelparam[1];
 	return tanh(value);
@@ -454,18 +541,17 @@ double gensvm_dot_sigmoid(double *x1, double *x2, double *kernelparam, long n)
  * See the LAPACK documentation at:
  * http://www.netlib.org/lapack/explore-html/d2/d97/dsyevx_8f.html
  *
- *
  */
 int dsyevx(char JOBZ, char RANGE, char UPLO, int N, double *A, int LDA,
-	       	double VL, double VU, int IL, int IU, double ABSTOL, int *M,
+		double VL, double VU, int IL, int IU, double ABSTOL, int *M,
 		double *W, double *Z, int LDZ, double *WORK, int LWORK,
 		int *IWORK, int *IFAIL)
 {
 	extern void dsyevx_(char *JOBZ, char *RANGE, char *UPLO, int *Np,
 			double *A, int *LDAp, double *VLp, double *VUp,
-		       	int *ILp, int *IUp, double *ABSTOLp, int *M,
+			int *ILp, int *IUp, double *ABSTOLp, int *M,
 			double *W, double *Z, int *LDZp, double *WORK,
-		       	int *LWORKp, int *IWORK, int *IFAIL, int *INFOp);
+			int *LWORKp, int *IWORK, int *IFAIL, int *INFOp);
 	int INFO;
 	dsyevx_(&JOBZ, &RANGE, &UPLO, &N, A, &LDA, &VL, &VU, &IL, &IU, &ABSTOL,
 			M, W, Z, &LDZ, WORK, &LWORK, IWORK, IFAIL, &INFO);
