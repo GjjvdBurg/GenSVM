@@ -28,8 +28,6 @@
 #include "gensvm_optimize.h"
 #include "gensvm_init.h"
 
-#include "gensvm_debug.h"
-
 char *test_gensvm_optimize()
 {
 	struct GenModel *model = gensvm_init_model();

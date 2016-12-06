@@ -119,11 +119,12 @@ void gensvm_init_V(struct GenModel *from_model,
 		free(col_min);
 		free(col_max);
 	} else {
-		for (i=0; i<m+1; i++)
+		for (i=0; i<m+1; i++) {
 			for (j=0; j<K-1; j++) {
 				value = matrix_get(from_model->V, K-1, i, j);
 				matrix_set(to_model->V, K-1, i, j, value);
 			}
+		}
 	}
 }
 
