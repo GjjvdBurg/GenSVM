@@ -48,24 +48,45 @@
 #include <time.h>
 #include <cblas.h>
 
+/**
+ * Maximum line length of files that are read into GenSVM.
+ */
 #define MAX_LINE_LENGTH 1024
 
 #ifndef MIN_MAX_DEFINE
-#define MIN_MAX_DEFINE
-#define maximum(a, b) (a) > (b) ? (a) : (b)
-#define minimum(a, b) (a) < (b) ? (a) : (b)
+  /**
+   * Flag to check if minimum/maximum macro's are already defined. This can be 
+   * useful when linking.
+   */
+  #define MIN_MAX_DEFINE
+  /**
+   * Macro for taking the maximum of two arguments.
+   */
+  #define maximum(a, b) (a) > (b) ? (a) : (b)
+  /**
+   * Macro for taking the minimum of two arguments.
+   */
+  #define minimum(a, b) (a) < (b) ? (a) : (b)
 #endif
 
-// Set a matrix element (RowMajor)
+/**
+ * Macro for setting a matrix element (RowMajor order)
+ */
 #define matrix_set(M, cols, i, j, val) M[(i)*(cols)+j] = val
 
-// Get a matrix element (RowMajor)
+/**
+ * Macro for getting a matrix element (RowMajor order)
+ */
 #define matrix_get(M, cols, i, j) M[(i)*(cols)+j]
 
-// Add to a matrix element (RowMajor)
+/**
+ * Macro for adding to a matrix element (RowMajor order)
+ */
 #define matrix_add(M, cols, i, j, val) M[(i)*(cols)+j] += val
 
-// Multiply a matrix element (RowMajor)
+/**
+ * Macro for multiplying a matrix element (RowMajor order)
+ */
 #define matrix_mul(M, cols, i, j, val) M[(i)*(cols)+j] *= val
 
 #endif

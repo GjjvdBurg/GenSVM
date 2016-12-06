@@ -32,6 +32,17 @@
 #include "gensvm_kernel.h"
 #include "gensvm_print.h"
 
+/**
+ * @brief Copy the kernelparameters from GenModel to GenData
+ *
+ * @details
+ * This is a little utility function to copy the kernel type and kernel 
+ * parameters from a GenModel struct to a GenData struct.
+ *
+ * @param[in] 	 model 	a GenModel struct
+ * @param[in] 	 data 	a GenData struct
+ *
+ */
 void gensvm_kernel_copy_kernelparam_to_data(struct GenModel *model, 
 		struct GenData *data)
 {
@@ -209,12 +220,13 @@ void gensvm_kernel_compute(struct GenModel *model, struct GenData *data,
  * uses the highest precision eigenvalues, twice the underflow threshold (see 
  * dsyevx documentation). 
  *
- * @param[in] 		K 	the kernel matrix
- * @param[in] 		n 	the dimension of the kernel matrix
- * @param[in] 		cutoff 	mimimum ratio of eigenvalue to largest
- * 				eigenvalue for the eigenvector to be included
- * @param[out] 		P 	on exit contains the eigenvectors
- * @param[out] 		Sigma 	on exit contains the eigenvalues
+ * @param[in] 		K 		the kernel matrix
+ * @param[in] 		n 		the dimension of the kernel matrix
+ * @param[in] 		cutoff 		mimimum ratio of eigenvalue to largest
+ * 					eigenvalue for the eigenvector to be 
+ * 					included
+ * @param[out] 		P_ret 		on exit contains the eigenvectors
+ * @param[out] 		Sigma_ret 	on exit contains the eigenvalues
  *
  * @return 			the number of eigenvalues kept
  */

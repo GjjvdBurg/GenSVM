@@ -31,6 +31,16 @@
 
 #include "gensvm_grid.h"
 
+/**
+ * @brief Initialize a GenGrid structure
+ *
+ * @brief
+ * This function is used to initialize a GenGrid struct, and set its default 
+ * parameters. A pointer to the generated struct is returned.
+ *
+ * @return  	initialized GenGrid struct
+ *
+ */
 struct GenGrid *gensvm_init_grid()
 {
 	struct GenGrid *grid = Malloc(struct GenGrid, 1);
@@ -65,6 +75,16 @@ struct GenGrid *gensvm_init_grid()
 	return grid;
 }
 
+/**
+ * @brief Free a GenGrid structure
+ *
+ * @details
+ * This function frees all elements of a GenGrid structure, including the 
+ * GenGrid structure itself. The provided argument is set to NULL on exit.
+ *
+ * @param[in] 	grid 	a GenGrid struct to free
+ *
+ */
 void gensvm_free_grid(struct GenGrid *grid)
 {
 	free(grid->weight_idxs);

@@ -535,6 +535,19 @@ void gensvm_get_ZAZ_ZB_sparse(struct GenModel *model, struct GenData *data,
 }
 
 
+/**
+ * @brief Wrapper around calculation of Z'*A*Z and Z'*B for sparse and dense
+ *
+ * @details
+ * This is a wrapper around gensvm_get_ZAZ_ZB_dense() and 
+ * gensvm_get_ZAZ_ZB_sparse(). See the documentation of those functions for 
+ * more info.
+ *
+ * @param[in]	 model 	a GenModel struct
+ * @param[in]	 data 	a GenData struct
+ * @param[in]	 work 	a GenWork struct
+ *
+ */
 void gensvm_get_ZAZ_ZB(struct GenModel *model, struct GenData *data,
 		struct GenWork *work)
 {

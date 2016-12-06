@@ -96,32 +96,34 @@ struct GenQueue *gensvm_top_queue(struct GenQueue *q, double percentile)
  * configuration
  *
  * @details
- * The best performing tasks in the supplied GenQueue are found by taking those
- * GenTask structs that have a performance greater or equal to the 95% percentile
- * of the performance of all tasks. These tasks are then gathered in a new
- * GenQueue. For each of the tasks in this new GenQueue the cross validation run is
- * repeated a number of times.
+ * The best performing tasks in the supplied GenQueue are found by taking 
+ * those GenTask structs that have a performance greater or equal to the given 
+ * percentile of the performance of all tasks. These tasks are then gathered 
+ * in a new GenQueue. For each of the tasks in this new GenQueue the cross 
+ * validation run is repeated a number of times.
  *
- * For each of the GenTask configurations that are repeated the mean performance,
- * standard deviation of the performance and the mean computation time are
- * reported.
+ * For each of the GenTask configurations that are repeated the mean 
+ * performance, standard deviation of the performance and the mean computation 
+ * time are reported.
  *
- * Finally, the overall best tasks are written to the specified output. These
- * tasks are selected to have both the highest mean performance, as well as the
- * smallest standard deviation in their performance. This is done as follows.
- * First the 99th percentile of task performance and the 1st percentile of
- * standard deviation is calculated. If a task exists for which the mean
- * performance of the repeats and the standard deviation equals these values
- * respectively, this task is found to be the best and is written to the
- * output. If no such task exists, the 98th percentile of performance and the
- * 2nd percentile of standard deviation is considered. This is repeated until
- * an interval is found which contains tasks. If one or more tasks are found,
- * this loop stops.
+ * Finally, the overall best tasks are written to the specified output. These 
+ * tasks are selected to have both the highest mean performance, as well as 
+ * the smallest standard deviation in their performance. This is done as 
+ * follows.  First the 99th percentile of task performance and the 1st 
+ * percentile of standard deviation is calculated. If a task exists for which 
+ * the mean performance of the repeats and the standard deviation equals these 
+ * values respectively, this task is found to be the best and is written to 
+ * the output. If no such task exists, the 98th percentile of performance and 
+ * the 2nd percentile of standard deviation is considered. This is repeated 
+ * until an interval is found which contains tasks. If one or more tasks are 
+ * found, this loop stops.
  *
  * @param[in] 	q 		GenQueue of GenTask structs which have already been
  * 				run and have a GenTask::performance value
  * @param[in] 	repeats 	Number of times to repeat the best
  * 				configurations for consistency
+ * @param[in] 	percentile 	percentile of performance to determine which
+ * 				tasks to repeat
  */
 void gensvm_consistency_repeats(struct GenQueue *q, long repeats,
 		double percentile)

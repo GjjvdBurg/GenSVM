@@ -66,28 +66,52 @@
  */
 struct GenGrid {
 	TrainType traintype;
+	///< type of training to use
 	KernelType kerneltype;
+	///< type of kernel to use throughout training
 	long folds;
+	///< number of folds in cross validation
 	long repeats;
+	///< number of repeats to be done after the grid search to find the
+	///< parameter set with the most consistent high performance
 	double percentile;
+	///< percentile to use for the consistency repeats
 	long Np;
+	///< size of the array of p values
 	long Nl;
+	///< size of the array of lambda values
 	long Nk;
+	///< size of the array of kappa values
 	long Ne;
+	///< size of the array of epsilon values
 	long Nw;
+	///< size of the array of weight_idx values
 	long Ng;
+	///< size of the array of gamma values
 	long Nc;
+	///< size of the array of coef values
 	long Nd;
+	///< size of the array of degree values
 	int *weight_idxs;
+	///< array of weight_idxs
 	double *ps;
+	///< array of p values
 	double *lambdas;
+	///< array of lambda values
 	double *kappas;
+	///< array of kappa values
 	double *epsilons;
+	///< array of epsilon values
 	double *gammas;
+	///< array of gamma values
 	double *coefs;
+	///< array of coef values
 	double *degrees;
+	///< array of degree values
 	char *train_data_file;
+	///< filename of train data file
 	char *test_data_file;
+	///< filename of test data file
 };
 
 // function declarations

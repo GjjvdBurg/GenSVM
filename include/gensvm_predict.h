@@ -38,10 +38,6 @@
 // function declarations
 void gensvm_predict_labels(struct GenData *testdata,
 	       	struct GenModel *model, long *predy);
-void gensvm_predict_labels_dense(struct GenData *testdata,
-		struct GenModel *model, long *predy);
-void gensvm_predict_labels_sparse(struct GenData *testdata,
-		struct GenModel *model, long *predy);
 double gensvm_prediction_perf(struct GenData *data, long *perdy);
 
 #endif

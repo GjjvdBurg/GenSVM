@@ -33,45 +33,78 @@
 #include "gensvm_train.h"
 #include "gensvm_predict.h"
 
+/**
+ * Minimal number of command line arguments
+ */
 #define MINARGS 2
 
 extern FILE *GENSVM_OUTPUT_FILE;
 extern FILE *GENSVM_ERROR_FILE;
 
 // function declarations
-void exit_with_help();
+void exit_with_help(char **argv);
 void parse_command_line(int argc, char **argv, struct GenModel *model,
 		char **model_inputfile, char **training_inputfile,
 		char **testing_inputfile, char **model_outputfile,
 		char **prediction_outputfile);
 
-void exit_with_help()
+/**
+ * @brief Help function
+ *
+ * @details
+ * Print help for this program and exit. Note that the VERSION is defined in 
+ * the Makefile.
+ *
+ * @param[in] 	argv 	command line arguments
+ *
+ */
+void exit_with_help(char **argv)
 {
 	printf("This is GenSVM, version %1.1f\n\n", VERSION);
-	printf("Usage: ./gensvm [options] training_data [test_data]\n");
+	printf("Usage: %s [options] training_data [test_data]\n\n", argv[0]);
 	printf("Options:\n");
-	printf("-c coef : coefficient for the polynomial and sigmoid kernel\n");
-	printf("-d degree : degree for the polynomial kernel\n");
-	printf("-e epsilon : set the value of the stopping criterion\n");
-	printf("-g gamma : parameter for the rbf, polynomial or sigmoid "
-			"kernel\n");
-	printf("-h | -help : print this help.\n");
-	printf("-k kappa : set the value of kappa used in the Huber hinge\n");
-	printf("-l lambda : set the value of lambda (lambda > 0)\n");
-	printf("-s seed_model_file : use previous model as seed for V\n");
-	printf("-m model_output_file : write model output to file\n");
+	printf("--------\n");
+	printf("-c coef              : coefficient for the polynomial and "
+			"sigmoid kernel\n");
+	printf("-d degree            : degree for the polynomial kernel\n");
+	printf("-e epsilon           : set the value of the stopping "
+			"criterion\n");
+	printf("-g gamma             : parameter for the rbf, polynomial or "
+			"sigmoid kernel\n");
+	printf("-h | -help           : print this help.\n");
+	printf("-k kappa             : set the value of kappa used in the "
+			"Huber hinge\n");
+	printf("-l lambda            : set the value of lambda "
+			"(lambda > 0)\n");
+	printf("-s seed_model_file   : use previous model as seed for V\n");
+	printf("-m model_output_file : write model output to file "
+			"(not saved if no file provided)\n");
 	printf("-o prediction_output : write predictions of test data to "
-			"file\n");
-	printf("-p p-value : set the value of p in the lp norm "
+			"file (uses stdout if not provided)\n");
+	printf("-p p-value           : set the value of p in the lp norm "
 			"(1.0 <= p <= 2.0)\n");
-	printf("-q : quiet mode (no output, not even errors!)\n");
-	printf("-r rho : choose the weigth specification (1 = unit, 2 = "
-			"group)\n");
-	printf("-t type: kerneltype (0=LINEAR, 1=POLY, 2=RBF, 3=SIGMOID)\n");
+	printf("-q                   : quiet mode (no output, not even "
+			"errors!)\n");
+	printf("-r rho               : choose the weigth specification "
+			"(1 = unit, 2 = group)\n");
+	printf("-t type              : kerneltype (0=LINEAR, 1=POLY, 2=RBF, "
+			"3=SIGMOID)\n");
+	printf("\n");
 
 	exit(EXIT_FAILURE);
 }
 
+/**
+ * @brief Main interface function for GenSVMtraintest
+ *
+ * @details
+ * Main interface for the GenSVMtraintest commandline program.
+ *
+ * @param[in] 	argc 	number of command line arguments
+ * @param[in] 	argv 	array of command line arguments
+ *
+ * @return 		exit status
+ */
 int main(int argc, char **argv)
 {
 	long i, *predy = NULL;
@@ -90,7 +123,9 @@ int main(int argc, char **argv)
 
 	if (argc < MINARGS || gensvm_check_argv(argc, argv, "-help")
 		       	|| gensvm_check_argv_eq(argc, argv, "-h"))
-		exit_with_help();
+		exit_with_help(argv);
+
+	// parse command line arguments
 	parse_command_line(argc, argv, model, &model_inputfile,
 		       	&training_inputfile, &testing_inputfile,
 		       	&model_outputfile, &prediction_outputfile);
@@ -162,6 +197,25 @@ int main(int argc, char **argv)
 	return 0;
 }
 
+/**
+ * @brief Parse the command line arguments
+ *
+ * @details
+ * For a full overview of the command line arguments and their meaning see 
+ * exit_with_help(). This function furthermore sets the default output streams 
+ * to stdout/stderr, and initializes the kernel parameters if none are 
+ * supplied: gamma = 1.0, degree = 2.0, coef = 0.0.
+ *
+ * @param[in] 	 argc 			number of command line arguments
+ * @param[in] 	 argv 			array of command line arguments
+ * @param[in] 	 model 			initialized GenModel struct
+ * @param[out] 	 model_inputfile 	filename for the seed model
+ * @param[out] 	 training_inputfile 	filename for the training data
+ * @param[out] 	 testing_inputfile 	filename for the test data
+ * @param[out] 	 model_outputfile 	filename for the output model
+ * @param[out] 	 prediction_outputfile 	filename for the predictions
+ *
+ */
 void parse_command_line(int argc, char **argv, struct GenModel *model,
 		char **model_inputfile, char **training_inputfile,
 	       	char **testing_inputfile, char **model_outputfile,
@@ -179,7 +233,7 @@ void parse_command_line(int argc, char **argv, struct GenModel *model,
 	for (i=1; i<argc; i++) {
 		if (argv[i][0] != '-') break;
 		if (++i>=argc) {
-			exit_with_help();
+			exit_with_help(argv);
 		}
 		switch (argv[i-1][1]) {
 			case 'c':
@@ -235,11 +289,11 @@ void parse_command_line(int argc, char **argv, struct GenModel *model,
 				// otherwise you can't debug cmdline flags.
 				fprintf(stderr, "Unknown option: -%c\n",
 						argv[i-1][1]);
-				exit_with_help();
+				exit_with_help(argv);
 		}
 	}
 	if (i >= argc)
-		exit_with_help();
+		exit_with_help(argv);
 
 	(*training_inputfile) = Malloc(char, strlen(argv[i])+1);
 	strcpy((*training_inputfile), argv[i]);

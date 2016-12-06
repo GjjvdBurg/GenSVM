@@ -32,12 +32,32 @@
 
 #include <stddef.h>
 
+/**
+ * Wrapper macro for mycalloc(). This macro uses the __FILE__ and __LINE__ 
+ * standard macros to fill in some of the arguments to mycalloc(). This macro 
+ * should be used when writing code, not mycalloc().
+ */
 #define Calloc(type, size) \
 	mycalloc(__FILE__, __LINE__, size, sizeof(type))
+
+/**
+ * Wrapper macro for mymalloc(). This macro uses the __FILE__ and __LINE__ 
+ * standard macros to fill in some of the arguments to mymalloc(). This macro 
+ * should be used when writing code, not mymalloc().
+ */
 #define Malloc(type, size) \
 	mymalloc(__FILE__, __LINE__, (size)*sizeof(type))
+/**
+ * Wrapper macro for myrealloc(). This macro uses the __FILE__ and __LINE__ 
+ * standard macros to fill in some of the arguments to myrealloc(). This macro 
+ * should be used when writing code, not myrealloc().
+ */
 #define Realloc(var, type, size) \
 	myrealloc(__FILE__, __LINE__, (size)*sizeof(type), var)
+/**
+ * Wrapper macro for memset(). Since memset is only used to zero a matrix, 
+ * this macro is defined.
+ */
 #define Memset(var, type, size) \
 	memset(var, 0, (size)*sizeof(type))
 

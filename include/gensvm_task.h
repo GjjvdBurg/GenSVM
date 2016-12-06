@@ -45,29 +45,41 @@
  * @param lambda 	parameter for the GenModel
  * @param epsilon 	parameter for the GenModel
  * @param kerneltype 	parameter for the GenModel
- * @param *kernelparam parameters for the GenModel
- * @param *train_data 	pointer to the training data
- * @param *test_data 	pointer to the test data (if any)
+ * @param kernelparam 	kernel parameters for the GenModel
+ * @param train_data 	pointer to the training data
+ * @param test_data 	pointer to the test data (if any)
  * @param performance 	performance after cross validation
  */
 struct GenTask {
 	KernelType kerneltype;
+	///< kerneltype parameter for the GenModel
 	int weight_idx;
+	///< weight_idx parameter for the GenModel
 	long folds;
+	///< number of folds in cross validation
 	long ID;
+	///< numeric id of the task in the queue
 	double p;
+	///< p parameter for the GenModel
 	double kappa;
+	///< kappa parameter for the GenModel
 	double lambda;
+	///< lambda parameter for the GenModel
 	double epsilon;
+	///< epsilon parameter for the GenModel
 	double *kernelparam;
+	///< kernelparam parameters for the GenModel
 	struct GenData *train_data;
+	///< pointer to the training data
 	struct GenData *test_data;
+	///< pointer to the test data (if any)
 	double performance;
+	///< performance after cross validation
 };
 
 struct GenTask *gensvm_init_task();
-struct GenTask *gensvm_copy_task();
-void gensvm_free_task(struct GenTask *task);
+struct GenTask *gensvm_copy_task(struct GenTask *t);
+void gensvm_free_task(struct GenTask *t);
 void gensvm_task_to_model(struct GenTask *task, struct GenModel *model);
 
 #endif

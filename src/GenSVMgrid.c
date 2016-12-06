@@ -42,23 +42,33 @@
 #include "gensvm_gridsearch.h"
 #include "gensvm_consistency.h"
 
+/**
+ * Minimal number of command line arguments
+ */
 #define MINARGS 2
 
 extern FILE *GENSVM_OUTPUT_FILE;
 extern FILE *GENSVM_ERROR_FILE;
 
 // function declarations
-void exit_with_help();
+void exit_with_help(char **argv);
 void parse_command_line(int argc, char **argv, char *input_filename);
 void read_grid_from_file(char *input_filename, struct GenGrid *grid);
 
 /**
  * @brief Help function
+ *
+ * @details
+ * Print help for this program and exit. Note that VERSION is provided by the 
+ * Makefile.
+ *
+ * @param[in] 	argv 	command line arguments
+ *
  */
-void exit_with_help()
+void exit_with_help(char **argv)
 {
 	printf("This is GenSVM, version %1.1f\n\n", VERSION);
-	printf("Usage: trainGenSVMdataset [options] grid_file\n");
+	printf("Usage: %s [options] grid_file\n", argv[0]);
 	printf("Options:\n");
 	printf("-h | -help : print this help.\n");
 	printf("-q : quiet mode (no output, not even errors!)\n");
@@ -67,7 +77,7 @@ void exit_with_help()
 }
 
 /**
- * @brief Main interface function for trainGenSVMdataset
+ * @brief Main interface function for GenSVMgrid
  *
  * @details
  * Main interface for the command line program. A given grid file which
@@ -81,6 +91,8 @@ void exit_with_help()
  * @param[in] 	argc 	number of command line arguments
  * @param[in] 	argv 	array of command line arguments
  *
+ * @return 		exit status
+ *
  */
 int main(int argc, char **argv)
 {
@@ -93,7 +105,7 @@ int main(int argc, char **argv)
 
 	if (argc < MINARGS || gensvm_check_argv(argc, argv, "-help")
 			|| gensvm_check_argv_eq(argc, argv, "-h") )
-		exit_with_help();
+		exit_with_help(argv);
 	parse_command_line(argc, argv, input_filename);
 
 	note("Reading grid file\n");
@@ -153,7 +165,7 @@ void parse_command_line(int argc, char **argv, char *input_filename)
 	for (i=1; i<argc; i++) {
 		if (argv[i][0] != '-') break;
 		if (++i>=argc)
-			exit_with_help();
+			exit_with_help(argv);
 		switch (argv[i-1][1]) {
 			case 'q':
 				GENSVM_OUTPUT_FILE = NULL;
@@ -163,16 +175,28 @@ void parse_command_line(int argc, char **argv, char *input_filename)
 			default:
 				fprintf(stderr, "Unknown option: -%c\n",
 						argv[i-1][1]);
-				exit_with_help();
+				exit_with_help(argv);
 		}
 	}
 
 	if (i >= argc)
-		exit_with_help();
+		exit_with_help(argv);
 
 	strcpy(input_filename, argv[i]);
 }
 
+/**
+ * @brief Parse the kernel string from the training file
+ *
+ * @details
+ * This is a utility function for the read_grid_from_file() function, to keep 
+ * the main code a bit shorter. It reads the line from the given buffer and 
+ * returns the corresponding KernelType.
+ * 
+ * @param[in] 	kernel_line 	line from the file with the kernel
+ * 				specification
+ * @return 	the corresponding kerneltype
+ */
 KernelType parse_kernel_str(char *kernel_line)
 {
 	if (str_endswith(kernel_line, "LINEAR\n")) {
@@ -186,7 +210,7 @@ KernelType parse_kernel_str(char *kernel_line)
 	} else {
 		fprintf(stderr, "Unknown kernel specified on line: %s\n",
 				kernel_line);
-		exit(1);
+		exit(EXIT_FAILURE);
 	}
 }
 

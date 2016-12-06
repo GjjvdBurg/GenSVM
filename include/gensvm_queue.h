@@ -40,14 +40,17 @@
  * This struct is basically just an array of pointers to Task instances,
  * with a length and an index of the current task.
  *
- * @param **tasks 	array of pointers to Task structs
+ * @param tasks 	array of pointers to Task structs
  * @param N 		size of task array
  * @param i 		index used for keeping track of the queue
  */
 struct GenQueue {
 	struct GenTask **tasks;
+	///< array of pointers to Task structs
 	long N;
+	///< size of task array
 	long i;
+	///< index used for keeping track of the queue
 };
 
 // function declarations

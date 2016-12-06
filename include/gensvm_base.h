@@ -42,11 +42,12 @@
  * @param K 		number of classes
  * @param n 		number of instances
  * @param m 		number of predictors
- * @param *y 		pointer to vector of class labels
- * @param *Z 		pointer to augmented data matrix
- * @param *spZ 		pointer to the sparse augmented data matrix
- * @param *RAW 		pointer to augmented raw data matrix
- * @param *J 		pointer to regularization vector
+ * @param y 		pointer to vector of class labels
+ * @param Z 		pointer to augmented data matrix
+ * @param spZ 		pointer to the sparse augmented data matrix
+ * @param RAW 		pointer to augmented raw data matrix
+ * @param J 		pointer to regularization vector
+ * @param Sigma 	eigenvalues from the reduced eigendecomposition
  * @param kerneltype 	kerneltype used in GenData::Z
  * @param *kernelparam 	kernel parameters used in GenData::Z
  *
@@ -70,8 +71,13 @@ struct GenData {
 	double *RAW;
 	///< augmented raw data matrix
 	double *Sigma;
+	///< eigenvalues from the reduced eigendecomposition
 	KernelType kerneltype;
+	///< kerneltype used to generate the kernel corresponding to the data 
+	///< in Z
  	double *kernelparam;
+	///< kernelparameters used to generate the kernel corresponding to the 
+	///< data in Z
 };
 
 /**

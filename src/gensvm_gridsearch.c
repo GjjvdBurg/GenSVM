@@ -350,8 +350,11 @@ void gensvm_train_queue(struct GenQueue *q)
  * parameters differ with the specified kernel, this function writes a
  * parameter string depending on which kernel is used.
  *
- * @param[in] 	task 	the GenTask specified
- * @param[in] 	N 	total number of tasks
+ * @param[in] 	task 		the GenTask specified
+ * @param[in] 	N 		total number of tasks
+ * @param[in] 	perf 		performance of the current task
+ * @param[in] 	duration 	time duration of the current task
+ * @param[in] 	current_max 	current best performance
  *
  */
 void gensvm_gridsearch_progress(struct GenTask *task, long N, double perf, 
