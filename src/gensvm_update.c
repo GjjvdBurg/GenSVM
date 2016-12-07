@@ -555,11 +555,10 @@ void gensvm_get_ZAZ_ZB(struct GenModel *model, struct GenData *data,
 {
 	gensvm_reset_work(work);
 
-	if (data->spZ == NULL) {
-		gensvm_get_ZAZ_ZB_dense(model, data, work);
-	} else {
+	if (data->Z == NULL)
 		gensvm_get_ZAZ_ZB_sparse(model, data, work);
-	}
+	else
+		gensvm_get_ZAZ_ZB_dense(model, data, work);
 }
 
 /**
