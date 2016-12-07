@@ -114,8 +114,12 @@ int main(int argc, char **argv)
 	note("Reading data from %s\n", grid->train_data_file);
 	gensvm_read_data(train_data, grid->train_data_file);
 	if (grid->traintype == TT) {
-		note("Reading data from %s\n", grid->test_data_file);
-		gensvm_read_data(test_data, grid->test_data_file);
+		err("[GenSVM Warning]: Using test datasets in a grid search "
+				"is not yet supported in GenSVM.\n"
+				"                  The test dataset will be "
+				"ignored during training.\n");
+		//note("Reading data from %s\n", grid->test_data_file);
+		//gensvm_read_data(test_data, grid->test_data_file);
 	}
 
 	note("Creating queue\n");
