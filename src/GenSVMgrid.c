@@ -113,6 +113,17 @@ int main(int argc, char **argv)
 
 	note("Reading data from %s\n", grid->train_data_file);
 	gensvm_read_data(train_data, grid->train_data_file);
+
+	// check if we are sparse and want nonlinearity
+	if (train_data->Z == NULL && grid->kerneltype != K_LINEAR) {
+		err("[GenSVM Warning]: Sparse matrices with nonlinear kernels "
+				"are not yet supported. Dense matrices will "
+				"be used.\n");
+		train_data->RAW = gensvm_sparse_to_dense(train_data->spZ);
+		train_data->Z = train_data->RAW;
+		gensvm_free_sparse(train_data->spZ);
+	}
+
 	if (grid->traintype == TT) {
 		err("[GenSVM Warning]: Using test datasets in a grid search "
 				"is not yet supported in GenSVM.\n"

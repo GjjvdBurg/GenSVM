@@ -135,6 +135,16 @@ int main(int argc, char **argv)
 	model->data_file = Calloc(char, GENSVM_MAX_LINE_LENGTH);
 	strcpy(model->data_file, training_inputfile);
 
+	// check if we are sparse and want nonlinearity
+	if (traindata->Z == NULL && model->kerneltype != K_LINEAR) {
+		err("[GenSVM Warning]: Sparse matrices with nonlinear kernels "
+				"are not yet supported. Dense matrices will "
+				"be used.\n");
+		traindata->RAW = gensvm_sparse_to_dense(traindata->spZ);
+		traindata->Z = traindata->RAW;
+		gensvm_free_sparse(traindata->spZ);
+	}
+
 	// seed the random number generator
 	srand(time(NULL));
 
@@ -151,6 +161,16 @@ int main(int argc, char **argv)
 	// to an output file if specified
 	if (testing_inputfile != NULL) {
 		gensvm_read_data(testdata, testing_inputfile);
+
+		// check if we are sparse and want nonlinearity
+		if (testdata->Z == NULL && model->kerneltype != K_LINEAR) {
+			err("[GenSVM Warning]: Sparse matrices with nonlinear "
+					"kernels are not yet supported. Dense "
+					"matrices will be used.\n");
+			testdata->Z = gensvm_sparse_to_dense(testdata->spZ);
+			gensvm_free_sparse(testdata->spZ);
+		}
+
 		gensvm_kernel_postprocess(model, traindata, testdata);
 
 		// predict labels
