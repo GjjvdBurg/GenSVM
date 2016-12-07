@@ -37,7 +37,6 @@
 #define GENSVM_GLOBALS_H
 
 #include "gensvm_memory.h"
-#include "gensvm_types.h"
 
 #include <stdarg.h>
 #include <stdio.h>
@@ -48,12 +47,36 @@
 #include <time.h>
 #include <cblas.h>
 
+// ########################### Type definitions ########################### //
+
+/**
+ * @brief type of training used in parameter grid search
+ */
+typedef enum {
+	CV=0, /**< cross validation */
+	TT=1  /**< data with existing train/test split */
+} TrainType;
+
+/**
+ * @brief type of kernel used in training
+ */
+typedef enum {
+	K_LINEAR=0, 	/**< Linear kernel */
+	K_POLY=1, 	/**< Polynomial kernel */
+	K_RBF=2, 	/**< RBF kernel */
+	K_SIGMOID=3,  	/**< Sigmoid kernel */
+} KernelType;
+
+// ########################### Global constants ########################### //
+
 /**
  * Maximum line length of files that are read into GenSVM.
  */
 #ifndef GENSVM_MAX_LINE_LENGTH
   #define GENSVM_MAX_LINE_LENGTH 1024
 #endif
+
+// ###################### Min/Max Utility Functions ####################### //
 
 #ifndef MIN_MAX_DEFINE
   /**
@@ -70,6 +93,8 @@
    */
   #define minimum(a, b) (a) < (b) ? (a) : (b)
 #endif
+
+// ####################### Matrix Utility Functions ####################### //
 
 /**
  * Macro for setting a matrix element (RowMajor order)
