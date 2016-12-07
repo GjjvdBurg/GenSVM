@@ -37,6 +37,7 @@
 
  */
 
+#include "gensvm_checks.h"
 #include "gensvm_cmdarg.h"
 #include "gensvm_io.h"
 #include "gensvm_gridsearch.h"
@@ -113,6 +114,14 @@ int main(int argc, char **argv)
 
 	note("Reading data from %s\n", grid->train_data_file);
 	gensvm_read_data(train_data, grid->train_data_file);
+
+	// check labels of training data
+	gensvm_check_outcome_contiguous(train_data);
+	if (!gensvm_check_outcome_contiguous(train_data)) {
+		err("[GenSVM Error]: Class labels should start from 1 and "
+				"have no gaps. Please reformat your data.\n");
+		exit(EXIT_FAILURE);
+	}
 
 	// check if we are sparse and want nonlinearity
 	if (train_data->Z == NULL && grid->kerneltype != K_LINEAR) {

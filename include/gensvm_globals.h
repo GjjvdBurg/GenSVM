@@ -38,6 +38,7 @@
 
 #include "gensvm_memory.h"
 
+// all system libraries are included here
 #include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -46,6 +47,7 @@
 #include <math.h>
 #include <time.h>
 #include <cblas.h>
+#include <limits.h>
 
 // ########################### Type definitions ########################### //
 

@@ -28,6 +28,7 @@
 
  */
 
+#include "gensvm_checks.h"
 #include "gensvm_cmdarg.h"
 #include "gensvm_io.h"
 #include "gensvm_train.h"
@@ -130,8 +131,15 @@ int main(int argc, char **argv)
 		       	&training_inputfile, &testing_inputfile,
 		       	&model_outputfile, &prediction_outputfile);
 
-	// read data from files
+	// read data from file and check labels
 	gensvm_read_data(traindata, training_inputfile);
+	if (!gensvm_check_outcome_contiguous(traindata)) {
+		err("[GenSVM Error]: Class labels should start from 1 and "
+				"have no gaps. Please reformat your data.\n");
+		exit(EXIT_FAILURE);
+	}
+
+	// save data filename to model
 	model->data_file = Calloc(char, GENSVM_MAX_LINE_LENGTH);
 	strcpy(model->data_file, training_inputfile);
 

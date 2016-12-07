@@ -1,8 +1,8 @@
 /**
- * @file test_gensvm_optimize.c
+ * @file test_gensvm_train.c
  * @author G.J.J. van den Burg
- * @date 2016-09-01
- * @brief Unit tests for gensvm_optimize.c functions
+ * @date 2016-12-06
+ * @brief Unit tests for gensvm_train.c functions
  *
  * @copyright
  Copyright 2016, G.J.J. van den Burg.
