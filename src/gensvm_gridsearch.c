@@ -238,10 +238,10 @@ bool gensvm_kernel_changed(struct GenTask *newtask, struct GenTask *oldtask)
  * @param[in,out] 	test_folds 	array of test datasets
  *
  */
-void gensvm_kernel_folds(int folds, struct GenModel *model,
+void gensvm_kernel_folds(long folds, struct GenModel *model,
 		struct GenData **train_folds, struct GenData **test_folds)
 {
-	int f;
+	long f;
 
 	note("Computing kernel");
 	for (f=0; f<folds; f++) {
@@ -274,7 +274,7 @@ void gensvm_kernel_folds(int folds, struct GenModel *model,
  */
 void gensvm_train_queue(struct GenQueue *q)
 {
-	int f, folds;
+	long f, folds;
 	double perf, duration, current_max = 0;
 	struct GenTask *task = get_next_task(q);
 	struct GenTask *prevtask = NULL;

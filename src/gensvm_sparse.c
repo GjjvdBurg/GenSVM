@@ -135,7 +135,7 @@ bool gensvm_could_sparse(double *A, long rows, long cols)
 struct GenSparse *gensvm_dense_to_sparse(double *A, long rows, long cols)
 {
 	double value;
-	int row_cnt;
+	long row_cnt;
 	long i, j, cnt, nnz = 0;
 	struct GenSparse *spA = NULL;
 
@@ -147,8 +147,8 @@ struct GenSparse *gensvm_dense_to_sparse(double *A, long rows, long cols)
 	spA->n_row = rows;
 	spA->n_col = cols;
 	spA->values = Calloc(double, nnz);
-	spA->ia = Calloc(int, rows+1);
-	spA->ja = Calloc(int, nnz);
+	spA->ia = Calloc(long, rows+1);
+	spA->ja = Calloc(long, nnz);
 
 	cnt = 0;
 	spA->ia[0] = 0;

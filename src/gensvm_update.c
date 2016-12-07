@@ -479,8 +479,8 @@ void gensvm_get_ZAZ_ZB_dense(struct GenModel *model, struct GenData *data,
 void gensvm_get_ZAZ_ZB_sparse(struct GenModel *model, struct GenData *data,
 		struct GenWork *work)
 {
-	int *Zia = NULL,
-	    *Zja = NULL;
+	long *Zia = NULL,
+	     *Zja = NULL;
 	long b, i, j, k, K, jj, kk, jj_start, jj_end, blk_start, blk_end,
 	     rem_size, n_blocks, n_row = data->spZ->n_row,
 	     n_col = data->spZ->n_col;

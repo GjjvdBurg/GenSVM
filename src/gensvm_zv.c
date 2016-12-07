@@ -76,8 +76,8 @@ void gensvm_calculate_ZV_sparse(struct GenModel *model,
 
 	K = model->K;
 
-	int *Zia = data->spZ->ia;
-	int *Zja = data->spZ->ja;
+	long *Zia = data->spZ->ia;
+	long *Zja = data->spZ->ja;
 	double *vals = data->spZ->values;
 
 	for (i=0; i<n_row; i++) {

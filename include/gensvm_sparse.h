@@ -62,9 +62,9 @@ struct GenSparse {
 
 	double *values;
 	///< actual nonzero values, should be of length nnz
-	int *ia;
+	long *ia;
 	///< cumulative row lengths, should be of length n_row+1
-	int *ja;
+	long *ja;
 	///< column indices, should be of length nnz
 };
 

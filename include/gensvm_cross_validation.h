@@ -36,6 +36,6 @@
 // function declarations
 double gensvm_cross_validation(struct GenModel *model,
 		struct GenData **train_folds, struct GenData **test_folds,
-		int folds, long n_total);
+		long folds, long n_total);
 
 #endif

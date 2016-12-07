@@ -51,9 +51,9 @@ extern FILE *GENSVM_OUTPUT_FILE;
  */
 double gensvm_cross_validation(struct GenModel *model,
 		struct GenData **train_folds, struct GenData **test_folds,
-		int folds, long n_total)
+		long folds, long n_total)
 {
-	int f;
+	long f;
 	long *predy = NULL;
 	double performance, total_perf = 0;
 

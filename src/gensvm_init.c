@@ -76,7 +76,7 @@ void gensvm_init_V(struct GenModel *from_model,
 
 		if (data->Z == NULL) {
 			// sparse matrix
-			int *visit_count = Calloc(int, m+1);
+			long *visit_count = Calloc(long, m+1);
 			for (i=0; i<n; i++) {
 				jj_start = data->spZ->ia[i];
 				jj_end = data->spZ->ia[i+1];

@@ -44,7 +44,7 @@
 void gensvm_fill_queue(struct GenGrid *grid, struct GenQueue *queue,
 		struct GenData *train_data, struct GenData *test_data);
 bool gensvm_kernel_changed(struct GenTask *newtask, struct GenTask *oldtask);
-void gensvm_kernel_folds(int folds, struct GenModel *model,
+void gensvm_kernel_folds(long folds, struct GenModel *model,
 		struct GenData **train_folds, struct GenData **test_folds);
 void gensvm_gridsearch_progress(struct GenTask *task, long N, double perf,
 		double duration, double current_max);

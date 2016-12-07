@@ -273,16 +273,16 @@ void gensvm_get_tt_split_sparse(struct GenData *full_data,
 	train_data->spZ->n_row = train_n;
 	train_data->spZ->n_col = full_data->m+1;
 	train_data->spZ->values = Calloc(double, train_nnz);
-	train_data->spZ->ia = Calloc(int, train_n+1);
-	train_data->spZ->ja = Calloc(int, train_nnz);
+	train_data->spZ->ia = Calloc(long, train_n+1);
+	train_data->spZ->ja = Calloc(long, train_nnz);
 
 	// set GenSparse variables for test
 	test_data->spZ->nnz = test_nnz;
 	test_data->spZ->n_row = test_n;
 	test_data->spZ->n_col = full_data->m+1;
 	test_data->spZ->values = Calloc(double, test_nnz);
-	test_data->spZ->ia = Calloc(int, test_n+1);
-	test_data->spZ->ja = Calloc(int, test_nnz);
+	test_data->spZ->ia = Calloc(long, test_n+1);
+	test_data->spZ->ja = Calloc(long, test_nnz);
 
 	tr_nnz_idx = 0;
 	tr_row_idx = 0;
