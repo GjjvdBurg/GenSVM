@@ -57,7 +57,7 @@ char *test_get_line()
 	// end preparation
 
 	// start of test code
-	char buffer[MAX_LINE_LENGTH];
+	char buffer[GENSVM_MAX_LINE_LENGTH];
 	char *retval = NULL;
 	fid = fopen(fname, "r");
 	retval = get_line(fid, fname, buffer);

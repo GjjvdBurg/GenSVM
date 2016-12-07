@@ -336,84 +336,84 @@ char *test_gensvm_write_model()
 	FILE *fid = fopen("./data/test_write_model.txt", "r");
 	mu_assert(fid != NULL, "Couldn't open output file for reading");
 
-	char buffer[MAX_LINE_LENGTH];
+	char buffer[GENSVM_MAX_LINE_LENGTH];
 
-	fgets(buffer, MAX_LINE_LENGTH, fid);
+	fgets(buffer, GENSVM_MAX_LINE_LENGTH, fid);
 	mu_assert(strcmp(buffer, "Output file for GenSVM (version 0.1)\n")
 			== 0, "Line doesn't contain expected content (0).\n");
 
 	// skip the time line
-	fgets(buffer, MAX_LINE_LENGTH, fid);
+	fgets(buffer, GENSVM_MAX_LINE_LENGTH, fid);
 
-	fgets(buffer, MAX_LINE_LENGTH, fid);
+	fgets(buffer, GENSVM_MAX_LINE_LENGTH, fid);
 	mu_assert(strcmp(buffer, "\n") == 0,
 		       	"Line doesn't contain expected content (1).\n");
 
-	fgets(buffer, MAX_LINE_LENGTH, fid);
+	fgets(buffer, GENSVM_MAX_LINE_LENGTH, fid);
 	mu_assert(strcmp(buffer, "Model:\n") == 0,
 		       	"Line doesn't contain expected content (2).\n");
 
-	fgets(buffer, MAX_LINE_LENGTH, fid);
+	fgets(buffer, GENSVM_MAX_LINE_LENGTH, fid);
 	mu_assert(strcmp(buffer, "p = 0.9032800000000000\n") == 0,
 		       	"Line doesn't contain expected content (3).\n");
 
-	fgets(buffer, MAX_LINE_LENGTH, fid);
+	fgets(buffer, GENSVM_MAX_LINE_LENGTH, fid);
 	mu_assert(strcmp(buffer, "lambda = 0.0130000000000000\n") == 0,
 		       	"Line doesn't contain expected content (4).\n");
 
-	fgets(buffer, MAX_LINE_LENGTH, fid);
+	fgets(buffer, GENSVM_MAX_LINE_LENGTH, fid);
 	mu_assert(strcmp(buffer, "kappa = 1.1832000000000000\n") == 0,
 		       	"Line doesn't contain expected content (5).\n");
 
-	fgets(buffer, MAX_LINE_LENGTH, fid);
+	fgets(buffer, GENSVM_MAX_LINE_LENGTH, fid);
 	mu_assert(strcmp(buffer, "epsilon = 1e-08\n") == 0,
 		       	"Line doesn't contain expected content (6).\n");
 
-	fgets(buffer, MAX_LINE_LENGTH, fid);
+	fgets(buffer, GENSVM_MAX_LINE_LENGTH, fid);
 	mu_assert(strcmp(buffer, "weight_idx = 1\n") == 0,
 		       	"Line doesn't contain expected content (7).\n");
 
-	fgets(buffer, MAX_LINE_LENGTH, fid);
+	fgets(buffer, GENSVM_MAX_LINE_LENGTH, fid);
 	mu_assert(strcmp(buffer, "\n") == 0,
 		       	"Line doesn't contain expected content (8).\n");
 
-	fgets(buffer, MAX_LINE_LENGTH, fid);
+	fgets(buffer, GENSVM_MAX_LINE_LENGTH, fid);
 	mu_assert(strcmp(buffer, "Data:\n") == 0,
 		       	"Line doesn't contain expected content (9).\n");
 
-	fgets(buffer, MAX_LINE_LENGTH, fid);
+	fgets(buffer, GENSVM_MAX_LINE_LENGTH, fid);
 	mu_assert(strcmp(buffer, "filename = ./data/test_file_read_data.txt\n")
 			== 0, "Line doesn't contain expected content (10).\n");
 
-	fgets(buffer, MAX_LINE_LENGTH, fid);
+	fgets(buffer, GENSVM_MAX_LINE_LENGTH, fid);
 	mu_assert(strcmp(buffer, "n = 10\n") == 0,
 		       	"Line doesn't contain expected content (11).\n");
 
-	fgets(buffer, MAX_LINE_LENGTH, fid);
+	fgets(buffer, GENSVM_MAX_LINE_LENGTH, fid);
 	mu_assert(strcmp(buffer, "m = 2\n") == 0,
 		       	"Line doesn't contain expected content (12).\n");
 
-	fgets(buffer, MAX_LINE_LENGTH, fid);
+	fgets(buffer, GENSVM_MAX_LINE_LENGTH, fid);
 	mu_assert(strcmp(buffer, "K = 3\n") == 0,
 		       	"Line doesn't contain expected content (13).\n");
 
-	fgets(buffer, MAX_LINE_LENGTH, fid);
+	fgets(buffer, GENSVM_MAX_LINE_LENGTH, fid);
 	mu_assert(strcmp(buffer, "\n") == 0,
 		       	"Line doesn't contain expected content (14).\n");
 
-	fgets(buffer, MAX_LINE_LENGTH, fid);
+	fgets(buffer, GENSVM_MAX_LINE_LENGTH, fid);
 	mu_assert(strcmp(buffer, "Output:\n") == 0,
 		       	"Line doesn't contain expected content (15).\n");
 
-	fgets(buffer, MAX_LINE_LENGTH, fid);
+	fgets(buffer, GENSVM_MAX_LINE_LENGTH, fid);
 	mu_assert(strcmp(buffer, "+0.4989893785603748 +0.0599082796573645\n")
 		       	== 0, "Line doesn't contain expected content (16).\n");
 
-	fgets(buffer, MAX_LINE_LENGTH, fid);
+	fgets(buffer, GENSVM_MAX_LINE_LENGTH, fid);
 	mu_assert(strcmp(buffer, "+0.7918204761759593 +0.6456613497110559\n")
 			== 0, "Line doesn't contain expected content (17).\n");
 
-	fgets(buffer, MAX_LINE_LENGTH, fid);
+	fgets(buffer, GENSVM_MAX_LINE_LENGTH, fid);
 	mu_assert(strcmp(buffer, "+0.9711956316284261 +0.5010714686310176\n")
 			== 0, "Line doesn't contain expected content (18).\n");
 
@@ -476,39 +476,39 @@ char *test_gensvm_write_predictions()
 	FILE *fid = fopen("./data/test_write_predictions.txt", "r");
 	mu_assert(fid != NULL, "Couldn't open output file for reading");
 
-	char buffer[MAX_LINE_LENGTH];
+	char buffer[GENSVM_MAX_LINE_LENGTH];
 	// skip the first two lines
-	fgets(buffer, MAX_LINE_LENGTH, fid);
+	fgets(buffer, GENSVM_MAX_LINE_LENGTH, fid);
 	mu_assert(strcmp(buffer, "5\n") == 0,
 		       	"Line doesn't contain expected content (0).\n");
 
-	fgets(buffer, MAX_LINE_LENGTH, fid);
+	fgets(buffer, GENSVM_MAX_LINE_LENGTH, fid);
 	mu_assert(strcmp(buffer, "3\n") == 0,
 		       	"Line doesn't contain expected content (1).\n");
 
-	fgets(buffer, MAX_LINE_LENGTH, fid);
+	fgets(buffer, GENSVM_MAX_LINE_LENGTH, fid);
 	mu_assert(strcmp(buffer, "0.7065937536993949 0.7016517970438980 "
 				"0.1548611397288129 3\n") == 0,
 		       	"Line doesn't contain expected content (2).\n");
 
-	fgets(buffer, MAX_LINE_LENGTH, fid);
+	fgets(buffer, GENSVM_MAX_LINE_LENGTH, fid);
 	mu_assert(strcmp(buffer, "0.4604987687863951 0.6374142980176117 "
 				"0.0370930278245423 2\n") == 0,
 		       	"Line doesn't contain expected content (3).\n");
 
-	fgets(buffer, MAX_LINE_LENGTH, fid);
+	fgets(buffer, GENSVM_MAX_LINE_LENGTH, fid);
 	mu_assert(strcmp(buffer, "0.3798777132278375 0.5745070018747664 "
 				"0.2570906697837264 1\n") == 0,
 		       	"Line doesn't contain expected content (4).\n");
 
 
-	fgets(buffer, MAX_LINE_LENGTH, fid);
+	fgets(buffer, GENSVM_MAX_LINE_LENGTH, fid);
 	mu_assert(strcmp(buffer, "0.2789376050039792 0.4853242744610165 "
 				"0.1894010436762711 2\n") == 0,
 		       	"Line doesn't contain expected content (5).\n");
 
 
-	fgets(buffer, MAX_LINE_LENGTH, fid);
+	fgets(buffer, GENSVM_MAX_LINE_LENGTH, fid);
 	mu_assert(strcmp(buffer, "0.7630904372339489 0.1341546320318005 "
 				"0.6827430912944857 1\n") == 0,
 		       	"Line doesn't contain expected content (6).\n");

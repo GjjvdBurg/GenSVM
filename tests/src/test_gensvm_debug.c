@@ -47,18 +47,18 @@ char *test_print_matrix()
 	gensvm_print_matrix(mat, 3, 2);
 	fclose(GENSVM_OUTPUT_FILE);
 
-	char buffer[MAX_LINE_LENGTH];
+	char buffer[GENSVM_MAX_LINE_LENGTH];
 	fid = fopen(filename, "r");
 
-	fgets(buffer, MAX_LINE_LENGTH, fid);
+	fgets(buffer, GENSVM_MAX_LINE_LENGTH, fid);
 	mu_assert(strcmp(buffer, "-0.241053 -0.599809\n") == 0,
 		       	"Line doesn't contain expected content (0).");
 
-	fgets(buffer, MAX_LINE_LENGTH, fid);
+	fgets(buffer, GENSVM_MAX_LINE_LENGTH, fid);
 	mu_assert(strcmp(buffer, "+0.893318 -0.344058\n") == 0,
 		       	"Line doesn't contain expected content (1).");
 
-	fgets(buffer, MAX_LINE_LENGTH, fid);
+	fgets(buffer, GENSVM_MAX_LINE_LENGTH, fid);
 	mu_assert(strcmp(buffer, "+0.933948 -0.474352\n") == 0,
 		       	"Line doesn't contain expected content (2).");
 
@@ -85,27 +85,27 @@ char *test_print_sparse()
 	gensvm_print_sparse(sp);
 	fclose(GENSVM_OUTPUT_FILE);
 
-	char buffer[MAX_LINE_LENGTH];
+	char buffer[GENSVM_MAX_LINE_LENGTH];
 	fid = fopen(filename, "r");
 
-	fgets(buffer, MAX_LINE_LENGTH, fid);
+	fgets(buffer, GENSVM_MAX_LINE_LENGTH, fid);
 	mu_assert(strcmp(buffer, "Sparse Matrix:\n") == 0,
 			"Line doesn't contain expected content (0).");
 
-	fgets(buffer, MAX_LINE_LENGTH, fid);
+	fgets(buffer, GENSVM_MAX_LINE_LENGTH, fid);
 	mu_assert(strcmp(buffer, "\tnnz = 4, rows = 4, cols = 4\n") == 0,
 			"Line doesn't contain expected content (1).");
 
-	fgets(buffer, MAX_LINE_LENGTH, fid);
+	fgets(buffer, GENSVM_MAX_LINE_LENGTH, fid);
 	mu_assert(strcmp(buffer, "\tvalues = [ 5.000000, 8.000000, "
 				"3.000000, 6.000000 ]\n") == 0,
 			"Line doesn't contain expected content (2).");
 
-	fgets(buffer, MAX_LINE_LENGTH, fid);
+	fgets(buffer, GENSVM_MAX_LINE_LENGTH, fid);
 	mu_assert(strcmp(buffer, "\tIA = [ 0, 0, 2, 3, 4 ]\n") == 0,
 			"Line doesn't contain expected content (3).");
 
-	fgets(buffer, MAX_LINE_LENGTH, fid);
+	fgets(buffer, GENSVM_MAX_LINE_LENGTH, fid);
 	mu_assert(strcmp(buffer, "\tJA = [ 0, 1, 2, 1 ]\n") == 0,
 			"Line doesn't contain expected content (4).");
 

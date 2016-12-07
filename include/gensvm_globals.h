@@ -51,7 +51,9 @@
 /**
  * Maximum line length of files that are read into GenSVM.
  */
-#define MAX_LINE_LENGTH 1024
+#ifndef GENSVM_MAX_LINE_LENGTH
+  #define GENSVM_MAX_LINE_LENGTH 1024
+#endif
 
 #ifndef MIN_MAX_DEFINE
   /**

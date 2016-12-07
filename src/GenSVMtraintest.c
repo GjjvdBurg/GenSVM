@@ -132,7 +132,7 @@ int main(int argc, char **argv)
 
 	// read data from files
 	gensvm_read_data(traindata, training_inputfile);
-	model->data_file = Calloc(char, MAX_LINE_LENGTH);
+	model->data_file = Calloc(char, GENSVM_MAX_LINE_LENGTH);
 	strcpy(model->data_file, training_inputfile);
 
 	// seed the random number generator

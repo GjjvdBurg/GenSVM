@@ -33,12 +33,16 @@
 /**
  * Maximum number of iterations of the algorithm.
  */
-#define MAX_ITER 1000000000
+#ifndef GENSVM_MAX_ITER
+  #define GENSVM_MAX_ITER 1000000000
+#endif
 
 /**
  * Iteration frequency with which to print to stdout
  */
-#define PRINT_ITER 100
+#ifndef GENSVM_PRINT_ITER
+  #define GENSVM_PRINT_ITER 100
+#endif
 
 /**
  * @brief The main training loop for GenSVM
@@ -90,7 +94,7 @@ void gensvm_optimize(struct GenModel *model, struct GenData *data)
 	Lbar = L + 2.0*model->epsilon*L;
 
 	// run main loop
-	while ((it < MAX_ITER) && (Lbar - L)/L > model->epsilon)
+	while ((it < GENSVM_MAX_ITER) && (Lbar - L)/L > model->epsilon)
 	{
 		// ensures V contains newest V and Vbar contains V from
 		// previous
@@ -101,7 +105,7 @@ void gensvm_optimize(struct GenModel *model, struct GenData *data)
 		Lbar = L;
 		L = gensvm_get_loss(model, data, work);
 
-		if (it%PRINT_ITER == 0)
+		if (it % GENSVM_PRINT_ITER == 0)
 			note("iter = %li, L = %15.16f, Lbar = %15.16f, "
 			     "reldiff = %15.16f\n", it, L, Lbar, (Lbar - L)/L);
 		it++;
@@ -111,7 +115,7 @@ void gensvm_optimize(struct GenModel *model, struct GenData *data)
 	if (L > Lbar)
 		err("[GenSVM Warning]: Negative step occurred in "
 				"majorization.\n");
-	if (it >= MAX_ITER)
+	if (it >= GENSVM_MAX_ITER)
 		err("[GenSVM Warning]: maximum number of iterations "
 				"reached.\n");
 

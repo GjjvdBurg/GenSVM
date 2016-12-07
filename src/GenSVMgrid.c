@@ -59,7 +59,7 @@ void read_grid_from_file(char *input_filename, struct GenGrid *grid);
  * @brief Help function
  *
  * @details
- * Print help for this program and exit. Note that VERSION is provided by the 
+ * Print help for this program and exit. Note that VERSION is provided by the
  * Makefile.
  *
  * @param[in] 	argv 	command line arguments
@@ -96,7 +96,7 @@ void exit_with_help(char **argv)
  */
 int main(int argc, char **argv)
 {
-	char input_filename[MAX_LINE_LENGTH];
+	char input_filename[GENSVM_MAX_LINE_LENGTH];
 
 	struct GenGrid *grid = gensvm_init_grid();
 	struct GenData *train_data = gensvm_init_data();
@@ -189,10 +189,10 @@ void parse_command_line(int argc, char **argv, char *input_filename)
  * @brief Parse the kernel string from the training file
  *
  * @details
- * This is a utility function for the read_grid_from_file() function, to keep 
- * the main code a bit shorter. It reads the line from the given buffer and 
+ * This is a utility function for the read_grid_from_file() function, to keep
+ * the main code a bit shorter. It reads the line from the given buffer and
  * returns the corresponding KernelType.
- * 
+ *
  * @param[in] 	kernel_line 	line from the file with the kernel
  * 				specification
  * @return 	the corresponding kerneltype
@@ -233,11 +233,11 @@ void read_grid_from_file(char *input_filename, struct GenGrid *grid)
 {
 	long i, nr = 0;
 	FILE *fid;
-	char buffer[MAX_LINE_LENGTH];
-	char train_filename[MAX_LINE_LENGTH];
-	char test_filename[MAX_LINE_LENGTH];
-	double *params = Calloc(double, MAX_LINE_LENGTH);
-	long *lparams = Calloc(long, MAX_LINE_LENGTH);
+	char buffer[GENSVM_MAX_LINE_LENGTH];
+	char train_filename[GENSVM_MAX_LINE_LENGTH];
+	char test_filename[GENSVM_MAX_LINE_LENGTH];
+	double *params = Calloc(double, GENSVM_MAX_LINE_LENGTH);
+	long *lparams = Calloc(long, GENSVM_MAX_LINE_LENGTH);
 
 	fid = fopen(input_filename, "r");
 	if (fid == NULL) {
@@ -246,18 +246,18 @@ void read_grid_from_file(char *input_filename, struct GenGrid *grid)
 		exit(1);
 	}
 	grid->traintype = CV;
-	while ( fgets(buffer, MAX_LINE_LENGTH, fid) != NULL ) {
-		Memset(params, double,  MAX_LINE_LENGTH);
-		Memset(lparams, long, MAX_LINE_LENGTH);
+	while ( fgets(buffer, GENSVM_MAX_LINE_LENGTH, fid) != NULL ) {
+		Memset(params, double,  GENSVM_MAX_LINE_LENGTH);
+		Memset(lparams, long, GENSVM_MAX_LINE_LENGTH);
 		if (str_startswith(buffer, "train:")) {
 			sscanf(buffer, "train: %s\n", train_filename);
 			grid->train_data_file = Calloc(char,
-					MAX_LINE_LENGTH);
+					GENSVM_MAX_LINE_LENGTH);
 			strcpy(grid->train_data_file, train_filename);
 		} else if (str_startswith(buffer, "test:")) {
 			sscanf(buffer, "test: %s\n", test_filename);
 			grid->test_data_file = Calloc(char,
-				       	MAX_LINE_LENGTH);
+					GENSVM_MAX_LINE_LENGTH);
 			strcpy(grid->test_data_file, test_filename);
 			grid->traintype = TT;
 		} else if (str_startswith(buffer, "p:")) {

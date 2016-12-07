@@ -61,7 +61,7 @@ void gensvm_read_data(struct GenData *dataset, char *data_file)
 	double value;
 	long *uniq_y = NULL;
 
-	char buf[MAX_LINE_LENGTH];
+	char buf[GENSVM_MAX_LINE_LENGTH];
 
 	if ((fid = fopen(data_file, "r")) == NULL) {
 		// LCOV_EXCL_START
@@ -84,7 +84,7 @@ void gensvm_read_data(struct GenData *dataset, char *data_file)
 		matrix_set(dataset->RAW, m+1, 0, j, value);
 	}
 
-	if (fgets(buf, MAX_LINE_LENGTH, fid) == NULL) {
+	if (fgets(buf, GENSVM_MAX_LINE_LENGTH, fid) == NULL) {
 		// LCOV_EXCL_START
 		err("[GenSVM Error]: No label found on first line.\n");
 		exit(EXIT_FAILURE);
@@ -187,8 +187,8 @@ void gensvm_read_model(struct GenModel *model, char *model_filename)
 {
 	long i, j, nr = 0;
 	FILE *fid = NULL;
-	char buffer[MAX_LINE_LENGTH];
-	char data_filename[MAX_LINE_LENGTH];
+	char buffer[GENSVM_MAX_LINE_LENGTH];
+	char data_filename[GENSVM_MAX_LINE_LENGTH];
 	double value = 0;
 
 	fid = fopen(model_filename, "r");
@@ -216,7 +216,7 @@ void gensvm_read_model(struct GenModel *model, char *model_filename)
 		next_line(fid, model_filename);
 
 	// read filename of data file
-	if (fgets(buffer, MAX_LINE_LENGTH, fid) == NULL) {
+	if (fgets(buffer, GENSVM_MAX_LINE_LENGTH, fid) == NULL) {
 		// LCOV_EXCL_START
 		err("[GenSVM Error]: Error reading from model file %s\n",
 				model_filename);
@@ -224,7 +224,7 @@ void gensvm_read_model(struct GenModel *model, char *model_filename)
 		// LCOV_EXCL_STOP
 	}
 	sscanf(buffer, "filename = %s\n", data_filename);
-	model->data_file = Calloc(char, MAX_LINE_LENGTH);
+	model->data_file = Calloc(char, GENSVM_MAX_LINE_LENGTH);
 	strcpy(model->data_file, data_filename);
 
 	// read all data variables
@@ -271,7 +271,7 @@ void gensvm_write_model(struct GenModel *model, char *output_filename)
 {
 	FILE *fid = NULL;
 	long i, j;
-	char timestr[MAX_LINE_LENGTH];
+	char timestr[GENSVM_MAX_LINE_LENGTH];
 
 	// open output file
 	fid = fopen(output_filename, "w");
@@ -372,7 +372,7 @@ void gensvm_write_predictions(struct GenData *data, long *predy,
 void gensvm_time_string(char *buffer)
 {
 	int diff, hours, minutes;
-	char timestr[MAX_LINE_LENGTH];
+	char timestr[GENSVM_MAX_LINE_LENGTH];
 	time_t current_time, lt, gt;
 	struct tm *lclt = NULL;
 
@@ -387,7 +387,7 @@ void gensvm_time_string(char *buffer)
 
 	// convert time to local time and create a string
 	lclt = localtime(&current_time);
-	strftime(timestr, MAX_LINE_LENGTH, "%c", lclt);
+	strftime(timestr, GENSVM_MAX_LINE_LENGTH, "%c", lclt);
 	if (timestr == NULL) {
 		err("[GenSVM Error]: Failed to convert time to string.\n");
 		return;

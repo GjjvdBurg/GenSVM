@@ -46,14 +46,14 @@ char *test_note()
 	note("This is some more text.\n");
 	note("This shouldn't appear in the output file.\n");
 
-	char buffer[MAX_LINE_LENGTH];
+	char buffer[GENSVM_MAX_LINE_LENGTH];
 	fid = fopen("./data/test_note_print.txt", "r");
 
-	fgets(buffer, MAX_LINE_LENGTH, fid);
+	fgets(buffer, GENSVM_MAX_LINE_LENGTH, fid);
 	mu_assert(strcmp(buffer, "This is some text.\n") == 0,
 			"Line doesn't contain expected content (1)");
 
-	fgets(buffer, MAX_LINE_LENGTH, fid);
+	fgets(buffer, GENSVM_MAX_LINE_LENGTH, fid);
 	mu_assert(strcmp(buffer, "This is formatted text with 1.23.\n") == 0,
 			"Line doesn't contain expected content (2)");
 
@@ -80,14 +80,14 @@ char *test_err()
 	err("This is some more text.\n");
 	err("This shouldn't appear in the output file.\n");
 
-	char buffer[MAX_LINE_LENGTH];
+	char buffer[GENSVM_MAX_LINE_LENGTH];
 	fid = fopen("./data/test_err_print.txt", "r");
 
-	fgets(buffer, MAX_LINE_LENGTH, fid);
+	fgets(buffer, GENSVM_MAX_LINE_LENGTH, fid);
 	mu_assert(strcmp(buffer, "This is some text.\n") == 0,
 			"Line doesn't contain expected content (1)");
 
-	fgets(buffer, MAX_LINE_LENGTH, fid);
+	fgets(buffer, GENSVM_MAX_LINE_LENGTH, fid);
 	mu_assert(strcmp(buffer, "This is formatted text with 1.23.\n") == 0,
 			"Line doesn't contain expected content (2)");
 

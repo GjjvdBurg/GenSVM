@@ -70,7 +70,7 @@ bool str_endswith(const char *str, const char *suf)
  */
 void next_line(FILE *fid, char *filename)
 {
-	char buffer[MAX_LINE_LENGTH];
+	char buffer[GENSVM_MAX_LINE_LENGTH];
 	get_line(fid, filename, buffer);
 }
 
@@ -83,7 +83,7 @@ void next_line(FILE *fid, char *filename)
  */
 char *get_line(FILE *fid, char *filename, char *buffer)
 {
-	char *retval = fgets(buffer, MAX_LINE_LENGTH, fid);
+	char *retval = fgets(buffer, GENSVM_MAX_LINE_LENGTH, fid);
 	if (retval == NULL) {
 		err("[GenSVM Error]: Error reading from file %s\n", filename);
 	}
@@ -104,7 +104,7 @@ char *get_line(FILE *fid, char *filename, char *buffer)
  */
 double get_fmt_double(FILE *fid, char *filename, const char *fmt)
 {
-	char buffer[MAX_LINE_LENGTH];
+	char buffer[GENSVM_MAX_LINE_LENGTH];
 	double value = NAN;
 	int retval;
 
@@ -125,7 +125,7 @@ double get_fmt_double(FILE *fid, char *filename, const char *fmt)
  */
 long get_fmt_long(FILE *fid, char *filename, const char *fmt)
 {
-	char buffer[MAX_LINE_LENGTH];
+	char buffer[GENSVM_MAX_LINE_LENGTH];
 	long value = 0;
 	int retval;
 

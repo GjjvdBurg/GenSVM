@@ -30,7 +30,9 @@
  * Number of rows in a single block for the ZAZ calculation in 
  * gensvm_get_ZAZ_ZB_sparse().
  */
-#define BLOCK_SIZE 512
+#ifndef GENSVM_BLOCK_SIZE
+  #define GENSVM_BLOCK_SIZE 512
+#endif
 
 /**
  * @brief Calculate the value of omega for a single instance
@@ -461,8 +463,8 @@ void gensvm_get_ZAZ_ZB_dense(struct GenModel *model, struct GenData *data,
  * daxpy call.
  *
  * This function calculates the matrix product Z'*A*Z in separate blocks, 
- * based on the number of rows defined in the BLOCK_SIZE variable. This is 
- * done to improve numerical precision for very large datasets. Due to 
+ * based on the number of rows defined in the GENSVM_BLOCK_SIZE variable. This 
+ * is done to improve numerical precision for very large datasets. Due to 
  * rounding errors, precision can become an issue for these large datasets, 
  * when separate blocks are used and added to the result separately, this can 
  * be alleviated a little bit. See also: http://stackoverflow.com/q/40286989
@@ -495,13 +497,13 @@ void gensvm_get_ZAZ_ZB_sparse(struct GenModel *model, struct GenData *data,
 	// rounding errors, which increases precision, and in turn helps 
 	// convergion of the IM algorithm.
 	// see also: http://stackoverflow.com/q/40286989/
-	n_blocks = floor(n_row / BLOCK_SIZE);
-	rem_size = n_row % BLOCK_SIZE;
+	n_blocks = floor(n_row / GENSVM_BLOCK_SIZE);
+	rem_size = n_row % GENSVM_BLOCK_SIZE;
 
 	for (b=0; b<=n_blocks; b++) {
-		blk_start = b * BLOCK_SIZE;
+		blk_start = b * GENSVM_BLOCK_SIZE;
 		blk_end = blk_start;
-		blk_end += (b == n_blocks) ? rem_size : BLOCK_SIZE;
+		blk_end += (b == n_blocks) ? rem_size : GENSVM_BLOCK_SIZE;
 
 		Memset(work->tmpZAZ, double, n_col*n_col);
 		for (i=blk_start; i<blk_end; i++) {

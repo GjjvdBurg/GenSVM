@@ -955,10 +955,10 @@ char *test_gridsearch_progress_linear()
 	gensvm_gridsearch_progress(task, 10, 0.5, 0.123, 0.7);
 	fclose(GENSVM_OUTPUT_FILE);
 
-	char buffer[MAX_LINE_LENGTH];
+	char buffer[GENSVM_MAX_LINE_LENGTH];
 	fid = fopen(filename, "r");
 
-	fgets(buffer, MAX_LINE_LENGTH, fid);
+	fgets(buffer, GENSVM_MAX_LINE_LENGTH, fid);
 	const char *expected = ("(001/010)\teps = 1e-06\tw = 1\tk = 0.00\t"
 				"l = 1.000000\tp = 1.00\t\t0.500% (0.123s)\t"
 				"(best = 0.700%)\n");
@@ -987,10 +987,10 @@ char *test_gridsearch_progress_rbf()
 	gensvm_gridsearch_progress(task, 10, 0.5, 0.123, 0.7);
 	fclose(GENSVM_OUTPUT_FILE);
 
-	char buffer[MAX_LINE_LENGTH];
+	char buffer[GENSVM_MAX_LINE_LENGTH];
 	fid = fopen(filename, "r");
 
-	fgets(buffer, MAX_LINE_LENGTH, fid);
+	fgets(buffer, GENSVM_MAX_LINE_LENGTH, fid);
 	const char *expected = ("(001/010)\tg = 3.000\teps = 1e-06\tw = 1\t"
 			"k = 0.00\tl = 1.000000\tp = 1.00\t\t0.500% (0.123s)\t"
 			"(best = 0.700%)\n");
@@ -1021,10 +1021,10 @@ char *test_gridsearch_progress_poly()
 	gensvm_gridsearch_progress(task, 10, 0.5, 0.123, 0.7);
 	fclose(GENSVM_OUTPUT_FILE);
 
-	char buffer[MAX_LINE_LENGTH];
+	char buffer[GENSVM_MAX_LINE_LENGTH];
 	fid = fopen(filename, "r");
 
-	fgets(buffer, MAX_LINE_LENGTH, fid);
+	fgets(buffer, GENSVM_MAX_LINE_LENGTH, fid);
 	const char *expected = ("(001/010)\t"
 			"d = 2.00\tc = 1.00\tg = 3.000\t"
 			"eps = 1e-06\tw = 1\tk = 0.00\t"
@@ -1056,10 +1056,10 @@ char *test_gridsearch_progress_sigmoid()
 	gensvm_gridsearch_progress(task, 10, 0.5, 0.123, 0.7);
 	fclose(GENSVM_OUTPUT_FILE);
 
-	char buffer[MAX_LINE_LENGTH];
+	char buffer[GENSVM_MAX_LINE_LENGTH];
 	fid = fopen(filename, "r");
 
-	fgets(buffer, MAX_LINE_LENGTH, fid);
+	fgets(buffer, GENSVM_MAX_LINE_LENGTH, fid);
 	const char *expected = ("(001/010)\t"
 			"c = 1.00\tg = 3.000\t"
 			"eps = 1e-06\tw = 1\tk = 0.00\t"

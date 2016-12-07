@@ -360,7 +360,7 @@ void gensvm_train_queue(struct GenQueue *q)
 void gensvm_gridsearch_progress(struct GenTask *task, long N, double perf, 
 		double duration, double current_max)
 {
-	char buffer[MAX_LINE_LENGTH];
+	char buffer[GENSVM_MAX_LINE_LENGTH];
 	sprintf(buffer, "(%03li/%03li)\t", task->ID+1, N);
 	if (task->kerneltype == K_POLY)
 		sprintf(buffer + strlen(buffer), "d = %2.2f\t",
