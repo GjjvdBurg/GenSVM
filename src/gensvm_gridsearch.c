@@ -243,7 +243,8 @@ void gensvm_kernel_folds(long folds, struct GenModel *model,
 {
 	long f;
 
-	note("Computing kernel");
+	if (model->kerneltype != K_LINEAR)
+		note("Computing kernel ... ");
 	for (f=0; f<folds; f++) {
 		if (train_folds[f]->Z != train_folds[f]->RAW)
 			free(train_folds[f]->Z);
@@ -253,7 +254,8 @@ void gensvm_kernel_folds(long folds, struct GenModel *model,
 		gensvm_kernel_postprocess(model, train_folds[f],
 				test_folds[f]);
 	}
-	note(".\n");
+	if (model->kerneltype != K_LINEAR)
+		note("done.\n");
 }
 
 /**
