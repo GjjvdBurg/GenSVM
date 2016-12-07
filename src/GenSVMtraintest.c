@@ -77,7 +77,6 @@ void exit_with_help(char **argv)
 			"Huber hinge\n");
 	printf("-l lambda            : set the value of lambda "
 			"(lambda > 0)\n");
-	printf("-s seed_model_file   : use previous model as seed for V\n");
 	printf("-m model_output_file : write model output to file "
 			"(not saved if no file provided)\n");
 	printf("-o prediction_output : write predictions of test data to "
@@ -88,8 +87,11 @@ void exit_with_help(char **argv)
 			"errors!)\n");
 	printf("-r rho               : choose the weigth specification "
 			"(1 = unit, 2 = group)\n");
+	printf("-s seed_model_file   : use previous model as seed for V\n");
 	printf("-t type              : kerneltype (0=LINEAR, 1=POLY, 2=RBF, "
 			"3=SIGMOID)\n");
+	printf("-x                   : data files are in LibSVM/SVMlight "
+			"format\n");
 	printf("\n");
 
 	exit(EXIT_FAILURE);
@@ -108,6 +110,7 @@ void exit_with_help(char **argv)
  */
 int main(int argc, char **argv)
 {
+	bool libsvm_format = false;
 	long i, *predy = NULL;
 	double performance;
 
@@ -130,9 +133,15 @@ int main(int argc, char **argv)
 	parse_command_line(argc, argv, model, &model_inputfile,
 		       	&training_inputfile, &testing_inputfile,
 		       	&model_outputfile, &prediction_outputfile);
+	libsvm_format = gensvm_check_argv(argc, argv, "-x");
 
-	// read data from file and check labels
-	gensvm_read_data(traindata, training_inputfile);
+	// read data from file
+	if (libsvm_format)
+		gensvm_read_data_libsvm(traindata, training_inputfile);
+	else
+		gensvm_read_data(traindata, training_inputfile);
+
+	// check labels for consistency
 	if (!gensvm_check_outcome_contiguous(traindata)) {
 		err("[GenSVM Error]: Class labels should start from 1 and "
 				"have no gaps. Please reformat your data.\n");
@@ -168,7 +177,11 @@ int main(int argc, char **argv)
 	// if we also have a test set, predict labels and write to predictions
 	// to an output file if specified
 	if (testing_inputfile != NULL) {
-		gensvm_read_data(testdata, testing_inputfile);
+		// read the test data
+		if (libsvm_format)
+			gensvm_read_data_libsvm(testdata, testing_inputfile);
+		else
+			gensvm_read_data(testdata, testing_inputfile);
 
 		// check if we are sparse and want nonlinearity
 		if (testdata->Z == NULL && model->kerneltype != K_LINEAR) {
@@ -258,6 +271,7 @@ void parse_command_line(int argc, char **argv, struct GenModel *model,
 	GENSVM_ERROR_FILE = stderr;
 
 	// parse options
+	// note: flags that don't have an argument should decrement i
 	for (i=1; i<argc; i++) {
 		if (argv[i][0] != '-') break;
 		if (++i>=argc) {
@@ -309,6 +323,9 @@ void parse_command_line(int argc, char **argv, struct GenModel *model,
 			case 'q':
 				GENSVM_OUTPUT_FILE = NULL;
 				GENSVM_ERROR_FILE = NULL;
+				i--;
+				break;
+			case 'x':
 				i--;
 				break;
 			default:

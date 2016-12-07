@@ -39,15 +39,17 @@
 #include "gensvm_memory.h"
 
 // all system libraries are included here
+#include <cblas.h>
+#include <ctype.h>
+#include <errno.h>
+#include <limits.h>
+#include <math.h>
 #include <stdarg.h>
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdbool.h>
 #include <string.h>
-#include <math.h>
 #include <time.h>
-#include <cblas.h>
-#include <limits.h>
 
 // ########################### Type definitions ########################### //
 

@@ -35,6 +35,8 @@
 
 bool str_startswith(const char *str, const char *pre);
 bool str_endswith(const char *str, const char *suf);
+bool str_contains_char(const char *str, const char c);
+char **str_split(char *original, const char *delims, int *len_ret);
 
 void next_line(FILE *fid, char *filename);
 char *get_line(FILE *fid, char *filename, char *buffer);

@@ -71,6 +71,7 @@ struct GenSparse {
 struct GenSparse *gensvm_init_sparse();
 void gensvm_free_sparse(struct GenSparse *sp);
 long gensvm_count_nnz(double *A, long rows, long cols);
+bool gensvm_nnz_comparison(long nnz, long rows, long cols);
 bool gensvm_could_sparse(double *A, long rows, long cols);
 struct GenSparse *gensvm_dense_to_sparse(double *A, long rows, long cols);
 double *gensvm_sparse_to_dense(struct GenSparse *A);

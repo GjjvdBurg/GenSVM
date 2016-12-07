@@ -72,7 +72,8 @@ void exit_with_help(char **argv)
 	printf("Usage: %s [options] grid_file\n", argv[0]);
 	printf("Options:\n");
 	printf("-h | -help : print this help.\n");
-	printf("-q : quiet mode (no output, not even errors!)\n");
+	printf("-q         : quiet mode (no output, not even errors!)\n");
+	printf("-x         : data files are in LibSVM/SVMlight format\n");
 
 	exit(EXIT_FAILURE);
 }
@@ -97,6 +98,7 @@ void exit_with_help(char **argv)
  */
 int main(int argc, char **argv)
 {
+	bool libsvm_format = false;
 	char input_filename[GENSVM_MAX_LINE_LENGTH];
 
 	struct GenGrid *grid = gensvm_init_grid();
@@ -108,12 +110,16 @@ int main(int argc, char **argv)
 			|| gensvm_check_argv_eq(argc, argv, "-h") )
 		exit_with_help(argv);
 	parse_command_line(argc, argv, input_filename);
+	libsvm_format = gensvm_check_argv(argc, argv, "-x");
 
 	note("Reading grid file\n");
 	read_grid_from_file(input_filename, grid);
 
 	note("Reading data from %s\n", grid->train_data_file);
-	gensvm_read_data(train_data, grid->train_data_file);
+	if (libsvm_format)
+		gensvm_read_data_libsvm(train_data, grid->train_data_file);
+	else
+		gensvm_read_data(train_data, grid->train_data_file);
 
 	// check labels of training data
 	gensvm_check_outcome_contiguous(train_data);
@@ -196,6 +202,9 @@ void parse_command_line(int argc, char **argv, char *input_filename)
 				GENSVM_ERROR_FILE = NULL;
 				i--;
 				break;
+			case 'x':
+				i--;
+				break;
 			default:
 				fprintf(stderr, "Unknown option: -%c\n",
 						argv[i-1][1]);
@@ -267,7 +276,7 @@ void read_grid_from_file(char *input_filename, struct GenGrid *grid)
 	if (fid == NULL) {
 		fprintf(stderr, "Error opening grid file %s\n",
 				input_filename);
-		exit(1);
+		exit(EXIT_FAILURE);
 	}
 	grid->traintype = CV;
 	while ( fgets(buffer, GENSVM_MAX_LINE_LENGTH, fid) != NULL ) {

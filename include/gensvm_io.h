@@ -37,6 +37,7 @@
 
 // function declarations
 void gensvm_read_data(struct GenData *dataset, char *data_file);
+void gensvm_read_data_libsvm(struct GenData *dataset, char *data_file);
 
 void gensvm_read_model(struct GenModel *model, char *model_filename);
 void gensvm_write_model(struct GenModel *model, char *output_filename);

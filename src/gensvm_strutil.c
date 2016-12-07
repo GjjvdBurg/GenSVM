@@ -63,6 +63,118 @@ bool str_endswith(const char *str, const char *suf)
 }
 
 /**
+ * @brief Check if a string contains a char
+ *
+ * @details
+ * Simple utility function to check if a char occurs in a string.
+ *
+ * @param[in] 	str 	input string
+ * @param[in] 	c 	character
+ *
+ * @return 		number of times c occurs in str
+ */
+bool str_contains_char(const char *str, const char c)
+{
+	size_t i, len = strlen(str);
+	for (i=0; i<len; i++)
+		if (str[i] == c)
+			return true;
+	return false;
+}
+
+/**
+ * @brief Count the number of times a string contains any character of another
+ *
+ * @details
+ * This function is used to count the number of expected parts in the function 
+ * str_split(). It counts the number of times a character from a string of 
+ * characters is present in an input string.
+ *
+ * @param[in] 	str 	input string
+ * @param[in] 	chars 	characters to count
+ *
+ * @return  		number of times any character from chars occurs in str
+ *
+ */
+int count_str_occurrences(const char *str, const char *chars)
+{
+	size_t i, j, len_str = strlen(str),
+	    len_chars = strlen(chars);
+	int count = 0;
+	for (i=0; i<len_str; i++) {
+		for (j=0; j<len_chars; j++) {
+			count += (str[i] == chars[j]);
+		}
+	}
+	return count;
+}
+
+/**
+ * @brief Split a string on delimiters and return an array of parts
+ *
+ * @details
+ * This function takes as input a string and a string of delimiters. As 
+ * output, it gives an array of the parts of the first string, splitted on the 
+ * characters in the second string. The input string is not changed, and the 
+ * output contains all copies of the input string parts.
+ *
+ * @note
+ * The code is based on: http://stackoverflow.com/a/9210560
+ *
+ * @param[in] 	original 	string you wish to split
+ * @param[in] 	delims 		string with delimiters to split on
+ * @param[out] 	len_ret 	length of the output array
+ *
+ * @return 			array of string parts
+ */
+char **str_split(char *original, const char *delims, int *len_ret)
+{
+	char *copy = NULL,
+	     *token = NULL,
+	     **result = NULL;
+	int i, count;
+
+	size_t len = strlen(original);
+	size_t n_delim = strlen(delims);
+
+	// add the null terminator to the delimiters
+	char all_delim[1 + n_delim];
+	for (i=0; i<n_delim; i++)
+		all_delim[i] = delims[i];
+	all_delim[n_delim] = '\0';
+
+	// number of occurances of the delimiters
+	count = count_str_occurrences(original, delims);
+
+	// extra count in case there is a delimiter at the end
+	count += (str_contains_char(delims, original[len - 1]));
+
+	// extra count for the null terminator
+	count++;
+
+	// allocate the result array
+	result = Calloc(char *, count);
+
+	// tokenize a copy of the original string and keep the splits
+	i = 0;
+	copy = Calloc(char, len + 1);
+	strcpy(copy, original);
+	token = strtok(copy, all_delim);
+	while (token) {
+		result[i] = Calloc(char, strlen(token) + 1);
+		strcpy(result[i], token);
+		i++;
+
+		token = strtok(NULL, all_delim);
+	}
+	free(copy);
+
+	*len_ret = i;
+
+	return result;
+}
+
+/**
  * @brief Move to next line in file
  *
  * @param[in] 	fid 		File opened for reading

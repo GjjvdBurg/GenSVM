@@ -91,6 +91,23 @@ long gensvm_count_nnz(double *A, long rows, long cols)
 }
 
 /**
+ * @brief Compare the number of nonzeros is such that sparsity if worth it
+ *
+ * @details
+ * This is a utility function, see gensvm_could_sparse() for more info.
+ *
+ * @param[in] 	nnz 	number of nonzero elements
+ * @param[in] 	rows 	number of rows
+ * @param[in] 	cols 	number of columns
+ *
+ * @return  		whether or not sparsity is worth it
+ */
+bool gensvm_nnz_comparison(long nnz, long rows, long cols)
+{
+	return (nnz < (rows*(cols-1.0)-1.0)/2.0);
+}
+
+/**
  * @brief Check if it is worthwile to convert to a sparse matrix
  *
  * @details
@@ -100,20 +117,19 @@ long gensvm_count_nnz(double *A, long rows, long cols)
  * the amount of nonzero entries is small enough, the function returns the
  * number of nonzeros. If it is too big, it returns -1.
  *
+ * @sa
+ * gensvm_nnz_comparison()
+ *
  * @param[in] 	A 	matrix in dense format (RowMajor order)
  * @param[in] 	rows 	number of rows of A
  * @param[in] 	cols 	number of columns of A
  *
- * @return
+ * @return  		whether or not sparsity is worth it
  */
 bool gensvm_could_sparse(double *A, long rows, long cols)
 {
 	long nnz = gensvm_count_nnz(A, rows, cols);
-
-	if (nnz < (rows*(cols-1.0)-1.0)/2.0) {
-		return true;
-	}
-	return false;
+	return gensvm_nnz_comparison(nnz, rows, cols);
 }
 
 
