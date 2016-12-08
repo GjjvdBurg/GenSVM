@@ -61,7 +61,10 @@ void parse_command_line(int argc, char **argv, struct GenModel *model,
  */
 void exit_with_help(char **argv)
 {
-	printf("This is GenSVM, version %1.1f\n\n", VERSION);
+	printf("This is GenSVM, version %1.1f.\n", VERSION);
+	printf("Copyright (C) 2016, G.J.J. van den Burg.\n");
+	printf("This program is free software, see the LICENSE file "
+			"for details.\n\n");
 	printf("Usage: %s [options] training_data [test_data]\n\n", argv[0]);
 	printf("Options:\n");
 	printf("--------\n");
