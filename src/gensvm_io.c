@@ -150,7 +150,8 @@ void exit_input_error(int line_num)
  *
  * @details
  * This function reads data from a file where the data is stored in
- * LibSVM/SVMlight format. This is a sparse data format, which can be
+ * LibSVM/SVMlight format. The file format is described in @ref 
+ * spec_libsvm_data_file.  This is a sparse data format, which can be
  * beneficial for certain applications. The advantage of having this function
  * here is twofold: 1) existing datasets where data is stored in
  * LibSVM/SVMlight format can be easily used in GenSVM, and 2) sparse datasets

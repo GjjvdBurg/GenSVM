@@ -58,7 +58,7 @@
  * @c weight: @n
  * The weight specifications for the algorithm to use. Two weight
  * specifications are implemented: the unit weights (index = 1) and the group
- * size correction weights (index = 2). See also msvmmaj_initialize_weights().
+ * size correction weights (index = 2). See also gensvm_initialize_weights().
  *
  * @c folds: @n
  * The number of cross validation folds to use. 
@@ -73,28 +73,28 @@
  * @c gamma:* @n
  * Gamma parameters for the @c RBF, @c POLY, and @c SIGMOID kernels. This
  * parameter is only optional if the @c LINEAR kernel is specified. See
- * msvmmaj_compute_rbf(), msvmmaj_compute_poly(), and
- * msvmmaj_compute_sigmoid() for kernel specifications.
+ * gensvm_kernel_dot_rbf(), gensvm_kernel_dot_poly(), and
+ * gensvm_kernel_dot_sigmoid() for kernel specifications.
  *
  * @c coef:* @n
  * Coefficients for the @c POLY and @c SIGMOID kernels. This parameter is only
  * optional if the @c LINEAR or @c RBF kernels are used. See
- * msvmmaj_compute_poly() and msvmmaj_compute_sigmoid() for kernel
+ * gensvm_kernel_dot_poly(), and gensvm_kernel_dot_sigmoid() for kernel 
  * specifications.
  *
  * @c degree:* @n
  * Degrees to search over in the grid search when the @c POLY kernel is
  * specified. With other kernel specifications this parameter is unnecessary.
- * See msvmmaj_compute_poly() for the polynomial kernel specification.
+ * See gensvm_kernel_dot_poly() for the polynomial kernel specification.
  *
  */
 
 
 /**
- * @page spec_data_file Data File Specification
+ * @page spec_data_file Default Data File Specification
  *
  * This page describes the input file format for a dataset. This specification
- * is used by msvmmaj_read_data() and msvmmaj_write_predictions(). The data
+ * is used by gensvm_read_data() and gensvm_write_predictions(). The data
  * file specification is the same as that used in <a
  * href="http://www.loria.fr/~lauer/MSVMpack/MSVMpack.html">MSVMpack</a>
  * (verified in v. 1.3). 
@@ -126,10 +126,44 @@ x_n1 x_n2 ... x_nm y_n
  */
 
 /**
+ * @page spec_libsvm_data_file LibSVM/SVMlight Data File Specification
+ * 
+ * Here we briefly describe the input file format for a dataset stored in 
+ * LibSVM/SVMlight format. This is based on the LibSVM documentation. Files in 
+ * this format can be read by the function gensvm_read_data_libsvm(), and can 
+ * be used in the executables with the ``-x`` flag.
+ *
+ * The LibSVM/SVMlight file format is a sparse format and so only the nonzero 
+ * values are expected to be stored. Each value is therefore accompanied by 
+ * its index. In GenSVM, this index can be either 0-based or 1-based. The 
+ * basic file format is as follows:
+ * @verbatim
+y_1 index1:value1 index2:value2 ...
+.
+.
+.
+@endverbatim
+ *
+ * For a training dataset, the class labels @c y_i are expected in the first 
+ * column of each line. Class labels can be left out of the file for a test 
+ * dataset (in which case the file only contains index/value pairs).
+ *
+ * As an example, below the first 5 lines of the iris dataset are shown.
+ *
+ * @verbatim
+1 1:5.10000 2:3.50000 3:1.40000 4:0.20000
+1 1:4.90000 2:3.00000 3:1.40000 4:0.20000
+1 1:4.70000 2:3.20000 3:1.30000 4:0.20000
+@endverbatim
+ *
+ */
+
+
+/**
  * @page spec_model_file Model File Specification
  *
  * This page describes the input file format for a GenModel. This
- * specification is used by msvmmaj_read_model() and msvmmaj_write_model().
+ * specification is used by gensvm_read_model() and gensvm_write_model().
  * The model file is designed to fully reproduce a GenModel. 
  *
  * The model output file follows the format
