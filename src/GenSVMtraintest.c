@@ -69,12 +69,12 @@ void exit_with_help(char **argv)
 			"sigmoid kernel\n");
 	printf("-d degree            : degree for the polynomial kernel\n");
 	printf("-e epsilon           : set the value of the stopping "
-			"criterion\n");
+			"criterion (epsilon > 0)\n");
 	printf("-g gamma             : parameter for the rbf, polynomial or "
 			"sigmoid kernel\n");
 	printf("-h | -help           : print this help.\n");
 	printf("-k kappa             : set the value of kappa used in the "
-			"Huber hinge\n");
+			"Huber hinge (kappa > -1.0)\n");
 	printf("-l lambda            : set the value of lambda "
 			"(lambda > 0)\n");
 	printf("-m model_output_file : write model output to file "
@@ -239,6 +239,18 @@ int main(int argc, char **argv)
 }
 
 /**
+ * @brief Exit with warning about invalid parameter value.
+ *
+ * @param[in] 	label 	name of the parameter
+ * @param[in] 	argv 	command line arguments
+ */
+void exit_invalid_param(const char *label, char **argv)
+{
+	fprintf(stderr, "Invalid parameter value for %s.\n\n", label);
+	exit_with_help(argv);
+}
+
+/**
  * @brief Parse the command line arguments
  *
  * @details
@@ -286,15 +298,21 @@ void parse_command_line(int argc, char **argv, struct GenModel *model,
 				break;
 			case 'e':
 				model->epsilon = atof(argv[i]);
+				if (model->epsilon <= 0)
+					exit_invalid_param("epsilon", argv);
 				break;
 			case 'g':
 				gamma = atof(argv[i]);
 				break;
 			case 'k':
 				model->kappa = atof(argv[i]);
+				if (model->kappa <= -1.0)
+					exit_invalid_param("kappa", argv);
 				break;
 			case 'l':
 				model->lambda = atof(argv[i]);
+				if (model->lambda <= 0)
+					exit_invalid_param("lambda", argv);
 				break;
 			case 's':
 				(*model_inputfile) = Malloc(char,
@@ -313,6 +331,8 @@ void parse_command_line(int argc, char **argv, struct GenModel *model,
 				break;
 			case 'p':
 				model->p = atof(argv[i]);
+				if (model->p < 1.0 || model->p > 2.0)
+					exit_invalid_param("p", argv);
 				break;
 			case 'r':
 				model->weight_idx = atoi(argv[i]);
