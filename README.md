@@ -12,16 +12,26 @@ This is the C library for the GenSVM method. GenSVM is a general multiclass
 support vector machine, which you can use for classification problems with 
 multiple classes. Training GenSVM in cross-validation or grid search setups 
 can be done efficiently due to the ability to use warm starts. See the 
-[paper]() for more information, and Usage below for how to use GenSVM.
+[paper](http://jmlr.org/papers/v17/14-526.html) for more information, and 
+Usage below for how to use GenSVM.
 
-The library has support for datasets in [MSVMpack]() and [LibSVM/SVMlight]() 
-format, and can take advantage of sparse datasets. There is also (preliminary) 
-support for nonlinear GenSVM through kernels.
+The library has support for datasets in 
+[MSVMpack](https://members.loria.fr/FLauer/files/MSVMpack/MSVMpack.html) and 
+[LibSVM/SVMlight](https://www.csie.ntu.edu.tw/~cjlin/libsvm/) format, and can 
+take advantage of sparse datasets. There is also support for nonlinear GenSVM 
+through kernels.
 
 For documentation on how the library is implemented, see the Doxygen 
-documentation available [here](). There are also many unit tests, which you 
-can use to further understand how the library works. Test coverage for the 
-current version is reported [here]().
+documentation available [here](https://gjjvdburg.github.io/gensvm/). There are 
+also many unit tests, which you can use to further understand how the library 
+works. Test coverage for the current version is reported 
+[here](https://gjjvdburg.github.io/gensvm/cover).
+
+This is the C library for GenSVM, which contains two executables for using the 
+method. Python and R packages for GenSVM are planned. If you are interested in 
+these, please express your interest for the Python package 
+[here](https://github.com/GjjvdBurg/GenSVM/issues/1) and for the R package 
+[here](https://github.com/GjjvdBurg/GenSVM/issues/2).
 
 Usage
 -----
@@ -67,13 +77,14 @@ specified with the ``-o`` option.
 The ``gensvm_grid`` executable can be used to run a grid search on a dataset.
 The input to this executable is a file (called a grid file), which specifies 
 the values of the parameters. See the ``training`` directory for examples and 
-the documentation [here]() for more info on the file format. One important 
-thing to note is that when the ``repeats`` field has a positive value, a 
-so-called "consistency check" will be performed after the grid search has 
-finished. This is a robustness check on the best performing configurations, to 
-find the best overall hyperparameter configuration with the best performance 
-and smallest training time. In this robustness check warm-starts are not used, 
-to ensure the observations are independent measurements of training time.
+the documentation [here](https://gjjvdburg.github.io/gensvm/) for more info on 
+the file format.  One important thing to note is that when the ``repeats`` 
+field has a positive value, a so-called "consistency check" will be performed 
+after the grid search has finished. This is a robustness check on the best 
+performing configurations, to find the best overall hyperparameter 
+configuration with the best performance and smallest training time. In this 
+robustness check warm-starts are not used, to ensure the observations are 
+independent measurements of training time.
 
 Here's an example of running ``gensvm_grid`` without repeats on the iris 
 dataset:
@@ -94,9 +105,20 @@ Reference
 ---------
 
 If you use GenSVM in any of your projects, please cite the GenSVM paper 
-available at [link](link). You can use the following BibTeX code:
+available at 
+[http://jmlr.org/papers/v17/14-526.html](http://jmlr.org/papers/v17/14-526.html).  
+You can use the following BibTeX code:
 
-    bibtex here
+    @article{JMLR:v17:14-526,
+      author  = {Gerrit J.J. van den Burg and Patrick J.F. Groenen},
+      title   = {GenSVM: A Generalized Multiclass Support Vector Machine},
+      journal = {Journal of Machine Learning Research},
+      year    = {2016},
+      volume  = {17},
+      number  = {225},
+      pages   = {1-42},
+      url     = {http://jmlr.org/papers/v17/14-526.html}
+    }
 
 License
 -------
