@@ -509,7 +509,7 @@ void gensvm_write_model(struct GenModel *model, char *output_filename)
 	gensvm_time_string(timestr);
 
 	// Write output to file
-	fprintf(fid, "Output file for GenSVM (version %1.1f)\n", VERSION);
+	fprintf(fid, "Output file for GenSVM (version %s)\n", VERSION_STRING);
 	fprintf(fid, "Generated on: %s\n\n", timestr);
 	fprintf(fid, "Model:\n");
 	fprintf(fid, "p = %15.16f\n", model->p);

@@ -120,4 +120,18 @@ typedef enum {
  */
 #define matrix_mul(M, cols, i, j, val) M[(i)*(cols)+j] *= val
 
+// ######################### Other Macros ################################# //
+
+// from: http://stackoverflow.com/q/195975/
+
+#define GENSVM_QUOTE(name) #name
+#define GENSVM_STRING(macro) GENSVM_QUOTE(macro)
+
+#ifndef VERSION
+  #define VERSION 0.0.0
+#endif
+
+#define VERSION_STRING GENSVM_STRING(VERSION)
+
+
 #endif
