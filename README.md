@@ -4,6 +4,7 @@ GenSVM C Package
 GenSVM: A Generalized Multiclass Support Vector Machine.
 
 Author: Gertjan van den Burg (<gertjanvandenburg@gmail.com>)
+
 GitHub: 
 [https://github.com/GjjvdBurg/GenSVM](https://github.com/GjjvdBurg/GenSVM)
 
