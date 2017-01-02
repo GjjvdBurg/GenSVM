@@ -22,10 +22,10 @@ take advantage of sparse datasets. There is also support for nonlinear GenSVM
 through kernels.
 
 For documentation on how the library is implemented, see the Doxygen 
-documentation available [here](https://gjjvdburg.github.io/gensvm/). There are 
+documentation available [here](https://gjjvdburg.github.io/GenSVM/). There are 
 also many unit tests, which you can use to further understand how the library 
 works. Test coverage for the current version is reported 
-[here](https://gjjvdburg.github.io/gensvm/cover).
+[here](https://gjjvdburg.github.io/GenSVM/cover).
 
 This is the C library for GenSVM, which contains two executables for using the 
 method. Python and R packages for GenSVM are planned. If you are interested in 
@@ -77,7 +77,7 @@ specified with the ``-o`` option.
 The ``gensvm_grid`` executable can be used to run a grid search on a dataset.
 The input to this executable is a file (called a grid file), which specifies 
 the values of the parameters. See the ``training`` directory for examples and 
-the documentation [here](https://gjjvdburg.github.io/gensvm/) for more info on 
+the documentation [here](https://gjjvdburg.github.io/GenSVM/) for more info on 
 the file format.  One important thing to note is that when the ``repeats`` 
 field has a positive value, a so-called "consistency check" will be performed 
 after the grid search has finished. This is a robustness check on the best 
