@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2017-01-02 10:21:11</td>
+            <td class="headerValue">2017-01-02 11:59:47</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">11</td>
@@ -291,107 +291,107 @@
 <span class="lineNum">     229 </span>            :                 long i, double *beta)
 <span class="lineNum">     230 </span>            : {
 <span class="lineNum">     231 </span>            :         bool simple;
-<span class="lineNum">     232 </span>            :         long j,
-<span class="lineNum">     233 </span><span class="lineCov">       4392 :              K = model-&gt;K;</span>
-<span class="lineNum">     234 </span><span class="lineCov">       4392 :         double omega, a, b_aq = 0.0,</span>
-<span class="lineNum">     235 </span><span class="lineCov">       4392 :                alpha = 0.0;</span>
-<span class="lineNum">     236 </span><span class="lineCov">       4392 :         double *uu_row = NULL;</span>
-<span class="lineNum">     237 </span><span class="lineCov">       4392 :         const double in = 1.0/((double) model-&gt;n);</span>
-<span class="lineNum">     238 </span>            : 
-<span class="lineNum">     239 </span><span class="lineCov">       4392 :         simple = gensvm_majorize_is_simple(model, data, i);</span>
-<span class="lineNum">     240 </span><span class="lineCov">       4392 :         omega = simple ? 1.0 : gensvm_calculate_omega(model, data, i);</span>
-<span class="lineNum">     241 </span>            : 
-<span class="lineNum">     242 </span><span class="lineCov">       4392 :         Memset(beta, double, K-1);</span>
-<span class="lineNum">     243 </span><span class="lineCov">      21944 :         for (j=0; j&lt;K; j++) {</span>
-<span class="lineNum">     244 </span>            :                 // skip the class y_i = k
-<span class="lineNum">     245 </span><span class="lineCov">      17552 :                 if (j == (data-&gt;y[i]-1))</span>
-<span class="lineNum">     246 </span><span class="lineCov">       4392 :                         continue;</span>
-<span class="lineNum">     247 </span>            : 
-<span class="lineNum">     248 </span>            :                 // calculate the a_ijk and (b_ijk - a_ijk q_i^(kj)) values
-<span class="lineNum">     249 </span><span class="lineCov">      13160 :                 if (simple) {</span>
-<span class="lineNum">     250 </span><span class="lineCov">       1935 :                         gensvm_calculate_ab_simple(model, i, j, &amp;a, &amp;b_aq);</span>
-<span class="lineNum">     251 </span>            :                 } else {
-<span class="lineNum">     252 </span><span class="lineCov">      11225 :                         gensvm_calculate_ab_non_simple(model, i, j, &amp;a, &amp;b_aq);</span>
-<span class="lineNum">     253 </span>            :                 }
-<span class="lineNum">     254 </span>            : 
-<span class="lineNum">     255 </span>            :                 // daxpy on beta and UU
-<span class="lineNum">     256 </span>            :                 // daxpy does: y = a*x + y
-<span class="lineNum">     257 </span>            :                 // so y = beta, UU_row = x, a = factor
-<span class="lineNum">     258 </span><span class="lineCov">      13160 :                 b_aq *= model-&gt;rho[i] * omega * in;</span>
-<span class="lineNum">     259 </span><span class="lineCov">      13160 :                 uu_row = &amp;model-&gt;UU[((data-&gt;y[i]-1)*K+j)*(K-1)];</span>
-<span class="lineNum">     260 </span><span class="lineCov">      13160 :                 cblas_daxpy(K-1, b_aq, uu_row, 1, beta, 1);</span>
-<span class="lineNum">     261 </span>            : 
-<span class="lineNum">     262 </span>            :                 // increment Avalue
-<span class="lineNum">     263 </span><span class="lineCov">      13160 :                 alpha += a;</span>
-<span class="lineNum">     264 </span>            :         }
-<span class="lineNum">     265 </span><span class="lineCov">       4392 :         alpha *= omega * model-&gt;rho[i] * in;</span>
-<span class="lineNum">     266 </span><span class="lineCov">       4392 :         return alpha;</span>
-<span class="lineNum">     267 </span>            : }
-<span class="lineNum">     268 </span>            : 
-<span class="lineNum">     269 </span>            : /**
-<span class="lineNum">     270 </span>            :  * @brief Perform a single step of the majorization algorithm to update V
-<span class="lineNum">     271 </span>            :  *
-<span class="lineNum">     272 </span>            :  * @details
-<span class="lineNum">     273 </span>            :  * This function contains the main update calculations of the algorithm. These
-<span class="lineNum">     274 </span>            :  * calculations are necessary to find a new update V. The calculations exist of
-<span class="lineNum">     275 </span>            :  * recalculating the majorization coefficients for all instances and all
-<span class="lineNum">     276 </span>            :  * classes, and solving a linear system to find V.
-<span class="lineNum">     277 </span>            :  *
-<span class="lineNum">     278 </span>            :  * Because the function gensvm_get_update() is always called after a call to
-<span class="lineNum">     279 </span>            :  * gensvm_get_loss() with the same GenModel::V, it is unnecessary to calculate
-<span class="lineNum">     280 </span>            :  * the updated errors GenModel::Q and GenModel::H here too. This saves on
-<span class="lineNum">     281 </span>            :  * computation time.
-<span class="lineNum">     282 </span>            :  *
-<span class="lineNum">     283 </span>            :  * In calculating the majorization coefficients we calculate the elements of a
-<span class="lineNum">     284 </span>            :  * diagonal matrix A with elements
-<span class="lineNum">     285 </span>            :  * @f[
-<span class="lineNum">     286 </span>            :  *      A_{i, i} = \frac{1}{n} \rho_i \sum_{j \neq k} \left[
-<span class="lineNum">     287 </span>            :  *              \varepsilon_i a_{ijk}^{(1)} + (1 - \varepsilon_i) \omega_i
-<span class="lineNum">     288 </span>            :  *              a_{ijk}^{(p)} \right],
-<span class="lineNum">     289 </span>            :  * @f]
-<span class="lineNum">     290 </span>            :  * where @f$ k = y_i @f$.
-<span class="lineNum">     291 </span>            :  * Since this matrix is only used to calculate the matrix @f$ Z' A Z @f$, it
-<span class="lineNum">     292 </span>            :  * is efficient to update a matrix ZAZ through consecutive rank 1 updates with
-<span class="lineNum">     293 </span>            :  * a single element of A and the corresponding row of Z. The BLAS function
-<span class="lineNum">     294 </span>            :  * dsyr is used for this.
-<span class="lineNum">     295 </span>            :  *
-<span class="lineNum">     296 </span>            :  * The B matrix is has rows
-<span class="lineNum">     297 </span>            :  * @f[
-<span class="lineNum">     298 </span>            :  *      \boldsymbol{\beta}_i' = \frac{1}{n} \rho_i \sum_{j \neq k} \left[
-<span class="lineNum">     299 </span>            :  *              \varepsilon_i \left( b_{ijk}^{(1)} - a_{ijk}^{(1)}
-<span class="lineNum">     300 </span>            :  *                      \overline{q}_i^{(kj)} \right) + (1 - \varepsilon_i)
-<span class="lineNum">     301 </span>            :  *              \omega_i \left( b_{ijk}^{(p)} - a_{ijk}^{(p)}
-<span class="lineNum">     302 </span>            :  *                      \overline{q}_i^{(kj)} \right) \right]
-<span class="lineNum">     303 </span>            :  *              \boldsymbol{\delta}_{kj}'
-<span class="lineNum">     304 </span>            :  * @f]
-<span class="lineNum">     305 </span>            :  * This is also split into two cases, one for which @f$ \varepsilon_i = 1 @f$,
-<span class="lineNum">     306 </span>            :  * and one for when it is 0. The 3D simplex difference matrix is used here, in
-<span class="lineNum">     307 </span>            :  * the form of the @f$ \boldsymbol{\delta}_{kj}' @f$.
-<span class="lineNum">     308 </span>            :  *
-<span class="lineNum">     309 </span>            :  * Finally, the following system is solved
-<span class="lineNum">     310 </span>            :  * @f[
-<span class="lineNum">     311 </span>            :  *      (\textbf{Z}'\textbf{AZ} + \lambda \textbf{J})\textbf{V} =
-<span class="lineNum">     312 </span>            :  *              (\textbf{Z}'\textbf{AZ}\overline{\textbf{V}} + \textbf{Z}'
-<span class="lineNum">     313 </span>            :  *              \textbf{B})
-<span class="lineNum">     314 </span>            :  * @f]
-<span class="lineNum">     315 </span>            :  * solving this system is done through dposv().
-<span class="lineNum">     316 </span>            :  *
-<span class="lineNum">     317 </span>            :  * @todo
-<span class="lineNum">     318 </span>            :  * Consider using CblasColMajor everywhere
-<span class="lineNum">     319 </span>            :  *
-<span class="lineNum">     320 </span>            :  * @param[in,out]       model   model to be updated
-<span class="lineNum">     321 </span>            :  * @param[in]           data    data used in model
-<a name="322"><span class="lineNum">     322 </span>            :  * @param[in]           work    allocated workspace to use</a>
-<span class="lineNum">     323 </span>            :  */
-<span class="lineNum">     324 </span><span class="lineCov">        466 : void gensvm_get_update(struct GenModel *model, struct GenData *data,</span>
-<span class="lineNum">     325 </span>            :                 struct GenWork *work)
-<span class="lineNum">     326 </span>            : {
-<span class="lineNum">     327 </span>            :         int status;
-<span class="lineNum">     328 </span>            :         long i, j;
-<span class="lineNum">     329 </span>            : 
-<span class="lineNum">     330 </span><span class="lineCov">        466 :         long m = model-&gt;m;</span>
-<span class="lineNum">     331 </span><span class="lineCov">        466 :         long K = model-&gt;K;</span>
-<span class="lineNum">     332 </span>            : 
+<span class="lineNum">     232 </span><span class="lineCov">       4392 :         long j, K = model-&gt;K;</span>
+<span class="lineNum">     233 </span><span class="lineCov">       4392 :         double omega, a, b_aq = 0.0,</span>
+<span class="lineNum">     234 </span><span class="lineCov">       4392 :                alpha = 0.0;</span>
+<span class="lineNum">     235 </span><span class="lineCov">       4392 :         double *uu_row = NULL;</span>
+<span class="lineNum">     236 </span><span class="lineCov">       4392 :         const double in = 1.0/((double) model-&gt;n);</span>
+<span class="lineNum">     237 </span>            : 
+<span class="lineNum">     238 </span><span class="lineCov">       4392 :         simple = gensvm_majorize_is_simple(model, data, i);</span>
+<span class="lineNum">     239 </span><span class="lineCov">       4392 :         omega = simple ? 1.0 : gensvm_calculate_omega(model, data, i);</span>
+<span class="lineNum">     240 </span>            : 
+<span class="lineNum">     241 </span><span class="lineCov">       4392 :         Memset(beta, double, K-1);</span>
+<span class="lineNum">     242 </span><span class="lineCov">      21944 :         for (j=0; j&lt;K; j++) {</span>
+<span class="lineNum">     243 </span>            :                 // skip the class y_i = k
+<span class="lineNum">     244 </span><span class="lineCov">      17552 :                 if (j == (data-&gt;y[i]-1))</span>
+<span class="lineNum">     245 </span><span class="lineCov">       4392 :                         continue;</span>
+<span class="lineNum">     246 </span>            : 
+<span class="lineNum">     247 </span>            :                 // calculate the a_ijk and (b_ijk - a_ijk q_i^(kj)) values
+<span class="lineNum">     248 </span><span class="lineCov">      13160 :                 if (simple) {</span>
+<span class="lineNum">     249 </span><span class="lineCov">       1935 :                         gensvm_calculate_ab_simple(model, i, j, &amp;a, &amp;b_aq);</span>
+<span class="lineNum">     250 </span>            :                 } else {
+<span class="lineNum">     251 </span><span class="lineCov">      11225 :                         gensvm_calculate_ab_non_simple(model, i, j, &amp;a, &amp;b_aq);</span>
+<span class="lineNum">     252 </span>            :                 }
+<span class="lineNum">     253 </span>            : 
+<span class="lineNum">     254 </span>            :                 // daxpy on beta and UU
+<span class="lineNum">     255 </span>            :                 // daxpy does: y = a*x + y
+<span class="lineNum">     256 </span>            :                 // so y = beta, UU_row = x, a = factor
+<span class="lineNum">     257 </span><span class="lineCov">      13160 :                 b_aq *= model-&gt;rho[i] * omega * in;</span>
+<span class="lineNum">     258 </span><span class="lineCov">      13160 :                 uu_row = &amp;model-&gt;UU[((data-&gt;y[i]-1)*K+j)*(K-1)];</span>
+<span class="lineNum">     259 </span><span class="lineCov">      13160 :                 cblas_daxpy(K-1, b_aq, uu_row, 1, beta, 1);</span>
+<span class="lineNum">     260 </span>            : 
+<span class="lineNum">     261 </span>            :                 // increment Avalue
+<span class="lineNum">     262 </span><span class="lineCov">      13160 :                 alpha += a;</span>
+<span class="lineNum">     263 </span>            :         }
+<span class="lineNum">     264 </span><span class="lineCov">       4392 :         alpha *= omega * model-&gt;rho[i] * in;</span>
+<span class="lineNum">     265 </span><span class="lineCov">       4392 :         return alpha;</span>
+<span class="lineNum">     266 </span>            : }
+<span class="lineNum">     267 </span>            : 
+<span class="lineNum">     268 </span>            : /**
+<span class="lineNum">     269 </span>            :  * @brief Perform a single step of the majorization algorithm to update V
+<span class="lineNum">     270 </span>            :  *
+<span class="lineNum">     271 </span>            :  * @details
+<span class="lineNum">     272 </span>            :  * This function contains the main update calculations of the algorithm. These
+<span class="lineNum">     273 </span>            :  * calculations are necessary to find a new update V. The calculations exist of
+<span class="lineNum">     274 </span>            :  * recalculating the majorization coefficients for all instances and all
+<span class="lineNum">     275 </span>            :  * classes, and solving a linear system to find V.
+<span class="lineNum">     276 </span>            :  *
+<span class="lineNum">     277 </span>            :  * Because the function gensvm_get_update() is always called after a call to
+<span class="lineNum">     278 </span>            :  * gensvm_get_loss() with the same GenModel::V, it is unnecessary to calculate
+<span class="lineNum">     279 </span>            :  * the updated errors GenModel::Q and GenModel::H here too. This saves on
+<span class="lineNum">     280 </span>            :  * computation time.
+<span class="lineNum">     281 </span>            :  *
+<span class="lineNum">     282 </span>            :  * In calculating the majorization coefficients we calculate the elements of a
+<span class="lineNum">     283 </span>            :  * diagonal matrix A with elements
+<span class="lineNum">     284 </span>            :  * @f[
+<span class="lineNum">     285 </span>            :  *      A_{i, i} = \frac{1}{n} \rho_i \sum_{j \neq k} \left[
+<span class="lineNum">     286 </span>            :  *              \varepsilon_i a_{ijk}^{(1)} + (1 - \varepsilon_i) \omega_i
+<span class="lineNum">     287 </span>            :  *              a_{ijk}^{(p)} \right],
+<span class="lineNum">     288 </span>            :  * @f]
+<span class="lineNum">     289 </span>            :  * where @f$ k = y_i @f$.
+<span class="lineNum">     290 </span>            :  * Since this matrix is only used to calculate the matrix @f$ Z' A Z @f$, it
+<span class="lineNum">     291 </span>            :  * is efficient to update a matrix ZAZ through consecutive rank 1 updates with
+<span class="lineNum">     292 </span>            :  * a single element of A and the corresponding row of Z. The BLAS function
+<span class="lineNum">     293 </span>            :  * dsyr is used for this.
+<span class="lineNum">     294 </span>            :  *
+<span class="lineNum">     295 </span>            :  * The B matrix is has rows
+<span class="lineNum">     296 </span>            :  * @f[
+<span class="lineNum">     297 </span>            :  *      \boldsymbol{\beta}_i' = \frac{1}{n} \rho_i \sum_{j \neq k} \left[
+<span class="lineNum">     298 </span>            :  *              \varepsilon_i \left( b_{ijk}^{(1)} - a_{ijk}^{(1)}
+<span class="lineNum">     299 </span>            :  *                      \overline{q}_i^{(kj)} \right) + (1 - \varepsilon_i)
+<span class="lineNum">     300 </span>            :  *              \omega_i \left( b_{ijk}^{(p)} - a_{ijk}^{(p)}
+<span class="lineNum">     301 </span>            :  *                      \overline{q}_i^{(kj)} \right) \right]
+<span class="lineNum">     302 </span>            :  *              \boldsymbol{\delta}_{kj}'
+<span class="lineNum">     303 </span>            :  * @f]
+<span class="lineNum">     304 </span>            :  * This is also split into two cases, one for which @f$ \varepsilon_i = 1 @f$,
+<span class="lineNum">     305 </span>            :  * and one for when it is 0. The 3D simplex difference matrix is used here, in
+<span class="lineNum">     306 </span>            :  * the form of the @f$ \boldsymbol{\delta}_{kj}' @f$.
+<span class="lineNum">     307 </span>            :  *
+<span class="lineNum">     308 </span>            :  * Finally, the following system is solved
+<span class="lineNum">     309 </span>            :  * @f[
+<span class="lineNum">     310 </span>            :  *      (\textbf{Z}'\textbf{AZ} + \lambda \textbf{J})\textbf{V} =
+<span class="lineNum">     311 </span>            :  *              (\textbf{Z}'\textbf{AZ}\overline{\textbf{V}} + \textbf{Z}'
+<span class="lineNum">     312 </span>            :  *              \textbf{B})
+<span class="lineNum">     313 </span>            :  * @f]
+<span class="lineNum">     314 </span>            :  * solving this system is done through dposv().
+<span class="lineNum">     315 </span>            :  *
+<span class="lineNum">     316 </span>            :  * @todo
+<span class="lineNum">     317 </span>            :  * Consider using CblasColMajor everywhere
+<span class="lineNum">     318 </span>            :  *
+<span class="lineNum">     319 </span>            :  * @param[in,out]       model   model to be updated
+<span class="lineNum">     320 </span>            :  * @param[in]           data    data used in model
+<a name="321"><span class="lineNum">     321 </span>            :  * @param[in]           work    allocated workspace to use</a>
+<span class="lineNum">     322 </span>            :  */
+<span class="lineNum">     323 </span><span class="lineCov">        466 : void gensvm_get_update(struct GenModel *model, struct GenData *data,</span>
+<span class="lineNum">     324 </span>            :                 struct GenWork *work)
+<span class="lineNum">     325 </span>            : {
+<span class="lineNum">     326 </span>            :         int status;
+<span class="lineNum">     327 </span>            :         long i, j;
+<span class="lineNum">     328 </span>            : 
+<span class="lineNum">     329 </span><span class="lineCov">        466 :         long m = model-&gt;m;</span>
+<span class="lineNum">     330 </span><span class="lineCov">        466 :         long K = model-&gt;K;</span>
+<span class="lineNum">     331 </span>            : 
+<span class="lineNum">     332 </span>            :         // compute the ZAZ and ZB matrices
 <span class="lineNum">     333 </span><span class="lineCov">        466 :         gensvm_get_ZAZ_ZB(model, data, work);</span>
 <span class="lineNum">     334 </span>            : 
 <span class="lineNum">     335 </span>            :         // Calculate right-hand side of system we want to solve
@@ -557,7 +557,7 @@
 <span class="lineNum">     495 </span>            : 
 <span class="lineNum">     496 </span>            :         // calculate ZAZ using blocks of rows of Z. This helps avoiding 
 <span class="lineNum">     497 </span>            :         // rounding errors, which increases precision, and in turn helps 
-<span class="lineNum">     498 </span>            :         // convergion of the IM algorithm.
+<span class="lineNum">     498 </span>            :         // convergence of the IM algorithm.
 <span class="lineNum">     499 </span>            :         // see also: http://stackoverflow.com/q/40286989/
 <span class="lineNum">     500 </span><span class="lineCov">          1 :         n_blocks = floor(n_row / GENSVM_BLOCK_SIZE);</span>
 <span class="lineNum">     501 </span><span class="lineCov">          1 :         rem_size = n_row % GENSVM_BLOCK_SIZE;</span>
