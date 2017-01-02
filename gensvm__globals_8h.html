@@ -169,6 +169,14 @@ Macros</h2></td></tr>
 <tr class="separator:a2444a1b8bce2412b7374c64218450639"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a496bad43eb8a3aac0ecf017aeee77832"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="gensvm__globals_8h.html#a496bad43eb8a3aac0ecf017aeee77832">matrix_mul</a>(M,  cols,  i,  j,  val)&#160;&#160;&#160;M[(i)*(cols)+j] *= val</td></tr>
 <tr class="separator:a496bad43eb8a3aac0ecf017aeee77832"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8f14424e7aa06881385ec22243cdb85e"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="gensvm__globals_8h.html#a8f14424e7aa06881385ec22243cdb85e">GENSVM_QUOTE</a>(name)&#160;&#160;&#160;#name</td></tr>
+<tr class="separator:a8f14424e7aa06881385ec22243cdb85e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afc33188ba9327995a0c0a4cf3fd4ae79"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="gensvm__globals_8h.html#afc33188ba9327995a0c0a4cf3fd4ae79">GENSVM_STRING</a>(macro)&#160;&#160;&#160;<a class="el" href="gensvm__globals_8h.html#a8f14424e7aa06881385ec22243cdb85e">GENSVM_QUOTE</a>(macro)</td></tr>
+<tr class="separator:afc33188ba9327995a0c0a4cf3fd4ae79"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1c6d5de492ac61ad29aec7aa9a436bbf"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="gensvm__globals_8h.html#a1c6d5de492ac61ad29aec7aa9a436bbf">VERSION</a>&#160;&#160;&#160;0.0.0</td></tr>
+<tr class="separator:a1c6d5de492ac61ad29aec7aa9a436bbf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a698acb89e1bf5837b33c30ef35c30044"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="gensvm__globals_8h.html#a698acb89e1bf5837b33c30ef35c30044">VERSION_STRING</a>&#160;&#160;&#160;<a class="el" href="gensvm__globals_8h.html#afc33188ba9327995a0c0a4cf3fd4ae79">GENSVM_STRING</a>(<a class="el" href="gensvm__globals_8h.html#a1c6d5de492ac61ad29aec7aa9a436bbf">VERSION</a>)</td></tr>
+<tr class="separator:a698acb89e1bf5837b33c30ef35c30044"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="enum-members"></a>
 Enumerations</h2></td></tr>
@@ -213,6 +221,46 @@ Enumerations</h2></td></tr>
 <p>Maximum line length of files that are read into GenSVM. </p>
 
 <p>Definition at line <a class="el" href="gensvm__globals_8h_source.html#l00080">80</a> of file <a class="el" href="gensvm__globals_8h_source.html">gensvm_globals.h</a>.</p>
+
+</div>
+</div>
+<a id="a8f14424e7aa06881385ec22243cdb85e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8f14424e7aa06881385ec22243cdb85e">&sect;&nbsp;</a></span>GENSVM_QUOTE</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define GENSVM_QUOTE</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">name</td><td>)</td>
+          <td>&#160;&#160;&#160;#name</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="gensvm__globals_8h_source.html#l00127">127</a> of file <a class="el" href="gensvm__globals_8h_source.html">gensvm_globals.h</a>.</p>
+
+</div>
+</div>
+<a id="afc33188ba9327995a0c0a4cf3fd4ae79"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afc33188ba9327995a0c0a4cf3fd4ae79">&sect;&nbsp;</a></span>GENSVM_STRING</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define GENSVM_STRING</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">macro</td><td>)</td>
+          <td>&#160;&#160;&#160;<a class="el" href="gensvm__globals_8h.html#a8f14424e7aa06881385ec22243cdb85e">GENSVM_QUOTE</a>(macro)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="gensvm__globals_8h_source.html#l00128">128</a> of file <a class="el" href="gensvm__globals_8h_source.html">gensvm_globals.h</a>.</p>
 
 </div>
 </div>
@@ -485,6 +533,38 @@ Enumerations</h2></td></tr>
 
 </div>
 </div>
+<a id="a1c6d5de492ac61ad29aec7aa9a436bbf"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1c6d5de492ac61ad29aec7aa9a436bbf">&sect;&nbsp;</a></span>VERSION</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define VERSION&#160;&#160;&#160;0.0.0</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="gensvm__globals_8h_source.html#l00131">131</a> of file <a class="el" href="gensvm__globals_8h_source.html">gensvm_globals.h</a>.</p>
+
+</div>
+</div>
+<a id="a698acb89e1bf5837b33c30ef35c30044"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a698acb89e1bf5837b33c30ef35c30044">&sect;&nbsp;</a></span>VERSION_STRING</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define VERSION_STRING&#160;&#160;&#160;<a class="el" href="gensvm__globals_8h.html#afc33188ba9327995a0c0a4cf3fd4ae79">GENSVM_STRING</a>(<a class="el" href="gensvm__globals_8h.html#a1c6d5de492ac61ad29aec7aa9a436bbf">VERSION</a>)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="gensvm__globals_8h_source.html#l00134">134</a> of file <a class="el" href="gensvm__globals_8h_source.html">gensvm_globals.h</a>.</p>
+
+</div>
+</div>
 <h2 class="groupheader">Enumeration Type Documentation</h2>
 <a id="a20fb43c4dec0741b9e11a076701f19e9"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a20fb43c4dec0741b9e11a076701f19e9">&sect;&nbsp;</a></span>KernelType</h2>
@@ -541,7 +621,7 @@ Enumerations</h2></td></tr>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Mon Jan 2 2017 09:35:50 for GenSVM by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Mon Jan 2 2017 10:11:10 for GenSVM by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.12
 </small></address>
