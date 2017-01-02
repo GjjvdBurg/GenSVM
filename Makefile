@@ -25,7 +25,7 @@ override LDFLAGS+=-lcblas -llapack -lm -latlas
 debug: CFLAGS += -DDEBUG
 debug: all
 
-doc:
+doc: cover
 	$(DOXY) $(DOXYFILE)
 
 clean:
@@ -47,6 +47,7 @@ cover: lib/libgensvm.a
 		-o ./cover/coverage.all
 	$(GENHTML) -o ./cover ./cover/coverage.all
 	rm -f src/*.{gcda,gcno} tests/*.{gcda,gcno}
+	cp -r cover doc/html/
 
 lib/libgensvm.a: $(OBJ)
 	@ar rcs lib/libgensvm.a $(OBJ)
