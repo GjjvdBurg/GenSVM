@@ -1,0 +1,5 @@
+<map id="GenQueue" name="GenQueue">
+<area shape="rect" id="node2" href="$structGenTask.html" title="A structure for a single task in the queue. " alt="" coords="13,199,90,225"/>
+<area shape="rect" id="node3" href="$structGenData.html" title="A structure to represent the data. " alt="" coords="12,95,91,121"/>
+<area shape="rect" id="node4" href="$structGenSparse.html" title="A structure to represent a sparse matrix in CSR format. " alt="" coords="5,5,97,32"/>
+</map>

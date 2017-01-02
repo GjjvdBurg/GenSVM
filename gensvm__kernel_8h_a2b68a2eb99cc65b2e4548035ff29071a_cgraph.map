@@ -1,0 +1,8 @@
+<map id="gensvm_kernel_postprocess" name="gensvm_kernel_postprocess">
+<area shape="rect" id="node2" href="$gensvm__kernel_8c.html#abe3161aaaef57e62c2c9a6ae71b2127e" title="Compute the kernel crossproduct between two datasets. " alt="" coords="275,81,437,108"/>
+<area shape="rect" id="node7" href="$gensvm__kernel_8c.html#acbe565e8fe856bc208b7d178e54631a2" title="Calculate the matrix product for the testfactor. " alt="" coords="260,132,452,159"/>
+<area shape="rect" id="node3" href="$gensvm__kernel_8c.html#a46cc9302c9eaf45858a807ffdf052ebf" title="Compute the polynomial kernel between two vectors. " alt="" coords="512,5,697,32"/>
+<area shape="rect" id="node4" href="$gensvm__kernel_8c.html#ac084336bb477beb37723d987457a5b7d" title="Compute the RBF kernel between two vectors. " alt="" coords="517,56,692,83"/>
+<area shape="rect" id="node5" href="$gensvm__kernel_8c.html#af3f724b2781532a0b14c58a24b49147f" title="Compute the sigmoid kernel between two vectors. " alt="" coords="500,107,709,133"/>
+<area shape="rect" id="node6" href="$gensvm__print_8h.html#aede5746344fdce99647541101eaa7f06" title="Parse a formatted string and write it to standard error. " alt="" coords="585,157,625,184"/>
+</map>

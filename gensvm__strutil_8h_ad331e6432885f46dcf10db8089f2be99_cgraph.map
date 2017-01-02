@@ -1,0 +1,4 @@
+<map id="str_split" name="str_split">
+<area shape="rect" id="node2" href="$gensvm__strutil_8c.html#a6108af1b48931a6e3627f3e6f510c791" title="Count the number of times a string contains any character of another. " alt="" coords="128,5,295,32"/>
+<area shape="rect" id="node3" href="$gensvm__strutil_8c.html#ae61855a0284cf14f80b682396aa7f13d" title="Check if a string contains a char. " alt="" coords="143,56,279,83"/>
+</map>

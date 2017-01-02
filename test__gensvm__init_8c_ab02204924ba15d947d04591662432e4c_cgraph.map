@@ -1,0 +1,10 @@
+<map id="test_init_weights_2" name="test_init_weights_2">
+<area shape="rect" id="node2" href="$gensvm__base_8h.html#a96f35734dcba63d95e08addd2dabce3d" title="Initialize a GenModel structure. " alt="" coords="223,5,374,32"/>
+<area shape="rect" id="node3" href="$gensvm__base_8h.html#a2123ffe5f44db584421e139be7d31b6c" title="Initialize a GenData structure. " alt="" coords="229,56,368,83"/>
+<area shape="rect" id="node4" href="$gensvm__base_8h.html#a3b6c01ec77b5726843f7dd6c68593f6a" title="Allocate memory for a GenModel. " alt="" coords="208,107,389,133"/>
+<area shape="rect" id="node5" href="$gensvm__init_8h.html#a0cb86a00bfa52b2ebc86e2b98687928c" title="Initialize instance weights. " alt="" coords="201,157,396,184"/>
+<area shape="rect" id="node7" href="$gensvm__base_8h.html#a0cf72f34706ed286c922ce74ee11f0be" title="Free allocated GenModel struct. " alt="" coords="221,208,376,235"/>
+<area shape="rect" id="node8" href="$gensvm__base_8h.html#a98f3696d492bec4485e3f2a42062705f" title="Free allocated GenData struct. " alt="" coords="227,259,370,285"/>
+<area shape="rect" id="node6" href="$gensvm__print_8h.html#aede5746344fdce99647541101eaa7f06" title="Parse a formatted string and write it to standard error. " alt="" coords="503,157,543,184"/>
+<area shape="rect" id="node9" href="$gensvm__sparse_8h.html#a1bd9399ffc0b5e4d32ac160eb3143864" title="Free an allocated GenSparse structure. " alt="" coords="444,259,601,285"/>
+</map>

@@ -1,0 +1,6 @@
+<map id="test_kernel_testfactor" name="test_kernel_testfactor">
+<area shape="rect" id="node2" href="$gensvm__base_8h.html#a2123ffe5f44db584421e139be7d31b6c" title="Initialize a GenData structure. " alt="" coords="245,5,384,32"/>
+<area shape="rect" id="node3" href="$gensvm__kernel_8h.html#acbe565e8fe856bc208b7d178e54631a2" title="Calculate the matrix product for the testfactor. " alt="" coords="219,56,411,83"/>
+<area shape="rect" id="node4" href="$gensvm__base_8h.html#a98f3696d492bec4485e3f2a42062705f" title="Free allocated GenData struct. " alt="" coords="243,107,386,133"/>
+<area shape="rect" id="node5" href="$gensvm__sparse_8h.html#a1bd9399ffc0b5e4d32ac160eb3143864" title="Free an allocated GenSparse structure. " alt="" coords="459,107,616,133"/>
+</map>

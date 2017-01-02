@@ -1,0 +1,10 @@
+<map id="gensvm_get_ZAZ_ZB" name="gensvm_get_ZAZ_ZB">
+<area shape="rect" id="node2" href="$gensvm__base_8h.html#a866ddca7070aacee709a6cfd563a595f" title="Reset all matrices of a GenWork instance. " alt="" coords="243,25,397,51"/>
+<area shape="rect" id="node3" href="$gensvm__update_8c.html#ac5dcf6daf6e1e1888f0a97f501037524" title="Calculate Z&#39;*A*Z and Z&#39;*B for sparse matrices. " alt="" coords="215,75,425,102"/>
+<area shape="rect" id="node9" href="$gensvm__update_8c.html#ab695778b8a796f3f991754ed0015eeb6" title="Calculate Z&#39;*A*Z and Z&#39;*B for dense matrices. " alt="" coords="217,126,423,153"/>
+<area shape="rect" id="node4" href="$gensvm__update_8c.html#aeb327efd218c706102916bb0aa1e671d" title="Compute the alpha_i and beta_i for an instance. " alt="" coords="473,101,655,127"/>
+<area shape="rect" id="node5" href="$gensvm__update_8c.html#abb108fbbbf27aedec726d363683bdb1c" title="Check if we can do simple majorization for a given instance. " alt="" coords="721,5,877,47"/>
+<area shape="rect" id="node6" href="$gensvm__update_8c.html#ae90a65a5a2a2313251356d3667a8b069" title="Calculate the value of omega for a single instance. " alt="" coords="703,71,895,98"/>
+<area shape="rect" id="node7" href="$gensvm__update_8c.html#a9218875737267254fc332d772ce13ec0" title="Compute majorization coefficients for simple instances. " alt="" coords="717,123,880,164"/>
+<area shape="rect" id="node8" href="$gensvm__update_8c.html#ae51dd734ea3e73944d9eb890d63cb361" title="Compute majorization coefficients for non&#45;simple instance. " alt="" coords="717,188,880,229"/>
+</map>

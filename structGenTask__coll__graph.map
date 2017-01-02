@@ -1,0 +1,4 @@
+<map id="GenTask" name="GenTask">
+<area shape="rect" id="node2" href="$structGenData.html" title="A structure to represent the data. " alt="" coords="12,95,91,121"/>
+<area shape="rect" id="node3" href="$structGenSparse.html" title="A structure to represent a sparse matrix in CSR format. " alt="" coords="5,5,97,32"/>
+</map>

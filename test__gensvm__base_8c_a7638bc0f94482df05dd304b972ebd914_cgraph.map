@@ -1,0 +1,9 @@
+<map id="test_reset_work" name="test_reset_work">
+<area shape="rect" id="node2" href="$gensvm__base_8h.html#a96f35734dcba63d95e08addd2dabce3d" title="Initialize a GenModel structure. " alt="" coords="182,5,333,32"/>
+<area shape="rect" id="node3" href="$gensvm__base_8h.html#a52120d849ff52751c7995c24dfa50f00" title="Initialize the workspace structure. " alt="" coords="187,56,328,83"/>
+<area shape="rect" id="node4" href="$test__gensvm__base_8c.html#a6f1f543caca3102fac75c792fbe2a733" title="fill_with_noise" alt="" coords="200,107,315,133"/>
+<area shape="rect" id="node5" href="$gensvm__base_8h.html#a866ddca7070aacee709a6cfd563a595f" title="Reset all matrices of a GenWork instance. " alt="" coords="181,157,334,184"/>
+<area shape="rect" id="node6" href="$test__gensvm__base_8c.html#ac75bb3820cfbc324c0324ab2360fe48f" title="all_elements_zero" alt="" coords="187,208,328,235"/>
+<area shape="rect" id="node7" href="$gensvm__base_8h.html#a0cf72f34706ed286c922ce74ee11f0be" title="Free allocated GenModel struct. " alt="" coords="180,259,335,285"/>
+<area shape="rect" id="node8" href="$gensvm__base_8h.html#a25a671211eb5a8e6b2b9ae214a8a6428" title="Free an allocated GenWork instance. " alt="" coords="184,309,331,336"/>
+</map>

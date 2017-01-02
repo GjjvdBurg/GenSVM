@@ -1,0 +1,395 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - coverage.all - src/gensvm_consistency.c</title>
+  <link rel="stylesheet" type="text/css" href="../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../index.html">top level</a> - <a href="index.html">src</a> - gensvm_consistency.c<span style="font-size: 80%;"> (source / <a href="gensvm_consistency.c.func-sort-c.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">coverage.all</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">38</td>
+            <td class="headerCovTableEntry">142</td>
+            <td class="headerCovTableEntryLo">26.8 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2017-01-02 10:06:26</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">3</td>
+            <td class="headerCovTableEntry">4</td>
+            <td class="headerCovTableEntryMed">75.0 %</td>
+          </tr>
+          <tr><td><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : /**</a>
+<span class="lineNum">       2 </span>            :  * @file gensvm_consistency.c
+<span class="lineNum">       3 </span>            :  * @author G.J.J. van den Burg
+<span class="lineNum">       4 </span>            :  * @date 2016-10-24
+<span class="lineNum">       5 </span>            :  * @brief Functions for running consistency repeats
+<span class="lineNum">       6 </span>            :  *
+<span class="lineNum">       7 </span>            :  * @details
+<span class="lineNum">       8 </span>            :  * When running the grid search, the user may optionally choose to run 
+<span class="lineNum">       9 </span>            :  * repetitions of the best performing configurations to check if they perform 
+<span class="lineNum">      10 </span>            :  * well consistently. These are called consistency repeats, and the code 
+<span class="lineNum">      11 </span>            :  * needed for them is defined here.
+<span class="lineNum">      12 </span>            :  *
+<span class="lineNum">      13 </span>            :  * @copyright
+<span class="lineNum">      14 </span>            :  Copyright 2016, G.J.J. van den Burg.
+<span class="lineNum">      15 </span>            : 
+<span class="lineNum">      16 </span>            :  This file is part of GenSVM.
+<span class="lineNum">      17 </span>            : 
+<span class="lineNum">      18 </span>            :  GenSVM is free software: you can redistribute it and/or modify
+<span class="lineNum">      19 </span>            :  it under the terms of the GNU General Public License as published by
+<span class="lineNum">      20 </span>            :  the Free Software Foundation, either version 3 of the License, or
+<span class="lineNum">      21 </span>            :  (at your option) any later version.
+<span class="lineNum">      22 </span>            : 
+<span class="lineNum">      23 </span>            :  GenSVM is distributed in the hope that it will be useful,
+<span class="lineNum">      24 </span>            :  but WITHOUT ANY WARRANTY; without even the implied warranty of
+<span class="lineNum">      25 </span>            :  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+<span class="lineNum">      26 </span>            :  GNU General Public License for more details.
+<span class="lineNum">      27 </span>            : 
+<span class="lineNum">      28 </span>            :  You should have received a copy of the GNU General Public License
+<span class="lineNum">      29 </span>            :  along with GenSVM. If not, see &lt;http://www.gnu.org/licenses/&gt;.
+<span class="lineNum">      30 </span>            : 
+<span class="lineNum">      31 </span>            :  */
+<span class="lineNum">      32 </span>            : 
+<span class="lineNum">      33 </span>            : #include &quot;gensvm_consistency.h&quot;
+<span class="lineNum">      34 </span>            : 
+<span class="lineNum">      35 </span>            : /**
+<span class="lineNum">      36 </span>            :  * @brief Create GenQueue of tasks with performance above a given percentile
+<span class="lineNum">      37 </span>            :  *
+<span class="lineNum">      38 </span>            :  * @details
+<span class="lineNum">      39 </span>            :  * This function constructs a GenQueue of the GenTask instances in the 
+<span class="lineNum">      40 </span>            :  * provided GenQueue which have a performance at or above the given percentile 
+<span class="lineNum">      41 </span>            :  * of the performance of all elements in the provided GenQueue. This can be 
+<span class="lineNum">      42 </span>            :  * used to determine which hyperparameter configurations belong to the top x-% 
+<span class="lineNum">      43 </span>            :  * of all tasks in terms of performance.
+<span class="lineNum">      44 </span>            :  *
+<span class="lineNum">      45 </span>            :  * @sa
+<span class="lineNum">      46 </span>            :  * gensvm_consistency_repeats(), gensvm_percentile()
+<span class="lineNum">      47 </span>            :  *
+<span class="lineNum">      48 </span>            :  * @note
+<span class="lineNum">      49 </span>            :  * This function assumes that for each task in the given GenQueue, the 
+<span class="lineNum">      50 </span>            :  * GenTask::perf element has been set.
+<span class="lineNum">      51 </span>            :  *
+<span class="lineNum">      52 </span>            :  * @param[in]   q               a complete GenQueue struct
+<span class="lineNum">      53 </span>            :  * @param[in]   percentile      the desired percentile
+<span class="lineNum">      54 </span>            :  *
+<span class="lineNum">      55 </span>            :  * @return                      a GenQueue struct with GenTasks which are at
+<span class="lineNum">      56 </span>            :  *                              or above the desired percentile of performance
+<a name="57"><span class="lineNum">      57 </span>            :  *</a>
+<span class="lineNum">      58 </span>            :  */
+<span class="lineNum">      59 </span><span class="lineCov">          1 : struct GenQueue *gensvm_top_queue(struct GenQueue *q, double percentile)</span>
+<span class="lineNum">      60 </span>            : {
+<span class="lineNum">      61 </span><span class="lineCov">          1 :         long i, k, N = 0;</span>
+<span class="lineNum">      62 </span>            :         double boundary,
+<span class="lineNum">      63 </span><span class="lineCov">          1 :                *perf = Calloc(double, q-&gt;N);</span>
+<span class="lineNum">      64 </span><span class="lineCov">          1 :         struct GenQueue *nq = gensvm_init_queue();</span>
+<span class="lineNum">      65 </span>            : 
+<span class="lineNum">      66 </span>            :         // find the desired percentile of performance
+<span class="lineNum">      67 </span><span class="lineCov">         11 :         for (i=0; i&lt;q-&gt;N; i++) {</span>
+<span class="lineNum">      68 </span><span class="lineCov">         10 :                 perf[i] = q-&gt;tasks[i]-&gt;performance;</span>
+<span class="lineNum">      69 </span>            :         }
+<span class="lineNum">      70 </span><span class="lineCov">          1 :         boundary = gensvm_percentile(perf, q-&gt;N, percentile);</span>
+<span class="lineNum">      71 </span><span class="lineCov">          1 :         note(&quot;Boundary of the %g-th percentile determined at: %f\n&quot;,</span>
+<span class="lineNum">      72 </span>            :                         percentile, boundary);
+<span class="lineNum">      73 </span>            : 
+<span class="lineNum">      74 </span>            :         // find the number of tasks that perform at or above the boundary
+<span class="lineNum">      75 </span><span class="lineCov">         11 :         for (i=0; i&lt;q-&gt;N; i++) {</span>
+<span class="lineNum">      76 </span><span class="lineCov">         10 :                 if (q-&gt;tasks[i]-&gt;performance &gt;= boundary)</span>
+<span class="lineNum">      77 </span><span class="lineCov">          3 :                         N++;</span>
+<span class="lineNum">      78 </span>            :         }
+<span class="lineNum">      79 </span>            : 
+<span class="lineNum">      80 </span>            :         // create a new queue with the best tasks
+<span class="lineNum">      81 </span><span class="lineCov">          1 :         nq-&gt;tasks = Malloc(struct GenTask *, N);</span>
+<span class="lineNum">      82 </span><span class="lineCov">          1 :         k = 0;</span>
+<span class="lineNum">      83 </span><span class="lineCov">         11 :         for (i=0; i&lt;q-&gt;N; i++) {</span>
+<span class="lineNum">      84 </span><span class="lineCov">         10 :                 if (q-&gt;tasks[i]-&gt;performance &gt;= boundary)</span>
+<span class="lineNum">      85 </span><span class="lineCov">          3 :                         nq-&gt;tasks[k++] = gensvm_copy_task(q-&gt;tasks[i]);</span>
+<span class="lineNum">      86 </span>            :         }
+<span class="lineNum">      87 </span><span class="lineCov">          1 :         nq-&gt;N = N;</span>
+<span class="lineNum">      88 </span><span class="lineCov">          1 :         nq-&gt;i = 0;</span>
+<span class="lineNum">      89 </span>            : 
+<span class="lineNum">      90 </span><span class="lineCov">          1 :         free(perf);</span>
+<span class="lineNum">      91 </span><span class="lineCov">          1 :         return nq;</span>
+<span class="lineNum">      92 </span>            : }
+<span class="lineNum">      93 </span>            : 
+<span class="lineNum">      94 </span>            : /**
+<span class="lineNum">      95 </span>            :  * @brief Run repeats of the GenTask structs in GenQueue to find the best
+<span class="lineNum">      96 </span>            :  * configuration
+<span class="lineNum">      97 </span>            :  *
+<span class="lineNum">      98 </span>            :  * @details
+<span class="lineNum">      99 </span>            :  * The best performing tasks in the supplied GenQueue are found by taking 
+<span class="lineNum">     100 </span>            :  * those GenTask structs that have a performance greater or equal to the given 
+<span class="lineNum">     101 </span>            :  * percentile of the performance of all tasks. These tasks are then gathered 
+<span class="lineNum">     102 </span>            :  * in a new GenQueue. For each of the tasks in this new GenQueue the cross 
+<span class="lineNum">     103 </span>            :  * validation run is repeated a number of times.
+<span class="lineNum">     104 </span>            :  *
+<span class="lineNum">     105 </span>            :  * For each of the GenTask configurations that are repeated the mean 
+<span class="lineNum">     106 </span>            :  * performance, standard deviation of the performance and the mean computation 
+<span class="lineNum">     107 </span>            :  * time are reported.
+<span class="lineNum">     108 </span>            :  *
+<span class="lineNum">     109 </span>            :  * Finally, the overall best tasks are written to the specified output. These 
+<span class="lineNum">     110 </span>            :  * tasks are selected to have both the highest mean performance, as well as 
+<span class="lineNum">     111 </span>            :  * the smallest standard deviation in their performance. This is done as 
+<span class="lineNum">     112 </span>            :  * follows.  First the 99th percentile of task performance and the 1st 
+<span class="lineNum">     113 </span>            :  * percentile of standard deviation is calculated. If a task exists for which 
+<span class="lineNum">     114 </span>            :  * the mean performance of the repeats and the standard deviation equals these 
+<span class="lineNum">     115 </span>            :  * values respectively, this task is found to be the best and is written to 
+<span class="lineNum">     116 </span>            :  * the output. If no such task exists, the 98th percentile of performance and 
+<span class="lineNum">     117 </span>            :  * the 2nd percentile of standard deviation is considered. This is repeated 
+<span class="lineNum">     118 </span>            :  * until an interval is found which contains tasks. If one or more tasks are 
+<span class="lineNum">     119 </span>            :  * found, this loop stops.
+<span class="lineNum">     120 </span>            :  *
+<span class="lineNum">     121 </span>            :  * @param[in]   q               GenQueue of GenTask structs which have already been
+<span class="lineNum">     122 </span>            :  *                              run and have a GenTask::performance value
+<span class="lineNum">     123 </span>            :  * @param[in]   repeats         Number of times to repeat the best
+<span class="lineNum">     124 </span>            :  *                              configurations for consistency
+<span class="lineNum">     125 </span>            :  * @param[in]   percentile      percentile of performance to determine which
+<a name="126"><span class="lineNum">     126 </span>            :  *                              tasks to repeat</a>
+<span class="lineNum">     127 </span>            :  */
+<span class="lineNum">     128 </span><span class="lineNoCov">          0 : void gensvm_consistency_repeats(struct GenQueue *q, long repeats,</span>
+<span class="lineNum">     129 </span>            :                 double percentile)
+<span class="lineNum">     130 </span>            : {
+<span class="lineNum">     131 </span>            :         bool breakout;
+<span class="lineNum">     132 </span><span class="lineNoCov">          0 :         long i, f, r, N, *cv_idx = NULL;</span>
+<span class="lineNum">     133 </span>            :         double p, pi, pr, pt,
+<span class="lineNum">     134 </span><span class="lineNoCov">          0 :                *time = NULL,</span>
+<span class="lineNum">     135 </span><span class="lineNoCov">          0 :                *std = NULL,</span>
+<span class="lineNum">     136 </span><span class="lineNoCov">          0 :                *mean = NULL,</span>
+<span class="lineNum">     137 </span><span class="lineNoCov">          0 :                *perf = NULL;</span>
+<span class="lineNum">     138 </span><span class="lineNoCov">          0 :         struct GenQueue *nq = NULL;</span>
+<span class="lineNum">     139 </span><span class="lineNoCov">          0 :         struct GenData **train_folds = NULL,</span>
+<span class="lineNum">     140 </span><span class="lineNoCov">          0 :                        **test_folds = NULL;</span>
+<span class="lineNum">     141 </span><span class="lineNoCov">          0 :         struct GenModel *model = gensvm_init_model();</span>
+<span class="lineNum">     142 </span><span class="lineNoCov">          0 :         struct GenTask *task = NULL;</span>
+<span class="lineNum">     143 </span>            :         struct timespec loop_s, loop_e;
+<span class="lineNum">     144 </span>            : 
+<span class="lineNum">     145 </span><span class="lineNoCov">          0 :         nq = gensvm_top_queue(q, percentile);</span>
+<span class="lineNum">     146 </span><span class="lineNoCov">          0 :         N = nq-&gt;N;</span>
+<span class="lineNum">     147 </span>            : 
+<span class="lineNum">     148 </span><span class="lineNoCov">          0 :         note(&quot;Number of items to check: %li\n&quot;, nq-&gt;N);</span>
+<span class="lineNum">     149 </span><span class="lineNoCov">          0 :         std = Calloc(double, N);</span>
+<span class="lineNum">     150 </span><span class="lineNoCov">          0 :         mean = Calloc(double, N);</span>
+<span class="lineNum">     151 </span><span class="lineNoCov">          0 :         time = Calloc(double, N);</span>
+<span class="lineNum">     152 </span><span class="lineNoCov">          0 :         perf = Calloc(double, N*repeats);</span>
+<span class="lineNum">     153 </span>            : 
+<span class="lineNum">     154 </span><span class="lineNoCov">          0 :         task = get_next_task(nq);</span>
+<span class="lineNum">     155 </span>            : 
+<span class="lineNum">     156 </span><span class="lineNoCov">          0 :         model-&gt;n = 0;</span>
+<span class="lineNum">     157 </span><span class="lineNoCov">          0 :         model-&gt;m = task-&gt;train_data-&gt;m;</span>
+<span class="lineNum">     158 </span><span class="lineNoCov">          0 :         model-&gt;K = task-&gt;train_data-&gt;K;</span>
+<span class="lineNum">     159 </span><span class="lineNoCov">          0 :         gensvm_allocate_model(model);</span>
+<span class="lineNum">     160 </span><span class="lineNoCov">          0 :         gensvm_init_V(NULL, model, task-&gt;train_data);</span>
+<span class="lineNum">     161 </span>            : 
+<span class="lineNum">     162 </span><span class="lineNoCov">          0 :         cv_idx = Calloc(long, task-&gt;train_data-&gt;n);</span>
+<span class="lineNum">     163 </span>            : 
+<span class="lineNum">     164 </span><span class="lineNoCov">          0 :         train_folds = Malloc(struct GenData *, task-&gt;folds);</span>
+<span class="lineNum">     165 </span><span class="lineNoCov">          0 :         test_folds = Malloc(struct GenData *, task-&gt;folds);</span>
+<span class="lineNum">     166 </span>            : 
+<span class="lineNum">     167 </span><span class="lineNoCov">          0 :         i = 0;</span>
+<span class="lineNum">     168 </span><span class="lineNoCov">          0 :         while (task) {</span>
+<span class="lineNum">     169 </span><span class="lineNoCov">          0 :                 gensvm_task_to_model(task, model);</span>
+<span class="lineNum">     170 </span>            : 
+<span class="lineNum">     171 </span><span class="lineNoCov">          0 :                 time[i] = 0.0;</span>
+<span class="lineNum">     172 </span><span class="lineNoCov">          0 :                 note(&quot;(%02li/%02li:%03li)\t&quot;, i+1, N, task-&gt;ID);</span>
+<span class="lineNum">     173 </span><span class="lineNoCov">          0 :                 for (r=0; r&lt;repeats; r++) {</span>
+<span class="lineNum">     174 </span><span class="lineNoCov">          0 :                         Memset(cv_idx, long, task-&gt;train_data-&gt;n);</span>
+<span class="lineNum">     175 </span><span class="lineNoCov">          0 :                         gensvm_make_cv_split(task-&gt;train_data-&gt;n, task-&gt;folds, cv_idx);</span>
+<span class="lineNum">     176 </span><span class="lineNoCov">          0 :                         train_folds = Malloc(struct GenData *, task-&gt;folds);</span>
+<span class="lineNum">     177 </span><span class="lineNoCov">          0 :                         test_folds = Malloc(struct GenData *, task-&gt;folds);</span>
+<span class="lineNum">     178 </span><span class="lineNoCov">          0 :                         for (f=0; f&lt;task-&gt;folds; f++) {</span>
+<span class="lineNum">     179 </span><span class="lineNoCov">          0 :                                 train_folds[f] = gensvm_init_data();</span>
+<span class="lineNum">     180 </span><span class="lineNoCov">          0 :                                 test_folds[f] = gensvm_init_data();</span>
+<span class="lineNum">     181 </span><span class="lineNoCov">          0 :                                 gensvm_get_tt_split(task-&gt;train_data, train_folds[f],</span>
+<span class="lineNum">     182 </span><span class="lineNoCov">          0 :                                                 test_folds[f], cv_idx, f);</span>
+<span class="lineNum">     183 </span><span class="lineNoCov">          0 :                                 gensvm_kernel_preprocess(model, train_folds[f]);</span>
+<span class="lineNum">     184 </span><span class="lineNoCov">          0 :                                 gensvm_kernel_postprocess(model, train_folds[f],</span>
+<span class="lineNum">     185 </span><span class="lineNoCov">          0 :                                                 test_folds[f]);</span>
+<span class="lineNum">     186 </span>            :                         }
+<span class="lineNum">     187 </span>            : 
+<span class="lineNum">     188 </span><span class="lineNoCov">          0 :                         Timer(loop_s);</span>
+<span class="lineNum">     189 </span><span class="lineNoCov">          0 :                         p = gensvm_cross_validation(model, train_folds, test_folds,</span>
+<span class="lineNum">     190 </span><span class="lineNoCov">          0 :                                         task-&gt;folds, task-&gt;train_data-&gt;n);</span>
+<span class="lineNum">     191 </span><span class="lineNoCov">          0 :                         Timer(loop_e);</span>
+<span class="lineNum">     192 </span><span class="lineNoCov">          0 :                         time[i] += gensvm_elapsed_time(&amp;loop_s, &amp;loop_e);</span>
+<span class="lineNum">     193 </span><span class="lineNoCov">          0 :                         matrix_set(perf, repeats, i, r, p);</span>
+<span class="lineNum">     194 </span><span class="lineNoCov">          0 :                         mean[i] += p/((double) repeats);</span>
+<span class="lineNum">     195 </span><span class="lineNoCov">          0 :                         note(&quot;%3.3f\t&quot;, p);</span>
+<span class="lineNum">     196 </span>            :                         // this is done because if we reuse the V it's not a
+<span class="lineNum">     197 </span>            :                         // consistency check
+<span class="lineNum">     198 </span><span class="lineNoCov">          0 :                         gensvm_init_V(NULL, model, task-&gt;train_data);</span>
+<span class="lineNum">     199 </span><span class="lineNoCov">          0 :                         for (f=0; f&lt;task-&gt;folds; f++) {</span>
+<span class="lineNum">     200 </span><span class="lineNoCov">          0 :                                 gensvm_free_data(train_folds[f]);</span>
+<span class="lineNum">     201 </span><span class="lineNoCov">          0 :                                 gensvm_free_data(test_folds[f]);</span>
+<span class="lineNum">     202 </span>            :                         }
+<span class="lineNum">     203 </span><span class="lineNoCov">          0 :                         free(train_folds);</span>
+<span class="lineNum">     204 </span><span class="lineNoCov">          0 :                         train_folds = NULL;</span>
+<span class="lineNum">     205 </span>            : 
+<span class="lineNum">     206 </span><span class="lineNoCov">          0 :                         free(test_folds);</span>
+<span class="lineNum">     207 </span><span class="lineNoCov">          0 :                         test_folds = NULL;</span>
+<span class="lineNum">     208 </span>            :                 }
+<span class="lineNum">     209 </span><span class="lineNoCov">          0 :                 for (r=0; r&lt;repeats; r++) {</span>
+<span class="lineNum">     210 </span><span class="lineNoCov">          0 :                         std[i] += pow(matrix_get(perf, repeats, i, r) - mean[i],</span>
+<span class="lineNum">     211 </span>            :                                         2.0);
+<span class="lineNum">     212 </span>            :                 }
+<span class="lineNum">     213 </span><span class="lineNoCov">          0 :                 if (r &gt; 1) {</span>
+<span class="lineNum">     214 </span><span class="lineNoCov">          0 :                         std[i] /= ((double) repeats) - 1.0;</span>
+<span class="lineNum">     215 </span><span class="lineNoCov">          0 :                         std[i] = sqrt(std[i]);</span>
+<span class="lineNum">     216 </span>            :                 } else {
+<span class="lineNum">     217 </span><span class="lineNoCov">          0 :                         std[i] = 0.0;</span>
+<span class="lineNum">     218 </span>            :                 }
+<span class="lineNum">     219 </span><span class="lineNoCov">          0 :                 note(&quot;(m = %3.3f, s = %3.3f, t = %3.3f)\n&quot;, mean[i], std[i],</span>
+<span class="lineNum">     220 </span><span class="lineNoCov">          0 :                                 time[i]);</span>
+<span class="lineNum">     221 </span><span class="lineNoCov">          0 :                 task = get_next_task(nq);</span>
+<span class="lineNum">     222 </span><span class="lineNoCov">          0 :                 i++;</span>
+<span class="lineNum">     223 </span>            :         }
+<span class="lineNum">     224 </span>            : 
+<span class="lineNum">     225 </span>            :         // find the best overall configurations: those with high average
+<span class="lineNum">     226 </span>            :         // performance and low deviation in the performance
+<span class="lineNum">     227 </span><span class="lineNoCov">          0 :         note(&quot;\nBest overall configuration(s):\n&quot;);</span>
+<span class="lineNum">     228 </span><span class="lineNoCov">          0 :         note(&quot;ID\tweights\tepsilon\t\tp\t\tkappa\t\tlambda\t\t&quot;</span>
+<span class="lineNum">     229 </span>            :                         &quot;mean_perf\tstd_perf\ttime_perf\n&quot;);
+<span class="lineNum">     230 </span><span class="lineNoCov">          0 :         p = 0.0;</span>
+<span class="lineNum">     231 </span><span class="lineNoCov">          0 :         breakout = false;</span>
+<span class="lineNum">     232 </span><span class="lineNoCov">          0 :         while (breakout == false) {</span>
+<span class="lineNum">     233 </span><span class="lineNoCov">          0 :                 pi = gensvm_percentile(mean, N, (100.0-p));</span>
+<span class="lineNum">     234 </span><span class="lineNoCov">          0 :                 pr = gensvm_percentile(std, N, p);</span>
+<span class="lineNum">     235 </span><span class="lineNoCov">          0 :                 pt = gensvm_percentile(time, N, p);</span>
+<span class="lineNum">     236 </span><span class="lineNoCov">          0 :                 for (i=0; i&lt;N; i++)</span>
+<span class="lineNum">     237 </span><span class="lineNoCov">          0 :                         if ((pi - mean[i] &lt; 0.0001) &amp;&amp;</span>
+<span class="lineNum">     238 </span><span class="lineNoCov">          0 :                                         (std[i] - pr &lt; 0.0001) &amp;&amp;</span>
+<span class="lineNum">     239 </span><span class="lineNoCov">          0 :                                         (time[i] - pt &lt; 0.0001)) {</span>
+<span class="lineNum">     240 </span><span class="lineNoCov">          0 :                                 note(&quot;(%li)\tw = %li\te = %f\tp = %f\t&quot;</span>
+<span class="lineNum">     241 </span>            :                                                 &quot;k = %f\tl = %f\t&quot;
+<span class="lineNum">     242 </span>            :                                                 &quot;mean: %3.3f\tstd: %3.3f\t&quot;
+<span class="lineNum">     243 </span>            :                                                 &quot;time: %3.3f\n&quot;,
+<span class="lineNum">     244 </span><span class="lineNoCov">          0 :                                                 nq-&gt;tasks[i]-&gt;ID,</span>
+<span class="lineNum">     245 </span><span class="lineNoCov">          0 :                                                 nq-&gt;tasks[i]-&gt;weight_idx,</span>
+<span class="lineNum">     246 </span><span class="lineNoCov">          0 :                                                 nq-&gt;tasks[i]-&gt;epsilon,</span>
+<span class="lineNum">     247 </span><span class="lineNoCov">          0 :                                                 nq-&gt;tasks[i]-&gt;p,</span>
+<span class="lineNum">     248 </span><span class="lineNoCov">          0 :                                                 nq-&gt;tasks[i]-&gt;kappa,</span>
+<span class="lineNum">     249 </span><span class="lineNoCov">          0 :                                                 nq-&gt;tasks[i]-&gt;lambda,</span>
+<span class="lineNum">     250 </span><span class="lineNoCov">          0 :                                                 mean[i],</span>
+<span class="lineNum">     251 </span><span class="lineNoCov">          0 :                                                 std[i],</span>
+<span class="lineNum">     252 </span><span class="lineNoCov">          0 :                                                 time[i]);</span>
+<span class="lineNum">     253 </span><span class="lineNoCov">          0 :                                 breakout = true;</span>
+<span class="lineNum">     254 </span>            :                         }
+<span class="lineNum">     255 </span><span class="lineNoCov">          0 :                 p += 1.0;</span>
+<span class="lineNum">     256 </span>            :         }
+<span class="lineNum">     257 </span>            : 
+<span class="lineNum">     258 </span><span class="lineNoCov">          0 :         free(cv_idx);</span>
+<span class="lineNum">     259 </span>            :         // make sure no double free occurs with the copied kernelparam
+<span class="lineNum">     260 </span><span class="lineNoCov">          0 :         model-&gt;kernelparam = NULL;</span>
+<span class="lineNum">     261 </span><span class="lineNoCov">          0 :         gensvm_free_model(model);</span>
+<span class="lineNum">     262 </span><span class="lineNoCov">          0 :         gensvm_free_queue(nq);</span>
+<span class="lineNum">     263 </span>            : 
+<span class="lineNum">     264 </span><span class="lineNoCov">          0 :         free(perf);</span>
+<span class="lineNum">     265 </span><span class="lineNoCov">          0 :         free(std);</span>
+<span class="lineNum">     266 </span><span class="lineNoCov">          0 :         free(mean);</span>
+<span class="lineNum">     267 </span><span class="lineNoCov">          0 :         free(time);</span>
+<span class="lineNum">     268 </span><span class="lineNoCov">          0 : }</span>
+<span class="lineNum">     269 </span>            : 
+<span class="lineNum">     270 </span>            : /**
+<span class="lineNum">     271 </span>            :  * @brief Comparison function for doubl
+<span class="lineNum">     272 </span>            :  *
+<span class="lineNum">     273 </span>            :  * @param[in]   elem1   number 1
+<span class="lineNum">     274 </span>            :  * @param[in]   elem2   number 2
+<a name="275"><span class="lineNum">     275 </span>            :  * @returns             comparison of number 1 larger than number 2</a>
+<span class="lineNum">     276 </span>            :  */
+<span class="lineNum">     277 </span><span class="lineCov">        113 : int gensvm_dsort(const void *elem1, const void *elem2)</span>
+<span class="lineNum">     278 </span>            : {
+<span class="lineNum">     279 </span><span class="lineCov">        113 :         const double t1 = (*(double *) elem1);</span>
+<span class="lineNum">     280 </span><span class="lineCov">        113 :         const double t2 = (*(double *) elem2);</span>
+<span class="lineNum">     281 </span><span class="lineCov">        113 :         return t1 &gt; t2;</span>
+<span class="lineNum">     282 </span>            : }
+<span class="lineNum">     283 </span>            : 
+<span class="lineNum">     284 </span>            : /**
+<span class="lineNum">     285 </span>            :  * @brief Calculate the percentile of an array of doubles
+<span class="lineNum">     286 </span>            :  *
+<span class="lineNum">     287 </span>            :  * @details
+<span class="lineNum">     288 </span>            :  * The percentile of performance is used to find the top performing
+<span class="lineNum">     289 </span>            :  * configurations. Since no standard definition of the percentile exists, we
+<span class="lineNum">     290 </span>            :  * use the method used in MATLAB and Octave. Since calculating the percentile
+<span class="lineNum">     291 </span>            :  * requires a sorted list of the values, a local copy is made first.
+<span class="lineNum">     292 </span>            :  *
+<span class="lineNum">     293 </span>            :  * @param[in]   values  array of doubles
+<span class="lineNum">     294 </span>            :  * @param[in]   N       length of the array
+<span class="lineNum">     295 </span>            :  * @param[in]   p       percentile to calculate ( 0 &lt;= p &lt;= 100.0 ).
+<a name="296"><span class="lineNum">     296 </span>            :  * @returns             the p-th percentile of the values</a>
+<span class="lineNum">     297 </span>            :  */
+<span class="lineNum">     298 </span><span class="lineCov">          6 : double gensvm_percentile(double *values, long N, double p)</span>
+<span class="lineNum">     299 </span>            : {
+<span class="lineNum">     300 </span><span class="lineCov">          6 :         if (N == 1)</span>
+<span class="lineNum">     301 </span><span class="lineCov">          1 :                 return values[0];</span>
+<span class="lineNum">     302 </span>            : 
+<span class="lineNum">     303 </span>            :         long i;
+<span class="lineNum">     304 </span>            :         double pi, pr, boundary;
+<span class="lineNum">     305 </span><span class="lineCov">          5 :         double *local = Malloc(double, N);</span>
+<span class="lineNum">     306 </span><span class="lineCov">         55 :         for (i=0; i&lt;N; i++)</span>
+<span class="lineNum">     307 </span><span class="lineCov">         50 :                 local[i] = values[i];</span>
+<span class="lineNum">     308 </span>            : 
+<span class="lineNum">     309 </span><span class="lineCov">          5 :         qsort(local, N, sizeof(double), gensvm_dsort);</span>
+<span class="lineNum">     310 </span><span class="lineCov">          5 :         p /= 100.0;</span>
+<span class="lineNum">     311 </span><span class="lineCov">          5 :         p = p*N + 0.5;</span>
+<span class="lineNum">     312 </span><span class="lineCov">          5 :         pi = maximum(minimum(floor(p), N-1), 1);</span>
+<span class="lineNum">     313 </span><span class="lineCov">          5 :         pr = maximum(minimum(p - pi, 1), 0);</span>
+<span class="lineNum">     314 </span><span class="lineCov">          5 :         boundary = (1 - pr)*local[((long) pi)-1] + pr*local[((long) pi)];</span>
+<span class="lineNum">     315 </span>            : 
+<span class="lineNum">     316 </span><span class="lineCov">          5 :         free(local);</span>
+<span class="lineNum">     317 </span>            : 
+<span class="lineNum">     318 </span><span class="lineCov">          5 :         return boundary;</span>
+<span class="lineNum">     319 </span>            : }
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.12</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

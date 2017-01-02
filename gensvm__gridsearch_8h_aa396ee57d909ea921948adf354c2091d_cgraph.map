@@ -1,0 +1,51 @@
+<map id="gensvm_train_queue" name="gensvm_train_queue">
+<area shape="rect" id="node2" href="$gensvm__queue_8h.html#aaeee41d004f0cc2372f7e91f5ce0aaaa" title="Get new GenTask from GenQueue. " alt="" coords="248,5,363,32"/>
+<area shape="rect" id="node3" href="$gensvm__base_8h.html#a96f35734dcba63d95e08addd2dabce3d" title="Initialize a GenModel structure. " alt="" coords="230,56,381,83"/>
+<area shape="rect" id="node4" href="$gensvm__base_8h.html#a3b6c01ec77b5726843f7dd6c68593f6a" title="Allocate memory for a GenModel. " alt="" coords="215,107,396,133"/>
+<area shape="rect" id="node5" href="$gensvm__init_8h.html#a53ecc294597cda7237800957f8cd4077" title="Seed the matrix V from an existing model or using rand. " alt="" coords="246,157,365,184"/>
+<area shape="rect" id="node6" href="$gensvm__cv__util_8h.html#a40141c490fa70188ef6109022c4daae7" title="Create a cross validation split vector. " alt="" coords="218,208,393,235"/>
+<area shape="rect" id="node7" href="$gensvm__base_8h.html#a2123ffe5f44db584421e139be7d31b6c" title="Initialize a GenData structure. " alt="" coords="236,259,375,285"/>
+<area shape="rect" id="node8" href="$gensvm__cv__util_8h.html#aac719077b8560d022e2473933e80dd99" title="Wrapper around sparse/dense versions of this function. " alt="" coords="228,309,383,336"/>
+<area shape="rect" id="node12" href="$gensvm__task_8h.html#ad23d6b46f7554c1598f62619486f438e" title="Copy parameters from GenTask to GenModel. " alt="" coords="217,360,394,387"/>
+<area shape="rect" id="node13" href="$gensvm__gridsearch_8c.html#a980959b41c1fbde84b7d9c299d66bac8" title="Check if the kernel parameters change between tasks. " alt="" coords="213,411,397,437"/>
+<area shape="rect" id="node14" href="$gensvm__gridsearch_8c.html#a3f11ccc485d8a6cfb92918ec69754f15" title="Compute the kernels for the folds of the train and test datasets. " alt="" coords="225,563,386,589"/>
+<area shape="rect" id="node15" href="$gensvm__print_8h.html#a4502a32a6f7952faad96b8e5c758a7f7" title="Parse a formatted string and write to the output stream. " alt="" coords="790,461,841,488"/>
+<area shape="rect" id="node30" href="$gensvm__cross__validation_8h.html#ac484e26c64722bda639cba6d10235d71" title="Run cross validation with a given set of train/test folds. " alt="" coords="212,1009,399,1036"/>
+<area shape="rect" id="node46" href="$gensvm__timer_8h.html#a73278297dac3cd32d59f880dae85a471" title="Calculate the time between two time recordings. " alt="" coords="221,613,390,640"/>
+<area shape="rect" id="node47" href="$gensvm__gridsearch_8c.html#a3d559f87472e29126ad5b3f6271e266b" title="Print the description of the current task on screen. " alt="" coords="447,461,659,488"/>
+<area shape="rect" id="node48" href="$gensvm__base_8h.html#a0cf72f34706ed286c922ce74ee11f0be" title="Free allocated GenModel struct. " alt="" coords="228,1060,383,1087"/>
+<area shape="rect" id="node49" href="$gensvm__base_8h.html#a98f3696d492bec4485e3f2a42062705f" title="Free allocated GenData struct. " alt="" coords="234,1212,377,1239"/>
+<area shape="rect" id="node9" href="$gensvm__cv__util_8c.html#a68cce5815b1a10754a4b9b2315d1d563" title="Create train and test dataset for a CV split with sparse data. " alt="" coords="475,335,630,377"/>
+<area shape="rect" id="node11" href="$gensvm__cv__util_8c.html#a99a835eecb7ddafa52ba497a887b4f5b" title="Create train and test datasets for a CV split with dense data. " alt="" coords="475,270,630,311"/>
+<area shape="rect" id="node10" href="$gensvm__sparse_8h.html#ac45d0a15c75382ad8f3f4232eadf9f4d" title="Initialize a GenSparse structure. " alt="" coords="739,343,891,369"/>
+<area shape="rect" id="node16" href="$gensvm__kernel_8h.html#a67af575255ad5d1d0b466338b6ce2143" title="Do the preprocessing steps needed to perform kernel GenSVM. " alt="" coords="453,672,653,699"/>
+<area shape="rect" id="node27" href="$gensvm__kernel_8h.html#a2b68a2eb99cc65b2e4548035ff29071a" title="Compute the kernel postprocessing factor. " alt="" coords="449,613,656,640"/>
+<area shape="rect" id="node17" href="$gensvm__kernel_8c.html#ac0c2480e55a32684801b7c63bbf63855" title="Compute the kernel matrix. " alt="" coords="722,613,909,640"/>
+<area shape="rect" id="node22" href="$gensvm__kernel_8c.html#a004601c881f44348a9b5c5b8c40f29a5" title="Find the (reduced) eigendecomposition of a kernel matrix. " alt="" coords="707,731,924,757"/>
+<area shape="rect" id="node25" href="$gensvm__kernel_8c.html#a4caf1f9ac5d2e0c98ae027ddd46215e4" title="Compute the training factor as part of kernel preprocessing. " alt="" coords="717,781,914,808"/>
+<area shape="rect" id="node26" href="$gensvm__kernel_8c.html#a92cb913a3f8dc089b83fdc98abf4a453" title="Copy the kernelparameters from GenModel to GenData. " alt="" coords="731,665,899,706"/>
+<area shape="rect" id="node18" href="$gensvm__kernel_8c.html#a46cc9302c9eaf45858a807ffdf052ebf" title="Compute the polynomial kernel between two vectors. " alt="" coords="984,639,1169,665"/>
+<area shape="rect" id="node19" href="$gensvm__kernel_8c.html#ac084336bb477beb37723d987457a5b7d" title="Compute the RBF kernel between two vectors. " alt="" coords="989,537,1164,564"/>
+<area shape="rect" id="node20" href="$gensvm__kernel_8c.html#af3f724b2781532a0b14c58a24b49147f" title="Compute the sigmoid kernel between two vectors. " alt="" coords="972,588,1181,615"/>
+<area shape="rect" id="node21" href="$gensvm__print_8h.html#aede5746344fdce99647541101eaa7f06" title="Parse a formatted string and write it to standard error. " alt="" coords="1057,823,1097,849"/>
+<area shape="rect" id="node23" href="$gensvm__kernel_8c.html#ab8b09d9e218aa2642a9f078b1daa9237" title="Determine double precision machine parameters. " alt="" coords="1041,761,1112,788"/>
+<area shape="rect" id="node24" href="$gensvm__kernel_8c.html#a36d0f7deb87d01203d8f3a0a49f6f0f7" title="Compute the eigenvalues and optionally the eigenvectors of a symmetric matrix. " alt="" coords="1042,711,1111,737"/>
+<area shape="rect" id="node28" href="$gensvm__kernel_8c.html#abe3161aaaef57e62c2c9a6ae71b2127e" title="Compute the kernel crossproduct between two datasets. " alt="" coords="734,563,897,589"/>
+<area shape="rect" id="node29" href="$gensvm__kernel_8c.html#acbe565e8fe856bc208b7d178e54631a2" title="Calculate the matrix product for the testfactor. " alt="" coords="719,512,911,539"/>
+<area shape="rect" id="node31" href="$gensvm__base_8h.html#a27542d9e799eb0e6f3cfdfa0934412fc" title="Reallocate memory for GenModel. " alt="" coords="455,1111,650,1137"/>
+<area shape="rect" id="node32" href="$gensvm__init_8h.html#a0cb86a00bfa52b2ebc86e2b98687928c" title="Initialize instance weights. " alt="" coords="455,908,650,935"/>
+<area shape="rect" id="node33" href="$gensvm__optimize_8h.html#afc45b0d1cbcf433860d4d268bc6e4cd7" title="The main training loop for GenSVM. " alt="" coords="483,1009,622,1036"/>
+<area shape="rect" id="node44" href="$gensvm__predict_8h.html#a9ea580930c4e052a9a57b35aade71a02" title="Predict class labels of data given and output in predy. " alt="" coords="467,1225,639,1252"/>
+<area shape="rect" id="node45" href="$gensvm__predict_8h.html#ac9f09ed40eaede14f2a701321d65620b" title="Calculate the predictive performance (percentage correct) " alt="" coords="463,1060,642,1087"/>
+<area shape="rect" id="node34" href="$gensvm__base_8h.html#a52120d849ff52751c7995c24dfa50f00" title="Initialize the workspace structure. " alt="" coords="745,883,886,909"/>
+<area shape="rect" id="node35" href="$gensvm__simplex_8h.html#ada27d56b6de435551330c8300e9089ea" title="Generate matrix of simplex vertex coordinates. " alt="" coords="749,1288,882,1315"/>
+<area shape="rect" id="node36" href="$gensvm__simplex_8h.html#a99b48c0294e8275dd092fc5cf947bf0f" title="Generate the simplex difference matrix. " alt="" coords="735,933,896,960"/>
+<area shape="rect" id="node37" href="$gensvm__optimize_8c.html#a2a54331e09c9e271cb2ed6a1c389f244" title="Calculate the current value of the loss function. " alt="" coords="748,1237,883,1264"/>
+<area shape="rect" id="node40" href="$gensvm__update_8h.html#a21ca55554aabb785a5e0c1d8d73d01c4" title="Perform a single step of the majorization algorithm to update V. " alt="" coords="738,1035,893,1061"/>
+<area shape="rect" id="node41" href="$gensvm__optimize_8c.html#a91f4c8afa45b2558bb4963e9379c8ec2" title="Use step doubling. " alt="" coords="729,1085,901,1112"/>
+<area shape="rect" id="node42" href="$gensvm__sv_8h.html#afc35a5c0358a51c8559fe780e7fee5ca" title="Calculate the number of support vectors in a model. " alt="" coords="749,1136,881,1163"/>
+<area shape="rect" id="node43" href="$gensvm__base_8h.html#a25a671211eb5a8e6b2b9ae214a8a6428" title="Free an allocated GenWork instance. " alt="" coords="742,1187,889,1213"/>
+<area shape="rect" id="node38" href="$gensvm__optimize_8c.html#a929b779c3a597dbe8f2fb763c4574221" title="Calculate the scalar errors. " alt="" coords="984,1263,1169,1289"/>
+<area shape="rect" id="node39" href="$gensvm__zv_8h.html#a2b2e19db75b36241c3d26b57b2a35901" title="Wrapper around sparse/dense versions of this function. " alt="" coords="1229,1301,1395,1328"/>
+<area shape="rect" id="node50" href="$gensvm__sparse_8h.html#a1bd9399ffc0b5e4d32ac160eb3143864" title="Free an allocated GenSparse structure. " alt="" coords="474,1276,631,1303"/>
+</map>

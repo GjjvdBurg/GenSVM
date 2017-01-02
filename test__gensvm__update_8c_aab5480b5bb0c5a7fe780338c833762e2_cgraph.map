@@ -1,0 +1,9 @@
+<map id="test_gensvm_majorize_is_simple" name="test_gensvm_majorize_is_simple">
+<area shape="rect" id="node2" href="$gensvm__base_8h.html#a96f35734dcba63d95e08addd2dabce3d" title="Initialize a GenModel structure. " alt="" coords="239,5,390,32"/>
+<area shape="rect" id="node3" href="$gensvm__base_8h.html#a2123ffe5f44db584421e139be7d31b6c" title="Initialize a GenData structure. " alt="" coords="245,56,384,83"/>
+<area shape="rect" id="node4" href="$gensvm__base_8h.html#a3b6c01ec77b5726843f7dd6c68593f6a" title="Allocate memory for a GenModel. " alt="" coords="224,107,405,133"/>
+<area shape="rect" id="node5" href="$gensvm__update_8h.html#abb108fbbbf27aedec726d363683bdb1c" title="Check if we can do simple majorization for a given instance. " alt="" coords="237,158,393,199"/>
+<area shape="rect" id="node6" href="$gensvm__base_8h.html#a0cf72f34706ed286c922ce74ee11f0be" title="Free allocated GenModel struct. " alt="" coords="237,224,392,251"/>
+<area shape="rect" id="node7" href="$gensvm__base_8h.html#a98f3696d492bec4485e3f2a42062705f" title="Free allocated GenData struct. " alt="" coords="243,275,386,301"/>
+<area shape="rect" id="node8" href="$gensvm__sparse_8h.html#a1bd9399ffc0b5e4d32ac160eb3143864" title="Free an allocated GenSparse structure. " alt="" coords="453,275,611,301"/>
+</map>

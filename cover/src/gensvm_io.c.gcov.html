@@ -1,0 +1,706 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - coverage.all - src/gensvm_io.c</title>
+  <link rel="stylesheet" type="text/css" href="../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../index.html">top level</a> - <a href="index.html">src</a> - gensvm_io.c<span style="font-size: 80%;"> (source / <a href="gensvm_io.c.func-sort-c.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">coverage.all</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">234</td>
+            <td class="headerCovTableEntry">247</td>
+            <td class="headerCovTableEntryHi">94.7 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2017-01-02 10:06:26</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">6</td>
+            <td class="headerCovTableEntry">7</td>
+            <td class="headerCovTableEntryMed">85.7 %</td>
+          </tr>
+          <tr><td><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : /**</a>
+<span class="lineNum">       2 </span>            :  * @file gensvm_io.c
+<span class="lineNum">       3 </span>            :  * @author G.J.J. van den Burg
+<span class="lineNum">       4 </span>            :  * @date 2014-01-07
+<span class="lineNum">       5 </span>            :  * @brief Functions for input and output of data and model files
+<span class="lineNum">       6 </span>            :  *
+<span class="lineNum">       7 </span>            :  * @details
+<span class="lineNum">       8 </span>            :  * This file contains functions for reading and writing model files, and data
+<span class="lineNum">       9 </span>            :  * files. It also contains a function for generating a string of the current
+<span class="lineNum">      10 </span>            :  * time, used in writing output files.
+<span class="lineNum">      11 </span>            :  *
+<span class="lineNum">      12 </span>            :  * @copyright
+<span class="lineNum">      13 </span>            :  Copyright 2016, G.J.J. van den Burg.
+<span class="lineNum">      14 </span>            : 
+<span class="lineNum">      15 </span>            :  This file is part of GenSVM.
+<span class="lineNum">      16 </span>            : 
+<span class="lineNum">      17 </span>            :  GenSVM is free software: you can redistribute it and/or modify
+<span class="lineNum">      18 </span>            :  it under the terms of the GNU General Public License as published by
+<span class="lineNum">      19 </span>            :  the Free Software Foundation, either version 3 of the License, or
+<span class="lineNum">      20 </span>            :  (at your option) any later version.
+<span class="lineNum">      21 </span>            : 
+<span class="lineNum">      22 </span>            :  GenSVM is distributed in the hope that it will be useful,
+<span class="lineNum">      23 </span>            :  but WITHOUT ANY WARRANTY; without even the implied warranty of
+<span class="lineNum">      24 </span>            :  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+<span class="lineNum">      25 </span>            :  GNU General Public License for more details.
+<span class="lineNum">      26 </span>            : 
+<span class="lineNum">      27 </span>            :  You should have received a copy of the GNU General Public License
+<span class="lineNum">      28 </span>            :  along with GenSVM. If not, see &lt;http://www.gnu.org/licenses/&gt;.
+<span class="lineNum">      29 </span>            : 
+<span class="lineNum">      30 </span>            :  */
+<span class="lineNum">      31 </span>            : 
+<span class="lineNum">      32 </span>            : #include &quot;gensvm_io.h&quot;
+<span class="lineNum">      33 </span>            : 
+<span class="lineNum">      34 </span>            : /**
+<span class="lineNum">      35 </span>            :  * @brief Read data from file
+<span class="lineNum">      36 </span>            :  *
+<span class="lineNum">      37 </span>            :  * @details
+<span class="lineNum">      38 </span>            :  * Read the data from the data_file. The data matrix X is augmented
+<span class="lineNum">      39 </span>            :  * with a column of ones, to get the matrix Z. The data is expected
+<span class="lineNum">      40 </span>            :  * to follow a specific format, which is specified in the @ref spec_data_file.
+<span class="lineNum">      41 </span>            :  * The class labels are assumed to be in the interval [1 .. K], which can be
+<span class="lineNum">      42 </span>            :  * checked using the function gensvm_check_outcome_contiguous().
+<span class="lineNum">      43 </span>            :  *
+<span class="lineNum">      44 </span>            :  * @param[in,out]       dataset         initialized GenData struct
+<a name="45"><span class="lineNum">      45 </span>            :  * @param[in]           data_file       filename of the data file.</a>
+<span class="lineNum">      46 </span>            :  */
+<span class="lineNum">      47 </span><span class="lineCov">          3 : void gensvm_read_data(struct GenData *dataset, char *data_file)</span>
+<span class="lineNum">      48 </span>            : {
+<span class="lineNum">      49 </span><span class="lineCov">          3 :         FILE *fid = NULL;</span>
+<span class="lineNum">      50 </span>            :         long i, j, n, m,
+<span class="lineNum">      51 </span><span class="lineCov">          3 :              nr = 0,</span>
+<span class="lineNum">      52 </span><span class="lineCov">          3 :              K = 0;</span>
+<span class="lineNum">      53 </span>            :         double value;
+<span class="lineNum">      54 </span>            :         char buf[GENSVM_MAX_LINE_LENGTH];
+<span class="lineNum">      55 </span>            : 
+<span class="lineNum">      56 </span><span class="lineCov">          3 :         if ((fid = fopen(data_file, &quot;r&quot;)) == NULL) {</span>
+<span class="lineNum">      57 </span>            :                 // LCOV_EXCL_START
+<span class="lineNum">      58 </span>            :                 err(&quot;[GenSVM Error]: Datafile %s could not be opened.\n&quot;,
+<span class="lineNum">      59 </span>            :                                 data_file);
+<span class="lineNum">      60 </span>            :                 exit(EXIT_FAILURE);
+<span class="lineNum">      61 </span>            :                 // LCOV_EXCL_STOP
+<span class="lineNum">      62 </span>            :         }
+<span class="lineNum">      63 </span>            : 
+<span class="lineNum">      64 </span>            :         // Read data dimensions
+<span class="lineNum">      65 </span><span class="lineCov">          3 :         nr += fscanf(fid, &quot;%ld&quot;, &amp;n);</span>
+<span class="lineNum">      66 </span><span class="lineCov">          3 :         nr += fscanf(fid, &quot;%ld&quot;, &amp;m);</span>
+<span class="lineNum">      67 </span>            : 
+<span class="lineNum">      68 </span>            :         // Allocate memory
+<span class="lineNum">      69 </span><span class="lineCov">          3 :         dataset-&gt;RAW = Malloc(double, n*(m+1));</span>
+<span class="lineNum">      70 </span>            : 
+<span class="lineNum">      71 </span>            :         // Read first line of data
+<span class="lineNum">      72 </span><span class="lineCov">         12 :         for (j=1; j&lt;m+1; j++) {</span>
+<span class="lineNum">      73 </span><span class="lineCov">          9 :                 nr += fscanf(fid, &quot;%lf&quot;, &amp;value);</span>
+<span class="lineNum">      74 </span><span class="lineCov">          9 :                 matrix_set(dataset-&gt;RAW, m+1, 0, j, value);</span>
+<span class="lineNum">      75 </span>            :         }
+<span class="lineNum">      76 </span>            : 
+<span class="lineNum">      77 </span><span class="lineCov">          3 :         if (fgets(buf, GENSVM_MAX_LINE_LENGTH, fid) == NULL) {</span>
+<span class="lineNum">      78 </span>            :                 // LCOV_EXCL_START
+<span class="lineNum">      79 </span>            :                 err(&quot;[GenSVM Error]: No label found on first line.\n&quot;);
+<span class="lineNum">      80 </span>            :                 exit(EXIT_FAILURE);
+<span class="lineNum">      81 </span>            :                 // LCOV_EXCL_STOP
+<span class="lineNum">      82 </span>            :         }
+<span class="lineNum">      83 </span>            : 
+<span class="lineNum">      84 </span>            :         // Check if there is a label at the end of the line
+<span class="lineNum">      85 </span><span class="lineCov">          3 :         if (sscanf(buf, &quot;%lf&quot;, &amp;value) &gt; 0) {</span>
+<span class="lineNum">      86 </span><span class="lineCov">          2 :                 dataset-&gt;y = Malloc(long, n);</span>
+<span class="lineNum">      87 </span><span class="lineCov">          2 :                 dataset-&gt;y[0] = value;</span>
+<span class="lineNum">      88 </span><span class="lineCov">          2 :                 K = 1;</span>
+<span class="lineNum">      89 </span>            :         } else {
+<span class="lineNum">      90 </span><span class="lineCov">          1 :                 free(dataset-&gt;y);</span>
+<span class="lineNum">      91 </span><span class="lineCov">          1 :                 dataset-&gt;y = NULL;</span>
+<span class="lineNum">      92 </span>            :         }
+<span class="lineNum">      93 </span>            : 
+<span class="lineNum">      94 </span>            :         // Read the rest of the file
+<span class="lineNum">      95 </span><span class="lineCov">         20 :         for (i=1; i&lt;n; i++) {</span>
+<span class="lineNum">      96 </span><span class="lineCov">         68 :                 for (j=1; j&lt;m+1; j++) {</span>
+<span class="lineNum">      97 </span><span class="lineCov">         51 :                         nr += fscanf(fid, &quot;%lf&quot;, &amp;value);</span>
+<span class="lineNum">      98 </span><span class="lineCov">         51 :                         matrix_set(dataset-&gt;RAW, m+1, i, j, value);</span>
+<span class="lineNum">      99 </span>            :                 }
+<span class="lineNum">     100 </span><span class="lineCov">         17 :                 if (dataset-&gt;y != NULL) {</span>
+<span class="lineNum">     101 </span><span class="lineCov">         13 :                         nr += fscanf(fid, &quot;%lf&quot;, &amp;value);</span>
+<span class="lineNum">     102 </span><span class="lineCov">         13 :                         dataset-&gt;y[i] = (long) value;</span>
+<span class="lineNum">     103 </span><span class="lineCov">         13 :                         K = maximum(K, dataset-&gt;y[i]);</span>
+<span class="lineNum">     104 </span>            :                 }
+<span class="lineNum">     105 </span>            :         }
+<span class="lineNum">     106 </span><span class="lineCov">          3 :         fclose(fid);</span>
+<span class="lineNum">     107 </span>            : 
+<span class="lineNum">     108 </span><span class="lineCov">          3 :         if (nr &lt; n * m) {</span>
+<span class="lineNum">     109 </span>            :                 // LCOV_EXCL_START
+<span class="lineNum">     110 </span>            :                 err(&quot;[GenSVM Error]: not enough data found in %s\n&quot;,
+<span class="lineNum">     111 </span>            :                                 data_file);
+<span class="lineNum">     112 </span>            :                 exit(EXIT_FAILURE);
+<span class="lineNum">     113 </span>            :                 // LCOV_EXCL_STOP
+<span class="lineNum">     114 </span>            :         }
+<span class="lineNum">     115 </span>            : 
+<span class="lineNum">     116 </span>            :         // Set the column of ones
+<span class="lineNum">     117 </span><span class="lineCov">         23 :         for (i=0; i&lt;n; i++)</span>
+<span class="lineNum">     118 </span><span class="lineCov">         20 :                 matrix_set(dataset-&gt;RAW, m+1, i, 0, 1.0);</span>
+<span class="lineNum">     119 </span>            : 
+<span class="lineNum">     120 </span><span class="lineCov">          3 :         dataset-&gt;n = n;</span>
+<span class="lineNum">     121 </span><span class="lineCov">          3 :         dataset-&gt;m = m;</span>
+<span class="lineNum">     122 </span><span class="lineCov">          3 :         dataset-&gt;r = m;</span>
+<span class="lineNum">     123 </span><span class="lineCov">          3 :         dataset-&gt;K = K;</span>
+<span class="lineNum">     124 </span><span class="lineCov">          3 :         dataset-&gt;Z = dataset-&gt;RAW;</span>
+<span class="lineNum">     125 </span>            : 
+<span class="lineNum">     126 </span><span class="lineCov">          3 :         if (gensvm_could_sparse(dataset-&gt;Z, n, m+1)) {</span>
+<span class="lineNum">     127 </span><span class="lineCov">          1 :                 note(&quot;Converting to sparse ... &quot;);</span>
+<span class="lineNum">     128 </span><span class="lineCov">          1 :                 dataset-&gt;spZ = gensvm_dense_to_sparse(dataset-&gt;Z, n, m+1);</span>
+<span class="lineNum">     129 </span><span class="lineCov">          1 :                 note(&quot;done.\n&quot;);</span>
+<span class="lineNum">     130 </span><span class="lineCov">          1 :                 free(dataset-&gt;RAW);</span>
+<span class="lineNum">     131 </span><span class="lineCov">          1 :                 dataset-&gt;RAW = NULL;</span>
+<span class="lineNum">     132 </span><span class="lineCov">          1 :                 dataset-&gt;Z = NULL;</span>
+<span class="lineNum">     133 </span>            :         }
+<span class="lineNum">     134 </span><span class="lineCov">          3 : }</span>
+<span class="lineNum">     135 </span>            : 
+<span class="lineNum">     136 </span>            : /**
+<span class="lineNum">     137 </span>            :  * @brief Print an error to the screen and exit (copied from LibSVM)
+<span class="lineNum">     138 </span>            :  *
+<span class="lineNum">     139 </span>            :  * @param[in]   line_num        line number where the error occured
+<a name="140"><span class="lineNum">     140 </span>            :  *</a>
+<span class="lineNum">     141 </span>            :  */
+<span class="lineNum">     142 </span><span class="lineNoCov">          0 : void exit_input_error(int line_num)</span>
+<span class="lineNum">     143 </span>            : {
+<span class="lineNum">     144 </span><span class="lineNoCov">          0 :         err(&quot;[GenSVM Error]: Wrong input format on line: %i\n&quot;, line_num);</span>
+<span class="lineNum">     145 </span><span class="lineNoCov">          0 :         exit(EXIT_FAILURE);</span>
+<span class="lineNum">     146 </span>            : }
+<span class="lineNum">     147 </span>            : 
+<span class="lineNum">     148 </span>            : /**
+<span class="lineNum">     149 </span>            :  * @brief Read data from a file in LibSVM/SVMlight format
+<span class="lineNum">     150 </span>            :  *
+<span class="lineNum">     151 </span>            :  * @details
+<span class="lineNum">     152 </span>            :  * This function reads data from a file where the data is stored in
+<span class="lineNum">     153 </span>            :  * LibSVM/SVMlight format. The file format is described in @ref 
+<span class="lineNum">     154 </span>            :  * spec_libsvm_data_file.  This is a sparse data format, which can be
+<span class="lineNum">     155 </span>            :  * beneficial for certain applications. The advantage of having this function
+<span class="lineNum">     156 </span>            :  * here is twofold: 1) existing datasets where data is stored in
+<span class="lineNum">     157 </span>            :  * LibSVM/SVMlight format can be easily used in GenSVM, and 2) sparse datasets
+<span class="lineNum">     158 </span>            :  * which are too large for memory when kept in dense format can be loaded
+<span class="lineNum">     159 </span>            :  * efficiently into GenSVM.
+<span class="lineNum">     160 </span>            :  *
+<span class="lineNum">     161 </span>            :  * @note
+<span class="lineNum">     162 </span>            :  * This code is based on the read_problem() function in the svm-train.c
+<span class="lineNum">     163 </span>            :  * file of LibSVM. It has however been expanded to be able to handle data 
+<span class="lineNum">     164 </span>            :  * files without labels.
+<span class="lineNum">     165 </span>            :  *
+<span class="lineNum">     166 </span>            :  * @note
+<span class="lineNum">     167 </span>            :  * This file tries to detect whether 1-based or 0-based indexing is used in 
+<span class="lineNum">     168 </span>            :  * the data file. By default 1-based indexing is used, but if an index is 
+<span class="lineNum">     169 </span>            :  * found with value 0, 0-based indexing is assumed.
+<span class="lineNum">     170 </span>            :  *
+<span class="lineNum">     171 </span>            :  * @sa
+<span class="lineNum">     172 </span>            :  * gensvm_read_problem()
+<span class="lineNum">     173 </span>            :  *
+<span class="lineNum">     174 </span>            :  * @param[in]    data           GenData structure
+<span class="lineNum">     175 </span>            :  * @param[in]    data_file      filename of the datafile
+<a name="176"><span class="lineNum">     176 </span>            :  *</a>
+<span class="lineNum">     177 </span>            :  */
+<span class="lineNum">     178 </span><span class="lineCov">          4 : void gensvm_read_data_libsvm(struct GenData *data, char *data_file)</span>
+<span class="lineNum">     179 </span>            : {
+<span class="lineNum">     180 </span><span class="lineCov">          4 :         bool do_sparse, zero_based = false;</span>
+<span class="lineNum">     181 </span>            :         long i, j, n, m, K, nnz, cnt, tmp, index, row_cnt, num_labels, 
+<span class="lineNum">     182 </span><span class="lineCov">          4 :              min_index = 1;</span>
+<span class="lineNum">     183 </span>            :         int n_big, n_small, big_start;
+<span class="lineNum">     184 </span>            :         double value;
+<span class="lineNum">     185 </span><span class="lineCov">          4 :         FILE *fid = NULL;</span>
+<span class="lineNum">     186 </span><span class="lineCov">          4 :         char *label = NULL,</span>
+<span class="lineNum">     187 </span><span class="lineCov">          4 :              *endptr = NULL,</span>
+<span class="lineNum">     188 </span><span class="lineCov">          4 :              **big_parts = NULL,</span>
+<span class="lineNum">     189 </span><span class="lineCov">          4 :              **small_parts = NULL;</span>
+<span class="lineNum">     190 </span>            :         char buf[GENSVM_MAX_LINE_LENGTH];
+<span class="lineNum">     191 </span>            : 
+<span class="lineNum">     192 </span><span class="lineCov">          4 :         fid = fopen(data_file, &quot;r&quot;);</span>
+<span class="lineNum">     193 </span><span class="lineCov">          4 :         if (fid == NULL) {</span>
+<span class="lineNum">     194 </span>            :                 // LCOV_EXCL_START
+<span class="lineNum">     195 </span>            :                 err(&quot;[GenSVM Error]: Datafile %s could not be opened.\n&quot;,
+<span class="lineNum">     196 </span>            :                                 data_file);
+<span class="lineNum">     197 </span>            :                 exit(EXIT_FAILURE);
+<span class="lineNum">     198 </span>            :                 // LCOV_EXCL_STOP
+<span class="lineNum">     199 </span>            :         }
+<span class="lineNum">     200 </span>            : 
+<span class="lineNum">     201 </span>            :         // first count the number of elements
+<span class="lineNum">     202 </span><span class="lineCov">          4 :         n = 0;</span>
+<span class="lineNum">     203 </span><span class="lineCov">          4 :         m = -1;</span>
+<span class="lineNum">     204 </span>            : 
+<span class="lineNum">     205 </span><span class="lineCov">          4 :         num_labels = 0;</span>
+<span class="lineNum">     206 </span><span class="lineCov">          4 :         nnz = 0;</span>
+<span class="lineNum">     207 </span>            : 
+<span class="lineNum">     208 </span><span class="lineCov">         33 :         while (fgets(buf, GENSVM_MAX_LINE_LENGTH, fid) != NULL) {</span>
+<span class="lineNum">     209 </span>            :                 // split the string in labels and/or index:value pairs
+<span class="lineNum">     210 </span><span class="lineCov">         25 :                 big_parts = str_split(buf, &quot; \t&quot;, &amp;n_big);</span>
+<span class="lineNum">     211 </span>            : 
+<span class="lineNum">     212 </span>            :                 // record if this line has a label (first part has no colon)
+<span class="lineNum">     213 </span><span class="lineCov">         25 :                 num_labels += (!str_contains_char(big_parts[0], ':'));</span>
+<span class="lineNum">     214 </span>            : 
+<span class="lineNum">     215 </span>            :                 // check for each part if it is a index:value pair
+<span class="lineNum">     216 </span><span class="lineCov">         94 :                 for (i=0; i&lt;n_big; i++) {</span>
+<span class="lineNum">     217 </span><span class="lineCov">         69 :                         if (!str_contains_char(big_parts[i], ':'))</span>
+<span class="lineNum">     218 </span><span class="lineCov">         20 :                                 continue;</span>
+<span class="lineNum">     219 </span>            : 
+<span class="lineNum">     220 </span>            :                         // split the index:value pair
+<span class="lineNum">     221 </span><span class="lineCov">         49 :                         small_parts = str_split(big_parts[i], &quot;:&quot;, &amp;n_small);</span>
+<span class="lineNum">     222 </span>            : 
+<span class="lineNum">     223 </span>            :                         // convert the index to a number
+<span class="lineNum">     224 </span><span class="lineCov">         49 :                         index = strtol(small_parts[0], &amp;endptr, 10);</span>
+<span class="lineNum">     225 </span>            : 
+<span class="lineNum">     226 </span>            :                         // catch conversion errors
+<span class="lineNum">     227 </span><span class="lineCov">         98 :                         if (endptr == small_parts[0] || errno != 0 ||</span>
+<span class="lineNum">     228 </span><span class="lineCov">         49 :                                         *endptr != '\0')</span>
+<span class="lineNum">     229 </span><span class="lineNoCov">          0 :                                 exit_input_error(n+1);</span>
+<span class="lineNum">     230 </span>            : 
+<span class="lineNum">     231 </span>            :                         // update the maximum index
+<span class="lineNum">     232 </span><span class="lineCov">         49 :                         m = maximum(m, index);</span>
+<span class="lineNum">     233 </span>            : 
+<span class="lineNum">     234 </span>            :                         // update the minimum index
+<span class="lineNum">     235 </span><span class="lineCov">         49 :                         min_index = minimum(min_index, index);</span>
+<span class="lineNum">     236 </span>            : 
+<span class="lineNum">     237 </span>            :                         // free the small parts
+<span class="lineNum">     238 </span><span class="lineCov">         49 :                         for (j=0; j&lt;n_small; j++) free(small_parts[j]);</span>
+<span class="lineNum">     239 </span><span class="lineCov">         49 :                         free(small_parts);</span>
+<span class="lineNum">     240 </span>            : 
+<span class="lineNum">     241 </span>            :                         // increment the nonzero counter
+<span class="lineNum">     242 </span><span class="lineCov">         49 :                         nnz++;</span>
+<span class="lineNum">     243 </span>            :                 }
+<span class="lineNum">     244 </span>            : 
+<span class="lineNum">     245 </span>            :                 // free the big parts
+<span class="lineNum">     246 </span><span class="lineCov">         94 :                 for (i=0; i&lt;n_big; i++) {</span>
+<span class="lineNum">     247 </span><span class="lineCov">         69 :                         free(big_parts[i]);</span>
+<span class="lineNum">     248 </span>            :                 }
+<span class="lineNum">     249 </span><span class="lineCov">         25 :                 free(big_parts);</span>
+<span class="lineNum">     250 </span>            : 
+<span class="lineNum">     251 </span>            :                 // increment the number of observations
+<span class="lineNum">     252 </span><span class="lineCov">         25 :                 n++;</span>
+<span class="lineNum">     253 </span>            :         }
+<span class="lineNum">     254 </span>            : 
+<span class="lineNum">     255 </span>            :         // rewind the file pointer
+<span class="lineNum">     256 </span><span class="lineCov">          4 :         rewind(fid);</span>
+<span class="lineNum">     257 </span>            : 
+<span class="lineNum">     258 </span>            :         // check if we have enough labels
+<span class="lineNum">     259 </span><span class="lineCov">          4 :         if (num_labels &gt; 0 &amp;&amp; num_labels != n) {</span>
+<span class="lineNum">     260 </span><span class="lineNoCov">          0 :                 err(&quot;[GenSVM Error]: There are some lines with missing &quot;</span>
+<span class="lineNum">     261 </span>            :                                 &quot;labels. Please fix this before &quot;
+<span class="lineNum">     262 </span>            :                                 &quot;continuing.\n&quot;);
+<span class="lineNum">     263 </span><span class="lineNoCov">          0 :                 exit(EXIT_FAILURE);</span>
+<span class="lineNum">     264 </span>            :         }
+<span class="lineNum">     265 </span>            : 
+<span class="lineNum">     266 </span>            :         // don't forget the column of ones
+<span class="lineNum">     267 </span><span class="lineCov">          4 :         nnz += n;</span>
+<span class="lineNum">     268 </span>            : 
+<span class="lineNum">     269 </span>            :         // deal with 0-based or 1-based indexing in the LibSVM file
+<span class="lineNum">     270 </span><span class="lineCov">          4 :         if (min_index == 0) {</span>
+<span class="lineNum">     271 </span><span class="lineCov">          1 :                 m++;</span>
+<span class="lineNum">     272 </span><span class="lineCov">          1 :                 zero_based = true;</span>
+<span class="lineNum">     273 </span>            :         }
+<span class="lineNum">     274 </span>            : 
+<span class="lineNum">     275 </span>            :         // check if sparsity is worth it
+<span class="lineNum">     276 </span><span class="lineCov">          4 :         do_sparse = gensvm_nnz_comparison(nnz, n, m+1);</span>
+<span class="lineNum">     277 </span><span class="lineCov">          4 :         if (do_sparse) {</span>
+<span class="lineNum">     278 </span><span class="lineCov">          1 :                 data-&gt;spZ = gensvm_init_sparse();</span>
+<span class="lineNum">     279 </span><span class="lineCov">          1 :                 data-&gt;spZ-&gt;nnz = nnz;</span>
+<span class="lineNum">     280 </span><span class="lineCov">          1 :                 data-&gt;spZ-&gt;n_row = n;</span>
+<span class="lineNum">     281 </span><span class="lineCov">          1 :                 data-&gt;spZ-&gt;n_col = m+1;</span>
+<span class="lineNum">     282 </span><span class="lineCov">          1 :                 data-&gt;spZ-&gt;values = Calloc(double, nnz);</span>
+<span class="lineNum">     283 </span><span class="lineCov">          1 :                 data-&gt;spZ-&gt;ia = Calloc(long, n+1);</span>
+<span class="lineNum">     284 </span><span class="lineCov">          1 :                 data-&gt;spZ-&gt;ja = Calloc(long, nnz);</span>
+<span class="lineNum">     285 </span><span class="lineCov">          1 :                 data-&gt;spZ-&gt;ia[0] = 0;</span>
+<span class="lineNum">     286 </span>            :         } else {
+<span class="lineNum">     287 </span><span class="lineCov">          3 :                 data-&gt;RAW = Calloc(double, n*(m+1));</span>
+<span class="lineNum">     288 </span><span class="lineCov">          3 :                 data-&gt;Z = data-&gt;RAW;</span>
+<span class="lineNum">     289 </span>            :         }
+<span class="lineNum">     290 </span><span class="lineCov">          4 :         if (num_labels &gt; 0)</span>
+<span class="lineNum">     291 </span><span class="lineCov">          3 :                 data-&gt;y = Calloc(long, n);</span>
+<span class="lineNum">     292 </span>            : 
+<span class="lineNum">     293 </span><span class="lineCov">          4 :         K = 0;</span>
+<span class="lineNum">     294 </span><span class="lineCov">          4 :         cnt = 0;</span>
+<span class="lineNum">     295 </span><span class="lineCov">         29 :         for (i=0; i&lt;n; i++) {</span>
+<span class="lineNum">     296 </span><span class="lineCov">         25 :                 fgets(buf, GENSVM_MAX_LINE_LENGTH, fid);</span>
+<span class="lineNum">     297 </span>            : 
+<span class="lineNum">     298 </span>            :                 // split the string in labels and/or index:value pairs
+<span class="lineNum">     299 </span><span class="lineCov">         25 :                 big_parts = str_split(buf, &quot; \t&quot;, &amp;n_big);</span>
+<span class="lineNum">     300 </span>            : 
+<span class="lineNum">     301 </span><span class="lineCov">         25 :                 big_start = 0;</span>
+<span class="lineNum">     302 </span>            :                 // get the label from the first part if it exists
+<span class="lineNum">     303 </span><span class="lineCov">         25 :                 if (!str_contains_char(big_parts[0], ':')) {</span>
+<span class="lineNum">     304 </span><span class="lineCov">         20 :                         label = strtok(big_parts[0], &quot; \t\n&quot;);</span>
+<span class="lineNum">     305 </span><span class="lineCov">         20 :                         if (label == NULL) // empty line</span>
+<span class="lineNum">     306 </span><span class="lineNoCov">          0 :                                 exit_input_error(i+1);</span>
+<span class="lineNum">     307 </span>            : 
+<span class="lineNum">     308 </span>            :                         // convert the label part to a number exit if there
+<span class="lineNum">     309 </span>            :                         // are errors
+<span class="lineNum">     310 </span><span class="lineCov">         20 :                         tmp = strtol(label, &amp;endptr, 10);</span>
+<span class="lineNum">     311 </span><span class="lineCov">         20 :                         if (endptr == label || *endptr != '\0')</span>
+<span class="lineNum">     312 </span><span class="lineNoCov">          0 :                                 exit_input_error(i+1);</span>
+<span class="lineNum">     313 </span>            : 
+<span class="lineNum">     314 </span>            :                         // assign label to y
+<span class="lineNum">     315 </span><span class="lineCov">         20 :                         data-&gt;y[i] = tmp;</span>
+<span class="lineNum">     316 </span>            : 
+<span class="lineNum">     317 </span>            :                         // keep track of maximum K
+<span class="lineNum">     318 </span><span class="lineCov">         20 :                         K = maximum(K, data-&gt;y[i]);</span>
+<span class="lineNum">     319 </span>            : 
+<span class="lineNum">     320 </span>            :                         // increment big part index
+<span class="lineNum">     321 </span><span class="lineCov">         20 :                         big_start++;</span>
+<span class="lineNum">     322 </span>            :                 }
+<span class="lineNum">     323 </span>            : 
+<span class="lineNum">     324 </span><span class="lineCov">         25 :                 row_cnt = 0;</span>
+<span class="lineNum">     325 </span>            :                 // set the first element in the row to 1
+<span class="lineNum">     326 </span><span class="lineCov">         25 :                 if (do_sparse) {</span>
+<span class="lineNum">     327 </span><span class="lineCov">         10 :                         data-&gt;spZ-&gt;values[cnt] = 1.0;</span>
+<span class="lineNum">     328 </span><span class="lineCov">         10 :                         data-&gt;spZ-&gt;ja[cnt] = 0;</span>
+<span class="lineNum">     329 </span><span class="lineCov">         10 :                         cnt++;</span>
+<span class="lineNum">     330 </span><span class="lineCov">         10 :                         row_cnt++;</span>
+<span class="lineNum">     331 </span>            :                 } else {
+<span class="lineNum">     332 </span><span class="lineCov">         15 :                         matrix_set(data-&gt;RAW, m+1, i, 0, 1.0);</span>
+<span class="lineNum">     333 </span>            :                 }
+<span class="lineNum">     334 </span>            : 
+<span class="lineNum">     335 </span>            :                 // read the rest of the line
+<span class="lineNum">     336 </span><span class="lineCov">         74 :                 for (j=big_start; j&lt;n_big; j++) {</span>
+<span class="lineNum">     337 </span><span class="lineCov">         49 :                         if (!str_contains_char(big_parts[j], ':'))</span>
+<span class="lineNum">     338 </span><span class="lineNoCov">          0 :                                 continue;</span>
+<span class="lineNum">     339 </span>            : 
+<span class="lineNum">     340 </span>            :                         // split the index:value pair
+<span class="lineNum">     341 </span><span class="lineCov">         49 :                         small_parts = str_split(big_parts[j], &quot;:&quot;, &amp;n_small);</span>
+<span class="lineNum">     342 </span><span class="lineCov">         49 :                         if (n_small != 2)</span>
+<span class="lineNum">     343 </span><span class="lineNoCov">          0 :                                 exit_input_error(n+1);</span>
+<span class="lineNum">     344 </span>            : 
+<span class="lineNum">     345 </span>            :                         // convert the index to a long
+<span class="lineNum">     346 </span><span class="lineCov">         49 :                         errno = 0;</span>
+<span class="lineNum">     347 </span><span class="lineCov">         49 :                         index = strtol(small_parts[0], &amp;endptr, 10);</span>
+<span class="lineNum">     348 </span>            : 
+<span class="lineNum">     349 </span>            :                         // catch conversion errors
+<span class="lineNum">     350 </span><span class="lineCov">         98 :                         if (endptr == small_parts[0] || errno != 0 ||</span>
+<span class="lineNum">     351 </span><span class="lineCov">         49 :                                         *endptr != '\0')</span>
+<span class="lineNum">     352 </span><span class="lineNoCov">          0 :                                 exit_input_error(n+1);</span>
+<span class="lineNum">     353 </span>            : 
+<span class="lineNum">     354 </span>            :                         // convert the value to a double
+<span class="lineNum">     355 </span><span class="lineCov">         49 :                         errno = 0;</span>
+<span class="lineNum">     356 </span><span class="lineCov">         49 :                         value = strtod(small_parts[1], &amp;endptr);</span>
+<span class="lineNum">     357 </span><span class="lineCov">         98 :                         if (endptr == small_parts[1] || errno != 0 ||</span>
+<span class="lineNum">     358 </span><span class="lineCov">         68 :                                         (*endptr != '\0' &amp;&amp; !isspace(*endptr)))</span>
+<span class="lineNum">     359 </span><span class="lineNoCov">          0 :                                 exit_input_error(n+1);</span>
+<span class="lineNum">     360 </span>            : 
+<span class="lineNum">     361 </span><span class="lineCov">         49 :                         if (do_sparse) {</span>
+<span class="lineNum">     362 </span><span class="lineCov">          4 :                                 data-&gt;spZ-&gt;values[cnt] = value;</span>
+<span class="lineNum">     363 </span><span class="lineCov">          4 :                                 data-&gt;spZ-&gt;ja[cnt] = index + zero_based;</span>
+<span class="lineNum">     364 </span><span class="lineCov">          4 :                                 cnt++;</span>
+<span class="lineNum">     365 </span><span class="lineCov">          4 :                                 row_cnt++;</span>
+<span class="lineNum">     366 </span>            :                         } else {
+<span class="lineNum">     367 </span><span class="lineCov">         45 :                                 matrix_set(data-&gt;RAW, m+1, i, </span>
+<span class="lineNum">     368 </span>            :                                                 index + zero_based, value);
+<span class="lineNum">     369 </span>            :                         }
+<span class="lineNum">     370 </span>            : 
+<span class="lineNum">     371 </span>            :                         // free the small parts
+<span class="lineNum">     372 </span><span class="lineCov">         49 :                         free(small_parts[0]);</span>
+<span class="lineNum">     373 </span><span class="lineCov">         49 :                         free(small_parts[1]);</span>
+<span class="lineNum">     374 </span><span class="lineCov">         49 :                         free(small_parts);</span>
+<span class="lineNum">     375 </span>            :                 }
+<span class="lineNum">     376 </span>            : 
+<span class="lineNum">     377 </span><span class="lineCov">         25 :                 if (do_sparse) {</span>
+<span class="lineNum">     378 </span><span class="lineCov">         10 :                         data-&gt;spZ-&gt;ia[i+1] = data-&gt;spZ-&gt;ia[i] + row_cnt;</span>
+<span class="lineNum">     379 </span>            :                 }
+<span class="lineNum">     380 </span>            : 
+<span class="lineNum">     381 </span>            :                 // free the big parts
+<span class="lineNum">     382 </span><span class="lineCov">         94 :                 for (j=0; j&lt;n_big; j++) {</span>
+<span class="lineNum">     383 </span><span class="lineCov">         69 :                         free(big_parts[j]);</span>
+<span class="lineNum">     384 </span>            :                 }
+<span class="lineNum">     385 </span><span class="lineCov">         25 :                 free(big_parts);</span>
+<span class="lineNum">     386 </span>            :         }
+<span class="lineNum">     387 </span>            : 
+<span class="lineNum">     388 </span><span class="lineCov">          4 :         fclose(fid);</span>
+<span class="lineNum">     389 </span>            : 
+<span class="lineNum">     390 </span><span class="lineCov">          4 :         data-&gt;n = n;</span>
+<span class="lineNum">     391 </span><span class="lineCov">          4 :         data-&gt;m = m;</span>
+<span class="lineNum">     392 </span><span class="lineCov">          4 :         data-&gt;r = m;</span>
+<span class="lineNum">     393 </span><span class="lineCov">          4 :         data-&gt;K = K;</span>
+<span class="lineNum">     394 </span>            : 
+<span class="lineNum">     395 </span><span class="lineCov">          4 : }</span>
+<span class="lineNum">     396 </span>            : 
+<span class="lineNum">     397 </span>            : /**
+<span class="lineNum">     398 </span>            :  * @brief Read model from file
+<span class="lineNum">     399 </span>            :  *
+<span class="lineNum">     400 </span>            :  * @details
+<span class="lineNum">     401 </span>            :  * Read a GenModel from a model file. The GenModel struct must have been
+<span class="lineNum">     402 </span>            :  * initalized elswhere. The model file is expected to follow the @ref
+<span class="lineNum">     403 </span>            :  * spec_model_file. The easiest way to generate a model file is through
+<span class="lineNum">     404 </span>            :  * gensvm_write_model(), which can for instance be used in trainGenSVM.c.
+<span class="lineNum">     405 </span>            :  *
+<span class="lineNum">     406 </span>            :  * @param[in,out]       model           initialized GenModel
+<span class="lineNum">     407 </span>            :  * @param[in]           model_filename  filename of the model file
+<a name="408"><span class="lineNum">     408 </span>            :  *</a>
+<span class="lineNum">     409 </span>            :  */
+<span class="lineNum">     410 </span><span class="lineCov">          1 : void gensvm_read_model(struct GenModel *model, char *model_filename)</span>
+<span class="lineNum">     411 </span>            : {
+<span class="lineNum">     412 </span><span class="lineCov">          1 :         long i, j, nr = 0;</span>
+<span class="lineNum">     413 </span><span class="lineCov">          1 :         FILE *fid = NULL;</span>
+<span class="lineNum">     414 </span>            :         char buffer[GENSVM_MAX_LINE_LENGTH];
+<span class="lineNum">     415 </span>            :         char data_filename[GENSVM_MAX_LINE_LENGTH];
+<span class="lineNum">     416 </span><span class="lineCov">          1 :         double value = 0;</span>
+<span class="lineNum">     417 </span>            : 
+<span class="lineNum">     418 </span><span class="lineCov">          1 :         fid = fopen(model_filename, &quot;r&quot;);</span>
+<span class="lineNum">     419 </span><span class="lineCov">          1 :         if (fid == NULL) {</span>
+<span class="lineNum">     420 </span>            :                 // LCOV_EXCL_START
+<span class="lineNum">     421 </span>            :                 err(&quot;[GenSVM Error]: Couldn't open model file %s\n&quot;,
+<span class="lineNum">     422 </span>            :                                 model_filename);
+<span class="lineNum">     423 </span>            :                 exit(EXIT_FAILURE);
+<span class="lineNum">     424 </span>            :                 // LCOV_EXCL_STOP
+<span class="lineNum">     425 </span>            :         }
+<span class="lineNum">     426 </span>            :         // skip the first four lines
+<span class="lineNum">     427 </span><span class="lineCov">          5 :         for (i=0; i&lt;4; i++)</span>
+<span class="lineNum">     428 </span><span class="lineCov">          4 :                 next_line(fid, model_filename);</span>
+<span class="lineNum">     429 </span>            : 
+<span class="lineNum">     430 </span>            :         // read all model variables
+<span class="lineNum">     431 </span><span class="lineCov">          1 :         model-&gt;p = get_fmt_double(fid, model_filename, &quot;p = %lf&quot;);</span>
+<span class="lineNum">     432 </span><span class="lineCov">          1 :         model-&gt;lambda = get_fmt_double(fid, model_filename, &quot;lambda = %lf&quot;);</span>
+<span class="lineNum">     433 </span><span class="lineCov">          1 :         model-&gt;kappa = get_fmt_double(fid, model_filename, &quot;kappa = %lf&quot;);</span>
+<span class="lineNum">     434 </span><span class="lineCov">          1 :         model-&gt;epsilon = get_fmt_double(fid, model_filename, &quot;epsilon = %lf&quot;);</span>
+<span class="lineNum">     435 </span><span class="lineCov">          1 :         model-&gt;weight_idx = (int) get_fmt_long(fid, model_filename,</span>
+<span class="lineNum">     436 </span>            :                         &quot;weight_idx = %li&quot;);
+<span class="lineNum">     437 </span>            : 
+<span class="lineNum">     438 </span>            :         // skip to data section
+<span class="lineNum">     439 </span><span class="lineCov">          3 :         for (i=0; i&lt;2; i++)</span>
+<span class="lineNum">     440 </span><span class="lineCov">          2 :                 next_line(fid, model_filename);</span>
+<span class="lineNum">     441 </span>            : 
+<span class="lineNum">     442 </span>            :         // read filename of data file
+<span class="lineNum">     443 </span><span class="lineCov">          1 :         if (fgets(buffer, GENSVM_MAX_LINE_LENGTH, fid) == NULL) {</span>
+<span class="lineNum">     444 </span>            :                 // LCOV_EXCL_START
+<span class="lineNum">     445 </span>            :                 err(&quot;[GenSVM Error]: Error reading from model file %s\n&quot;,
+<span class="lineNum">     446 </span>            :                                 model_filename);
+<span class="lineNum">     447 </span>            :                 exit(EXIT_FAILURE);
+<span class="lineNum">     448 </span>            :                 // LCOV_EXCL_STOP
+<span class="lineNum">     449 </span>            :         }
+<span class="lineNum">     450 </span><span class="lineCov">          1 :         sscanf(buffer, &quot;filename = %s\n&quot;, data_filename);</span>
+<span class="lineNum">     451 </span><span class="lineCov">          1 :         model-&gt;data_file = Calloc(char, GENSVM_MAX_LINE_LENGTH);</span>
+<span class="lineNum">     452 </span><span class="lineCov">          1 :         strcpy(model-&gt;data_file, data_filename);</span>
+<span class="lineNum">     453 </span>            : 
+<span class="lineNum">     454 </span>            :         // read all data variables
+<span class="lineNum">     455 </span><span class="lineCov">          1 :         model-&gt;n = get_fmt_long(fid, model_filename, &quot;n = %li\n&quot;);</span>
+<span class="lineNum">     456 </span><span class="lineCov">          1 :         model-&gt;m = get_fmt_long(fid, model_filename, &quot;m = %li\n&quot;);</span>
+<span class="lineNum">     457 </span><span class="lineCov">          1 :         model-&gt;K = get_fmt_long(fid, model_filename, &quot;K = %li\n&quot;);</span>
+<span class="lineNum">     458 </span>            : 
+<span class="lineNum">     459 </span>            :         // skip to output
+<span class="lineNum">     460 </span><span class="lineCov">          3 :         for (i=0; i&lt;2; i++)</span>
+<span class="lineNum">     461 </span><span class="lineCov">          2 :                 next_line(fid, model_filename);</span>
+<span class="lineNum">     462 </span>            : 
+<span class="lineNum">     463 </span>            :         // read the matrix V and check for consistency
+<span class="lineNum">     464 </span><span class="lineCov">          1 :         model-&gt;V = Malloc(double, (model-&gt;m+1)*(model-&gt;K-1));</span>
+<span class="lineNum">     465 </span><span class="lineCov">          4 :         for (i=0; i&lt;model-&gt;m+1; i++) {</span>
+<span class="lineNum">     466 </span><span class="lineCov">          9 :                 for (j=0; j&lt;model-&gt;K-1; j++) {</span>
+<span class="lineNum">     467 </span><span class="lineCov">          6 :                         nr += fscanf(fid, &quot;%lf &quot;, &amp;value);</span>
+<span class="lineNum">     468 </span><span class="lineCov">          6 :                         matrix_set(model-&gt;V, model-&gt;K-1, i, j, value);</span>
+<span class="lineNum">     469 </span>            :                 }
+<span class="lineNum">     470 </span>            :         }
+<span class="lineNum">     471 </span><span class="lineCov">          1 :         if (nr != (model-&gt;m+1)*(model-&gt;K-1)) {</span>
+<span class="lineNum">     472 </span>            :                 // LCOV_EXCL_START
+<span class="lineNum">     473 </span>            :                 err(&quot;[GenSVM Error] Error reading from model file %s. &quot;
+<span class="lineNum">     474 </span>            :                                 &quot;Not enough elements of V found.\n&quot;,
+<span class="lineNum">     475 </span>            :                                 model_filename);
+<span class="lineNum">     476 </span>            :                 exit(EXIT_FAILURE);
+<span class="lineNum">     477 </span>            :                 // LCOV_EXCL_STOP
+<span class="lineNum">     478 </span>            :         }
+<span class="lineNum">     479 </span><span class="lineCov">          1 : }</span>
+<span class="lineNum">     480 </span>            : 
+<span class="lineNum">     481 </span>            : /**
+<span class="lineNum">     482 </span>            :  * @brief Write model to file
+<span class="lineNum">     483 </span>            :  *
+<span class="lineNum">     484 </span>            :  * @details
+<span class="lineNum">     485 </span>            :  * Write a GenModel to a file. The current time is specified in the file in
+<span class="lineNum">     486 </span>            :  * UTC + offset. The model file further corresponds to the @ref
+<span class="lineNum">     487 </span>            :  * spec_model_file.
+<span class="lineNum">     488 </span>            :  *
+<span class="lineNum">     489 </span>            :  * @param[in]   model           GenModel which contains an estimate for
+<span class="lineNum">     490 </span>            :  *                              GenModel::V
+<span class="lineNum">     491 </span>            :  * @param[in]   output_filename the output file to write the model to
+<a name="492"><span class="lineNum">     492 </span>            :  *</a>
+<span class="lineNum">     493 </span>            :  */
+<span class="lineNum">     494 </span><span class="lineCov">          1 : void gensvm_write_model(struct GenModel *model, char *output_filename)</span>
+<span class="lineNum">     495 </span>            : {
+<span class="lineNum">     496 </span><span class="lineCov">          1 :         FILE *fid = NULL;</span>
+<span class="lineNum">     497 </span>            :         long i, j;
+<span class="lineNum">     498 </span>            :         char timestr[GENSVM_MAX_LINE_LENGTH];
+<span class="lineNum">     499 </span>            : 
+<span class="lineNum">     500 </span>            :         // open output file
+<span class="lineNum">     501 </span><span class="lineCov">          1 :         fid = fopen(output_filename, &quot;w&quot;);</span>
+<span class="lineNum">     502 </span><span class="lineCov">          1 :         if (fid == NULL) {</span>
+<span class="lineNum">     503 </span>            :                 // LCOV_EXCL_START
+<span class="lineNum">     504 </span>            :                 err(&quot;[GenSVM Error]: Error opening output file %s\n&quot;,
+<span class="lineNum">     505 </span>            :                                 output_filename);
+<span class="lineNum">     506 </span>            :                 exit(EXIT_FAILURE);
+<span class="lineNum">     507 </span>            :                 // LCOV_EXCL_STOP
+<span class="lineNum">     508 </span>            :         }
+<span class="lineNum">     509 </span><span class="lineCov">          1 :         gensvm_time_string(timestr);</span>
+<span class="lineNum">     510 </span>            : 
+<span class="lineNum">     511 </span>            :         // Write output to file
+<span class="lineNum">     512 </span><span class="lineCov">          1 :         fprintf(fid, &quot;Output file for GenSVM (version %s)\n&quot;, VERSION_STRING);</span>
+<span class="lineNum">     513 </span><span class="lineCov">          1 :         fprintf(fid, &quot;Generated on: %s\n\n&quot;, timestr);</span>
+<span class="lineNum">     514 </span><span class="lineCov">          1 :         fprintf(fid, &quot;Model:\n&quot;);</span>
+<span class="lineNum">     515 </span><span class="lineCov">          1 :         fprintf(fid, &quot;p = %15.16f\n&quot;, model-&gt;p);</span>
+<span class="lineNum">     516 </span><span class="lineCov">          1 :         fprintf(fid, &quot;lambda = %15.16f\n&quot;, model-&gt;lambda);</span>
+<span class="lineNum">     517 </span><span class="lineCov">          1 :         fprintf(fid, &quot;kappa = %15.16f\n&quot;, model-&gt;kappa);</span>
+<span class="lineNum">     518 </span><span class="lineCov">          1 :         fprintf(fid, &quot;epsilon = %g\n&quot;, model-&gt;epsilon);</span>
+<span class="lineNum">     519 </span><span class="lineCov">          1 :         fprintf(fid, &quot;weight_idx = %i\n&quot;, model-&gt;weight_idx);</span>
+<span class="lineNum">     520 </span><span class="lineCov">          1 :         fprintf(fid, &quot;\n&quot;);</span>
+<span class="lineNum">     521 </span><span class="lineCov">          1 :         fprintf(fid, &quot;Data:\n&quot;);</span>
+<span class="lineNum">     522 </span><span class="lineCov">          1 :         fprintf(fid, &quot;filename = %s\n&quot;, model-&gt;data_file);</span>
+<span class="lineNum">     523 </span><span class="lineCov">          1 :         fprintf(fid, &quot;n = %li\n&quot;, model-&gt;n);</span>
+<span class="lineNum">     524 </span><span class="lineCov">          1 :         fprintf(fid, &quot;m = %li\n&quot;, model-&gt;m);</span>
+<span class="lineNum">     525 </span><span class="lineCov">          1 :         fprintf(fid, &quot;K = %li\n&quot;, model-&gt;K);</span>
+<span class="lineNum">     526 </span><span class="lineCov">          1 :         fprintf(fid, &quot;\n&quot;);</span>
+<span class="lineNum">     527 </span><span class="lineCov">          1 :         fprintf(fid, &quot;Output:\n&quot;);</span>
+<span class="lineNum">     528 </span><span class="lineCov">          4 :         for (i=0; i&lt;model-&gt;m+1; i++) {</span>
+<span class="lineNum">     529 </span><span class="lineCov">          9 :                 for (j=0; j&lt;model-&gt;K-1; j++) {</span>
+<span class="lineNum">     530 </span><span class="lineCov">          6 :                         if (j &gt; 0)</span>
+<span class="lineNum">     531 </span><span class="lineCov">          3 :                                 fprintf(fid, &quot; &quot;);</span>
+<span class="lineNum">     532 </span><span class="lineCov">          6 :                         fprintf(fid, &quot;%+15.16f&quot;, matrix_get(model-&gt;V,</span>
+<span class="lineNum">     533 </span>            :                                                 model-&gt;K-1, i, j));
+<span class="lineNum">     534 </span>            :                 }
+<span class="lineNum">     535 </span><span class="lineCov">          3 :                 fprintf(fid, &quot;\n&quot;);</span>
+<span class="lineNum">     536 </span>            :         }
+<span class="lineNum">     537 </span>            : 
+<span class="lineNum">     538 </span><span class="lineCov">          1 :         fclose(fid);</span>
+<span class="lineNum">     539 </span><span class="lineCov">          1 : }</span>
+<span class="lineNum">     540 </span>            : 
+<span class="lineNum">     541 </span>            : /**
+<span class="lineNum">     542 </span>            :  * @brief Write predictions to file
+<span class="lineNum">     543 </span>            :  *
+<span class="lineNum">     544 </span>            :  * @details
+<span class="lineNum">     545 </span>            :  * Write the given predictions to an output file, such that the resulting file
+<span class="lineNum">     546 </span>            :  * corresponds to the @ref spec_data_file.
+<span class="lineNum">     547 </span>            :  *
+<span class="lineNum">     548 </span>            :  * @param[in]   data            GenData with the original instances
+<span class="lineNum">     549 </span>            :  * @param[in]   predy           predictions of the class labels of the
+<span class="lineNum">     550 </span>            :  *                              instances in the given GenData. Note that the
+<span class="lineNum">     551 </span>            :  *                              order of the instances is assumed to be the
+<span class="lineNum">     552 </span>            :  *                              same.
+<span class="lineNum">     553 </span>            :  * @param[in]   output_filename the file to which the predictions are written
+<a name="554"><span class="lineNum">     554 </span>            :  *</a>
+<span class="lineNum">     555 </span>            :  */
+<span class="lineNum">     556 </span><span class="lineCov">          1 : void gensvm_write_predictions(struct GenData *data, long *predy,</span>
+<span class="lineNum">     557 </span>            :                 char *output_filename)
+<span class="lineNum">     558 </span>            : {
+<span class="lineNum">     559 </span>            :         long i, j;
+<span class="lineNum">     560 </span><span class="lineCov">          1 :         FILE *fid = NULL;</span>
+<span class="lineNum">     561 </span>            : 
+<span class="lineNum">     562 </span><span class="lineCov">          1 :         fid = fopen(output_filename, &quot;w&quot;);</span>
+<span class="lineNum">     563 </span><span class="lineCov">          1 :         if (fid == NULL) {</span>
+<span class="lineNum">     564 </span>            :                 // LCOV_EXCL_START
+<span class="lineNum">     565 </span>            :                 err(&quot;[GenSVM Error]: Error opening output file %s\n&quot;,
+<span class="lineNum">     566 </span>            :                                 output_filename);
+<span class="lineNum">     567 </span>            :                 exit(EXIT_FAILURE);
+<span class="lineNum">     568 </span>            :                 // LCOV_EXCL_STOP
+<span class="lineNum">     569 </span>            :         }
+<span class="lineNum">     570 </span>            : 
+<span class="lineNum">     571 </span><span class="lineCov">          1 :         fprintf(fid, &quot;%li\n&quot;, data-&gt;n);</span>
+<span class="lineNum">     572 </span><span class="lineCov">          1 :         fprintf(fid, &quot;%li\n&quot;, data-&gt;m);</span>
+<span class="lineNum">     573 </span>            : 
+<span class="lineNum">     574 </span><span class="lineCov">          6 :         for (i=0; i&lt;data-&gt;n; i++) {</span>
+<span class="lineNum">     575 </span><span class="lineCov">         20 :                 for (j=0; j&lt;data-&gt;m; j++)</span>
+<span class="lineNum">     576 </span><span class="lineCov">         15 :                         fprintf(fid, &quot;%.16f &quot;, matrix_get(data-&gt;Z, data-&gt;m+1, i,</span>
+<span class="lineNum">     577 </span>            :                                                 j+1));
+<span class="lineNum">     578 </span><span class="lineCov">          5 :                 fprintf(fid, &quot;%li\n&quot;, predy[i]);</span>
+<span class="lineNum">     579 </span>            :         }
+<span class="lineNum">     580 </span>            : 
+<span class="lineNum">     581 </span><span class="lineCov">          1 :         fclose(fid);</span>
+<span class="lineNum">     582 </span><span class="lineCov">          1 : }</span>
+<span class="lineNum">     583 </span>            : 
+<span class="lineNum">     584 </span>            : /**
+<span class="lineNum">     585 </span>            :  * @brief Get time string with UTC offset
+<span class="lineNum">     586 </span>            :  *
+<span class="lineNum">     587 </span>            :  * @details
+<span class="lineNum">     588 </span>            :  * Create a string for the current system time. Include an offset of UTC for
+<span class="lineNum">     589 </span>            :  * consistency. The format of the generated string is &quot;DDD MMM D HH:MM:SS
+<span class="lineNum">     590 </span>            :  * YYYY (UTC +HH:MM)&quot;, e.g. &quot;Fri Aug 9, 12:34:56 2013 (UTC +02:00)&quot;.
+<span class="lineNum">     591 </span>            :  *
+<span class="lineNum">     592 </span>            :  * @param[in,out]       buffer  allocated string buffer, on exit contains
+<span class="lineNum">     593 </span>            :  *                              formatted string
+<a name="594"><span class="lineNum">     594 </span>            :  *</a>
+<span class="lineNum">     595 </span>            :  */
+<span class="lineNum">     596 </span><span class="lineCov">          1 : void gensvm_time_string(char *buffer)</span>
+<span class="lineNum">     597 </span>            : {
+<span class="lineNum">     598 </span>            :         int diff, hours, minutes;
+<span class="lineNum">     599 </span>            :         char timestr[GENSVM_MAX_LINE_LENGTH];
+<span class="lineNum">     600 </span>            :         time_t current_time, lt, gt;
+<span class="lineNum">     601 </span><span class="lineCov">          1 :         struct tm *lclt = NULL;</span>
+<span class="lineNum">     602 </span>            : 
+<span class="lineNum">     603 </span>            :         // get current time (in epoch)
+<span class="lineNum">     604 </span><span class="lineCov">          1 :         current_time = time(NULL);</span>
+<span class="lineNum">     605 </span><span class="lineCov">          1 :         if (current_time == ((time_t)-1)) {</span>
+<span class="lineNum">     606 </span>            :                 // LCOV_EXCL_START
+<span class="lineNum">     607 </span>            :                 err(&quot;[GenSVM Error]: Failed to compute the current time.\n&quot;);
+<span class="lineNum">     608 </span>            :                 return;
+<span class="lineNum">     609 </span>            :                 // LCOV_EXCL_STOP
+<span class="lineNum">     610 </span>            :         }
+<span class="lineNum">     611 </span>            : 
+<span class="lineNum">     612 </span>            :         // convert time to local time and create a string
+<span class="lineNum">     613 </span><span class="lineCov">          1 :         lclt = localtime(&amp;current_time);</span>
+<span class="lineNum">     614 </span><span class="lineCov">          1 :         strftime(timestr, GENSVM_MAX_LINE_LENGTH, &quot;%c&quot;, lclt);</span>
+<span class="lineNum">     615 </span>            :         if (timestr == NULL) {
+<span class="lineNum">     616 </span>            :                 err(&quot;[GenSVM Error]: Failed to convert time to string.\n&quot;);
+<span class="lineNum">     617 </span>            :                 return;
+<span class="lineNum">     618 </span>            :         }
+<span class="lineNum">     619 </span>            : 
+<span class="lineNum">     620 </span>            :         // calculate the UTC offset including DST
+<span class="lineNum">     621 </span><span class="lineCov">          1 :         lt = mktime(localtime(&amp;current_time));</span>
+<span class="lineNum">     622 </span><span class="lineCov">          1 :         gt = mktime(gmtime(&amp;current_time));</span>
+<span class="lineNum">     623 </span><span class="lineCov">          1 :         diff = -difftime(gt, lt);</span>
+<span class="lineNum">     624 </span><span class="lineCov">          1 :         hours = (diff/3600);</span>
+<span class="lineNum">     625 </span><span class="lineCov">          1 :         minutes = (diff%3600)/60;</span>
+<span class="lineNum">     626 </span><span class="lineCov">          1 :         if (lclt-&gt;tm_isdst == 1)</span>
+<span class="lineNum">     627 </span><span class="lineNoCov">          0 :                 hours++;</span>
+<span class="lineNum">     628 </span>            : 
+<span class="lineNum">     629 </span><span class="lineCov">          1 :         sprintf(buffer, &quot;%s (UTC %+03i:%02i)&quot;, timestr, hours, minutes);</span>
+<span class="lineNum">     630 </span>            : }
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.12</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

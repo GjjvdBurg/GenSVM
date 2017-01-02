@@ -1,0 +1,7 @@
+<map id="test_gensvm_write_predictions" name="test_gensvm_write_predictions">
+<area shape="rect" id="node2" href="$gensvm__base_8h.html#a2123ffe5f44db584421e139be7d31b6c" title="Initialize a GenData structure. " alt="" coords="306,5,445,32"/>
+<area shape="rect" id="node3" href="$gensvm__io_8h.html#afe52bcd3afec1570ea2d0eee4f8ee81a" title="Write predictions to file. " alt="" coords="279,56,472,83"/>
+<area shape="rect" id="node5" href="$gensvm__base_8h.html#a98f3696d492bec4485e3f2a42062705f" title="Free allocated GenData struct. " alt="" coords="304,107,447,133"/>
+<area shape="rect" id="node4" href="$gensvm__print_8h.html#aede5746344fdce99647541101eaa7f06" title="Parse a formatted string and write it to standard error. " alt="" coords="579,56,619,83"/>
+<area shape="rect" id="node6" href="$gensvm__sparse_8h.html#a1bd9399ffc0b5e4d32ac160eb3143864" title="Free an allocated GenSparse structure. " alt="" coords="520,107,677,133"/>
+</map>

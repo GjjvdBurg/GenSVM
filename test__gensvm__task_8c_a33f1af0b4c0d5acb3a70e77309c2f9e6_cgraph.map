@@ -1,0 +1,7 @@
+<map id="test_task_to_model_sigmoid" name="test_task_to_model_sigmoid">
+<area shape="rect" id="node2" href="$gensvm__task_8h.html#a138c30cecb1cf46a002cd6581328a33c" title="Initialize a GenTask structure. " alt="" coords="224,5,361,32"/>
+<area shape="rect" id="node3" href="$gensvm__base_8h.html#a96f35734dcba63d95e08addd2dabce3d" title="Initialize a GenModel structure. " alt="" coords="217,56,368,83"/>
+<area shape="rect" id="node4" href="$gensvm__task_8h.html#ad23d6b46f7554c1598f62619486f438e" title="Copy parameters from GenTask to GenModel. " alt="" coords="204,107,381,133"/>
+<area shape="rect" id="node5" href="$gensvm__base_8h.html#a0cf72f34706ed286c922ce74ee11f0be" title="Free allocated GenModel struct. " alt="" coords="215,157,370,184"/>
+<area shape="rect" id="node6" href="$gensvm__task_8h.html#aa22ce798ccd7bba8c6e7861d92e51b0e" title="Free the GenTask struct. " alt="" coords="221,208,364,235"/>
+</map>

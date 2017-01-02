@@ -1,0 +1,5 @@
+<map id="test_next_line" name="test_next_line">
+<area shape="rect" id="node2" href="$gensvm__strutil_8h.html#a03a01f022e5d81bdb10252522b04600e" title="Move to next line in file. " alt="" coords="168,5,251,32"/>
+<area shape="rect" id="node3" href="$gensvm__strutil_8c.html#a5f31076701ddd365a6aed7bf1e6b112a" title="Read line to buffer. " alt="" coords="299,5,373,32"/>
+<area shape="rect" id="node4" href="$gensvm__print_8h.html#aede5746344fdce99647541101eaa7f06" title="Parse a formatted string and write it to standard error. " alt="" coords="421,5,461,32"/>
+</map>

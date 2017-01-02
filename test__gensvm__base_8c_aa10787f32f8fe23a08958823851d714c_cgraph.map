@@ -1,0 +1,6 @@
+<map id="test_init_free_work" name="test_init_free_work">
+<area shape="rect" id="node2" href="$gensvm__base_8h.html#a96f35734dcba63d95e08addd2dabce3d" title="Initialize a GenModel structure. " alt="" coords="202,5,353,32"/>
+<area shape="rect" id="node3" href="$gensvm__base_8h.html#a52120d849ff52751c7995c24dfa50f00" title="Initialize the workspace structure. " alt="" coords="207,56,348,83"/>
+<area shape="rect" id="node4" href="$gensvm__base_8h.html#a0cf72f34706ed286c922ce74ee11f0be" title="Free allocated GenModel struct. " alt="" coords="200,107,355,133"/>
+<area shape="rect" id="node5" href="$gensvm__base_8h.html#a25a671211eb5a8e6b2b9ae214a8a6428" title="Free an allocated GenWork instance. " alt="" coords="204,157,351,184"/>
+</map>

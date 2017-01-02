@@ -10,6 +10,5 @@ gensvm
 gensvm_grid
 *.gcno
 *.gcda
-cover/*
 tests/bin/*
 doc/html/

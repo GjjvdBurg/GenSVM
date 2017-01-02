@@ -1,0 +1,139 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - coverage.all - src/gensvm_timer.c</title>
+  <link rel="stylesheet" type="text/css" href="../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../index.html">top level</a> - <a href="index.html">src</a> - gensvm_timer.c<span style="font-size: 80%;"> (source / <a href="gensvm_timer.c.func-sort-c.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">coverage.all</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">4</td>
+            <td class="headerCovTableEntry">4</td>
+            <td class="headerCovTableEntryHi">100.0 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2017-01-02 10:06:26</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">1</td>
+            <td class="headerCovTableEntry">1</td>
+            <td class="headerCovTableEntryHi">100.0 %</td>
+          </tr>
+          <tr><td><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : /**</a>
+<span class="lineNum">       2 </span>            :  * @file gensvm_timer.c
+<span class="lineNum">       3 </span>            :  * @author G.J.J. van den Burg
+<span class="lineNum">       4 </span>            :  * @date 2014-01-07
+<span class="lineNum">       5 </span>            :  * @brief Utility functions relating to time
+<span class="lineNum">       6 </span>            :  *
+<span class="lineNum">       7 </span>            :  * @details
+<span class="lineNum">       8 </span>            :  * This file contains a simple function for calculating the time in seconds
+<span class="lineNum">       9 </span>            :  * elapsed between two Timer() calls.
+<span class="lineNum">      10 </span>            :  *
+<span class="lineNum">      11 </span>            :  * @copyright
+<span class="lineNum">      12 </span>            :  Copyright 2016, G.J.J. van den Burg.
+<span class="lineNum">      13 </span>            : 
+<span class="lineNum">      14 </span>            :  This file is part of GenSVM.
+<span class="lineNum">      15 </span>            : 
+<span class="lineNum">      16 </span>            :  GenSVM is free software: you can redistribute it and/or modify
+<span class="lineNum">      17 </span>            :  it under the terms of the GNU General Public License as published by
+<span class="lineNum">      18 </span>            :  the Free Software Foundation, either version 3 of the License, or
+<span class="lineNum">      19 </span>            :  (at your option) any later version.
+<span class="lineNum">      20 </span>            : 
+<span class="lineNum">      21 </span>            :  GenSVM is distributed in the hope that it will be useful,
+<span class="lineNum">      22 </span>            :  but WITHOUT ANY WARRANTY; without even the implied warranty of
+<span class="lineNum">      23 </span>            :  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+<span class="lineNum">      24 </span>            :  GNU General Public License for more details.
+<span class="lineNum">      25 </span>            : 
+<span class="lineNum">      26 </span>            :  You should have received a copy of the GNU General Public License
+<span class="lineNum">      27 </span>            :  along with GenSVM. If not, see &lt;http://www.gnu.org/licenses/&gt;.
+<span class="lineNum">      28 </span>            : 
+<span class="lineNum">      29 </span>            :  */
+<span class="lineNum">      30 </span>            : 
+<span class="lineNum">      31 </span>            : #include &quot;gensvm_timer.h&quot;
+<span class="lineNum">      32 </span>            : 
+<span class="lineNum">      33 </span>            : /**
+<span class="lineNum">      34 </span>            :  * @brief Calculate the time between two time recordings
+<span class="lineNum">      35 </span>            :  *
+<span class="lineNum">      36 </span>            :  * @details
+<span class="lineNum">      37 </span>            :  * This function should be used with time recordings done by clock_gettime() 
+<span class="lineNum">      38 </span>            :  * using CLOCK_MONOTONIC_RAW. For this, the Timer() macro has been defined in 
+<span class="lineNum">      39 </span>            :  * the header file. Example usage:
+<span class="lineNum">      40 </span>            :  *
+<span class="lineNum">      41 </span>            :  * @code
+<span class="lineNum">      42 </span>            :  * struct timespec start, stop;
+<span class="lineNum">      43 </span>            :  * Timer(start);
+<span class="lineNum">      44 </span>            :  * // do some work //
+<span class="lineNum">      45 </span>            :  * Timer(stop);
+<span class="lineNum">      46 </span>            :  * double duration = gensvm_elapsed_time(&amp;start, &amp;stop);
+<span class="lineNum">      47 </span>            :  * @endcode
+<span class="lineNum">      48 </span>            :  *
+<span class="lineNum">      49 </span>            :  * This approach to measuring time has been chosen since CLOCK_MONOTONIC_RAW 
+<span class="lineNum">      50 </span>            :  * is guaranteed to be monotonically increasing, and is not affected by leap 
+<span class="lineNum">      51 </span>            :  * seconds or other changes to the system clock. It is therefore thread-safe 
+<span class="lineNum">      52 </span>            :  * and can be used to accurately measure time intervals.
+<span class="lineNum">      53 </span>            :  *
+<span class="lineNum">      54 </span>            :  * @param[in]   start   starting time
+<span class="lineNum">      55 </span>            :  * @param[in]   stop    end time
+<a name="56"><span class="lineNum">      56 </span>            :  * @returns             time elapsed in seconds</a>
+<span class="lineNum">      57 </span>            :  */
+<span class="lineNum">      58 </span><span class="lineCov">          1 : double gensvm_elapsed_time(struct timespec *start, struct timespec *stop)</span>
+<span class="lineNum">      59 </span>            : {
+<span class="lineNum">      60 </span><span class="lineCov">          1 :         double delta_s = stop-&gt;tv_sec - start-&gt;tv_sec;</span>
+<span class="lineNum">      61 </span><span class="lineCov">          1 :         double delta_ns = stop-&gt;tv_nsec - start-&gt;tv_nsec;</span>
+<span class="lineNum">      62 </span><span class="lineCov">          1 :         return delta_s + delta_ns * 1e-9;</span>
+<span class="lineNum">      63 </span>            : }
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.12</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

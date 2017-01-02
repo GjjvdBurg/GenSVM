@@ -1,0 +1,8 @@
+<map id="test_print_sparse" name="test_print_sparse">
+<area shape="rect" id="node2" href="$gensvm__sparse_8h.html#a331d6368a9fdca45c86ec68401344acc" title="Convert a dense matrix to a GenSparse structure if advantageous. " alt="" coords="188,56,379,83"/>
+<area shape="rect" id="node5" href="$gensvm__debug_8h.html#a8decbb349de4ed02a50e2f7364604397" title="Print a sparse matrix. " alt="" coords="203,107,364,133"/>
+<area shape="rect" id="node7" href="$gensvm__sparse_8h.html#a1bd9399ffc0b5e4d32ac160eb3143864" title="Free an allocated GenSparse structure. " alt="" coords="205,157,362,184"/>
+<area shape="rect" id="node3" href="$gensvm__sparse_8c.html#a88aab6b67242e2a4993a5c9c796161e7" title="Count the number of nonzeros in a matrix. " alt="" coords="429,5,576,32"/>
+<area shape="rect" id="node4" href="$gensvm__sparse_8c.html#ac45d0a15c75382ad8f3f4232eadf9f4d" title="Initialize a GenSparse structure. " alt="" coords="427,56,579,83"/>
+<area shape="rect" id="node6" href="$gensvm__print_8h.html#a4502a32a6f7952faad96b8e5c758a7f7" title="Parse a formatted string and write to the output stream. " alt="" coords="477,107,528,133"/>
+</map>

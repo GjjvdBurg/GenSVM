@@ -1,0 +1,14 @@
+<map id="gensvm_get_update" name="gensvm_get_update">
+<area shape="rect" id="node2" href="$gensvm__update_8c.html#a9949f0ec9eae2316998136a89aeb2992" title="Wrapper around calculation of Z&#39;*A*Z and Z&#39;*B for sparse and dense. " alt="" coords="208,75,369,102"/>
+<area shape="rect" id="node11" href="$gensvm__update_8c.html#a762bfc3b570c8c1007dd0c8d8a27ae0d" title="Solve AX = B where A is symmetric positive definite. " alt="" coords="258,126,319,153"/>
+<area shape="rect" id="node12" href="$gensvm__print_8h.html#aede5746344fdce99647541101eaa7f06" title="Parse a formatted string and write it to standard error. " alt="" coords="269,177,309,203"/>
+<area shape="rect" id="node13" href="$gensvm__update_8c.html#a015783619d7f097db396c176e0ff99a5" title="Solve a system of equations AX = B where A is symmetric. " alt="" coords="259,227,319,254"/>
+<area shape="rect" id="node3" href="$gensvm__base_8h.html#a866ddca7070aacee709a6cfd563a595f" title="Reset all matrices of a GenWork instance. " alt="" coords="446,25,599,51"/>
+<area shape="rect" id="node4" href="$gensvm__update_8c.html#ac5dcf6daf6e1e1888f0a97f501037524" title="Calculate Z&#39;*A*Z and Z&#39;*B for sparse matrices. " alt="" coords="417,75,628,102"/>
+<area shape="rect" id="node10" href="$gensvm__update_8c.html#ab695778b8a796f3f991754ed0015eeb6" title="Calculate Z&#39;*A*Z and Z&#39;*B for dense matrices. " alt="" coords="419,126,626,153"/>
+<area shape="rect" id="node5" href="$gensvm__update_8c.html#aeb327efd218c706102916bb0aa1e671d" title="Compute the alpha_i and beta_i for an instance. " alt="" coords="676,101,857,127"/>
+<area shape="rect" id="node6" href="$gensvm__update_8c.html#abb108fbbbf27aedec726d363683bdb1c" title="Check if we can do simple majorization for a given instance. " alt="" coords="923,5,1079,47"/>
+<area shape="rect" id="node7" href="$gensvm__update_8c.html#ae90a65a5a2a2313251356d3667a8b069" title="Calculate the value of omega for a single instance. " alt="" coords="905,71,1097,98"/>
+<area shape="rect" id="node8" href="$gensvm__update_8c.html#a9218875737267254fc332d772ce13ec0" title="Compute majorization coefficients for simple instances. " alt="" coords="920,123,1083,164"/>
+<area shape="rect" id="node9" href="$gensvm__update_8c.html#ae51dd734ea3e73944d9eb890d63cb361" title="Compute majorization coefficients for non&#45;simple instance. " alt="" coords="920,188,1083,229"/>
+</map>

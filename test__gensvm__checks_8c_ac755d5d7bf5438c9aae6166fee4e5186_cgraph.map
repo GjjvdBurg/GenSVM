@@ -1,0 +1,6 @@
+<map id="test_check_outcome_contiguous_gap" name="test_check_outcome_contiguous_gap">
+<area shape="rect" id="node2" href="$gensvm__base_8h.html#a2123ffe5f44db584421e139be7d31b6c" title="Initialize a GenData structure. " alt="" coords="231,5,370,32"/>
+<area shape="rect" id="node3" href="$gensvm__checks_8h.html#a7a431efee7c37f2157cf8bcfaf7752c0" title="Check if the labels are contiguous on [1 .. K]. " alt="" coords="209,57,392,98"/>
+<area shape="rect" id="node4" href="$gensvm__base_8h.html#a98f3696d492bec4485e3f2a42062705f" title="Free allocated GenData struct. " alt="" coords="229,123,372,149"/>
+<area shape="rect" id="node5" href="$gensvm__sparse_8h.html#a1bd9399ffc0b5e4d32ac160eb3143864" title="Free an allocated GenSparse structure. " alt="" coords="440,123,597,149"/>
+</map>

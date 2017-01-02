@@ -1,0 +1,9 @@
+<map id="test_copy_task_poly" name="test_copy_task_poly">
+<area shape="rect" id="node2" href="$gensvm__task_8h.html#a138c30cecb1cf46a002cd6581328a33c" title="Initialize a GenTask structure. " alt="" coords="213,5,350,32"/>
+<area shape="rect" id="node3" href="$gensvm__base_8h.html#a2123ffe5f44db584421e139be7d31b6c" title="Initialize a GenData structure. " alt="" coords="212,56,351,83"/>
+<area shape="rect" id="node4" href="$gensvm__task_8h.html#a7cac73e4b9ba194849ff6bc4a46115b8" title="Deepcopy a GenTask struct. " alt="" coords="208,107,355,133"/>
+<area shape="rect" id="node6" href="$gensvm__task_8h.html#aa22ce798ccd7bba8c6e7861d92e51b0e" title="Free the GenTask struct. " alt="" coords="210,157,353,184"/>
+<area shape="rect" id="node7" href="$gensvm__base_8h.html#a98f3696d492bec4485e3f2a42062705f" title="Free allocated GenData struct. " alt="" coords="210,208,353,235"/>
+<area shape="rect" id="node5" href="$gensvm__task_8c.html#a138c30cecb1cf46a002cd6581328a33c" title="Initialize a GenTask structure. " alt="" coords="413,107,550,133"/>
+<area shape="rect" id="node8" href="$gensvm__sparse_8h.html#a1bd9399ffc0b5e4d32ac160eb3143864" title="Free an allocated GenSparse structure. " alt="" coords="403,208,560,235"/>
+</map>

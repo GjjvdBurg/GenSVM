@@ -1,0 +1,5 @@
+<map id="test_get_fmt_long" name="test_get_fmt_long">
+<area shape="rect" id="node2" href="$gensvm__strutil_8h.html#ae20606d277ab18ca461d25cb1f7dab1c" title="Read a long integer from file following a format. " alt="" coords="193,31,301,57"/>
+<area shape="rect" id="node3" href="$gensvm__strutil_8c.html#a5f31076701ddd365a6aed7bf1e6b112a" title="Read line to buffer. " alt="" coords="349,5,424,32"/>
+<area shape="rect" id="node4" href="$gensvm__print_8h.html#aede5746344fdce99647541101eaa7f06" title="Parse a formatted string and write it to standard error. " alt="" coords="472,31,512,57"/>
+</map>

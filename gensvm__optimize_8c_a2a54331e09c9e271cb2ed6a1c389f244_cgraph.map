@@ -1,0 +1,7 @@
+<map id="gensvm_get_loss" name="gensvm_get_loss">
+<area shape="rect" id="node2" href="$gensvm__optimize_8c.html#a929b779c3a597dbe8f2fb763c4574221" title="Calculate the scalar errors. " alt="" coords="188,46,373,73"/>
+<area shape="rect" id="node6" href="$gensvm__optimize_8c.html#ae7099ec85e4fa9c433d9e3858efe58b3" title="Calculate the Huber hinge errors. " alt="" coords="189,97,373,123"/>
+<area shape="rect" id="node3" href="$gensvm__zv_8h.html#a2b2e19db75b36241c3d26b57b2a35901" title="Wrapper around sparse/dense versions of this function. " alt="" coords="421,46,587,73"/>
+<area shape="rect" id="node4" href="$gensvm__zv_8c.html#af8b307056942df1b5397122666f48521" title="Compute the product Z*V for when Z is a sparse matrix. " alt="" coords="635,5,800,47"/>
+<area shape="rect" id="node5" href="$gensvm__zv_8c.html#a6c114c1ca777387a97e14879cec7f674" title="Compute the product Z*V for when Z is a dense matrix. " alt="" coords="635,71,800,112"/>
+</map>

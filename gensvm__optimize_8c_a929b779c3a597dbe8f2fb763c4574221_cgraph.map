@@ -1,0 +1,5 @@
+<map id="gensvm_calculate_errors" name="gensvm_calculate_errors">
+<area shape="rect" id="node2" href="$gensvm__zv_8h.html#a2b2e19db75b36241c3d26b57b2a35901" title="Wrapper around sparse/dense versions of this function. " alt="" coords="239,46,404,73"/>
+<area shape="rect" id="node3" href="$gensvm__zv_8c.html#af8b307056942df1b5397122666f48521" title="Compute the product Z*V for when Z is a sparse matrix. " alt="" coords="452,5,617,47"/>
+<area shape="rect" id="node4" href="$gensvm__zv_8c.html#a6c114c1ca777387a97e14879cec7f674" title="Compute the product Z*V for when Z is a dense matrix. " alt="" coords="452,71,617,112"/>
+</map>

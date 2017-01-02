@@ -1,0 +1,5 @@
+<map id="include/gensvm_train.h" name="include/gensvm_train.h">
+<area shape="rect" id="node2" href="$gensvm__train_8c.html" title="Main function for training a GenSVM model. " alt="" coords="5,87,151,114"/>
+<area shape="rect" id="node3" href="$GenSVMtraintest_8c.html" title="Command line interface for training and testing with a GenSVM model. " alt="" coords="175,87,341,114"/>
+<area shape="rect" id="node4" href="$test__gensvm__train_8c.html" title="Unit tests for gensvm_train.c functions. " alt="" coords="365,80,530,121"/>
+</map>

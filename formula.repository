@@ -1,0 +1,79 @@
+\form#0:$ \ell_p $
+\form#1:$ 1 \leq p \leq 2 $
+\form#2:$ \kappa > -1 $
+\form#3:$ \lambda > 0 $
+\form#4:$\alpha_i$
+\form#5:$\boldsymbol{\beta_i}$
+\form#6:$ \alpha_i $
+\form#7:\[ \alpha_i = \frac{1}{n} \rho_i \sum_{j \neq y_i} \left[ \varepsilon_i a_{ijy_i}^{(1)} + (1 - \varepsilon_i) \omega_i a_{ijy_i}^{(p)} \right] \]
+\form#8:$\varepsilon_i$
+\form#9:\[ \alpha_i = \begin{dcases} \frac{1}{n} \rho_i \sum_{j \neq y_i} a_{ijy_i}^{(1)} & \text{ if } \varepsilon_i = 1 \\ \frac{1}{n} \rho_i \omega_i \sum_{j \neq y_i} a_{ijy_i}^{(p)} & \text{ if } \varepsilon_i = 0 \end{dcases} \]
+\form#10:$\varepsilon_i = 1$
+\form#11:$a_{ijy_i}^{(1)}$
+\form#12:$p = 1$
+\form#13:$\overline{q}_i^{(y_ij})$
+\form#14:$p$
+\form#15:$(p + \kappa - 1)/(p - 2) = -\kappa$
+\form#16:\[ a_{ijy_i}^{(1)} = \begin{dcases} \frac{1}{4} \left( 1 - \overline{q}_i^{(y_ij)} - \frac{\kappa + 1}{2} \right)^{-1} & \text{ if } \overline{q}_i^{(y_ij)} \leq -\kappa \\ \frac{1}{2(\kappa + 1)} & \text{ if } \overline{q}_i^{(y_ij)} \in (-\kappa, 1] \\ -\frac{1}{4} \left( 1 - \overline{q}_i^{(y_ij)} - \frac{\kappa + 1}{2} \right)^{-1} & \text{ if } \overline{q}_i^{(y_ij)} > 1 \end{dcases} \]
+\form#17:$a$
+\form#18:$\varepsilon_i = 0$
+\form#19:$a_{ijy_i}^{(p)}$
+\form#20:$p = 2 $
+\form#21:$a_{ijy_i}^{(2)}$
+\form#22:$p < 2$
+\form#23:\[ a_{ijy_i}^{(p)} = \begin{dcases} \frac{1}{4} p^2 \left( 1 - \overline{q}_i^{(y_ij)} - \frac{\kappa + 1}{2} \right)^{p - 2} & \text{ if } \overline{q}_i^{(y_ij)} \leq \frac{p + \kappa - 1}{p - 2} \\ \frac{1}{4} p (2p - 1) \left( \frac{\kappa + 1}{2} \right)^{p - 2} & \text{ if } \overline{q}_i^{(y_ij)} \in \left( \left. \frac{p + \kappa - 1}{p - 2}, 1 \right. \right] \\ \frac{1}{4} p^2 \left( \frac{p}{p - 2} \left( 1 - \overline{q}_i^{(y_ij)} - \frac{\kappa + 1}{2}\right) \right)^{p - 2} & \text{ if } \overline{q}_i^{(y_ij)} > 1 \end{dcases} \]
+\form#24:$\overline{q}_i^{(y_ij)}$
+\form#25:$\boldsymbol{\beta}_i$
+\form#26:\[ \boldsymbol{\beta}_i' = \frac{1}{n}\rho_i \sum_{j \neq y_i} \left[ \varepsilon_i \left( b_{ijy_i}^{(1)} - a_{ijy_i}^{(1)}\overline{q}_i^{(y_ij)} \right) + (1 - \varepsilon_i) \omega_i \left( b_{ijy_i}^{(p)} - a_{ijy_i}^{(p)}\overline{q}_i^{(y_ij)} \right) \right] \boldsymbol{\delta}_{y_ij}' \]
+\form#27:\[ \boldsymbol{\beta}_i' = \begin{dcases} \frac{1}{n}\rho_i \sum_{j \neq y_i} \left( b_{ijy_i}^{(1)} - a_{ijy_i}^{(1)}\overline{q}_i^{(y_ij)} \right) \boldsymbol{\delta}_{y_ij}' & \text{ if } \varepsilon_i = 1 \\ \frac{1}{n}\rho_i \omega_i \sum_{j \neq y_i} \left( b_{ijy_i}^{(p)} - a_{ijy_i}^{(p)}\overline{q}_i^{(y_ij)} \right) \boldsymbol{\delta}_{y_ij}' & \text{ if } \varepsilon_i = 0 \end{dcases} \]
+\form#28:$b - a\overline{q}$
+\form#29:$\varepsilon = 1$
+\form#30:\[ b_{ijy_i}^{(1)} - a_{ijy_i}^{(1)}\overline{q}_i^{(y_ij)} = \begin{dcases} \frac{1}{2} & \text{ if } \overline{q}_i^{(y_ij)} \leq -\kappa \\ a_{ijy_i}^{(1)} \left( 1 - \overline{q}_i^{(y_ij)} \right) & \text{ if } \overline{q}_i^{(y_ij)} \in (-\kappa, 1] \\ 0 & \text{ if } \overline{q}_i^{(y_ij)} > 1 \end{dcases} \]
+\form#31:\[ b_{ijy_i}^{(p)} - a_{ijy_i}^{(p)}\overline{q}_i^{(y_ij)} = \begin{dcases} \frac{1}{2}p\left( 1 - \overline{q}_i^{(y_ij)} - \frac{\kappa + 1}{2}\right)^{p-1} & \text{ if } \overline{q}_i^{(y_ij)} \leq -\kappa \\ \frac{p \left(1 - \overline{q}_i^{(y_ij)} \right)^{2p-1}}{ \left(2(\kappa + 1)\right)^p} & \text{ if } \overline{q}_i^{(y_ij)} \in (-\kappa, 1] \\ a_{ijy_i}^{(p)} \left( \frac{2\overline{q}_i^{(y_ij)} + \kappa - 1}{p - 2} \right) + \frac{1}{2} p \left( \frac{p}{p - 2} \left(1 - \overline{q}_i^{(y_ij)} - \frac{\kappa + 1}{2} \right) \right)^{p - 1} & \text{ if } \overline{q}_i^{(y_ij)} > 1 \end{dcases} \]
+\form#32:$ p = 2$
+\form#33:\[ b_{ijy_i}^{(2)} - a_{ijy_i}^{(2)}\overline{q}_i^{(y_ij)} = \begin{dcases} 1 - \overline{q}_i^{(y_ij)} - \frac{\kappa + 1}{2} & \text{ if } \overline{q}_i^{(y_ij)} \leq -\kappa \\ \frac{1}{2(\kappa+1)^2}\left( 1 - \overline{q}_i^{(y_ij)} \right)^3 & \text{ if } \overline{q}_i^{(y_ij)} \in (-\kappa, 1] \\ 0 & \text{ if } \overline{q}_i^{(y_ij)} > 1 \end{dcases} \]
+\form#34:$(n_{row}(n_{col} - 1) - 1)/2$
+\form#35:$ \lfloor N / folds \rfloor $
+\form#36:$ \lceil N / folds \rceil $
+\form#37:$ N \% folds $
+\form#38:$ N / folds + N \% folds $
+\form#39:\[ \rho_i = \frac{n}{Kn_k} , \]
+\form#40:$ n_k $
+\form#41:$ k $
+\form#42:$ y_i = k $
+\form#43:$\textbf{M} = \textbf{P}\boldsymbol{\Sigma}$
+\form#44:$\textbf{X}$
+\form#45:$\boldsymbol{\Phi}$
+\form#46:$\textbf{X}_2$
+\form#47:$\boldsymbol{\Phi}_2$
+\form#48:$\textbf{K}_2$
+\form#49:$\textbf{K}_2 = \boldsymbol{\Phi}_2 \boldsymbol{\Phi}'$
+\form#50:$i$
+\form#51:$j$
+\form#52:$\textbf{M} = \textbf{P}*\boldsymbol{\Sigma}$
+\form#53:$\boldsymbol{\Sigma}$
+\form#54:$\textbf{K}_2 \textbf{M} \boldsymbol{\Sigma}^{-2}$
+\form#55:\[ k(x_1, x_2) = \exp( -\gamma \| x_1 - x_2 \|^2 ) \]
+\form#56:$ \gamma $
+\form#57:\[ k(x_1, x_2) = ( \gamma \langle x_1, x_2 \rangle + c)^d \]
+\form#58:$ c $
+\form#59:$ d $
+\form#60:\[ k(x_1, x_2) = \tanh( \gamma \langle x_1 , x_2 \rangle + c) \]
+\form#61:\[ h(q) = \begin{dcases} 1 - q - \frac{\kappa + 1}{2} & \text{if } q \leq -\kappa \\ \frac{1}{2(\kappa + 1)} ( 1 - q)^2 & \text{if } q \in (-\kappa, 1] \\ 0 & \text{if } q > 1 \end{dcases} \]
+\form#62:$\boldsymbol{\delta}_{kj}'$
+\form#63:$\textbf{u}_k' - \textbf{u}_j'$
+\form#64:$\textbf{u}_k'$
+\form#65:$\textbf{U}$
+\form#66:$ \omega_i $
+\form#67:\[ \omega_i = \frac{1}{p} \left( \sum_{j \neq y_i} h^p\left( \overline{q}_i^{(y_i j)} \right) \right)^{1/p-1} \]
+\form#68:$j \neq y_i$
+\form#69:$b$
+\form#70:$\boldsymbol{\beta}_i'$
+\form#71:$\omega_i$
+\form#72:\[ A_{i, i} = \frac{1}{n} \rho_i \sum_{j \neq k} \left[ \varepsilon_i a_{ijk}^{(1)} + (1 - \varepsilon_i) \omega_i a_{ijk}^{(p)} \right], \]
+\form#73:$ k = y_i $
+\form#74:$ Z' A Z $
+\form#75:\[ \boldsymbol{\beta}_i' = \frac{1}{n} \rho_i \sum_{j \neq k} \left[ \varepsilon_i \left( b_{ijk}^{(1)} - a_{ijk}^{(1)} \overline{q}_i^{(kj)} \right) + (1 - \varepsilon_i) \omega_i \left( b_{ijk}^{(p)} - a_{ijk}^{(p)} \overline{q}_i^{(kj)} \right) \right] \boldsymbol{\delta}_{kj}' \]
+\form#76:$ \varepsilon_i = 1 $
+\form#77:$ \boldsymbol{\delta}_{kj}' $
+\form#78:\[ (\textbf{Z}'\textbf{AZ} + \lambda \textbf{J})\textbf{V} = (\textbf{Z}'\textbf{AZ}\overline{\textbf{V}} + \textbf{Z}' \textbf{B}) \]

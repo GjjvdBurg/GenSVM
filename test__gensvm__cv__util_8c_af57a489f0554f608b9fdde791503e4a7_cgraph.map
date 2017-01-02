@@ -1,0 +1,9 @@
+<map id="test_get_tt_split_dense" name="test_get_tt_split_dense">
+<area shape="rect" id="node2" href="$gensvm__base_8h.html#a2123ffe5f44db584421e139be7d31b6c" title="Initialize a GenData structure. " alt="" coords="235,27,373,54"/>
+<area shape="rect" id="node3" href="$gensvm__cv__util_8h.html#aac719077b8560d022e2473933e80dd99" title="Wrapper around sparse/dense versions of this function. " alt="" coords="227,78,381,105"/>
+<area shape="rect" id="node7" href="$gensvm__base_8h.html#a98f3696d492bec4485e3f2a42062705f" title="Free allocated GenData struct. " alt="" coords="233,133,375,159"/>
+<area shape="rect" id="node4" href="$gensvm__cv__util_8c.html#a68cce5815b1a10754a4b9b2315d1d563" title="Create train and test dataset for a CV split with sparse data. " alt="" coords="431,5,585,47"/>
+<area shape="rect" id="node6" href="$gensvm__cv__util_8c.html#a99a835eecb7ddafa52ba497a887b4f5b" title="Create train and test datasets for a CV split with dense data. " alt="" coords="431,71,585,112"/>
+<area shape="rect" id="node5" href="$gensvm__sparse_8h.html#ac45d0a15c75382ad8f3f4232eadf9f4d" title="Initialize a GenSparse structure. " alt="" coords="635,13,787,39"/>
+<area shape="rect" id="node8" href="$gensvm__sparse_8h.html#a1bd9399ffc0b5e4d32ac160eb3143864" title="Free an allocated GenSparse structure. " alt="" coords="429,137,587,163"/>
+</map>

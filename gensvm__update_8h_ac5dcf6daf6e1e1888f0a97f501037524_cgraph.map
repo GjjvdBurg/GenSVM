@@ -1,0 +1,7 @@
+<map id="gensvm_get_ZAZ_ZB_sparse" name="gensvm_get_ZAZ_ZB_sparse">
+<area shape="rect" id="node2" href="$gensvm__update_8c.html#aeb327efd218c706102916bb0aa1e671d" title="Compute the alpha_i and beta_i for an instance. " alt="" coords="264,101,445,127"/>
+<area shape="rect" id="node3" href="$gensvm__update_8c.html#abb108fbbbf27aedec726d363683bdb1c" title="Check if we can do simple majorization for a given instance. " alt="" coords="511,5,667,47"/>
+<area shape="rect" id="node4" href="$gensvm__update_8c.html#ae90a65a5a2a2313251356d3667a8b069" title="Calculate the value of omega for a single instance. " alt="" coords="493,71,685,98"/>
+<area shape="rect" id="node5" href="$gensvm__update_8c.html#a9218875737267254fc332d772ce13ec0" title="Compute majorization coefficients for simple instances. " alt="" coords="508,123,671,164"/>
+<area shape="rect" id="node6" href="$gensvm__update_8c.html#ae51dd734ea3e73944d9eb890d63cb361" title="Compute majorization coefficients for non&#45;simple instance. " alt="" coords="508,188,671,229"/>
+</map>

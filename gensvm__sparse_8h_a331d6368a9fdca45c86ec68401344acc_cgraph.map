@@ -1,0 +1,4 @@
+<map id="gensvm_dense_to_sparse" name="gensvm_dense_to_sparse">
+<area shape="rect" id="node2" href="$gensvm__sparse_8c.html#a88aab6b67242e2a4993a5c9c796161e7" title="Count the number of nonzeros in a matrix. " alt="" coords="247,5,393,32"/>
+<area shape="rect" id="node3" href="$gensvm__sparse_8c.html#ac45d0a15c75382ad8f3f4232eadf9f4d" title="Initialize a GenSparse structure. " alt="" coords="244,56,396,83"/>
+</map>

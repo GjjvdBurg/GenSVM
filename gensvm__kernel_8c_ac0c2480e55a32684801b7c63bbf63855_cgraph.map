@@ -1,0 +1,6 @@
+<map id="gensvm_kernel_compute" name="gensvm_kernel_compute">
+<area shape="rect" id="node2" href="$gensvm__kernel_8c.html#a46cc9302c9eaf45858a807ffdf052ebf" title="Compute the polynomial kernel between two vectors. " alt="" coords="252,5,437,32"/>
+<area shape="rect" id="node3" href="$gensvm__kernel_8c.html#ac084336bb477beb37723d987457a5b7d" title="Compute the RBF kernel between two vectors. " alt="" coords="257,56,432,83"/>
+<area shape="rect" id="node4" href="$gensvm__kernel_8c.html#af3f724b2781532a0b14c58a24b49147f" title="Compute the sigmoid kernel between two vectors. " alt="" coords="240,107,449,133"/>
+<area shape="rect" id="node5" href="$gensvm__print_8h.html#aede5746344fdce99647541101eaa7f06" title="Parse a formatted string and write it to standard error. " alt="" coords="325,157,365,184"/>
+</map>

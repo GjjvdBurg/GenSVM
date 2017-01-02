@@ -1,0 +1,6 @@
+<map id="test_gensvm_calculate_ab_simple" name="test_gensvm_calculate_ab_simple">
+<area shape="rect" id="node2" href="$gensvm__base_8h.html#a96f35734dcba63d95e08addd2dabce3d" title="Initialize a GenModel structure. " alt="" coords="241,5,391,32"/>
+<area shape="rect" id="node3" href="$gensvm__base_8h.html#a3b6c01ec77b5726843f7dd6c68593f6a" title="Allocate memory for a GenModel. " alt="" coords="225,56,407,83"/>
+<area shape="rect" id="node4" href="$gensvm__update_8h.html#a9218875737267254fc332d772ce13ec0" title="Compute majorization coefficients for simple instances. " alt="" coords="235,107,397,149"/>
+<area shape="rect" id="node5" href="$gensvm__base_8h.html#a0cf72f34706ed286c922ce74ee11f0be" title="Free allocated GenModel struct. " alt="" coords="239,173,393,200"/>
+</map>

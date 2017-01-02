@@ -1,0 +1,51 @@
+<map id="main" name="main">
+<area shape="rect" id="node2" href="$gensvm__grid_8h.html#a5ce36e116f6632459b6d8dcda774bd3b" title="Initialize a GenGrid structure. " alt="" coords="139,5,274,32"/>
+<area shape="rect" id="node3" href="$gensvm__base_8h.html#a2123ffe5f44db584421e139be7d31b6c" title="Initialize a GenData structure. " alt="" coords="390,512,529,539"/>
+<area shape="rect" id="node4" href="$gensvm__queue_8h.html#a85bebeae36b61f1ae570e36c9edc6233" title="Initialize a GenQueue structure. " alt="" coords="642,1424,791,1451"/>
+<area shape="rect" id="node5" href="$gensvm__cmdarg_8h.html#aa1b20adf8fe527b35df95dececc48e7b" title="Check if any command line arguments contain string. " alt="" coords="129,1677,284,1704"/>
+<area shape="rect" id="node6" href="$gensvm__cmdarg_8h.html#a7d900efbe1fa276e0cd619f37b67242d" title="Check if a command line argument equals a string. " alt="" coords="117,1728,296,1755"/>
+<area shape="rect" id="node7" href="$GenSVMgrid_8c.html#a0187cca4c9e6d500ac362eefa3ddef7b" title="Help function. " alt="" coords="401,1779,518,1805"/>
+<area shape="rect" id="node8" href="$GenSVMgrid_8c.html#a46a61920d63b9ce232afcd8d73500d7d" title="Parse command line arguments. " alt="" coords="126,1829,287,1856"/>
+<area shape="rect" id="node9" href="$gensvm__print_8h.html#a4502a32a6f7952faad96b8e5c758a7f7" title="Parse a formatted string and write to the output stream. " alt="" coords="691,664,742,691"/>
+<area shape="rect" id="node10" href="$GenSVMgrid_8c.html#a41ae66727963ea5e54a2a82c62bc125e" title="Read the GenGrid struct from file. " alt="" coords="133,1880,281,1907"/>
+<area shape="rect" id="node15" href="$gensvm__io_8h.html#ab0d1a1856a1f5cde7e5a4891e3e4dd6c" title="Read data from a file in LibSVM/SVMlight format. " alt="" coords="108,309,305,336"/>
+<area shape="rect" id="node16" href="$gensvm__print_8h.html#aede5746344fdce99647541101eaa7f06" title="Parse a formatted string and write it to standard error. " alt="" coords="697,196,737,223"/>
+<area shape="rect" id="node22" href="$gensvm__io_8h.html#a3ad522e79e5e57c085146133e93a7bcb" title="Read data from file. " alt="" coords="386,56,533,83"/>
+<area shape="rect" id="node25" href="$gensvm__checks_8h.html#a7a431efee7c37f2157cf8bcfaf7752c0" title="Check if the labels are contiguous on [1 .. K]. " alt="" coords="115,1931,298,1973"/>
+<area shape="rect" id="node26" href="$gensvm__sparse_8h.html#a261308f5976bc6023e5e376b42986226" title="Convert a GenSparse structure to a dense matrix. " alt="" coords="111,1997,302,2024"/>
+<area shape="rect" id="node27" href="$gensvm__sparse_8h.html#a1bd9399ffc0b5e4d32ac160eb3143864" title="Free an allocated GenSparse structure. " alt="" coords="638,1576,795,1603"/>
+<area shape="rect" id="node28" href="$gensvm__gridsearch_8h.html#a67fd9dee19091d1226c92af92e5b1281" title="Initialize a GenQueue from a Training instance. " alt="" coords="135,2048,279,2075"/>
+<area shape="rect" id="node30" href="$gensvm__gridsearch_8h.html#aa396ee57d909ea921948adf354c2091d" title="Run the grid search for a GenQueue. " alt="" coords="127,917,286,944"/>
+<area shape="rect" id="node46" href="$gensvm__base_8h.html#a98f3696d492bec4485e3f2a42062705f" title="Free allocated GenData struct. " alt="" coords="388,1475,531,1501"/>
+<area shape="rect" id="node47" href="$gensvm__consistency_8h.html#a231bbefc61bb1911045cf508a47cf99f" title="Run repeats of the GenTask structs in GenQueue to find the best configuration. " alt="" coords="127,1138,286,1179"/>
+<area shape="rect" id="node49" href="$gensvm__queue_8h.html#a8e3e8058ceff7af13f845d39dcd4d3b8" title="Free the GenQueue struct. " alt="" coords="382,1525,537,1552"/>
+<area shape="rect" id="node50" href="$gensvm__grid_8h.html#a84c9f299f051a755f1019beeea1ffa8a" title="Free a GenGrid structure. " alt="" coords="137,2099,276,2125"/>
+<area shape="rect" id="node11" href="$gensvm__strutil_8h.html#a570421cc0b9c879c40c47d00a6f8a451" title="Check if a string starts with a prefix. " alt="" coords="404,1829,515,1856"/>
+<area shape="rect" id="node12" href="$gensvm__strutil_8h.html#aecc1daeb8a1b1ad4a7c4c73a4fef9548" title="Read all doubles in a given buffer. " alt="" coords="399,1880,519,1907"/>
+<area shape="rect" id="node13" href="$gensvm__strutil_8h.html#a8f958e58e7f104700e535c58491f9a59" title="Read all longs in a given buffer. " alt="" coords="407,1931,511,1957"/>
+<area shape="rect" id="node14" href="$GenSVMgrid_8c.html#ad77725923363cb5a3c17be72c5d1e338" title="Parse the kernel string from the training file. " alt="" coords="394,1981,525,2008"/>
+<area shape="rect" id="node17" href="$gensvm__strutil_8h.html#ad331e6432885f46dcf10db8089f2be99" title="Split a string on delimiters and return an array of parts. " alt="" coords="422,157,497,184"/>
+<area shape="rect" id="node18" href="$gensvm__strutil_8h.html#ae61855a0284cf14f80b682396aa7f13d" title="Check if a string contains a char. " alt="" coords="391,208,527,235"/>
+<area shape="rect" id="node19" href="$gensvm__io_8c.html#ada0be431a4ed2ba4b1a09d4449f2c75b" title="Print an error to the screen and exit (copied from LibSVM) " alt="" coords="397,259,522,285"/>
+<area shape="rect" id="node20" href="$gensvm__sparse_8h.html#a711923bcf3725efda4110c25801e6f20" title="Compare the number of nonzeros is such that sparsity if worth it. " alt="" coords="366,309,553,336"/>
+<area shape="rect" id="node21" href="$gensvm__sparse_8h.html#ac45d0a15c75382ad8f3f4232eadf9f4d" title="Initialize a GenSparse structure. " alt="" coords="383,360,535,387"/>
+<area shape="rect" id="node23" href="$gensvm__sparse_8h.html#af09ef02c66b9a73ce0db1bccce0fb7ad" title="Check if it is worthwile to convert to a sparse matrix. " alt="" coords="633,31,800,57"/>
+<area shape="rect" id="node24" href="$gensvm__sparse_8h.html#a331d6368a9fdca45c86ec68401344acc" title="Convert a dense matrix to a GenSparse structure if advantageous. " alt="" coords="621,81,812,108"/>
+<area shape="rect" id="node29" href="$gensvm__task_8h.html#a138c30cecb1cf46a002cd6581328a33c" title="Initialize a GenTask structure. " alt="" coords="391,2048,528,2075"/>
+<area shape="rect" id="node31" href="$gensvm__queue_8h.html#aaeee41d004f0cc2372f7e91f5ce0aaaa" title="Get new GenTask from GenQueue. " alt="" coords="402,1019,517,1045"/>
+<area shape="rect" id="node32" href="$gensvm__base_8h.html#a96f35734dcba63d95e08addd2dabce3d" title="Initialize a GenModel structure. " alt="" coords="384,917,535,944"/>
+<area shape="rect" id="node33" href="$gensvm__base_8h.html#a3b6c01ec77b5726843f7dd6c68593f6a" title="Allocate memory for a GenModel. " alt="" coords="369,968,550,995"/>
+<area shape="rect" id="node34" href="$gensvm__init_8h.html#a53ecc294597cda7237800957f8cd4077" title="Seed the matrix V from an existing model or using rand. " alt="" coords="400,1069,519,1096"/>
+<area shape="rect" id="node35" href="$gensvm__cv__util_8h.html#a40141c490fa70188ef6109022c4daae7" title="Create a cross validation split vector. " alt="" coords="372,1120,547,1147"/>
+<area shape="rect" id="node36" href="$gensvm__cv__util_8h.html#aac719077b8560d022e2473933e80dd99" title="Wrapper around sparse/dense versions of this function. " alt="" coords="382,1171,537,1197"/>
+<area shape="rect" id="node37" href="$gensvm__task_8h.html#ad23d6b46f7554c1598f62619486f438e" title="Copy parameters from GenTask to GenModel. " alt="" coords="371,1221,548,1248"/>
+<area shape="rect" id="node38" href="$gensvm__gridsearch_8c.html#a980959b41c1fbde84b7d9c299d66bac8" title="Check if the kernel parameters change between tasks. " alt="" coords="367,613,551,640"/>
+<area shape="rect" id="node39" href="$gensvm__gridsearch_8c.html#a3f11ccc485d8a6cfb92918ec69754f15" title="Compute the kernels for the folds of the train and test datasets. " alt="" coords="379,715,540,741"/>
+<area shape="rect" id="node42" href="$gensvm__cross__validation_8h.html#ac484e26c64722bda639cba6d10235d71" title="Run cross validation with a given set of train/test folds. " alt="" coords="366,765,553,792"/>
+<area shape="rect" id="node43" href="$gensvm__timer_8h.html#a73278297dac3cd32d59f880dae85a471" title="Calculate the time between two time recordings. " alt="" coords="375,816,544,843"/>
+<area shape="rect" id="node44" href="$gensvm__gridsearch_8c.html#a3d559f87472e29126ad5b3f6271e266b" title="Print the description of the current task on screen. " alt="" coords="353,664,565,691"/>
+<area shape="rect" id="node45" href="$gensvm__base_8h.html#a0cf72f34706ed286c922ce74ee11f0be" title="Free allocated GenModel struct. " alt="" coords="382,867,537,893"/>
+<area shape="rect" id="node40" href="$gensvm__kernel_8h.html#a67af575255ad5d1d0b466338b6ce2143" title="Do the preprocessing steps needed to perform kernel GenSVM. " alt="" coords="617,1019,817,1045"/>
+<area shape="rect" id="node41" href="$gensvm__kernel_8h.html#a2b68a2eb99cc65b2e4548035ff29071a" title="Compute the kernel postprocessing factor. " alt="" coords="613,1247,820,1273"/>
+<area shape="rect" id="node48" href="$gensvm__consistency_8c.html#a2aeae848b37214d45331e29c542c3577" title="Create GenQueue of tasks with performance above a given percentile. " alt="" coords="385,1373,534,1400"/>
+</map>

@@ -1,0 +1,459 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - coverage.all - src/gensvm_gridsearch.c</title>
+  <link rel="stylesheet" type="text/css" href="../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../index.html">top level</a> - <a href="index.html">src</a> - gensvm_gridsearch.c<span style="font-size: 80%;"> (source / <a href="gensvm_gridsearch.c.func-sort-c.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">coverage.all</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">122</td>
+            <td class="headerCovTableEntry">182</td>
+            <td class="headerCovTableEntryLo">67.0 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2017-01-02 10:06:26</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">3</td>
+            <td class="headerCovTableEntry">5</td>
+            <td class="headerCovTableEntryLo">60.0 %</td>
+          </tr>
+          <tr><td><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : /**</a>
+<span class="lineNum">       2 </span>            :  * @file gensvm_gridsearch.c
+<span class="lineNum">       3 </span>            :  * @author G.J.J. van den Burg
+<span class="lineNum">       4 </span>            :  * @date 2014-01-07
+<span class="lineNum">       5 </span>            :  * @brief Functions for finding the optimal parameters for the dataset
+<span class="lineNum">       6 </span>            :  *
+<span class="lineNum">       7 </span>            :  * @details
+<span class="lineNum">       8 </span>            :  * The GenSVM algorithm takes a number of parameters. The functions in
+<span class="lineNum">       9 </span>            :  * this file are used to find the optimal parameters.
+<span class="lineNum">      10 </span>            :  *
+<span class="lineNum">      11 </span>            :  * @copyright
+<span class="lineNum">      12 </span>            :  Copyright 2016, G.J.J. van den Burg.
+<span class="lineNum">      13 </span>            : 
+<span class="lineNum">      14 </span>            :  This file is part of GenSVM.
+<span class="lineNum">      15 </span>            : 
+<span class="lineNum">      16 </span>            :  GenSVM is free software: you can redistribute it and/or modify
+<span class="lineNum">      17 </span>            :  it under the terms of the GNU General Public License as published by
+<span class="lineNum">      18 </span>            :  the Free Software Foundation, either version 3 of the License, or
+<span class="lineNum">      19 </span>            :  (at your option) any later version.
+<span class="lineNum">      20 </span>            : 
+<span class="lineNum">      21 </span>            :  GenSVM is distributed in the hope that it will be useful,
+<span class="lineNum">      22 </span>            :  but WITHOUT ANY WARRANTY; without even the implied warranty of
+<span class="lineNum">      23 </span>            :  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+<span class="lineNum">      24 </span>            :  GNU General Public License for more details.
+<span class="lineNum">      25 </span>            : 
+<span class="lineNum">      26 </span>            :  You should have received a copy of the GNU General Public License
+<span class="lineNum">      27 </span>            :  along with GenSVM. If not, see &lt;http://www.gnu.org/licenses/&gt;.
+<span class="lineNum">      28 </span>            : 
+<span class="lineNum">      29 </span>            :  */
+<span class="lineNum">      30 </span>            : 
+<span class="lineNum">      31 </span>            : #include &quot;gensvm_gridsearch.h&quot;
+<span class="lineNum">      32 </span>            : 
+<span class="lineNum">      33 </span>            : extern FILE *GENSVM_OUTPUT_FILE;
+<span class="lineNum">      34 </span>            : 
+<span class="lineNum">      35 </span>            : /**
+<span class="lineNum">      36 </span>            :  * @brief Initialize a GenQueue from a Training instance
+<span class="lineNum">      37 </span>            :  *
+<span class="lineNum">      38 </span>            :  * @details
+<span class="lineNum">      39 </span>            :  * A Training instance describes the grid to search over. This funtion
+<span class="lineNum">      40 </span>            :  * creates all tasks that need to be performed and adds these to
+<span class="lineNum">      41 </span>            :  * a GenQueue. Each task contains a pointer to the train and test datasets
+<span class="lineNum">      42 </span>            :  * which are supplied. Note that the tasks are created in a specific order of
+<span class="lineNum">      43 </span>            :  * the parameters, to ensure that the GenModel::V of a previous parameter
+<span class="lineNum">      44 </span>            :  * set provides the best possible initial estimate of GenModel::V for the next
+<span class="lineNum">      45 </span>            :  * parameter set.
+<span class="lineNum">      46 </span>            :  *
+<span class="lineNum">      47 </span>            :  * @param[in]   grid    Training struct describing the grid search
+<span class="lineNum">      48 </span>            :  * @param[in]   queue           pointer to a GenQueue that will be used to
+<span class="lineNum">      49 </span>            :  *                              add the tasks to
+<span class="lineNum">      50 </span>            :  * @param[in]   train_data      GenData of the training set
+<span class="lineNum">      51 </span>            :  * @param[in]   test_data       GenData of the test set
+<a name="52"><span class="lineNum">      52 </span>            :  *</a>
+<span class="lineNum">      53 </span>            :  */
+<span class="lineNum">      54 </span><span class="lineCov">          2 : void gensvm_fill_queue(struct GenGrid *grid, struct GenQueue *queue,</span>
+<span class="lineNum">      55 </span>            :                 struct GenData *train_data, struct GenData *test_data)
+<span class="lineNum">      56 </span>            : {
+<span class="lineNum">      57 </span>            :         long i, j, k;
+<span class="lineNum">      58 </span><span class="lineCov">          2 :         long N, cnt = 0;</span>
+<span class="lineNum">      59 </span><span class="lineCov">          2 :         struct GenTask *task = NULL;</span>
+<span class="lineNum">      60 </span><span class="lineCov">          2 :         queue-&gt;i = 0;</span>
+<span class="lineNum">      61 </span>            : 
+<span class="lineNum">      62 </span><span class="lineCov">          2 :         N = grid-&gt;Np;</span>
+<span class="lineNum">      63 </span><span class="lineCov">          2 :         N *= grid-&gt;Nl;</span>
+<span class="lineNum">      64 </span><span class="lineCov">          2 :         N *= grid-&gt;Nk;</span>
+<span class="lineNum">      65 </span><span class="lineCov">          2 :         N *= grid-&gt;Ne;</span>
+<span class="lineNum">      66 </span><span class="lineCov">          2 :         N *= grid-&gt;Nw;</span>
+<span class="lineNum">      67 </span>            :         // these parameters are not necessarily non-zero
+<span class="lineNum">      68 </span><span class="lineCov">          2 :         N *= grid-&gt;Ng &gt; 0 ? grid-&gt;Ng : 1;</span>
+<span class="lineNum">      69 </span><span class="lineCov">          2 :         N *= grid-&gt;Nc &gt; 0 ? grid-&gt;Nc : 1;</span>
+<span class="lineNum">      70 </span><span class="lineCov">          2 :         N *= grid-&gt;Nd &gt; 0 ? grid-&gt;Nd : 1;</span>
+<span class="lineNum">      71 </span>            : 
+<span class="lineNum">      72 </span><span class="lineCov">          2 :         queue-&gt;tasks = Calloc(struct GenTask *, N);</span>
+<span class="lineNum">      73 </span><span class="lineCov">          2 :         queue-&gt;N = N;</span>
+<span class="lineNum">      74 </span>            : 
+<span class="lineNum">      75 </span>            :         // initialize all tasks
+<span class="lineNum">      76 </span><span class="lineCov">         80 :         for (i=0; i&lt;N; i++) {</span>
+<span class="lineNum">      77 </span><span class="lineCov">         78 :                 task = gensvm_init_task();</span>
+<span class="lineNum">      78 </span><span class="lineCov">         78 :                 task-&gt;ID = i;</span>
+<span class="lineNum">      79 </span><span class="lineCov">         78 :                 task-&gt;train_data = train_data;</span>
+<span class="lineNum">      80 </span><span class="lineCov">         78 :                 task-&gt;test_data = test_data;</span>
+<span class="lineNum">      81 </span><span class="lineCov">         78 :                 task-&gt;folds = grid-&gt;folds;</span>
+<span class="lineNum">      82 </span><span class="lineCov">         78 :                 task-&gt;kerneltype = grid-&gt;kerneltype;</span>
+<span class="lineNum">      83 </span><span class="lineCov">         78 :                 task-&gt;kernelparam = Calloc(double, grid-&gt;Ng +</span>
+<span class="lineNum">      84 </span>            :                                 grid-&gt;Nc + grid-&gt;Nd);
+<span class="lineNum">      85 </span><span class="lineCov">         78 :                 queue-&gt;tasks[i] = task;</span>
+<span class="lineNum">      86 </span>            :         }
+<span class="lineNum">      87 </span>            : 
+<span class="lineNum">      88 </span>            :         // These loops mimick a large nested for loop. The advantage is that
+<span class="lineNum">      89 </span>            :         // Nd, Nc and Ng which are on the outside of the nested for loop can
+<span class="lineNum">      90 </span>            :         // now be zero, without large modification (see below). Whether this
+<span class="lineNum">      91 </span>            :         // is indeed better than the nested for loop has not been tested.
+<span class="lineNum">      92 </span><span class="lineCov">          2 :         cnt = 1;</span>
+<span class="lineNum">      93 </span><span class="lineCov">          2 :         i = 0;</span>
+<span class="lineNum">      94 </span><span class="lineCov">         30 :         while (i &lt; N) {</span>
+<span class="lineNum">      95 </span><span class="lineCov">        104 :                 for (j=0; j&lt;grid-&gt;Np; j++) {</span>
+<span class="lineNum">      96 </span><span class="lineCov">        156 :                         for (k=0; k&lt;cnt; k++) {</span>
+<span class="lineNum">      97 </span><span class="lineCov">         78 :                                 queue-&gt;tasks[i]-&gt;p = grid-&gt;ps[j];</span>
+<span class="lineNum">      98 </span><span class="lineCov">         78 :                                 i++;</span>
+<span class="lineNum">      99 </span>            :                         }
+<span class="lineNum">     100 </span>            :                 }
+<span class="lineNum">     101 </span>            :         }
+<span class="lineNum">     102 </span>            : 
+<span class="lineNum">     103 </span><span class="lineCov">          2 :         cnt *= grid-&gt;Np;</span>
+<span class="lineNum">     104 </span><span class="lineCov">          2 :         i = 0;</span>
+<span class="lineNum">     105 </span><span class="lineCov">         17 :         while (i &lt; N) {</span>
+<span class="lineNum">     106 </span><span class="lineCov">         39 :                 for (j=0; j&lt;grid-&gt;Nl; j++) {</span>
+<span class="lineNum">     107 </span><span class="lineCov">        104 :                         for (k=0; k&lt;cnt; k++) {</span>
+<span class="lineNum">     108 </span><span class="lineCov">        156 :                                 queue-&gt;tasks[i]-&gt;lambda =</span>
+<span class="lineNum">     109 </span><span class="lineCov">         78 :                                         grid-&gt;lambdas[j];</span>
+<span class="lineNum">     110 </span><span class="lineCov">         78 :                                 i++;</span>
+<span class="lineNum">     111 </span>            :                         }
+<span class="lineNum">     112 </span>            :                 }
+<span class="lineNum">     113 </span>            :         }
+<span class="lineNum">     114 </span>            : 
+<span class="lineNum">     115 </span><span class="lineCov">          2 :         cnt *= grid-&gt;Nl;</span>
+<span class="lineNum">     116 </span><span class="lineCov">          2 :         i = 0;</span>
+<span class="lineNum">     117 </span><span class="lineCov">         17 :         while (i &lt; N) {</span>
+<span class="lineNum">     118 </span><span class="lineCov">         26 :                 for (j=0; j&lt;grid-&gt;Nk; j++) {</span>
+<span class="lineNum">     119 </span><span class="lineCov">         91 :                         for (k=0; k&lt;cnt; k++) {</span>
+<span class="lineNum">     120 </span><span class="lineCov">         78 :                                 queue-&gt;tasks[i]-&gt;kappa = grid-&gt;kappas[j];</span>
+<span class="lineNum">     121 </span><span class="lineCov">         78 :                                 i++;</span>
+<span class="lineNum">     122 </span>            :                         }
+<span class="lineNum">     123 </span>            :                 }
+<span class="lineNum">     124 </span>            :         }
+<span class="lineNum">     125 </span>            : 
+<span class="lineNum">     126 </span><span class="lineCov">          2 :         cnt *= grid-&gt;Nk;</span>
+<span class="lineNum">     127 </span><span class="lineCov">          2 :         i = 0;</span>
+<span class="lineNum">     128 </span><span class="lineCov">         17 :         while (i &lt; N) {</span>
+<span class="lineNum">     129 </span><span class="lineCov">         26 :                 for (j=0; j&lt;grid-&gt;Nw; j++) {</span>
+<span class="lineNum">     130 </span><span class="lineCov">         91 :                         for (k=0; k&lt;cnt; k++) {</span>
+<span class="lineNum">     131 </span><span class="lineCov">        156 :                                 queue-&gt;tasks[i]-&gt;weight_idx =</span>
+<span class="lineNum">     132 </span><span class="lineCov">         78 :                                         grid-&gt;weight_idxs[j];</span>
+<span class="lineNum">     133 </span><span class="lineCov">         78 :                                 i++;</span>
+<span class="lineNum">     134 </span>            :                         }
+<span class="lineNum">     135 </span>            :                 }
+<span class="lineNum">     136 </span>            :         }
+<span class="lineNum">     137 </span>            : 
+<span class="lineNum">     138 </span><span class="lineCov">          2 :         cnt *= grid-&gt;Nw;</span>
+<span class="lineNum">     139 </span><span class="lineCov">          2 :         i = 0;</span>
+<span class="lineNum">     140 </span><span class="lineCov">         17 :         while (i &lt; N) {</span>
+<span class="lineNum">     141 </span><span class="lineCov">         26 :                 for (j=0; j&lt;grid-&gt;Ne; j++) {</span>
+<span class="lineNum">     142 </span><span class="lineCov">         91 :                         for (k=0; k&lt;cnt; k++) {</span>
+<span class="lineNum">     143 </span><span class="lineCov">        156 :                                 queue-&gt;tasks[i]-&gt;epsilon =</span>
+<span class="lineNum">     144 </span><span class="lineCov">         78 :                                         grid-&gt;epsilons[j];</span>
+<span class="lineNum">     145 </span><span class="lineCov">         78 :                                 i++;</span>
+<span class="lineNum">     146 </span>            :                         }
+<span class="lineNum">     147 </span>            :                 }
+<span class="lineNum">     148 </span>            :         }
+<span class="lineNum">     149 </span>            : 
+<span class="lineNum">     150 </span><span class="lineCov">          2 :         cnt *= grid-&gt;Ne;</span>
+<span class="lineNum">     151 </span><span class="lineCov">          2 :         i = 0;</span>
+<span class="lineNum">     152 </span><span class="lineCov">         10 :         while (i &lt; N &amp;&amp; grid-&gt;Ng &gt; 0) {</span>
+<span class="lineNum">     153 </span><span class="lineCov">         18 :                 for (j=0; j&lt;grid-&gt;Ng; j++) {</span>
+<span class="lineNum">     154 </span><span class="lineCov">         84 :                         for (k=0; k&lt;cnt; k++) {</span>
+<span class="lineNum">     155 </span><span class="lineCov">        144 :                                 queue-&gt;tasks[i]-&gt;kernelparam[0] =</span>
+<span class="lineNum">     156 </span><span class="lineCov">         72 :                                         grid-&gt;gammas[j];</span>
+<span class="lineNum">     157 </span><span class="lineCov">         72 :                                 i++;</span>
+<span class="lineNum">     158 </span>            :                         }
+<span class="lineNum">     159 </span>            :                 }
+<span class="lineNum">     160 </span>            :         }
+<span class="lineNum">     161 </span>            : 
+<span class="lineNum">     162 </span><span class="lineCov">          2 :         cnt *= grid-&gt;Ng &gt; 0 ? grid-&gt;Ng : 1;</span>
+<span class="lineNum">     163 </span><span class="lineCov">          2 :         i = 0;</span>
+<span class="lineNum">     164 </span><span class="lineCov">          6 :         while (i &lt; N &amp;&amp; grid-&gt;Nc &gt; 0) {</span>
+<span class="lineNum">     165 </span><span class="lineCov">          8 :                 for (j=0; j&lt;grid-&gt;Nc; j++) {</span>
+<span class="lineNum">     166 </span><span class="lineCov">         78 :                         for (k=0; k&lt;cnt; k++) {</span>
+<span class="lineNum">     167 </span><span class="lineCov">        144 :                                 queue-&gt;tasks[i]-&gt;kernelparam[1] =</span>
+<span class="lineNum">     168 </span><span class="lineCov">         72 :                                         grid-&gt;coefs[j];</span>
+<span class="lineNum">     169 </span><span class="lineCov">         72 :                                 i++;</span>
+<span class="lineNum">     170 </span>            :                         }
+<span class="lineNum">     171 </span>            :                 }
+<span class="lineNum">     172 </span>            :         }
+<span class="lineNum">     173 </span>            : 
+<span class="lineNum">     174 </span><span class="lineCov">          2 :         cnt *= grid-&gt;Nc &gt; 0 ? grid-&gt;Nc : 1;</span>
+<span class="lineNum">     175 </span><span class="lineCov">          2 :         i = 0;</span>
+<span class="lineNum">     176 </span><span class="lineCov">          5 :         while (i &lt; N &amp;&amp; grid-&gt;Nd &gt; 0) {</span>
+<span class="lineNum">     177 </span><span class="lineCov">          3 :                 for (j=0; j&lt;grid-&gt;Nd; j++) {</span>
+<span class="lineNum">     178 </span><span class="lineCov">         74 :                         for (k=0; k&lt;cnt; k++) {</span>
+<span class="lineNum">     179 </span><span class="lineCov">        144 :                                 queue-&gt;tasks[i]-&gt;kernelparam[2] =</span>
+<span class="lineNum">     180 </span><span class="lineCov">         72 :                                         grid-&gt;degrees[j];</span>
+<span class="lineNum">     181 </span><span class="lineCov">         72 :                                 i++;</span>
+<span class="lineNum">     182 </span>            :                         }
+<span class="lineNum">     183 </span>            :                 }
+<span class="lineNum">     184 </span>            :         }
+<span class="lineNum">     185 </span><span class="lineCov">          2 : }</span>
+<span class="lineNum">     186 </span>            : 
+<span class="lineNum">     187 </span>            : /**
+<span class="lineNum">     188 </span>            :  * @brief Check if the kernel parameters change between tasks
+<span class="lineNum">     189 </span>            :  *
+<span class="lineNum">     190 </span>            :  * @details
+<span class="lineNum">     191 </span>            :  * In the current strategy for training the kernel matrix is decomposed once,
+<span class="lineNum">     192 </span>            :  * and tasks with the same kernel settings are performed sequentially. When a
+<span class="lineNum">     193 </span>            :  * task needs to be done with different kernel parameters, the kernel matrix
+<span class="lineNum">     194 </span>            :  * needs to be recalculated. This function is used to check whether this is
+<span class="lineNum">     195 </span>            :  * the case.
+<span class="lineNum">     196 </span>            :  *
+<span class="lineNum">     197 </span>            :  * @param[in]   newtask         the next task
+<span class="lineNum">     198 </span>            :  * @param[in]   oldtask         the old task
+<a name="199"><span class="lineNum">     199 </span>            :  * @return                      whether the kernel needs to be reevaluated</a>
+<span class="lineNum">     200 </span>            :  */
+<span class="lineNum">     201 </span><span class="lineCov">          9 : bool gensvm_kernel_changed(struct GenTask *newtask, struct GenTask *oldtask)</span>
+<span class="lineNum">     202 </span>            : {
+<span class="lineNum">     203 </span>            :         int i;
+<span class="lineNum">     204 </span><span class="lineCov">          9 :         if (oldtask == NULL)</span>
+<span class="lineNum">     205 </span><span class="lineCov">          1 :                 return true;</span>
+<span class="lineNum">     206 </span><span class="lineCov">          8 :         if (newtask-&gt;kerneltype != oldtask-&gt;kerneltype) {</span>
+<span class="lineNum">     207 </span><span class="lineCov">          1 :                 return true;</span>
+<span class="lineNum">     208 </span><span class="lineCov">          7 :         } else if (newtask-&gt;kerneltype == K_POLY) {</span>
+<span class="lineNum">     209 </span><span class="lineCov">          7 :                 for (i=0; i&lt;3; i++)</span>
+<span class="lineNum">     210 </span><span class="lineCov">          6 :                         if (newtask-&gt;kernelparam[i] != oldtask-&gt;kernelparam[i])</span>
+<span class="lineNum">     211 </span><span class="lineCov">          1 :                                 return true;</span>
+<span class="lineNum">     212 </span><span class="lineCov">          1 :                 return false;</span>
+<span class="lineNum">     213 </span><span class="lineCov">          5 :         } else if (newtask-&gt;kerneltype == K_RBF) {</span>
+<span class="lineNum">     214 </span><span class="lineCov">          2 :                 if (newtask-&gt;kernelparam[0] != oldtask-&gt;kernelparam[0])</span>
+<span class="lineNum">     215 </span><span class="lineCov">          1 :                         return true;</span>
+<span class="lineNum">     216 </span><span class="lineCov">          1 :                 return false;</span>
+<span class="lineNum">     217 </span><span class="lineCov">          3 :         } else if (newtask-&gt;kerneltype == K_SIGMOID) {</span>
+<span class="lineNum">     218 </span><span class="lineCov">          5 :                 for (i=0; i&lt;2; i++)</span>
+<span class="lineNum">     219 </span><span class="lineCov">          4 :                         if (newtask-&gt;kernelparam[i] != oldtask-&gt;kernelparam[i])</span>
+<span class="lineNum">     220 </span><span class="lineCov">          1 :                                 return true;</span>
+<span class="lineNum">     221 </span><span class="lineCov">          1 :                 return false;</span>
+<span class="lineNum">     222 </span>            :         }
+<span class="lineNum">     223 </span><span class="lineCov">          1 :         return false;</span>
+<span class="lineNum">     224 </span>            : }
+<span class="lineNum">     225 </span>            : 
+<span class="lineNum">     226 </span>            : /**
+<span class="lineNum">     227 </span>            :  * @brief Compute the kernels for the folds of the train and test datasets
+<span class="lineNum">     228 </span>            :  *
+<span class="lineNum">     229 </span>            :  * @details
+<span class="lineNum">     230 </span>            :  * When the kernel parameters change in a kernel grid search, the kernel
+<span class="lineNum">     231 </span>            :  * pre- and post-processing has to be done for the new kernel parameters. This 
+<span class="lineNum">     232 </span>            :  * is done here for each of the folds. Each of the training folds is 
+<span class="lineNum">     233 </span>            :  * preprocessed, and each of the test folds is postprocessed.
+<span class="lineNum">     234 </span>            :  *
+<span class="lineNum">     235 </span>            :  * @param[in]           folds           number of cross validation folds
+<span class="lineNum">     236 </span>            :  * @param[in]           model           GenModel with new kernel parameters
+<span class="lineNum">     237 </span>            :  * @param[in,out]       train_folds     array of train datasets
+<span class="lineNum">     238 </span>            :  * @param[in,out]       test_folds      array of test datasets
+<a name="239"><span class="lineNum">     239 </span>            :  *</a>
+<span class="lineNum">     240 </span>            :  */
+<span class="lineNum">     241 </span><span class="lineNoCov">          0 : void gensvm_kernel_folds(long folds, struct GenModel *model,</span>
+<span class="lineNum">     242 </span>            :                 struct GenData **train_folds, struct GenData **test_folds)
+<span class="lineNum">     243 </span>            : {
+<span class="lineNum">     244 </span>            :         long f;
+<span class="lineNum">     245 </span>            : 
+<span class="lineNum">     246 </span><span class="lineNoCov">          0 :         if (model-&gt;kerneltype != K_LINEAR)</span>
+<span class="lineNum">     247 </span><span class="lineNoCov">          0 :                 note(&quot;Computing kernel ... &quot;);</span>
+<span class="lineNum">     248 </span><span class="lineNoCov">          0 :         for (f=0; f&lt;folds; f++) {</span>
+<span class="lineNum">     249 </span><span class="lineNoCov">          0 :                 if (train_folds[f]-&gt;Z != train_folds[f]-&gt;RAW)</span>
+<span class="lineNum">     250 </span><span class="lineNoCov">          0 :                         free(train_folds[f]-&gt;Z);</span>
+<span class="lineNum">     251 </span><span class="lineNoCov">          0 :                 if (test_folds[f]-&gt;Z != test_folds[f]-&gt;RAW)</span>
+<span class="lineNum">     252 </span><span class="lineNoCov">          0 :                         free(test_folds[f]-&gt;Z);</span>
+<span class="lineNum">     253 </span><span class="lineNoCov">          0 :                 gensvm_kernel_preprocess(model, train_folds[f]);</span>
+<span class="lineNum">     254 </span><span class="lineNoCov">          0 :                 gensvm_kernel_postprocess(model, train_folds[f],</span>
+<span class="lineNum">     255 </span><span class="lineNoCov">          0 :                                 test_folds[f]);</span>
+<span class="lineNum">     256 </span>            :         }
+<span class="lineNum">     257 </span><span class="lineNoCov">          0 :         if (model-&gt;kerneltype != K_LINEAR)</span>
+<span class="lineNum">     258 </span><span class="lineNoCov">          0 :                 note(&quot;done.\n&quot;);</span>
+<span class="lineNum">     259 </span><span class="lineNoCov">          0 : }</span>
+<span class="lineNum">     260 </span>            : 
+<span class="lineNum">     261 </span>            : /**
+<span class="lineNum">     262 </span>            :  * @brief Run the grid search for a GenQueue
+<span class="lineNum">     263 </span>            :  *
+<span class="lineNum">     264 </span>            :  * @details
+<span class="lineNum">     265 </span>            :  * Given a GenQueue of GenTask struct to be trained, a grid search is launched to
+<span class="lineNum">     266 </span>            :  * find the optimal parameter configuration. As is also done within
+<span class="lineNum">     267 </span>            :  * cross_validation(), the optimal weights of one parameter set are used as
+<span class="lineNum">     268 </span>            :  * initial estimates for GenModel::V in the next parameter set. Note that to
+<span class="lineNum">     269 </span>            :  * optimally exploit this feature of the optimization algorithm, the order in
+<span class="lineNum">     270 </span>            :  * which tasks are considered is important. This is considered in
+<span class="lineNum">     271 </span>            :  * make_queue().
+<span class="lineNum">     272 </span>            :  *
+<span class="lineNum">     273 </span>            :  * The performance found by cross validation is stored in the GenTask struct.
+<span class="lineNum">     274 </span>            :  *
+<a name="275"><span class="lineNum">     275 </span>            :  * @param[in,out]       q       GenQueue with GenTask instances to run</a>
+<span class="lineNum">     276 </span>            :  */
+<span class="lineNum">     277 </span><span class="lineNoCov">          0 : void gensvm_train_queue(struct GenQueue *q)</span>
+<span class="lineNum">     278 </span>            : {
+<span class="lineNum">     279 </span>            :         long f, folds;
+<span class="lineNum">     280 </span><span class="lineNoCov">          0 :         double perf, duration, current_max = 0;</span>
+<span class="lineNum">     281 </span><span class="lineNoCov">          0 :         struct GenTask *task = get_next_task(q);</span>
+<span class="lineNum">     282 </span><span class="lineNoCov">          0 :         struct GenTask *prevtask = NULL;</span>
+<span class="lineNum">     283 </span><span class="lineNoCov">          0 :         struct GenModel *model = gensvm_init_model();</span>
+<span class="lineNum">     284 </span>            :         struct timespec main_s, main_e, loop_s, loop_e;
+<span class="lineNum">     285 </span>            : 
+<span class="lineNum">     286 </span><span class="lineNoCov">          0 :         folds = task-&gt;folds;</span>
+<span class="lineNum">     287 </span>            : 
+<span class="lineNum">     288 </span><span class="lineNoCov">          0 :         model-&gt;n = 0;</span>
+<span class="lineNum">     289 </span><span class="lineNoCov">          0 :         model-&gt;m = task-&gt;train_data-&gt;m;</span>
+<span class="lineNum">     290 </span><span class="lineNoCov">          0 :         model-&gt;K = task-&gt;train_data-&gt;K;</span>
+<span class="lineNum">     291 </span><span class="lineNoCov">          0 :         gensvm_allocate_model(model);</span>
+<span class="lineNum">     292 </span><span class="lineNoCov">          0 :         gensvm_init_V(NULL, model, task-&gt;train_data);</span>
+<span class="lineNum">     293 </span>            : 
+<span class="lineNum">     294 </span><span class="lineNoCov">          0 :         long *cv_idx = Calloc(long, task-&gt;train_data-&gt;n);</span>
+<span class="lineNum">     295 </span><span class="lineNoCov">          0 :         gensvm_make_cv_split(task-&gt;train_data-&gt;n, task-&gt;folds, cv_idx);</span>
+<span class="lineNum">     296 </span>            : 
+<span class="lineNum">     297 </span><span class="lineNoCov">          0 :         struct GenData **train_folds = Malloc(struct GenData *, task-&gt;folds);</span>
+<span class="lineNum">     298 </span><span class="lineNoCov">          0 :         struct GenData **test_folds = Malloc(struct GenData *, task-&gt;folds);</span>
+<span class="lineNum">     299 </span><span class="lineNoCov">          0 :         for (f=0; f&lt;folds; f++) {</span>
+<span class="lineNum">     300 </span><span class="lineNoCov">          0 :                 train_folds[f] = gensvm_init_data();</span>
+<span class="lineNum">     301 </span><span class="lineNoCov">          0 :                 test_folds[f] = gensvm_init_data();</span>
+<span class="lineNum">     302 </span><span class="lineNoCov">          0 :                 gensvm_get_tt_split(task-&gt;train_data, train_folds[f],</span>
+<span class="lineNum">     303 </span><span class="lineNoCov">          0 :                                 test_folds[f], cv_idx, f);</span>
+<span class="lineNum">     304 </span>            :         }
+<span class="lineNum">     305 </span>            : 
+<span class="lineNum">     306 </span><span class="lineNoCov">          0 :         Timer(main_s);</span>
+<span class="lineNum">     307 </span><span class="lineNoCov">          0 :         while (task) {</span>
+<span class="lineNum">     308 </span><span class="lineNoCov">          0 :                 gensvm_task_to_model(task, model);</span>
+<span class="lineNum">     309 </span><span class="lineNoCov">          0 :                 if (gensvm_kernel_changed(task, prevtask)) {</span>
+<span class="lineNum">     310 </span><span class="lineNoCov">          0 :                         gensvm_kernel_folds(task-&gt;folds, model, train_folds,</span>
+<span class="lineNum">     311 </span>            :                                         test_folds);
+<span class="lineNum">     312 </span>            :                 }
+<span class="lineNum">     313 </span>            : 
+<span class="lineNum">     314 </span><span class="lineNoCov">          0 :                 Timer(loop_s);</span>
+<span class="lineNum">     315 </span><span class="lineNoCov">          0 :                 perf = gensvm_cross_validation(model, train_folds, test_folds,</span>
+<span class="lineNum">     316 </span><span class="lineNoCov">          0 :                                 folds, task-&gt;train_data-&gt;n);</span>
+<span class="lineNum">     317 </span><span class="lineNoCov">          0 :                 Timer(loop_e);</span>
+<span class="lineNum">     318 </span>            : 
+<span class="lineNum">     319 </span><span class="lineNoCov">          0 :                 current_max = maximum(current_max, perf);</span>
+<span class="lineNum">     320 </span><span class="lineNoCov">          0 :                 duration = gensvm_elapsed_time(&amp;loop_s, &amp;loop_e);</span>
+<span class="lineNum">     321 </span>            : 
+<span class="lineNum">     322 </span><span class="lineNoCov">          0 :                 gensvm_gridsearch_progress(task, q-&gt;N, perf, duration,</span>
+<span class="lineNum">     323 </span>            :                                 current_max);
+<span class="lineNum">     324 </span>            : 
+<span class="lineNum">     325 </span><span class="lineNoCov">          0 :                 q-&gt;tasks[task-&gt;ID]-&gt;performance = perf;</span>
+<span class="lineNum">     326 </span><span class="lineNoCov">          0 :                 prevtask = task;</span>
+<span class="lineNum">     327 </span><span class="lineNoCov">          0 :                 task = get_next_task(q);</span>
+<span class="lineNum">     328 </span>            :         }
+<span class="lineNum">     329 </span><span class="lineNoCov">          0 :         Timer(main_e);</span>
+<span class="lineNum">     330 </span>            : 
+<span class="lineNum">     331 </span><span class="lineNoCov">          0 :         note(&quot;\nTotal elapsed training time: %8.8f seconds\n&quot;,</span>
+<span class="lineNum">     332 </span>            :                         gensvm_elapsed_time(&amp;main_s, &amp;main_e));
+<span class="lineNum">     333 </span>            : 
+<span class="lineNum">     334 </span>            :         // make sure no double free occurs with the copied kernelparam
+<span class="lineNum">     335 </span><span class="lineNoCov">          0 :         model-&gt;kernelparam = NULL;</span>
+<span class="lineNum">     336 </span><span class="lineNoCov">          0 :         gensvm_free_model(model);</span>
+<span class="lineNum">     337 </span><span class="lineNoCov">          0 :         for (f=0; f&lt;folds; f++) {</span>
+<span class="lineNum">     338 </span><span class="lineNoCov">          0 :                 gensvm_free_data(train_folds[f]);</span>
+<span class="lineNum">     339 </span><span class="lineNoCov">          0 :                 gensvm_free_data(test_folds[f]);</span>
+<span class="lineNum">     340 </span>            :         }
+<span class="lineNum">     341 </span><span class="lineNoCov">          0 :         free(train_folds);</span>
+<span class="lineNum">     342 </span><span class="lineNoCov">          0 :         free(test_folds);</span>
+<span class="lineNum">     343 </span><span class="lineNoCov">          0 :         free(cv_idx);</span>
+<span class="lineNum">     344 </span><span class="lineNoCov">          0 : }</span>
+<span class="lineNum">     345 </span>            : 
+<span class="lineNum">     346 </span>            : /**
+<span class="lineNum">     347 </span>            :  * @brief Print the description of the current task on screen
+<span class="lineNum">     348 </span>            :  *
+<span class="lineNum">     349 </span>            :  * @details
+<span class="lineNum">     350 </span>            :  * To track the progress of the grid search the parameters of the current task
+<span class="lineNum">     351 </span>            :  * are written to the output specified in GENSVM_OUTPUT_FILE. Since the
+<span class="lineNum">     352 </span>            :  * parameters differ with the specified kernel, this function writes a
+<span class="lineNum">     353 </span>            :  * parameter string depending on which kernel is used.
+<span class="lineNum">     354 </span>            :  *
+<span class="lineNum">     355 </span>            :  * @param[in]   task            the GenTask specified
+<span class="lineNum">     356 </span>            :  * @param[in]   N               total number of tasks
+<span class="lineNum">     357 </span>            :  * @param[in]   perf            performance of the current task
+<span class="lineNum">     358 </span>            :  * @param[in]   duration        time duration of the current task
+<span class="lineNum">     359 </span>            :  * @param[in]   current_max     current best performance
+<a name="360"><span class="lineNum">     360 </span>            :  *</a>
+<span class="lineNum">     361 </span>            :  */
+<span class="lineNum">     362 </span><span class="lineCov">          4 : void gensvm_gridsearch_progress(struct GenTask *task, long N, double perf, </span>
+<span class="lineNum">     363 </span>            :                 double duration, double current_max)
+<span class="lineNum">     364 </span>            : {
+<span class="lineNum">     365 </span>            :         char buffer[GENSVM_MAX_LINE_LENGTH];
+<span class="lineNum">     366 </span><span class="lineCov">          4 :         sprintf(buffer, &quot;(%03li/%03li)\t&quot;, task-&gt;ID+1, N);</span>
+<span class="lineNum">     367 </span><span class="lineCov">          4 :         if (task-&gt;kerneltype == K_POLY)</span>
+<span class="lineNum">     368 </span><span class="lineCov">          1 :                 sprintf(buffer + strlen(buffer), &quot;d = %2.2f\t&quot;,</span>
+<span class="lineNum">     369 </span><span class="lineCov">          1 :                                 task-&gt;kernelparam[2]);</span>
+<span class="lineNum">     370 </span><span class="lineCov">          4 :         if (task-&gt;kerneltype == K_POLY || task-&gt;kerneltype == K_SIGMOID)</span>
+<span class="lineNum">     371 </span><span class="lineCov">          2 :                 sprintf(buffer + strlen(buffer), &quot;c = %2.2f\t&quot;,</span>
+<span class="lineNum">     372 </span><span class="lineCov">          2 :                                 task-&gt;kernelparam[1]);</span>
+<span class="lineNum">     373 </span><span class="lineCov">          6 :         if (task-&gt;kerneltype == K_POLY || task-&gt;kerneltype == K_SIGMOID ||</span>
+<span class="lineNum">     374 </span><span class="lineCov">          2 :                         task-&gt;kerneltype == K_RBF)</span>
+<span class="lineNum">     375 </span><span class="lineCov">          3 :                 sprintf(buffer + strlen(buffer), &quot;g = %3.3f\t&quot;,</span>
+<span class="lineNum">     376 </span><span class="lineCov">          3 :                                 task-&gt;kernelparam[0]);</span>
+<span class="lineNum">     377 </span><span class="lineCov">          4 :         sprintf(buffer + strlen(buffer), &quot;eps = %g\tw = %i\tk = %2.2f\t&quot;</span>
+<span class="lineNum">     378 </span>            :                         &quot;l = %f\tp = %2.2f\t&quot;, task-&gt;epsilon,
+<span class="lineNum">     379 </span>            :                         task-&gt;weight_idx, task-&gt;kappa, task-&gt;lambda, task-&gt;p);
+<span class="lineNum">     380 </span><span class="lineCov">          4 :         note(buffer);</span>
+<span class="lineNum">     381 </span><span class="lineCov">          4 :         note(&quot;\t%3.3f%% (%3.3fs)\t(best = %3.3f%%)\n&quot;, perf, duration, </span>
+<span class="lineNum">     382 </span>            :                         current_max);
+<span class="lineNum">     383 </span><span class="lineCov">          4 : }</span>
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.12</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

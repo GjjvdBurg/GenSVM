@@ -1,0 +1,4 @@
+<map id="test_init_free_model_1" name="test_init_free_model_1">
+<area shape="rect" id="node2" href="$gensvm__base_8h.html#a96f35734dcba63d95e08addd2dabce3d" title="Initialize a GenModel structure. " alt="" coords="226,5,377,32"/>
+<area shape="rect" id="node3" href="$gensvm__base_8h.html#a0cf72f34706ed286c922ce74ee11f0be" title="Free allocated GenModel struct. " alt="" coords="224,56,379,83"/>
+</map>

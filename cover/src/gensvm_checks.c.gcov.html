@@ -1,0 +1,153 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - coverage.all - src/gensvm_checks.c</title>
+  <link rel="stylesheet" type="text/css" href="../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../index.html">top level</a> - <a href="index.html">src</a> - gensvm_checks.c<span style="font-size: 80%;"> (source / <a href="gensvm_checks.c.func-sort-c.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">coverage.all</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">22</td>
+            <td class="headerCovTableEntry">22</td>
+            <td class="headerCovTableEntryHi">100.0 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2017-01-02 10:06:26</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">1</td>
+            <td class="headerCovTableEntry">1</td>
+            <td class="headerCovTableEntryHi">100.0 %</td>
+          </tr>
+          <tr><td><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : /**</a>
+<span class="lineNum">       2 </span>            :  * @file gensvm_checks.c
+<span class="lineNum">       3 </span>            :  * @author G.J.J. van den Burg
+<span class="lineNum">       4 </span>            :  * @date 2016-12-07
+<span class="lineNum">       5 </span>            :  * @brief Sanity checks used to ensure inputs are as expected
+<span class="lineNum">       6 </span>            :  *
+<span class="lineNum">       7 </span>            :  * @copyright
+<span class="lineNum">       8 </span>            :  Copyright 2016, G.J.J. van den Burg.
+<span class="lineNum">       9 </span>            : 
+<span class="lineNum">      10 </span>            :  This file is part of GenSVM.
+<span class="lineNum">      11 </span>            : 
+<span class="lineNum">      12 </span>            :  GenSVM is free software: you can redistribute it and/or modify
+<span class="lineNum">      13 </span>            :  it under the terms of the GNU General Public License as published by
+<span class="lineNum">      14 </span>            :  the Free Software Foundation, either version 3 of the License, or
+<span class="lineNum">      15 </span>            :  (at your option) any later version.
+<span class="lineNum">      16 </span>            : 
+<span class="lineNum">      17 </span>            :  GenSVM is distributed in the hope that it will be useful,
+<span class="lineNum">      18 </span>            :  but WITHOUT ANY WARRANTY; without even the implied warranty of
+<span class="lineNum">      19 </span>            :  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+<span class="lineNum">      20 </span>            :  GNU General Public License for more details.
+<span class="lineNum">      21 </span>            : 
+<span class="lineNum">      22 </span>            :  You should have received a copy of the GNU General Public License
+<span class="lineNum">      23 </span>            :  along with GenSVM. If not, see &lt;http://www.gnu.org/licenses/&gt;.
+<span class="lineNum">      24 </span>            : 
+<span class="lineNum">      25 </span>            :  */
+<span class="lineNum">      26 </span>            : 
+<span class="lineNum">      27 </span>            : #include &quot;gensvm_checks.h&quot;
+<span class="lineNum">      28 </span>            : 
+<span class="lineNum">      29 </span>            : /**
+<span class="lineNum">      30 </span>            :  * @brief Check if the labels are contiguous on [1 .. K]
+<span class="lineNum">      31 </span>            :  *
+<span class="lineNum">      32 </span>            :  * @details
+<span class="lineNum">      33 </span>            :  * The GenSVM library currently requires that the labels that are supplied in 
+<span class="lineNum">      34 </span>            :  * a dataset are contigous on the interval [1 .. K] and have no gaps. This is 
+<span class="lineNum">      35 </span>            :  * required because the dimensionality of the problem is directly related to 
+<span class="lineNum">      36 </span>            :  * the maximum class label K. This function checks if the labels are indeed in 
+<span class="lineNum">      37 </span>            :  * the desired range.
+<span class="lineNum">      38 </span>            :  *
+<span class="lineNum">      39 </span>            :  * @param[in]   data    a GenData struct with the current data
+<span class="lineNum">      40 </span>            :  *
+<a name="41"><span class="lineNum">      41 </span>            :  * @return              whether the labels are contiguous or not</a>
+<span class="lineNum">      42 </span>            :  */
+<span class="lineNum">      43 </span><span class="lineCov">          4 : bool gensvm_check_outcome_contiguous(struct GenData *data)</span>
+<span class="lineNum">      44 </span>            : {
+<span class="lineNum">      45 </span><span class="lineCov">          4 :         bool in_uniq, is_contiguous = true;</span>
+<span class="lineNum">      46 </span><span class="lineCov">          4 :         long i, j, K = 1;</span>
+<span class="lineNum">      47 </span><span class="lineCov">          4 :         long max_y = -1,</span>
+<span class="lineNum">      48 </span><span class="lineCov">          4 :              min_y = LONG_MAX;</span>
+<span class="lineNum">      49 </span><span class="lineCov">          4 :         long *uniq_y = Calloc(long, K);</span>
+<span class="lineNum">      50 </span><span class="lineCov">          4 :         uniq_y[0] = data-&gt;y[0];</span>
+<span class="lineNum">      51 </span>            : 
+<span class="lineNum">      52 </span><span class="lineCov">         40 :         for (i=1; i&lt;data-&gt;n; i++) {</span>
+<span class="lineNum">      53 </span><span class="lineCov">         36 :                 in_uniq = false;</span>
+<span class="lineNum">      54 </span><span class="lineCov">         87 :                 for (j=0; j&lt;K; j++) {</span>
+<span class="lineNum">      55 </span><span class="lineCov">         77 :                         if (uniq_y[j] == data-&gt;y[i]) {</span>
+<span class="lineNum">      56 </span><span class="lineCov">         26 :                                 in_uniq = true;</span>
+<span class="lineNum">      57 </span><span class="lineCov">         26 :                                 break;</span>
+<span class="lineNum">      58 </span>            :                         }
+<span class="lineNum">      59 </span>            :                 }
+<span class="lineNum">      60 </span>            : 
+<span class="lineNum">      61 </span><span class="lineCov">         36 :                 if (!in_uniq) {</span>
+<span class="lineNum">      62 </span><span class="lineCov">         10 :                         uniq_y = Realloc(uniq_y, long, K+1);</span>
+<span class="lineNum">      63 </span><span class="lineCov">         10 :                         uniq_y[K++] = data-&gt;y[i];</span>
+<span class="lineNum">      64 </span>            :                 }
+<span class="lineNum">      65 </span>            : 
+<span class="lineNum">      66 </span><span class="lineCov">         36 :                 max_y = maximum(max_y, data-&gt;y[i]);</span>
+<span class="lineNum">      67 </span><span class="lineCov">         36 :                 min_y = minimum(min_y, data-&gt;y[i]);</span>
+<span class="lineNum">      68 </span>            :         }
+<span class="lineNum">      69 </span>            : 
+<span class="lineNum">      70 </span><span class="lineCov">          4 :         if (min_y &lt; 1 || max_y &gt; K) {</span>
+<span class="lineNum">      71 </span><span class="lineCov">          3 :                 is_contiguous = false;</span>
+<span class="lineNum">      72 </span>            :         }
+<span class="lineNum">      73 </span>            : 
+<span class="lineNum">      74 </span><span class="lineCov">          4 :         free(uniq_y);</span>
+<span class="lineNum">      75 </span>            : 
+<span class="lineNum">      76 </span><span class="lineCov">          4 :         return is_contiguous;</span>
+<span class="lineNum">      77 </span>            : }
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.12</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

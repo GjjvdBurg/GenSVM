@@ -1,0 +1,5 @@
+<map id="test_gensvm_could_sparse" name="test_gensvm_could_sparse">
+<area shape="rect" id="node2" href="$gensvm__sparse_8h.html#af09ef02c66b9a73ce0db1bccce0fb7ad" title="Check if it is worthwile to convert to a sparse matrix. " alt="" coords="252,31,419,57"/>
+<area shape="rect" id="node3" href="$gensvm__sparse_8c.html#a88aab6b67242e2a4993a5c9c796161e7" title="Count the number of nonzeros in a matrix. " alt="" coords="487,5,633,32"/>
+<area shape="rect" id="node4" href="$gensvm__sparse_8c.html#a711923bcf3725efda4110c25801e6f20" title="Compare the number of nonzeros is such that sparsity if worth it. " alt="" coords="467,56,653,83"/>
+</map>

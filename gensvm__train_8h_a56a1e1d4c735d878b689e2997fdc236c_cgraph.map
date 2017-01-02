@@ -1,0 +1,43 @@
+<map id="gensvm_train" name="gensvm_train">
+<area shape="rect" id="node2" href="$gensvm__base_8h.html#a3b6c01ec77b5726843f7dd6c68593f6a" title="Allocate memory for a GenModel. " alt="" coords="173,56,355,83"/>
+<area shape="rect" id="node3" href="$gensvm__init_8h.html#a53ecc294597cda7237800957f8cd4077" title="Seed the matrix V from an existing model or using rand. " alt="" coords="205,107,323,133"/>
+<area shape="rect" id="node4" href="$gensvm__kernel_8h.html#a67af575255ad5d1d0b466338b6ce2143" title="Do the preprocessing steps needed to perform kernel GenSVM. " alt="" coords="164,157,364,184"/>
+<area shape="rect" id="node15" href="$gensvm__base_8h.html#a27542d9e799eb0e6f3cfdfa0934412fc" title="Reallocate memory for GenModel. " alt="" coords="167,208,361,235"/>
+<area shape="rect" id="node16" href="$gensvm__init_8h.html#a0cb86a00bfa52b2ebc86e2b98687928c" title="Initialize instance weights. " alt="" coords="167,259,361,285"/>
+<area shape="rect" id="node17" href="$gensvm__optimize_8h.html#afc45b0d1cbcf433860d4d268bc6e4cd7" title="The main training loop for GenSVM. " alt="" coords="195,512,333,539"/>
+<area shape="rect" id="node5" href="$gensvm__kernel_8c.html#ac0c2480e55a32684801b7c63bbf63855" title="Compute the kernel matrix. " alt="" coords="427,107,614,133"/>
+<area shape="rect" id="node10" href="$gensvm__kernel_8c.html#a004601c881f44348a9b5c5b8c40f29a5" title="Find the (reduced) eigendecomposition of a kernel matrix. " alt="" coords="412,157,629,184"/>
+<area shape="rect" id="node13" href="$gensvm__kernel_8c.html#a4caf1f9ac5d2e0c98ae027ddd46215e4" title="Compute the training factor as part of kernel preprocessing. " alt="" coords="422,208,619,235"/>
+<area shape="rect" id="node14" href="$gensvm__kernel_8c.html#a92cb913a3f8dc089b83fdc98abf4a453" title="Copy the kernelparameters from GenModel to GenData. " alt="" coords="437,41,605,82"/>
+<area shape="rect" id="node6" href="$gensvm__kernel_8c.html#a46cc9302c9eaf45858a807ffdf052ebf" title="Compute the polynomial kernel between two vectors. " alt="" coords="689,56,875,83"/>
+<area shape="rect" id="node7" href="$gensvm__kernel_8c.html#ac084336bb477beb37723d987457a5b7d" title="Compute the RBF kernel between two vectors. " alt="" coords="695,107,869,133"/>
+<area shape="rect" id="node8" href="$gensvm__kernel_8c.html#af3f724b2781532a0b14c58a24b49147f" title="Compute the sigmoid kernel between two vectors. " alt="" coords="677,5,887,32"/>
+<area shape="rect" id="node9" href="$gensvm__print_8h.html#aede5746344fdce99647541101eaa7f06" title="Parse a formatted string and write it to standard error. " alt="" coords="762,259,802,285"/>
+<area shape="rect" id="node11" href="$gensvm__kernel_8c.html#ab8b09d9e218aa2642a9f078b1daa9237" title="Determine double precision machine parameters. " alt="" coords="747,157,817,184"/>
+<area shape="rect" id="node12" href="$gensvm__kernel_8c.html#a36d0f7deb87d01203d8f3a0a49f6f0f7" title="Compute the eigenvalues and optionally the eigenvectors of a symmetric matrix. " alt="" coords="747,208,817,235"/>
+<area shape="rect" id="node18" href="$gensvm__base_8h.html#a52120d849ff52751c7995c24dfa50f00" title="Initialize the workspace structure. " alt="" coords="450,613,591,640"/>
+<area shape="rect" id="node19" href="$gensvm__print_8h.html#a4502a32a6f7952faad96b8e5c758a7f7" title="Parse a formatted string and write to the output stream. " alt="" coords="495,664,546,691"/>
+<area shape="rect" id="node20" href="$gensvm__simplex_8h.html#ada27d56b6de435551330c8300e9089ea" title="Generate matrix of simplex vertex coordinates. " alt="" coords="454,715,587,741"/>
+<area shape="rect" id="node21" href="$gensvm__simplex_8h.html#a99b48c0294e8275dd092fc5cf947bf0f" title="Generate the simplex difference matrix. " alt="" coords="440,765,601,792"/>
+<area shape="rect" id="node22" href="$gensvm__optimize_8c.html#a2a54331e09c9e271cb2ed6a1c389f244" title="Calculate the current value of the loss function. " alt="" coords="453,563,588,589"/>
+<area shape="rect" id="node28" href="$gensvm__update_8h.html#a21ca55554aabb785a5e0c1d8d73d01c4" title="Perform a single step of the majorization algorithm to update V. " alt="" coords="443,360,598,387"/>
+<area shape="rect" id="node40" href="$gensvm__optimize_8c.html#a91f4c8afa45b2558bb4963e9379c8ec2" title="Use step doubling. " alt="" coords="435,411,607,437"/>
+<area shape="rect" id="node41" href="$gensvm__sv_8h.html#afc35a5c0358a51c8559fe780e7fee5ca" title="Calculate the number of support vectors in a model. " alt="" coords="455,461,587,488"/>
+<area shape="rect" id="node42" href="$gensvm__base_8h.html#a25a671211eb5a8e6b2b9ae214a8a6428" title="Free an allocated GenWork instance. " alt="" coords="447,512,594,539"/>
+<area shape="rect" id="node23" href="$gensvm__optimize_8c.html#a929b779c3a597dbe8f2fb763c4574221" title="Calculate the scalar errors. " alt="" coords="689,537,875,564"/>
+<area shape="rect" id="node27" href="$gensvm__optimize_8c.html#ae7099ec85e4fa9c433d9e3858efe58b3" title="Calculate the Huber hinge errors. " alt="" coords="690,588,874,615"/>
+<area shape="rect" id="node24" href="$gensvm__zv_8h.html#a2b2e19db75b36241c3d26b57b2a35901" title="Wrapper around sparse/dense versions of this function. " alt="" coords="957,537,1123,564"/>
+<area shape="rect" id="node25" href="$gensvm__zv_8c.html#af8b307056942df1b5397122666f48521" title="Compute the product Z*V for when Z is a sparse matrix. " alt="" coords="1201,497,1367,538"/>
+<area shape="rect" id="node26" href="$gensvm__zv_8c.html#a6c114c1ca777387a97e14879cec7f674" title="Compute the product Z*V for when Z is a dense matrix. " alt="" coords="1201,562,1367,603"/>
+<area shape="rect" id="node29" href="$gensvm__update_8c.html#a9949f0ec9eae2316998136a89aeb2992" title="Wrapper around calculation of Z&#39;*A*Z and Z&#39;*B for sparse and dense. " alt="" coords="701,309,863,336"/>
+<area shape="rect" id="node38" href="$gensvm__update_8c.html#a762bfc3b570c8c1007dd0c8d8a27ae0d" title="Solve AX = B where A is symmetric positive definite. " alt="" coords="751,360,813,387"/>
+<area shape="rect" id="node39" href="$gensvm__update_8c.html#a015783619d7f097db396c176e0ff99a5" title="Solve a system of equations AX = B where A is symmetric. " alt="" coords="752,411,812,437"/>
+<area shape="rect" id="node30" href="$gensvm__base_8h.html#a866ddca7070aacee709a6cfd563a595f" title="Reset all matrices of a GenWork instance. " alt="" coords="963,259,1117,285"/>
+<area shape="rect" id="node31" href="$gensvm__update_8c.html#ac5dcf6daf6e1e1888f0a97f501037524" title="Calculate Z&#39;*A*Z and Z&#39;*B for sparse matrices. " alt="" coords="935,309,1145,336"/>
+<area shape="rect" id="node37" href="$gensvm__update_8c.html#ab695778b8a796f3f991754ed0015eeb6" title="Calculate Z&#39;*A*Z and Z&#39;*B for dense matrices. " alt="" coords="937,360,1143,387"/>
+<area shape="rect" id="node32" href="$gensvm__update_8c.html#aeb327efd218c706102916bb0aa1e671d" title="Compute the alpha_i and beta_i for an instance. " alt="" coords="1193,335,1375,361"/>
+<area shape="rect" id="node33" href="$gensvm__update_8c.html#abb108fbbbf27aedec726d363683bdb1c" title="Check if we can do simple majorization for a given instance. " alt="" coords="1441,239,1597,281"/>
+<area shape="rect" id="node34" href="$gensvm__update_8c.html#ae90a65a5a2a2313251356d3667a8b069" title="Calculate the value of omega for a single instance. " alt="" coords="1423,305,1615,332"/>
+<area shape="rect" id="node35" href="$gensvm__update_8c.html#a9218875737267254fc332d772ce13ec0" title="Compute majorization coefficients for simple instances. " alt="" coords="1437,357,1600,398"/>
+<area shape="rect" id="node36" href="$gensvm__update_8c.html#ae51dd734ea3e73944d9eb890d63cb361" title="Compute majorization coefficients for non&#45;simple instance. " alt="" coords="1437,422,1600,463"/>
+</map>

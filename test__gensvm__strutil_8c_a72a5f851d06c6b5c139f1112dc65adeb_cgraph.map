@@ -1,0 +1,5 @@
+<map id="test_get_fmt_double" name="test_get_fmt_double">
+<area shape="rect" id="node2" href="$gensvm__strutil_8h.html#ae76e5f1b62e076a3a4fd927e94cb19a6" title="Read a double from file following a format. " alt="" coords="209,31,333,57"/>
+<area shape="rect" id="node3" href="$gensvm__strutil_8c.html#a5f31076701ddd365a6aed7bf1e6b112a" title="Read line to buffer. " alt="" coords="381,5,456,32"/>
+<area shape="rect" id="node4" href="$gensvm__print_8h.html#aede5746344fdce99647541101eaa7f06" title="Parse a formatted string and write it to standard error. " alt="" coords="504,31,544,57"/>
+</map>

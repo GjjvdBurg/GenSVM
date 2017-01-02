@@ -1,0 +1,723 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - coverage.all - src/gensvm_update.c</title>
+  <link rel="stylesheet" type="text/css" href="../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../index.html">top level</a> - <a href="index.html">src</a> - gensvm_update.c<span style="font-size: 80%;"> (source / <a href="gensvm_update.c.func-sort-c.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">coverage.all</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">159</td>
+            <td class="headerCovTableEntry">174</td>
+            <td class="headerCovTableEntryHi">91.4 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2017-01-02 10:06:26</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">11</td>
+            <td class="headerCovTableEntry">11</td>
+            <td class="headerCovTableEntryHi">100.0 %</td>
+          </tr>
+          <tr><td><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : /**</a>
+<span class="lineNum">       2 </span>            :  * @file gensvm_update.c
+<span class="lineNum">       3 </span>            :  * @author G.J.J. van den Burg
+<span class="lineNum">       4 </span>            :  * @date 2016-10-14
+<span class="lineNum">       5 </span>            :  * @brief Functions for getting an update of the majorization algorithm
+<span class="lineNum">       6 </span>            :  *
+<span class="lineNum">       7 </span>            :  * @copyright
+<span class="lineNum">       8 </span>            :  Copyright 2016, G.J.J. van den Burg.
+<span class="lineNum">       9 </span>            : 
+<span class="lineNum">      10 </span>            :  This file is part of GenSVM.
+<span class="lineNum">      11 </span>            : 
+<span class="lineNum">      12 </span>            :  GenSVM is free software: you can redistribute it and/or modify
+<span class="lineNum">      13 </span>            :  it under the terms of the GNU General Public License as published by
+<span class="lineNum">      14 </span>            :  the Free Software Foundation, either version 3 of the License, or
+<span class="lineNum">      15 </span>            :  (at your option) any later version.
+<span class="lineNum">      16 </span>            : 
+<span class="lineNum">      17 </span>            :  GenSVM is distributed in the hope that it will be useful,
+<span class="lineNum">      18 </span>            :  but WITHOUT ANY WARRANTY; without even the implied warranty of
+<span class="lineNum">      19 </span>            :  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+<span class="lineNum">      20 </span>            :  GNU General Public License for more details.
+<span class="lineNum">      21 </span>            : 
+<span class="lineNum">      22 </span>            :  You should have received a copy of the GNU General Public License
+<span class="lineNum">      23 </span>            :  along with GenSVM. If not, see &lt;http://www.gnu.org/licenses/&gt;.
+<span class="lineNum">      24 </span>            : 
+<span class="lineNum">      25 </span>            :  */
+<span class="lineNum">      26 </span>            : 
+<span class="lineNum">      27 </span>            : #include &quot;gensvm_update.h&quot;
+<span class="lineNum">      28 </span>            : 
+<span class="lineNum">      29 </span>            : /**
+<span class="lineNum">      30 </span>            :  * Number of rows in a single block for the ZAZ calculation in 
+<span class="lineNum">      31 </span>            :  * gensvm_get_ZAZ_ZB_sparse().
+<span class="lineNum">      32 </span>            :  */
+<span class="lineNum">      33 </span>            : #ifndef GENSVM_BLOCK_SIZE
+<span class="lineNum">      34 </span>            :   #define GENSVM_BLOCK_SIZE 512
+<span class="lineNum">      35 </span>            : #endif
+<span class="lineNum">      36 </span>            : 
+<span class="lineNum">      37 </span>            : /**
+<span class="lineNum">      38 </span>            :  * @brief Calculate the value of omega for a single instance
+<span class="lineNum">      39 </span>            :  *
+<span class="lineNum">      40 </span>            :  * @details
+<span class="lineNum">      41 </span>            :  * This function calculates the value of the @f$ \omega_i @f$ variable for a
+<span class="lineNum">      42 </span>            :  * single instance, where
+<span class="lineNum">      43 </span>            :  * @f[
+<span class="lineNum">      44 </span>            :  *      \omega_i = \frac{1}{p} \left( \sum_{j \neq y_i} h^p\left(
+<span class="lineNum">      45 </span>            :  *      \overline{q}_i^{(y_i j)} \right)  \right)^{1/p-1}
+<span class="lineNum">      46 </span>            :  * @f]
+<span class="lineNum">      47 </span>            :  * Note that his function uses the precalculated values from GenModel::H and
+<span class="lineNum">      48 </span>            :  * GenModel::R to speed up the computation.
+<span class="lineNum">      49 </span>            :  *
+<span class="lineNum">      50 </span>            :  * @param[in]   model   GenModel structure with the current model
+<span class="lineNum">      51 </span>            :  * @param[in]   data    GenData structure with the data (used for y)
+<span class="lineNum">      52 </span>            :  * @param[in]   i       index of the instance for which to calculate omega
+<span class="lineNum">      53 </span>            :  * @returns             the value of omega for instance i
+<a name="54"><span class="lineNum">      54 </span>            :  *</a>
+<span class="lineNum">      55 </span>            :  */
+<span class="lineNum">      56 </span><span class="lineCov">       3750 : double gensvm_calculate_omega(struct GenModel *model, struct GenData *data,</span>
+<span class="lineNum">      57 </span>            :                 long i)
+<span class="lineNum">      58 </span>            : {
+<span class="lineNum">      59 </span>            :         long j;
+<span class="lineNum">      60 </span><span class="lineCov">       3750 :         double h, omega = 0.0,</span>
+<span class="lineNum">      61 </span><span class="lineCov">       3750 :                p = model-&gt;p;</span>
+<span class="lineNum">      62 </span>            : 
+<span class="lineNum">      63 </span><span class="lineCov">      18735 :         for (j=0; j&lt;model-&gt;K; j++) {</span>
+<span class="lineNum">      64 </span><span class="lineCov">      14985 :                 if (j == (data-&gt;y[i]-1))</span>
+<span class="lineNum">      65 </span><span class="lineCov">       3750 :                         continue;</span>
+<span class="lineNum">      66 </span><span class="lineCov">      11235 :                 h = matrix_get(model-&gt;H, model-&gt;K, i, j);</span>
+<span class="lineNum">      67 </span><span class="lineCov">      11235 :                 omega += pow(h, p);</span>
+<span class="lineNum">      68 </span>            :         }
+<span class="lineNum">      69 </span><span class="lineCov">       3750 :         omega = (1.0/p)*pow(omega, 1.0/p - 1.0);</span>
+<span class="lineNum">      70 </span>            : 
+<span class="lineNum">      71 </span><span class="lineCov">       3750 :         return omega;</span>
+<span class="lineNum">      72 </span>            : }
+<span class="lineNum">      73 </span>            : 
+<span class="lineNum">      74 </span>            : /**
+<span class="lineNum">      75 </span>            :  * @brief Check if we can do simple majorization for a given instance
+<span class="lineNum">      76 </span>            :  *
+<span class="lineNum">      77 </span>            :  * @details
+<span class="lineNum">      78 </span>            :  * A simple majorization is possible if at most one of the Huberized hinge
+<span class="lineNum">      79 </span>            :  * errors is nonzero for an instance. This is checked here. For this we
+<span class="lineNum">      80 </span>            :  * compute the product of the Huberized error for all @f$j \neq y_i@f$ and
+<span class="lineNum">      81 </span>            :  * check if strictly less than 2 are nonzero. See also the @ref update_math.
+<span class="lineNum">      82 </span>            :  *
+<span class="lineNum">      83 </span>            :  * @param[in]   model   GenModel structure with the current model
+<span class="lineNum">      84 </span>            :  * @param[in]   data    GenData structure with the data (used for y)
+<span class="lineNum">      85 </span>            :  * @param[in]   i       index of the instance for which to check
+<span class="lineNum">      86 </span>            :  * @returns             whether or not we can do simple majorization
+<a name="87"><span class="lineNum">      87 </span>            :  *</a>
+<span class="lineNum">      88 </span>            :  */
+<span class="lineNum">      89 </span><span class="lineCov">       4397 : bool gensvm_majorize_is_simple(struct GenModel *model, struct GenData *data,</span>
+<span class="lineNum">      90 </span>            :                 long i)
+<span class="lineNum">      91 </span>            : {
+<span class="lineNum">      92 </span>            :         long j;
+<span class="lineNum">      93 </span><span class="lineCov">       4397 :         double h, value = 0;</span>
+<span class="lineNum">      94 </span><span class="lineCov">      13671 :         for (j=0; j&lt;model-&gt;K; j++) {</span>
+<span class="lineNum">      95 </span><span class="lineCov">      13021 :                 if (j == (data-&gt;y[i]-1))</span>
+<span class="lineNum">      96 </span><span class="lineCov">       2721 :                         continue;</span>
+<span class="lineNum">      97 </span><span class="lineCov">      10300 :                 h = matrix_get(model-&gt;H, model-&gt;K, i, j);</span>
+<span class="lineNum">      98 </span><span class="lineCov">      10300 :                 value += (h &gt; 0) ? 1 : 0;</span>
+<span class="lineNum">      99 </span><span class="lineCov">      10300 :                 if (value &gt; 1)</span>
+<span class="lineNum">     100 </span><span class="lineCov">       3747 :                         return false;</span>
+<span class="lineNum">     101 </span>            :         }
+<span class="lineNum">     102 </span><span class="lineCov">        650 :         return true;</span>
+<span class="lineNum">     103 </span>            : }
+<span class="lineNum">     104 </span>            : 
+<span class="lineNum">     105 </span>            : /**
+<span class="lineNum">     106 </span>            :  * @brief Compute majorization coefficients for non-simple instance
+<span class="lineNum">     107 </span>            :  *
+<span class="lineNum">     108 </span>            :  * @details
+<span class="lineNum">     109 </span>            :  * In this function we compute the majorization coefficients needed for an
+<span class="lineNum">     110 </span>            :  * instance with a non-simple majorization (@f$\varepsilon_i = 0@f$). In this
+<span class="lineNum">     111 </span>            :  * function, we distinguish a number of cases depending on the value of
+<span class="lineNum">     112 </span>            :  * GenModel::p and the respective value of @f$\overline{q}_i^{(y_ij)}@f$. Note
+<span class="lineNum">     113 </span>            :  * that the linear coefficient is of the form @f$b - a\overline{q}@f$, but
+<span class="lineNum">     114 </span>            :  * often the second term is included in the definition of @f$b@f$, so it can
+<span class="lineNum">     115 </span>            :  * be optimized out. The output argument \p b_aq contains this difference
+<span class="lineNum">     116 </span>            :  * therefore in one go. More details on this function can be found in the @ref
+<span class="lineNum">     117 </span>            :  * update_math. See also gensvm_calculate_ab_simple().
+<span class="lineNum">     118 </span>            :  *
+<span class="lineNum">     119 </span>            :  * @param[in]   model   GenModel structure with the current model
+<span class="lineNum">     120 </span>            :  * @param[in]   i       index for the instance
+<span class="lineNum">     121 </span>            :  * @param[in]   j       index for the class
+<span class="lineNum">     122 </span>            :  * @param[out]  *a      output argument for the quadratic coefficient
+<span class="lineNum">     123 </span>            :  * @param[out]  *b_aq   output argument for the linear coefficient.
+<a name="124"><span class="lineNum">     124 </span>            :  *</a>
+<span class="lineNum">     125 </span>            :  */
+<span class="lineNum">     126 </span><span class="lineCov">      11232 : void gensvm_calculate_ab_non_simple(struct GenModel *model, long i, long j,</span>
+<span class="lineNum">     127 </span>            :                 double *a, double *b_aq)
+<span class="lineNum">     128 </span>            : {
+<span class="lineNum">     129 </span><span class="lineCov">      11232 :         double q = matrix_get(model-&gt;Q, model-&gt;K, i, j);</span>
+<span class="lineNum">     130 </span><span class="lineCov">      11232 :         double p = model-&gt;p;</span>
+<span class="lineNum">     131 </span><span class="lineCov">      11232 :         double kappa = model-&gt;kappa;</span>
+<span class="lineNum">     132 </span><span class="lineCov">      11232 :         const double a2g2 = 0.25*p*(2.0*p - 1.0)*pow((kappa+1.0)/2.0,p-2.0);</span>
+<span class="lineNum">     133 </span>            : 
+<span class="lineNum">     134 </span><span class="lineCov">      11232 :         if (2.0 - model-&gt;p &lt; 1e-2) {</span>
+<span class="lineNum">     135 </span><span class="lineCov">          3 :                 if (q &lt;= - kappa) {</span>
+<span class="lineNum">     136 </span><span class="lineCov">          1 :                         *b_aq = 0.5 - kappa/2.0 - q;</span>
+<span class="lineNum">     137 </span><span class="lineCov">          2 :                 } else if ( q &lt;= 1.0) {</span>
+<span class="lineNum">     138 </span><span class="lineCov">          1 :                         *b_aq = pow(1.0 - q, 3.0)/(2.0*pow(kappa + 1.0, 2.0));</span>
+<span class="lineNum">     139 </span>            :                 } else {
+<span class="lineNum">     140 </span><span class="lineCov">          1 :                         *b_aq = 0;</span>
+<span class="lineNum">     141 </span>            :                 }
+<span class="lineNum">     142 </span><span class="lineCov">          3 :                 *a = 1.5;</span>
+<span class="lineNum">     143 </span>            :         } else {
+<span class="lineNum">     144 </span><span class="lineCov">      11229 :                 if (q &lt;= (p + kappa - 1.0)/(p - 2.0)) {</span>
+<span class="lineNum">     145 </span><span class="lineCov">         27 :                         *a = 0.25*pow(p, 2.0)*pow(0.5 - kappa/2.0 - q, p - 2.0);</span>
+<span class="lineNum">     146 </span><span class="lineCov">      11202 :                 } else if (q &lt;= 1.0) {</span>
+<span class="lineNum">     147 </span><span class="lineCov">      10204 :                         *a = a2g2;</span>
+<span class="lineNum">     148 </span>            :                 } else {
+<span class="lineNum">     149 </span><span class="lineCov">       2994 :                         *a = 0.25*pow(p, 2.0)*pow((p/(p - 2.0))*(0.5 -</span>
+<span class="lineNum">     150 </span><span class="lineCov">       1996 :                                                 kappa/2.0 - q), p - 2.0);</span>
+<span class="lineNum">     151 </span><span class="lineCov">       1996 :                         *b_aq = (*a)*(2.0*q + kappa - 1.0)/(p - 2.0) +</span>
+<span class="lineNum">     152 </span><span class="lineCov">        998 :                                 0.5*p*pow(p/(p - 2.0)*(0.5 - kappa/2.0 - q),</span>
+<span class="lineNum">     153 </span>            :                                                 p - 1.0);
+<span class="lineNum">     154 </span>            :                 }
+<span class="lineNum">     155 </span><span class="lineCov">      11229 :                 if (q &lt;= -kappa) {</span>
+<span class="lineNum">     156 </span><span class="lineCov">         53 :                         *b_aq = 0.5*p*pow(0.5 - kappa/2.0 - q, p - 1.0);</span>
+<span class="lineNum">     157 </span><span class="lineCov">      11176 :                 } else if ( q &lt;= 1.0) {</span>
+<span class="lineNum">     158 </span><span class="lineCov">      10178 :                         *b_aq = p*pow(1.0 - q, 2.0*p - 1.0)/pow(2*kappa+2.0, p);</span>
+<span class="lineNum">     159 </span>            :                 }
+<span class="lineNum">     160 </span>            :         }
+<span class="lineNum">     161 </span><span class="lineCov">      11232 : }</span>
+<span class="lineNum">     162 </span>            : 
+<span class="lineNum">     163 </span>            : /**
+<span class="lineNum">     164 </span>            :  * @brief Compute majorization coefficients for simple instances
+<span class="lineNum">     165 </span>            :  *
+<span class="lineNum">     166 </span>            :  * @details
+<span class="lineNum">     167 </span>            :  * In this function we compute the majorization coefficients needed for an
+<span class="lineNum">     168 </span>            :  * instance with a simple majorization. This corresponds to the non-simple
+<span class="lineNum">     169 </span>            :  * majorization for the case where GenModel::p equals 1. Due to this condition
+<span class="lineNum">     170 </span>            :  * the majorization coefficients are quite simple to compute.  Note that the
+<span class="lineNum">     171 </span>            :  * linear coefficient of the majorization is of the form @f$b -
+<span class="lineNum">     172 </span>            :  * a\overline{q}@f$, but often the second term is included in the definition
+<span class="lineNum">     173 </span>            :  * of @f$b@f$, so it can be optimized out. For more details see the @ref
+<span class="lineNum">     174 </span>            :  * update_math, and gensvm_calculate_ab_non_simple().
+<span class="lineNum">     175 </span>            :  *
+<span class="lineNum">     176 </span>            :  * @param[in]   model   GenModel structure with the current model
+<span class="lineNum">     177 </span>            :  * @param[in]   i       index for the instance
+<span class="lineNum">     178 </span>            :  * @param[in]   j       index for the class
+<span class="lineNum">     179 </span>            :  * @param[out]  *a      output argument for the quadratic coefficient
+<span class="lineNum">     180 </span>            :  * @param[out]  *b_aq   output argument for the linear coefficient
+<a name="181"><span class="lineNum">     181 </span>            :  *</a>
+<span class="lineNum">     182 </span>            :  */
+<span class="lineNum">     183 </span><span class="lineCov">       1938 : void gensvm_calculate_ab_simple(struct GenModel *model, long i, long j,</span>
+<span class="lineNum">     184 </span>            :                 double *a, double *b_aq)
+<span class="lineNum">     185 </span>            : {
+<span class="lineNum">     186 </span><span class="lineCov">       1938 :         double q = matrix_get(model-&gt;Q, model-&gt;K, i, j);</span>
+<span class="lineNum">     187 </span>            : 
+<span class="lineNum">     188 </span><span class="lineCov">       1938 :         if (q &lt;= - model-&gt;kappa) {</span>
+<span class="lineNum">     189 </span><span class="lineCov">          1 :                 *a = 0.25/(0.5 - model-&gt;kappa/2.0 - q);</span>
+<span class="lineNum">     190 </span><span class="lineCov">          1 :                 *b_aq = 0.5;</span>
+<span class="lineNum">     191 </span><span class="lineCov">       1937 :         } else if (q &lt;= 1.0) {</span>
+<span class="lineNum">     192 </span><span class="lineCov">        648 :                 *a = 1.0/(2.0*model-&gt;kappa + 2.0);</span>
+<span class="lineNum">     193 </span><span class="lineCov">        648 :                 *b_aq = (1.0 - q)*(*a);</span>
+<span class="lineNum">     194 </span>            :         } else {
+<span class="lineNum">     195 </span><span class="lineCov">       1289 :                 *a = -0.25/(0.5 - model-&gt;kappa/2.0 - q);</span>
+<span class="lineNum">     196 </span><span class="lineCov">       1289 :                 *b_aq = 0;</span>
+<span class="lineNum">     197 </span>            :         }
+<span class="lineNum">     198 </span><span class="lineCov">       1938 : }</span>
+<span class="lineNum">     199 </span>            : 
+<span class="lineNum">     200 </span>            : /**
+<span class="lineNum">     201 </span>            :  * @brief Compute the alpha_i and beta_i for an instance
+<span class="lineNum">     202 </span>            :  *
+<span class="lineNum">     203 </span>            :  * @details
+<span class="lineNum">     204 </span>            :  * This computes the @f$\alpha_i@f$ value for an instance, and simultaneously
+<span class="lineNum">     205 </span>            :  * updating the row of the B matrix corresponding to that
+<span class="lineNum">     206 </span>            :  * instance (the @f$\boldsymbol{\beta}_i'@f$). The advantage of doing this at
+<span class="lineNum">     207 </span>            :  * the same time is that we can compute the a and b values simultaneously in
+<span class="lineNum">     208 </span>            :  * the gensvm_calculate_ab_simple() and gensvm_calculate_ab_non_simple()
+<span class="lineNum">     209 </span>            :  * functions.
+<span class="lineNum">     210 </span>            :  *
+<span class="lineNum">     211 </span>            :  * The computation is done by first checking whether simple majorization is
+<span class="lineNum">     212 </span>            :  * possible for this instance. If so, the @f$\omega_i@f$ value is set to 1.0,
+<span class="lineNum">     213 </span>            :  * otherwise this value is computed. If simple majorization is possible, the
+<span class="lineNum">     214 </span>            :  * coefficients a and b_aq are computed by gensvm_calculate_ab_simple(),
+<span class="lineNum">     215 </span>            :  * otherwise they're computed by gensvm_calculate_ab_non_simple(). Next, the
+<span class="lineNum">     216 </span>            :  * beta_i updated through the efficient BLAS daxpy function, and part of the
+<span class="lineNum">     217 </span>            :  * value of @f$\alpha_i@f$ is computed. The final value of @f$\alpha_i@f$ is
+<span class="lineNum">     218 </span>            :  * returned.
+<span class="lineNum">     219 </span>            :  *
+<span class="lineNum">     220 </span>            :  * @param[in]           model   GenModel structure with the current model
+<span class="lineNum">     221 </span>            :  * @param[in]           data    GenData structure with the data
+<span class="lineNum">     222 </span>            :  * @param[in]           i       index of the instance to update
+<span class="lineNum">     223 </span>            :  * @param[out]          beta    beta vector of linear coefficients (assumed to
+<span class="lineNum">     224 </span>            :  *                              be allocated elsewhere, initialized here)
+<span class="lineNum">     225 </span>            :  * @returns                     the @f$\alpha_i@f$ value of this instance
+<a name="226"><span class="lineNum">     226 </span>            :  *</a>
+<span class="lineNum">     227 </span>            :  */
+<span class="lineNum">     228 </span><span class="lineCov">       4392 : double gensvm_get_alpha_beta(struct GenModel *model, struct GenData *data,</span>
+<span class="lineNum">     229 </span>            :                 long i, double *beta)
+<span class="lineNum">     230 </span>            : {
+<span class="lineNum">     231 </span>            :         bool simple;
+<span class="lineNum">     232 </span>            :         long j,
+<span class="lineNum">     233 </span><span class="lineCov">       4392 :              K = model-&gt;K;</span>
+<span class="lineNum">     234 </span><span class="lineCov">       4392 :         double omega, a, b_aq = 0.0,</span>
+<span class="lineNum">     235 </span><span class="lineCov">       4392 :                alpha = 0.0;</span>
+<span class="lineNum">     236 </span><span class="lineCov">       4392 :         double *uu_row = NULL;</span>
+<span class="lineNum">     237 </span><span class="lineCov">       4392 :         const double in = 1.0/((double) model-&gt;n);</span>
+<span class="lineNum">     238 </span>            : 
+<span class="lineNum">     239 </span><span class="lineCov">       4392 :         simple = gensvm_majorize_is_simple(model, data, i);</span>
+<span class="lineNum">     240 </span><span class="lineCov">       4392 :         omega = simple ? 1.0 : gensvm_calculate_omega(model, data, i);</span>
+<span class="lineNum">     241 </span>            : 
+<span class="lineNum">     242 </span><span class="lineCov">       4392 :         Memset(beta, double, K-1);</span>
+<span class="lineNum">     243 </span><span class="lineCov">      21944 :         for (j=0; j&lt;K; j++) {</span>
+<span class="lineNum">     244 </span>            :                 // skip the class y_i = k
+<span class="lineNum">     245 </span><span class="lineCov">      17552 :                 if (j == (data-&gt;y[i]-1))</span>
+<span class="lineNum">     246 </span><span class="lineCov">       4392 :                         continue;</span>
+<span class="lineNum">     247 </span>            : 
+<span class="lineNum">     248 </span>            :                 // calculate the a_ijk and (b_ijk - a_ijk q_i^(kj)) values
+<span class="lineNum">     249 </span><span class="lineCov">      13160 :                 if (simple) {</span>
+<span class="lineNum">     250 </span><span class="lineCov">       1935 :                         gensvm_calculate_ab_simple(model, i, j, &amp;a, &amp;b_aq);</span>
+<span class="lineNum">     251 </span>            :                 } else {
+<span class="lineNum">     252 </span><span class="lineCov">      11225 :                         gensvm_calculate_ab_non_simple(model, i, j, &amp;a, &amp;b_aq);</span>
+<span class="lineNum">     253 </span>            :                 }
+<span class="lineNum">     254 </span>            : 
+<span class="lineNum">     255 </span>            :                 // daxpy on beta and UU
+<span class="lineNum">     256 </span>            :                 // daxpy does: y = a*x + y
+<span class="lineNum">     257 </span>            :                 // so y = beta, UU_row = x, a = factor
+<span class="lineNum">     258 </span><span class="lineCov">      13160 :                 b_aq *= model-&gt;rho[i] * omega * in;</span>
+<span class="lineNum">     259 </span><span class="lineCov">      13160 :                 uu_row = &amp;model-&gt;UU[((data-&gt;y[i]-1)*K+j)*(K-1)];</span>
+<span class="lineNum">     260 </span><span class="lineCov">      13160 :                 cblas_daxpy(K-1, b_aq, uu_row, 1, beta, 1);</span>
+<span class="lineNum">     261 </span>            : 
+<span class="lineNum">     262 </span>            :                 // increment Avalue
+<span class="lineNum">     263 </span><span class="lineCov">      13160 :                 alpha += a;</span>
+<span class="lineNum">     264 </span>            :         }
+<span class="lineNum">     265 </span><span class="lineCov">       4392 :         alpha *= omega * model-&gt;rho[i] * in;</span>
+<span class="lineNum">     266 </span><span class="lineCov">       4392 :         return alpha;</span>
+<span class="lineNum">     267 </span>            : }
+<span class="lineNum">     268 </span>            : 
+<span class="lineNum">     269 </span>            : /**
+<span class="lineNum">     270 </span>            :  * @brief Perform a single step of the majorization algorithm to update V
+<span class="lineNum">     271 </span>            :  *
+<span class="lineNum">     272 </span>            :  * @details
+<span class="lineNum">     273 </span>            :  * This function contains the main update calculations of the algorithm. These
+<span class="lineNum">     274 </span>            :  * calculations are necessary to find a new update V. The calculations exist of
+<span class="lineNum">     275 </span>            :  * recalculating the majorization coefficients for all instances and all
+<span class="lineNum">     276 </span>            :  * classes, and solving a linear system to find V.
+<span class="lineNum">     277 </span>            :  *
+<span class="lineNum">     278 </span>            :  * Because the function gensvm_get_update() is always called after a call to
+<span class="lineNum">     279 </span>            :  * gensvm_get_loss() with the same GenModel::V, it is unnecessary to calculate
+<span class="lineNum">     280 </span>            :  * the updated errors GenModel::Q and GenModel::H here too. This saves on
+<span class="lineNum">     281 </span>            :  * computation time.
+<span class="lineNum">     282 </span>            :  *
+<span class="lineNum">     283 </span>            :  * In calculating the majorization coefficients we calculate the elements of a
+<span class="lineNum">     284 </span>            :  * diagonal matrix A with elements
+<span class="lineNum">     285 </span>            :  * @f[
+<span class="lineNum">     286 </span>            :  *      A_{i, i} = \frac{1}{n} \rho_i \sum_{j \neq k} \left[
+<span class="lineNum">     287 </span>            :  *              \varepsilon_i a_{ijk}^{(1)} + (1 - \varepsilon_i) \omega_i
+<span class="lineNum">     288 </span>            :  *              a_{ijk}^{(p)} \right],
+<span class="lineNum">     289 </span>            :  * @f]
+<span class="lineNum">     290 </span>            :  * where @f$ k = y_i @f$.
+<span class="lineNum">     291 </span>            :  * Since this matrix is only used to calculate the matrix @f$ Z' A Z @f$, it
+<span class="lineNum">     292 </span>            :  * is efficient to update a matrix ZAZ through consecutive rank 1 updates with
+<span class="lineNum">     293 </span>            :  * a single element of A and the corresponding row of Z. The BLAS function
+<span class="lineNum">     294 </span>            :  * dsyr is used for this.
+<span class="lineNum">     295 </span>            :  *
+<span class="lineNum">     296 </span>            :  * The B matrix is has rows
+<span class="lineNum">     297 </span>            :  * @f[
+<span class="lineNum">     298 </span>            :  *      \boldsymbol{\beta}_i' = \frac{1}{n} \rho_i \sum_{j \neq k} \left[
+<span class="lineNum">     299 </span>            :  *              \varepsilon_i \left( b_{ijk}^{(1)} - a_{ijk}^{(1)}
+<span class="lineNum">     300 </span>            :  *                      \overline{q}_i^{(kj)} \right) + (1 - \varepsilon_i)
+<span class="lineNum">     301 </span>            :  *              \omega_i \left( b_{ijk}^{(p)} - a_{ijk}^{(p)}
+<span class="lineNum">     302 </span>            :  *                      \overline{q}_i^{(kj)} \right) \right]
+<span class="lineNum">     303 </span>            :  *              \boldsymbol{\delta}_{kj}'
+<span class="lineNum">     304 </span>            :  * @f]
+<span class="lineNum">     305 </span>            :  * This is also split into two cases, one for which @f$ \varepsilon_i = 1 @f$,
+<span class="lineNum">     306 </span>            :  * and one for when it is 0. The 3D simplex difference matrix is used here, in
+<span class="lineNum">     307 </span>            :  * the form of the @f$ \boldsymbol{\delta}_{kj}' @f$.
+<span class="lineNum">     308 </span>            :  *
+<span class="lineNum">     309 </span>            :  * Finally, the following system is solved
+<span class="lineNum">     310 </span>            :  * @f[
+<span class="lineNum">     311 </span>            :  *      (\textbf{Z}'\textbf{AZ} + \lambda \textbf{J})\textbf{V} =
+<span class="lineNum">     312 </span>            :  *              (\textbf{Z}'\textbf{AZ}\overline{\textbf{V}} + \textbf{Z}'
+<span class="lineNum">     313 </span>            :  *              \textbf{B})
+<span class="lineNum">     314 </span>            :  * @f]
+<span class="lineNum">     315 </span>            :  * solving this system is done through dposv().
+<span class="lineNum">     316 </span>            :  *
+<span class="lineNum">     317 </span>            :  * @todo
+<span class="lineNum">     318 </span>            :  * Consider using CblasColMajor everywhere
+<span class="lineNum">     319 </span>            :  *
+<span class="lineNum">     320 </span>            :  * @param[in,out]       model   model to be updated
+<span class="lineNum">     321 </span>            :  * @param[in]           data    data used in model
+<a name="322"><span class="lineNum">     322 </span>            :  * @param[in]           work    allocated workspace to use</a>
+<span class="lineNum">     323 </span>            :  */
+<span class="lineNum">     324 </span><span class="lineCov">        466 : void gensvm_get_update(struct GenModel *model, struct GenData *data,</span>
+<span class="lineNum">     325 </span>            :                 struct GenWork *work)
+<span class="lineNum">     326 </span>            : {
+<span class="lineNum">     327 </span>            :         int status;
+<span class="lineNum">     328 </span>            :         long i, j;
+<span class="lineNum">     329 </span>            : 
+<span class="lineNum">     330 </span><span class="lineCov">        466 :         long m = model-&gt;m;</span>
+<span class="lineNum">     331 </span><span class="lineCov">        466 :         long K = model-&gt;K;</span>
+<span class="lineNum">     332 </span>            : 
+<span class="lineNum">     333 </span><span class="lineCov">        466 :         gensvm_get_ZAZ_ZB(model, data, work);</span>
+<span class="lineNum">     334 </span>            : 
+<span class="lineNum">     335 </span>            :         // Calculate right-hand side of system we want to solve
+<span class="lineNum">     336 </span>            :         // dsymm performs ZB := 1.0 * (ZAZ) * Vbar + 1.0 * ZB
+<span class="lineNum">     337 </span>            :         // the right-hand side is thus stored in ZB after this call
+<span class="lineNum">     338 </span>            :         // Note: LDB and LDC are second dimensions of the matrices due to
+<span class="lineNum">     339 </span>            :         // Row-Major order
+<span class="lineNum">     340 </span><span class="lineCov">       1864 :         cblas_dsymm(CblasRowMajor, CblasLeft, CblasUpper, m+1, K-1, 1,</span>
+<span class="lineNum">     341 </span><span class="lineCov">       1864 :                         work-&gt;ZAZ, m+1, model-&gt;V, K-1, 1.0, work-&gt;ZB, K-1);</span>
+<span class="lineNum">     342 </span>            : 
+<span class="lineNum">     343 </span>            :         // Calculate left-hand side of system we want to solve
+<span class="lineNum">     344 </span>            :         // Add lambda to all diagonal elements except the first one. Recall
+<span class="lineNum">     345 </span>            :         // that ZAZ is of size m+1 and is symmetric.
+<span class="lineNum">     346 </span><span class="lineCov">       2299 :         for (i=m+2; i&lt;=m*(m+2); i+=m+2)</span>
+<span class="lineNum">     347 </span><span class="lineCov">       1833 :                 work-&gt;ZAZ[i] += model-&gt;lambda;</span>
+<span class="lineNum">     348 </span>            : 
+<span class="lineNum">     349 </span>            :         // Lapack uses column-major order, so we transform the ZB matrix to
+<span class="lineNum">     350 </span>            :         // correspond to this.
+<span class="lineNum">     351 </span><span class="lineCov">       2765 :         for (i=0; i&lt;m+1; i++)</span>
+<span class="lineNum">     352 </span><span class="lineCov">       9188 :                 for (j=0; j&lt;K-1; j++)</span>
+<span class="lineNum">     353 </span><span class="lineCov">       6889 :                         work-&gt;ZBc[j*(m+1)+i] = work-&gt;ZB[i*(K-1)+j];</span>
+<span class="lineNum">     354 </span>            : 
+<span class="lineNum">     355 </span>            :         // Solve the system using dposv. Note that above the upper triangular
+<span class="lineNum">     356 </span>            :         // part has always been used in row-major order for ZAZ. This
+<span class="lineNum">     357 </span>            :         // corresponds to the lower triangular part in column-major order.
+<span class="lineNum">     358 </span><span class="lineCov">        466 :         status = dposv('L', m+1, K-1, work-&gt;ZAZ, m+1, work-&gt;ZBc, m+1);</span>
+<span class="lineNum">     359 </span>            : 
+<span class="lineNum">     360 </span>            :         // Use dsysv as fallback, for when the ZAZ matrix is not positive
+<span class="lineNum">     361 </span>            :         // semi-definite for some reason (perhaps due to rounding errors).
+<span class="lineNum">     362 </span>            :         // This step shouldn't be necessary but is included for safety.
+<span class="lineNum">     363 </span><span class="lineCov">        466 :         if (status != 0) {</span>
+<span class="lineNum">     364 </span><span class="lineNoCov">          0 :                 err(&quot;[GenSVM Warning]: Received nonzero status from &quot;</span>
+<span class="lineNum">     365 </span>            :                                 &quot;dposv: %i\n&quot;, status);
+<span class="lineNum">     366 </span><span class="lineNoCov">          0 :                 int *IPIV = Malloc(int, m+1);</span>
+<span class="lineNum">     367 </span><span class="lineNoCov">          0 :                 double *WORK = Malloc(double, 1);</span>
+<span class="lineNum">     368 </span><span class="lineNoCov">          0 :                 status = dsysv('L', m+1, K-1, work-&gt;ZAZ, m+1, IPIV, work-&gt;ZBc,</span>
+<span class="lineNum">     369 </span><span class="lineNoCov">          0 :                                 m+1, WORK, -1);</span>
+<span class="lineNum">     370 </span>            : 
+<span class="lineNum">     371 </span><span class="lineNoCov">          0 :                 int LWORK = WORK[0];</span>
+<span class="lineNum">     372 </span><span class="lineNoCov">          0 :                 WORK = Realloc(WORK, double, LWORK);</span>
+<span class="lineNum">     373 </span><span class="lineNoCov">          0 :                 status = dsysv('L', m+1, K-1, work-&gt;ZAZ, m+1, IPIV, work-&gt;ZBc,</span>
+<span class="lineNum">     374 </span><span class="lineNoCov">          0 :                                 m+1, WORK, LWORK);</span>
+<span class="lineNum">     375 </span><span class="lineNoCov">          0 :                 if (status != 0)</span>
+<span class="lineNum">     376 </span><span class="lineNoCov">          0 :                         err(&quot;[GenSVM Warning]: Received nonzero &quot;</span>
+<span class="lineNum">     377 </span>            :                                         &quot;status from dsysv: %i\n&quot;, status);
+<span class="lineNum">     378 </span><span class="lineNoCov">          0 :                 free(WORK);</span>
+<span class="lineNum">     379 </span><span class="lineNoCov">          0 :                 WORK = NULL;</span>
+<span class="lineNum">     380 </span><span class="lineNoCov">          0 :                 free(IPIV);</span>
+<span class="lineNum">     381 </span><span class="lineNoCov">          0 :                 IPIV = NULL;</span>
+<span class="lineNum">     382 </span>            :         }
+<span class="lineNum">     383 </span>            : 
+<span class="lineNum">     384 </span>            :         // the solution is now stored in ZBc, in column-major order. Here we
+<span class="lineNum">     385 </span>            :         // convert this back to row-major order
+<span class="lineNum">     386 </span><span class="lineCov">       2765 :         for (i=0; i&lt;m+1; i++)</span>
+<span class="lineNum">     387 </span><span class="lineCov">       9188 :                 for (j=0; j&lt;K-1; j++)</span>
+<span class="lineNum">     388 </span><span class="lineCov">       6889 :                         work-&gt;ZB[i*(K-1)+j] = work-&gt;ZBc[j*(m+1)+i];</span>
+<span class="lineNum">     389 </span>            : 
+<span class="lineNum">     390 </span>            :         // copy the old V to Vbar and the new solution to V
+<span class="lineNum">     391 </span><span class="lineCov">       2765 :         for (i=0; i&lt;m+1; i++) {</span>
+<span class="lineNum">     392 </span><span class="lineCov">       9188 :                 for (j=0; j&lt;K-1; j++) {</span>
+<span class="lineNum">     393 </span><span class="lineCov">       6889 :                         matrix_set(model-&gt;Vbar, K-1, i, j,</span>
+<span class="lineNum">     394 </span>            :                                         matrix_get(model-&gt;V, K-1, i, j));
+<span class="lineNum">     395 </span><span class="lineCov">       6889 :                         matrix_set(model-&gt;V, K-1, i, j,</span>
+<span class="lineNum">     396 </span>            :                                         matrix_get(work-&gt;ZB, K-1, i, j));
+<span class="lineNum">     397 </span>            :                 }
+<span class="lineNum">     398 </span>            :         }
+<span class="lineNum">     399 </span><span class="lineCov">        466 : }</span>
+<span class="lineNum">     400 </span>            : 
+<span class="lineNum">     401 </span>            : /**
+<span class="lineNum">     402 </span>            :  * @brief Calculate Z'*A*Z and Z'*B for dense matrices
+<span class="lineNum">     403 </span>            :  *
+<span class="lineNum">     404 </span>            :  * @details
+<span class="lineNum">     405 </span>            :  * This function calculates the matrices Z'*A*Z and Z'*B for the case where Z
+<span class="lineNum">     406 </span>            :  * is stored as a dense matrix. It calculates the Z'*A*Z product by
+<span class="lineNum">     407 </span>            :  * constructing a matrix LZ = (A^(1/2) * Z), and calculating (LZ)'*(LZ) with
+<span class="lineNum">     408 </span>            :  * the BLAS dsyrk function. The matrix Z'*B is calculated with successive
+<span class="lineNum">     409 </span>            :  * rank-1 updates using the BLAS dger function. These functions came out as
+<span class="lineNum">     410 </span>            :  * the most efficient way to do these computations in several simulation
+<span class="lineNum">     411 </span>            :  * studies.
+<span class="lineNum">     412 </span>            :  *
+<span class="lineNum">     413 </span>            :  * @param[in]           model   a GenModel holding the current model
+<span class="lineNum">     414 </span>            :  * @param[in]           data    a GenData with the data
+<span class="lineNum">     415 </span>            :  * @param[in,out]       work    an allocated GenWork structure, contains
+<a name="416"><span class="lineNum">     416 </span>            :  *                              updated ZAZ and ZB matrices on exit.</a>
+<span class="lineNum">     417 </span>            :  */
+<span class="lineNum">     418 </span><span class="lineCov">        465 : void gensvm_get_ZAZ_ZB_dense(struct GenModel *model, struct GenData *data,</span>
+<span class="lineNum">     419 </span>            :                 struct GenWork *work)
+<span class="lineNum">     420 </span>            : {
+<span class="lineNum">     421 </span>            :         long i;
+<span class="lineNum">     422 </span>            :         double alpha, sqalpha;
+<span class="lineNum">     423 </span>            : 
+<span class="lineNum">     424 </span><span class="lineCov">        465 :         long n = model-&gt;n;</span>
+<span class="lineNum">     425 </span><span class="lineCov">        465 :         long m = model-&gt;m;</span>
+<span class="lineNum">     426 </span><span class="lineCov">        465 :         long K = model-&gt;K;</span>
+<span class="lineNum">     427 </span>            : 
+<span class="lineNum">     428 </span>            :         // generate Z'*A*Z and Z'*B by rank 1 operations
+<span class="lineNum">     429 </span><span class="lineCov">       4849 :         for (i=0; i&lt;n; i++) {</span>
+<span class="lineNum">     430 </span><span class="lineCov">       4384 :                 alpha = gensvm_get_alpha_beta(model, data, i, work-&gt;beta);</span>
+<span class="lineNum">     431 </span>            : 
+<span class="lineNum">     432 </span>            :                 // calculate row of matrix LZ, which is a scalar
+<span class="lineNum">     433 </span>            :                 // multiplication of sqrt(alpha_i) and row z_i' of Z
+<span class="lineNum">     434 </span>            :                 // Note that we use the fact that the first column of Z is
+<span class="lineNum">     435 </span>            :                 // always 1, by only computing the product for m values and
+<span class="lineNum">     436 </span>            :                 // copying the first element over.
+<span class="lineNum">     437 </span><span class="lineCov">       4384 :                 sqalpha = sqrt(alpha);</span>
+<span class="lineNum">     438 </span><span class="lineCov">       4384 :                 work-&gt;LZ[i*(m+1)] = sqalpha;</span>
+<span class="lineNum">     439 </span><span class="lineCov">       4384 :                 cblas_daxpy(m, sqalpha, &amp;data-&gt;Z[i*(m+1)+1], 1,</span>
+<span class="lineNum">     440 </span><span class="lineCov">       4384 :                                 &amp;work-&gt;LZ[i*(m+1)+1], 1);</span>
+<span class="lineNum">     441 </span>            : 
+<span class="lineNum">     442 </span>            :                 // rank 1 update of matrix Z'*B
+<span class="lineNum">     443 </span>            :                 // Note: LDA is the second dimension of ZB because of
+<span class="lineNum">     444 </span>            :                 // Row-Major order
+<span class="lineNum">     445 </span><span class="lineCov">       8768 :                 cblas_dger(CblasRowMajor, m+1, K-1, 1, &amp;data-&gt;Z[i*(m+1)], 1,</span>
+<span class="lineNum">     446 </span><span class="lineCov">       8768 :                                 work-&gt;beta, 1, work-&gt;ZB, K-1);</span>
+<span class="lineNum">     447 </span>            :         }
+<span class="lineNum">     448 </span>            : 
+<span class="lineNum">     449 </span>            :         // calculate Z'*A*Z by symmetric multiplication of LZ with itself
+<span class="lineNum">     450 </span>            :         // (ZAZ = (LZ)' * (LZ)
+<span class="lineNum">     451 </span><span class="lineCov">       1395 :         cblas_dsyrk(CblasRowMajor, CblasUpper, CblasTrans, m+1, n, 1.0,</span>
+<span class="lineNum">     452 </span><span class="lineCov">       1395 :                         work-&gt;LZ, m+1, 0.0, work-&gt;ZAZ, m+1);</span>
+<span class="lineNum">     453 </span><span class="lineCov">        465 : }</span>
+<span class="lineNum">     454 </span>            : 
+<span class="lineNum">     455 </span>            : /**
+<span class="lineNum">     456 </span>            :  * @brief Calculate Z'*A*Z and Z'*B for sparse matrices
+<span class="lineNum">     457 </span>            :  *
+<span class="lineNum">     458 </span>            :  * @details
+<span class="lineNum">     459 </span>            :  * This function calculates the matrices Z'*A*Z and Z'*B for the case where Z 
+<span class="lineNum">     460 </span>            :  * is stored as a CSR sparse matrix (GenSparse structure). It computes only 
+<span class="lineNum">     461 </span>            :  * the products of the Z'*A*Z matrix that need to be computed, and updates the 
+<span class="lineNum">     462 </span>            :  * Z'*B matrix row-wise for each non-zero element of a row of Z, using a BLAS 
+<span class="lineNum">     463 </span>            :  * daxpy call.
+<span class="lineNum">     464 </span>            :  *
+<span class="lineNum">     465 </span>            :  * This function calculates the matrix product Z'*A*Z in separate blocks, 
+<span class="lineNum">     466 </span>            :  * based on the number of rows defined in the GENSVM_BLOCK_SIZE variable. This 
+<span class="lineNum">     467 </span>            :  * is done to improve numerical precision for very large datasets. Due to 
+<span class="lineNum">     468 </span>            :  * rounding errors, precision can become an issue for these large datasets, 
+<span class="lineNum">     469 </span>            :  * when separate blocks are used and added to the result separately, this can 
+<span class="lineNum">     470 </span>            :  * be alleviated a little bit. See also: http://stackoverflow.com/q/40286989
+<span class="lineNum">     471 </span>            :  *
+<span class="lineNum">     472 </span>            :  * @sa
+<span class="lineNum">     473 </span>            :  * gensvm_get_ZAZ_ZB()
+<span class="lineNum">     474 </span>            :  * gensvm_get_ZAZ_ZB_dense()
+<span class="lineNum">     475 </span>            :  *
+<span class="lineNum">     476 </span>            :  * @param[in]           model   a GenModel holding the current model
+<span class="lineNum">     477 </span>            :  * @param[in]           data    a GenData with the data
+<span class="lineNum">     478 </span>            :  * @param[in,out]       work    an allocated GenWork structure, contains
+<a name="479"><span class="lineNum">     479 </span>            :  *                              updated ZAZ and ZB matrices on exit.</a>
+<span class="lineNum">     480 </span>            :  */
+<span class="lineNum">     481 </span><span class="lineCov">          1 : void gensvm_get_ZAZ_ZB_sparse(struct GenModel *model, struct GenData *data,</span>
+<span class="lineNum">     482 </span>            :                 struct GenWork *work)
+<span class="lineNum">     483 </span>            : {
+<span class="lineNum">     484 </span><span class="lineCov">          1 :         long *Zia = NULL,</span>
+<span class="lineNum">     485 </span><span class="lineCov">          1 :              *Zja = NULL;</span>
+<span class="lineNum">     486 </span>            :         long b, i, j, k, K, jj, kk, jj_start, jj_end, blk_start, blk_end,
+<span class="lineNum">     487 </span><span class="lineCov">          1 :              rem_size, n_blocks, n_row = data-&gt;spZ-&gt;n_row,</span>
+<span class="lineNum">     488 </span><span class="lineCov">          1 :              n_col = data-&gt;spZ-&gt;n_col;</span>
+<span class="lineNum">     489 </span><span class="lineCov">          1 :         double temp, alpha, z_ij, *vals = NULL;</span>
+<span class="lineNum">     490 </span>            : 
+<span class="lineNum">     491 </span><span class="lineCov">          1 :         K = model-&gt;K;</span>
+<span class="lineNum">     492 </span><span class="lineCov">          1 :         Zia = data-&gt;spZ-&gt;ia;</span>
+<span class="lineNum">     493 </span><span class="lineCov">          1 :         Zja = data-&gt;spZ-&gt;ja;</span>
+<span class="lineNum">     494 </span><span class="lineCov">          1 :         vals = data-&gt;spZ-&gt;values;</span>
+<span class="lineNum">     495 </span>            : 
+<span class="lineNum">     496 </span>            :         // calculate ZAZ using blocks of rows of Z. This helps avoiding 
+<span class="lineNum">     497 </span>            :         // rounding errors, which increases precision, and in turn helps 
+<span class="lineNum">     498 </span>            :         // convergion of the IM algorithm.
+<span class="lineNum">     499 </span>            :         // see also: http://stackoverflow.com/q/40286989/
+<span class="lineNum">     500 </span><span class="lineCov">          1 :         n_blocks = floor(n_row / GENSVM_BLOCK_SIZE);</span>
+<span class="lineNum">     501 </span><span class="lineCov">          1 :         rem_size = n_row % GENSVM_BLOCK_SIZE;</span>
+<span class="lineNum">     502 </span>            : 
+<span class="lineNum">     503 </span><span class="lineCov">          2 :         for (b=0; b&lt;=n_blocks; b++) {</span>
+<span class="lineNum">     504 </span><span class="lineCov">          1 :                 blk_start = b * GENSVM_BLOCK_SIZE;</span>
+<span class="lineNum">     505 </span><span class="lineCov">          1 :                 blk_end = blk_start;</span>
+<span class="lineNum">     506 </span><span class="lineCov">          1 :                 blk_end += (b == n_blocks) ? rem_size : GENSVM_BLOCK_SIZE;</span>
+<span class="lineNum">     507 </span>            : 
+<span class="lineNum">     508 </span><span class="lineCov">          1 :                 Memset(work-&gt;tmpZAZ, double, n_col*n_col);</span>
+<span class="lineNum">     509 </span><span class="lineCov">          9 :                 for (i=blk_start; i&lt;blk_end; i++) {</span>
+<span class="lineNum">     510 </span><span class="lineCov">          8 :                         alpha = gensvm_get_alpha_beta(model, data, i, </span>
+<span class="lineNum">     511 </span>            :                                         work-&gt;beta);
+<span class="lineNum">     512 </span><span class="lineCov">          8 :                         jj_start = Zia[i];</span>
+<span class="lineNum">     513 </span><span class="lineCov">          8 :                         jj_end = Zia[i+1];</span>
+<span class="lineNum">     514 </span>            : 
+<span class="lineNum">     515 </span><span class="lineCov">         40 :                         for (jj=jj_start; jj&lt;jj_end; jj++) {</span>
+<span class="lineNum">     516 </span><span class="lineCov">         32 :                                 j = Zja[jj];</span>
+<span class="lineNum">     517 </span><span class="lineCov">         32 :                                 z_ij = vals[jj];</span>
+<span class="lineNum">     518 </span><span class="lineCov">         32 :                                 cblas_daxpy(K-1, z_ij, work-&gt;beta, 1,</span>
+<span class="lineNum">     519 </span><span class="lineCov">         32 :                                                 &amp;work-&gt;ZB[j*(K-1)], 1);</span>
+<span class="lineNum">     520 </span><span class="lineCov">         32 :                                 z_ij *= alpha;</span>
+<span class="lineNum">     521 </span><span class="lineCov">        112 :                                 for (kk=jj; kk&lt;jj_end; kk++) {</span>
+<span class="lineNum">     522 </span><span class="lineCov">         80 :                                         matrix_add(work-&gt;tmpZAZ, n_col, j, </span>
+<span class="lineNum">     523 </span>            :                                                         Zja[kk], 
+<span class="lineNum">     524 </span>            :                                                         z_ij * vals[kk]);
+<span class="lineNum">     525 </span>            :                                 }
+<span class="lineNum">     526 </span>            :                         }
+<span class="lineNum">     527 </span>            :                 }
+<span class="lineNum">     528 </span>            : 
+<span class="lineNum">     529 </span>            :                 // copy the intermediate results over to the actual ZAZ matrix
+<span class="lineNum">     530 </span><span class="lineCov">          5 :                 for (j=0; j&lt;n_col; j++) {</span>
+<span class="lineNum">     531 </span><span class="lineCov">         14 :                         for (k=j; k&lt;n_col; k++) {</span>
+<span class="lineNum">     532 </span><span class="lineCov">         10 :                                 temp = matrix_get(work-&gt;tmpZAZ, n_col, j, k);</span>
+<span class="lineNum">     533 </span><span class="lineCov">         10 :                                 matrix_add(work-&gt;ZAZ, n_col, j, k, temp);</span>
+<span class="lineNum">     534 </span>            :                         }
+<span class="lineNum">     535 </span>            :                 }
+<span class="lineNum">     536 </span>            :         }
+<span class="lineNum">     537 </span><span class="lineCov">          1 : }</span>
+<span class="lineNum">     538 </span>            : 
+<span class="lineNum">     539 </span>            : 
+<span class="lineNum">     540 </span>            : /**
+<span class="lineNum">     541 </span>            :  * @brief Wrapper around calculation of Z'*A*Z and Z'*B for sparse and dense
+<span class="lineNum">     542 </span>            :  *
+<span class="lineNum">     543 </span>            :  * @details
+<span class="lineNum">     544 </span>            :  * This is a wrapper around gensvm_get_ZAZ_ZB_dense() and 
+<span class="lineNum">     545 </span>            :  * gensvm_get_ZAZ_ZB_sparse(). See the documentation of those functions for 
+<span class="lineNum">     546 </span>            :  * more info.
+<span class="lineNum">     547 </span>            :  *
+<span class="lineNum">     548 </span>            :  * @param[in]    model  a GenModel struct
+<span class="lineNum">     549 </span>            :  * @param[in]    data   a GenData struct
+<span class="lineNum">     550 </span>            :  * @param[in]    work   a GenWork struct
+<a name="551"><span class="lineNum">     551 </span>            :  *</a>
+<span class="lineNum">     552 </span>            :  */
+<span class="lineNum">     553 </span><span class="lineCov">        466 : void gensvm_get_ZAZ_ZB(struct GenModel *model, struct GenData *data,</span>
+<span class="lineNum">     554 </span>            :                 struct GenWork *work)
+<span class="lineNum">     555 </span>            : {
+<span class="lineNum">     556 </span><span class="lineCov">        466 :         gensvm_reset_work(work);</span>
+<span class="lineNum">     557 </span>            : 
+<span class="lineNum">     558 </span><span class="lineCov">        466 :         if (data-&gt;Z == NULL)</span>
+<span class="lineNum">     559 </span><span class="lineCov">          1 :                 gensvm_get_ZAZ_ZB_sparse(model, data, work);</span>
+<span class="lineNum">     560 </span>            :         else
+<span class="lineNum">     561 </span><span class="lineCov">        465 :                 gensvm_get_ZAZ_ZB_dense(model, data, work);</span>
+<span class="lineNum">     562 </span><span class="lineCov">        466 : }</span>
+<span class="lineNum">     563 </span>            : 
+<span class="lineNum">     564 </span>            : /**
+<span class="lineNum">     565 </span>            :  * @brief Solve AX = B where A is symmetric positive definite.
+<span class="lineNum">     566 </span>            :  *
+<span class="lineNum">     567 </span>            :  * @details
+<span class="lineNum">     568 </span>            :  * Solve a linear system of equations AX = B where A is symmetric positive
+<span class="lineNum">     569 </span>            :  * definite. This function is a wrapper for the external  LAPACK routine
+<span class="lineNum">     570 </span>            :  * dposv.
+<span class="lineNum">     571 </span>            :  *
+<span class="lineNum">     572 </span>            :  * @param[in]           UPLO    which triangle of A is stored
+<span class="lineNum">     573 </span>            :  * @param[in]           N       order of A
+<span class="lineNum">     574 </span>            :  * @param[in]           NRHS    number of columns of B
+<span class="lineNum">     575 </span>            :  * @param[in,out]       A       double precision array of size (LDA, N). On
+<span class="lineNum">     576 </span>            :  *                              exit contains the upper or lower factor of the
+<span class="lineNum">     577 </span>            :  *                              Cholesky factorization of A.
+<span class="lineNum">     578 </span>            :  * @param[in]           LDA     leading dimension of A
+<span class="lineNum">     579 </span>            :  * @param[in,out]       B       double precision array of size (LDB, NRHS). On
+<span class="lineNum">     580 </span>            :  *                              exit contains the N-by-NRHS solution matrix X.
+<span class="lineNum">     581 </span>            :  * @param[in]           LDB     the leading dimension of B
+<span class="lineNum">     582 </span>            :  * @returns                     info parameter which contains the status of the
+<span class="lineNum">     583 </span>            :  *                              computation:
+<span class="lineNum">     584 </span>            :  *                                      - =0:   success
+<span class="lineNum">     585 </span>            :  *                                      - &lt;0:        if -i, the i-th argument had
+<span class="lineNum">     586 </span>            :  *                                              an illegal value
+<span class="lineNum">     587 </span>            :  *                                      - &gt;0:        if i, the leading minor of A
+<span class="lineNum">     588 </span>            :  *                                              was not positive definite
+<span class="lineNum">     589 </span>            :  *
+<span class="lineNum">     590 </span>            :  * See the LAPACK documentation at:
+<a name="591"><span class="lineNum">     591 </span>            :  * http://www.netlib.org/lapack/explore-html/dc/de9/group__double_p_osolve.html</a>
+<span class="lineNum">     592 </span>            :  */
+<span class="lineNum">     593 </span><span class="lineCov">        467 : int dposv(char UPLO, int N, int NRHS, double *A, int LDA, double *B,</span>
+<span class="lineNum">     594 </span>            :                 int LDB)
+<span class="lineNum">     595 </span>            : {
+<span class="lineNum">     596 </span>            :         extern void dposv_(char *UPLO, int *Np, int *NRHSp, double *A,
+<span class="lineNum">     597 </span>            :                         int *LDAp, double *B, int *LDBp, int *INFOp);
+<span class="lineNum">     598 </span>            :         int INFO;
+<span class="lineNum">     599 </span><span class="lineCov">        467 :         dposv_(&amp;UPLO, &amp;N, &amp;NRHS, A, &amp;LDA, B, &amp;LDB, &amp;INFO);</span>
+<span class="lineNum">     600 </span><span class="lineCov">        467 :         return INFO;</span>
+<span class="lineNum">     601 </span>            : }
+<span class="lineNum">     602 </span>            : 
+<span class="lineNum">     603 </span>            : /**
+<span class="lineNum">     604 </span>            :  * @brief Solve a system of equations AX = B where A is symmetric.
+<span class="lineNum">     605 </span>            :  *
+<span class="lineNum">     606 </span>            :  * @details
+<span class="lineNum">     607 </span>            :  * Solve a linear system of equations AX = B where A is symmetric. This
+<span class="lineNum">     608 </span>            :  * function is a wrapper for the external LAPACK routine dsysv.
+<span class="lineNum">     609 </span>            :  *
+<span class="lineNum">     610 </span>            :  * @param[in]           UPLO    which triangle of A is stored
+<span class="lineNum">     611 </span>            :  * @param[in]           N       order of A
+<span class="lineNum">     612 </span>            :  * @param[in]           NRHS    number of columns of B
+<span class="lineNum">     613 </span>            :  * @param[in,out]       A       double precision array of size (LDA, N). On
+<span class="lineNum">     614 </span>            :  *                              exit contains the block diagonal matrix D and
+<span class="lineNum">     615 </span>            :  *                              the multipliers used to obtain the factor U or
+<span class="lineNum">     616 </span>            :  *                              L from the factorization A = U*D*U**T or
+<span class="lineNum">     617 </span>            :  *                              A = L*D*L**T.
+<span class="lineNum">     618 </span>            :  * @param[in]           LDA     leading dimension of A
+<span class="lineNum">     619 </span>            :  * @param[in]           IPIV    integer array containing the details of D
+<span class="lineNum">     620 </span>            :  * @param[in,out]       B       double precision array of size (LDB, NRHS). On
+<span class="lineNum">     621 </span>            :  *                              exit contains the N-by-NRHS matrix X
+<span class="lineNum">     622 </span>            :  * @param[in]           LDB     leading dimension of B
+<span class="lineNum">     623 </span>            :  * @param[out]          WORK    double precision array of size max(1,LWORK). On
+<span class="lineNum">     624 </span>            :  *                              exit, WORK(1) contains the optimal LWORK
+<span class="lineNum">     625 </span>            :  * @param[in]           LWORK   the length of WORK, can be used for determining
+<span class="lineNum">     626 </span>            :  *                              the optimal blocksize for dsystrf.
+<span class="lineNum">     627 </span>            :  * @returns                     info parameter which contains the status of the
+<span class="lineNum">     628 </span>            :  *                              computation:
+<span class="lineNum">     629 </span>            :  *                                      - =0:   success
+<span class="lineNum">     630 </span>            :  *                                      - &lt;0:        if -i, the i-th argument had an
+<span class="lineNum">     631 </span>            :  *                                              illegal value
+<span class="lineNum">     632 </span>            :  *                                      - &gt;0:        if i, D(i, i) is exactly zero,
+<span class="lineNum">     633 </span>            :  *                                              no solution can be computed.
+<span class="lineNum">     634 </span>            :  *
+<span class="lineNum">     635 </span>            :  * See the LAPACK documentation at:
+<a name="636"><span class="lineNum">     636 </span>            :  * http://www.netlib.org/lapack/explore-html/d6/d0e/group__double_s_ysolve.html</a>
+<span class="lineNum">     637 </span>            :  */
+<span class="lineNum">     638 </span><span class="lineCov">          2 : int dsysv(char UPLO, int N, int NRHS, double *A, int LDA, int *IPIV,</span>
+<span class="lineNum">     639 </span>            :                 double *B, int LDB, double *WORK, int LWORK)
+<span class="lineNum">     640 </span>            : {
+<span class="lineNum">     641 </span>            :         extern void dsysv_(char *UPLO, int *Np, int *NRHSp, double *A,
+<span class="lineNum">     642 </span>            :                         int *LDAp, int *IPIV, double *B, int *LDBp,
+<span class="lineNum">     643 </span>            :                         double *WORK, int *LWORK, int *INFOp);
+<span class="lineNum">     644 </span>            :         int INFO;
+<span class="lineNum">     645 </span><span class="lineCov">          2 :         dsysv_(&amp;UPLO, &amp;N, &amp;NRHS, A, &amp;LDA, IPIV, B, &amp;LDB, WORK, &amp;LWORK, &amp;INFO);</span>
+<span class="lineNum">     646 </span><span class="lineCov">          2 :         return INFO;</span>
+<span class="lineNum">     647 </span>            : }
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.12</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

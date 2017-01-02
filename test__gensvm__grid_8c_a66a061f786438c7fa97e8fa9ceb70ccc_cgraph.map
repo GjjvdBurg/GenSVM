@@ -1,0 +1,4 @@
+<map id="test_init_free_grid" name="test_init_free_grid">
+<area shape="rect" id="node2" href="$gensvm__grid_8h.html#a5ce36e116f6632459b6d8dcda774bd3b" title="Initialize a GenGrid structure. " alt="" coords="195,5,330,32"/>
+<area shape="rect" id="node3" href="$gensvm__grid_8h.html#a84c9f299f051a755f1019beeea1ffa8a" title="Free a GenGrid structure. " alt="" coords="193,56,332,83"/>
+</map>

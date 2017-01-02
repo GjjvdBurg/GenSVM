@@ -1,0 +1,12 @@
+<map id="test_init_null_sparse" name="test_init_null_sparse">
+<area shape="rect" id="node2" href="$gensvm__base_8h.html#a96f35734dcba63d95e08addd2dabce3d" title="Initialize a GenModel structure. " alt="" coords="229,5,380,32"/>
+<area shape="rect" id="node3" href="$gensvm__base_8h.html#a2123ffe5f44db584421e139be7d31b6c" title="Initialize a GenData structure. " alt="" coords="235,56,374,83"/>
+<area shape="rect" id="node4" href="$gensvm__base_8h.html#a3b6c01ec77b5726843f7dd6c68593f6a" title="Allocate memory for a GenModel. " alt="" coords="214,107,395,133"/>
+<area shape="rect" id="node5" href="$gensvm__sparse_8h.html#a331d6368a9fdca45c86ec68401344acc" title="Convert a dense matrix to a GenSparse structure if advantageous. " alt="" coords="209,157,400,184"/>
+<area shape="rect" id="node8" href="$gensvm__init_8h.html#a53ecc294597cda7237800957f8cd4077" title="Seed the matrix V from an existing model or using rand. " alt="" coords="245,208,364,235"/>
+<area shape="rect" id="node9" href="$gensvm__base_8h.html#a0cf72f34706ed286c922ce74ee11f0be" title="Free allocated GenModel struct. " alt="" coords="227,259,382,285"/>
+<area shape="rect" id="node10" href="$gensvm__base_8h.html#a98f3696d492bec4485e3f2a42062705f" title="Free allocated GenData struct. " alt="" coords="233,309,376,336"/>
+<area shape="rect" id="node6" href="$gensvm__sparse_8c.html#a88aab6b67242e2a4993a5c9c796161e7" title="Count the number of nonzeros in a matrix. " alt="" coords="453,132,600,159"/>
+<area shape="rect" id="node7" href="$gensvm__sparse_8c.html#ac45d0a15c75382ad8f3f4232eadf9f4d" title="Initialize a GenSparse structure. " alt="" coords="451,183,603,209"/>
+<area shape="rect" id="node11" href="$gensvm__sparse_8h.html#a1bd9399ffc0b5e4d32ac160eb3143864" title="Free an allocated GenSparse structure. " alt="" coords="448,309,605,336"/>
+</map>

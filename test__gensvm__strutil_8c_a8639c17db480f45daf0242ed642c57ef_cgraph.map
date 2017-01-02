@@ -1,0 +1,21 @@
+<map id="all_tests" name="all_tests">
+<area shape="rect" id="node2" href="$test__gensvm__strutil_8c.html#ae742c7638d366323c4a8cb17e0edeace" title="test_str_startswith" alt="" coords="137,5,280,32"/>
+<area shape="rect" id="node4" href="$test__gensvm__strutil_8c.html#ac1ab8dd18e1371ad8ee91647efe13d7b" title="test_str_endswith" alt="" coords="140,56,277,83"/>
+<area shape="rect" id="node6" href="$test__gensvm__strutil_8c.html#ad7a08663a55d545f53273fc551e94517" title="test_get_line" alt="" coords="155,107,262,133"/>
+<area shape="rect" id="node9" href="$test__gensvm__strutil_8c.html#a813e85914152bb6e87c6a3720ff57fff" title="test_next_line" alt="" coords="151,208,266,235"/>
+<area shape="rect" id="node12" href="$test__gensvm__strutil_8c.html#a72a5f851d06c6b5c139f1112dc65adeb" title="test_get_fmt_double" alt="" coords="131,157,287,184"/>
+<area shape="rect" id="node14" href="$test__gensvm__strutil_8c.html#ab2794d03c6480c15b7de64c883fb9bf3" title="test_get_fmt_long" alt="" coords="139,259,279,285"/>
+<area shape="rect" id="node16" href="$test__gensvm__strutil_8c.html#a956d7f9134cf9871bc637aa8c5f75f53" title="test_all_doubles_str" alt="" coords="133,309,285,336"/>
+<area shape="rect" id="node18" href="$test__gensvm__strutil_8c.html#a3a60c3b6ecb590e20caa7b29863a405d" title="test_all_longs_str" alt="" coords="141,360,277,387"/>
+<area shape="rect" id="node20" href="$test__gensvm__strutil_8c.html#a60fe8f5e6d8a103f9d26058e817220cf" title="RUN_TESTS" alt="" coords="159,411,258,437"/>
+<area shape="rect" id="node3" href="$gensvm__strutil_8h.html#a570421cc0b9c879c40c47d00a6f8a451" title="Check if a string starts with a prefix. " alt="" coords="341,5,452,32"/>
+<area shape="rect" id="node5" href="$gensvm__strutil_8h.html#a4481fd978f0a7d409f114c6a7538687b" title="Check if a string ends with a suffix. " alt="" coords="344,56,449,83"/>
+<area shape="rect" id="node7" href="$gensvm__strutil_8h.html#a5f31076701ddd365a6aed7bf1e6b112a" title="Read line to buffer. " alt="" coords="507,107,581,133"/>
+<area shape="rect" id="node8" href="$gensvm__print_8h.html#aede5746344fdce99647541101eaa7f06" title="Parse a formatted string and write it to standard error. " alt="" coords="629,183,669,209"/>
+<area shape="rect" id="node10" href="$gensvm__strutil_8h.html#a03a01f022e5d81bdb10252522b04600e" title="Move to next line in file. " alt="" coords="355,208,438,235"/>
+<area shape="rect" id="node11" href="$gensvm__strutil_8c.html#a5f31076701ddd365a6aed7bf1e6b112a" title="Read line to buffer. " alt="" coords="507,208,581,235"/>
+<area shape="rect" id="node13" href="$gensvm__strutil_8h.html#ae76e5f1b62e076a3a4fd927e94cb19a6" title="Read a double from file following a format. " alt="" coords="335,157,459,184"/>
+<area shape="rect" id="node15" href="$gensvm__strutil_8h.html#ae20606d277ab18ca461d25cb1f7dab1c" title="Read a long integer from file following a format. " alt="" coords="343,259,451,285"/>
+<area shape="rect" id="node17" href="$gensvm__strutil_8h.html#aecc1daeb8a1b1ad4a7c4c73a4fef9548" title="Read all doubles in a given buffer. " alt="" coords="337,309,457,336"/>
+<area shape="rect" id="node19" href="$gensvm__strutil_8h.html#a8f958e58e7f104700e535c58491f9a59" title="Read all longs in a given buffer. " alt="" coords="345,360,449,387"/>
+</map>

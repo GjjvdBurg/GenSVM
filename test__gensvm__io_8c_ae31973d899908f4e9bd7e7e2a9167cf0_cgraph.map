@@ -1,0 +1,10 @@
+<map id="test_gensvm_read_model" name="test_gensvm_read_model">
+<area shape="rect" id="node2" href="$gensvm__base_8h.html#a96f35734dcba63d95e08addd2dabce3d" title="Initialize a GenModel structure. " alt="" coords="248,6,399,32"/>
+<area shape="rect" id="node3" href="$gensvm__io_8h.html#a2237681bee86e09e97aafdd3a3cdf9bb" title="Read model from file. " alt="" coords="244,56,403,83"/>
+<area shape="rect" id="node9" href="$gensvm__base_8h.html#a0cf72f34706ed286c922ce74ee11f0be" title="Free allocated GenModel struct. " alt="" coords="246,107,401,134"/>
+<area shape="rect" id="node4" href="$gensvm__print_8h.html#aede5746344fdce99647541101eaa7f06" title="Parse a formatted string and write it to standard error. " alt="" coords="745,56,785,83"/>
+<area shape="rect" id="node5" href="$gensvm__strutil_8h.html#a03a01f022e5d81bdb10252522b04600e" title="Move to next line in file. " alt="" coords="471,82,554,108"/>
+<area shape="rect" id="node7" href="$gensvm__strutil_8h.html#ae76e5f1b62e076a3a4fd927e94cb19a6" title="Read a double from file following a format. " alt="" coords="451,31,575,58"/>
+<area shape="rect" id="node8" href="$gensvm__strutil_8h.html#ae20606d277ab18ca461d25cb1f7dab1c" title="Read a long integer from file following a format. " alt="" coords="459,132,567,159"/>
+<area shape="rect" id="node6" href="$gensvm__strutil_8c.html#a5f31076701ddd365a6aed7bf1e6b112a" title="Read line to buffer. " alt="" coords="623,82,697,108"/>
+</map>

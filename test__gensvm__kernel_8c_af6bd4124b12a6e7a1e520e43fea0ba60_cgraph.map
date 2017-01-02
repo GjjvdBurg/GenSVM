@@ -1,0 +1,12 @@
+<map id="test_kernel_cross_poly" name="test_kernel_cross_poly">
+<area shape="rect" id="node2" href="$gensvm__base_8h.html#a96f35734dcba63d95e08addd2dabce3d" title="Initialize a GenModel structure. " alt="" coords="230,5,381,32"/>
+<area shape="rect" id="node3" href="$gensvm__base_8h.html#a2123ffe5f44db584421e139be7d31b6c" title="Initialize a GenData structure. " alt="" coords="236,56,375,83"/>
+<area shape="rect" id="node4" href="$gensvm__kernel_8h.html#abe3161aaaef57e62c2c9a6ae71b2127e" title="Compute the kernel crossproduct between two datasets. " alt="" coords="224,107,387,133"/>
+<area shape="rect" id="node9" href="$gensvm__base_8h.html#a0cf72f34706ed286c922ce74ee11f0be" title="Free allocated GenModel struct. " alt="" coords="228,157,383,184"/>
+<area shape="rect" id="node10" href="$gensvm__base_8h.html#a98f3696d492bec4485e3f2a42062705f" title="Free allocated GenData struct. " alt="" coords="234,208,377,235"/>
+<area shape="rect" id="node5" href="$gensvm__kernel_8c.html#a46cc9302c9eaf45858a807ffdf052ebf" title="Compute the polynomial kernel between two vectors. " alt="" coords="447,5,632,32"/>
+<area shape="rect" id="node6" href="$gensvm__kernel_8c.html#ac084336bb477beb37723d987457a5b7d" title="Compute the RBF kernel between two vectors. " alt="" coords="452,56,627,83"/>
+<area shape="rect" id="node7" href="$gensvm__kernel_8c.html#af3f724b2781532a0b14c58a24b49147f" title="Compute the sigmoid kernel between two vectors. " alt="" coords="435,107,644,133"/>
+<area shape="rect" id="node8" href="$gensvm__print_8h.html#aede5746344fdce99647541101eaa7f06" title="Parse a formatted string and write it to standard error. " alt="" coords="519,157,559,184"/>
+<area shape="rect" id="node11" href="$gensvm__sparse_8h.html#a1bd9399ffc0b5e4d32ac160eb3143864" title="Free an allocated GenSparse structure. " alt="" coords="461,208,618,235"/>
+</map>

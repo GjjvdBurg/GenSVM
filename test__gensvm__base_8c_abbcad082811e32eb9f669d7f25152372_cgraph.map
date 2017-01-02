@@ -1,0 +1,4 @@
+<map id="test_init_free_data_2" name="test_init_free_data_2">
+<area shape="rect" id="node2" href="$gensvm__base_8h.html#a98f3696d492bec4485e3f2a42062705f" title="Free allocated GenData struct. " alt="" coords="212,5,355,32"/>
+<area shape="rect" id="node3" href="$gensvm__sparse_8h.html#a1bd9399ffc0b5e4d32ac160eb3143864" title="Free an allocated GenSparse structure. " alt="" coords="403,5,560,32"/>
+</map>
