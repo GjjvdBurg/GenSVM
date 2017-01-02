@@ -12,3 +12,4 @@ gensvm_grid
 *.gcda
 cover/*
 tests/bin/*
+doc/html/
