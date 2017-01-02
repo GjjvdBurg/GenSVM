@@ -229,8 +229,7 @@ double gensvm_get_alpha_beta(struct GenModel *model, struct GenData *data,
 		long i, double *beta)
 {
 	bool simple;
-	long j,
-	     K = model->K;
+	long j, K = model->K;
 	double omega, a, b_aq = 0.0,
 	       alpha = 0.0;
 	double *uu_row = NULL;
@@ -330,6 +329,7 @@ void gensvm_get_update(struct GenModel *model, struct GenData *data,
 	long m = model->m;
 	long K = model->K;
 
+	// compute the ZAZ and ZB matrices
 	gensvm_get_ZAZ_ZB(model, data, work);
 
 	// Calculate right-hand side of system we want to solve
@@ -495,7 +495,7 @@ void gensvm_get_ZAZ_ZB_sparse(struct GenModel *model, struct GenData *data,
 
 	// calculate ZAZ using blocks of rows of Z. This helps avoiding 
 	// rounding errors, which increases precision, and in turn helps 
-	// convergion of the IM algorithm.
+	// convergence of the IM algorithm.
 	// see also: http://stackoverflow.com/q/40286989/
 	n_blocks = floor(n_row / GENSVM_BLOCK_SIZE);
 	rem_size = n_row % GENSVM_BLOCK_SIZE;
