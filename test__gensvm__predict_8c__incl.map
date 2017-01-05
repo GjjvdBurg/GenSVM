@@ -1,6 +1,6 @@
 <map id="tests/src/test_gensvm_predict.c" name="tests/src/test_gensvm_predict.c">
 <area shape="rect" id="node2" href="$minunit_8h.html" title="Minimal unit testing framework for C. " alt="" coords="187,319,271,345"/>
-<area shape="rect" id="node8" href="$gensvm__predict_8h.html" title="Header file for gensvm_predict.c. " alt="" coords="353,95,491,121"/>
+<area shape="rect" id="node8" href="$gensvm__predict_8h.html" title="Header file for gensvm_predict.c. " alt="" coords="349,95,487,121"/>
 <area shape="rect" id="node3" href="$dbg_8h.html" title="Debug macros for the minunit framework. " alt="" coords="199,393,258,420"/>
 <area shape="rect" id="node9" href="$gensvm__kernel_8h.html" title="Header file for gensvm_kernel.c. " alt="" coords="273,169,408,196"/>
 <area shape="rect" id="node22" href="$gensvm__simplex_8h.html" title="Header file for gensvm_simplex.c. " alt="" coords="432,169,577,196"/>

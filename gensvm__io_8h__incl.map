@@ -1,5 +1,5 @@
 <map id="include/gensvm_io.h" name="include/gensvm_io.h">
-<area shape="rect" id="node2" href="$gensvm__base_8h.html" title="Header file for gensvm_base.c. " alt="" coords="441,80,565,107"/>
+<area shape="rect" id="node2" href="$gensvm__base_8h.html" title="Header file for gensvm_base.c. " alt="" coords="442,80,566,107"/>
 <area shape="rect" id="node18" href="$gensvm__print_8h.html" title="Header file for gensvm_print.c. " alt="" coords="571,155,693,181"/>
 <area shape="rect" id="node19" href="$gensvm__strutil_8h.html" title="Header file for gensvm_strutil.c. " alt="" coords="665,80,796,107"/>
 <area shape="rect" id="node3" href="$gensvm__sparse_8h.html" title="Header file for gensvm_sparse.c. " alt="" coords="411,155,547,181"/>

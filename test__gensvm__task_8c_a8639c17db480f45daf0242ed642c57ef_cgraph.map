@@ -9,14 +9,14 @@
 <area shape="rect" id="node19" href="$test__gensvm__task_8c.html#ad06e8c33c43dd8511db578c41b0e580c" title="test_copy_task_sigmoid" alt="" coords="134,391,313,418"/>
 <area shape="rect" id="node20" href="$test__gensvm__task_8c.html#af66665210d7297be1664827f19f5e180" title="test_copy_task_poly" alt="" coords="146,442,301,469"/>
 <area shape="rect" id="node21" href="$test__gensvm__task_8c.html#a60fe8f5e6d8a103f9d26058e817220cf" title="RUN_TESTS" alt="" coords="174,493,273,519"/>
-<area shape="rect" id="node3" href="$gensvm__task_8h.html#a138c30cecb1cf46a002cd6581328a33c" title="Initialize a GenTask structure. " alt="" coords="384,221,521,247"/>
-<area shape="rect" id="node4" href="$gensvm__task_8h.html#aa22ce798ccd7bba8c6e7861d92e51b0e" title="Free the GenTask struct. " alt="" coords="381,271,524,298"/>
-<area shape="rect" id="node6" href="$gensvm__base_8h.html#a96f35734dcba63d95e08addd2dabce3d" title="Initialize a GenModel structure. " alt="" coords="377,50,528,77"/>
-<area shape="rect" id="node7" href="$gensvm__task_8h.html#ad23d6b46f7554c1598f62619486f438e" title="Copy parameters from GenTask to GenModel. " alt="" coords="364,101,541,127"/>
-<area shape="rect" id="node8" href="$gensvm__base_8h.html#a0cf72f34706ed286c922ce74ee11f0be" title="Free allocated GenModel struct. " alt="" coords="375,151,530,178"/>
-<area shape="rect" id="node13" href="$gensvm__base_8h.html#a2123ffe5f44db584421e139be7d31b6c" title="Initialize a GenData structure. " alt="" coords="383,341,522,367"/>
-<area shape="rect" id="node14" href="$gensvm__task_8h.html#a7cac73e4b9ba194849ff6bc4a46115b8" title="Deepcopy a GenTask struct. " alt="" coords="379,391,526,418"/>
-<area shape="rect" id="node16" href="$gensvm__base_8h.html#a98f3696d492bec4485e3f2a42062705f" title="Free allocated GenData struct. " alt="" coords="381,442,524,469"/>
-<area shape="rect" id="node15" href="$gensvm__task_8c.html#a138c30cecb1cf46a002cd6581328a33c" title="Initialize a GenTask structure. " alt="" coords="599,391,737,418"/>
-<area shape="rect" id="node17" href="$gensvm__sparse_8h.html#a1bd9399ffc0b5e4d32ac160eb3143864" title="Free an allocated GenSparse structure. " alt="" coords="589,442,747,469"/>
+<area shape="rect" id="node3" href="$gensvm__task_8h.html#a138c30cecb1cf46a002cd6581328a33c" title="Initialize a GenTask structure. " alt="" coords="384,209,521,235"/>
+<area shape="rect" id="node4" href="$gensvm__task_8h.html#aa22ce798ccd7bba8c6e7861d92e51b0e" title="Free the GenTask struct. " alt="" coords="381,259,524,286"/>
+<area shape="rect" id="node6" href="$gensvm__base_8h.html#a96f35734dcba63d95e08addd2dabce3d" title="Initialize a GenModel structure. " alt="" coords="377,53,528,79"/>
+<area shape="rect" id="node7" href="$gensvm__task_8h.html#ad23d6b46f7554c1598f62619486f438e" title="Copy parameters from GenTask to GenModel. " alt="" coords="364,103,541,130"/>
+<area shape="rect" id="node8" href="$gensvm__base_8h.html#a0cf72f34706ed286c922ce74ee11f0be" title="Free allocated GenModel struct. " alt="" coords="375,154,530,181"/>
+<area shape="rect" id="node13" href="$gensvm__base_8h.html#a2123ffe5f44db584421e139be7d31b6c" title="Initialize a GenData structure. " alt="" coords="383,318,522,345"/>
+<area shape="rect" id="node14" href="$gensvm__task_8h.html#a7cac73e4b9ba194849ff6bc4a46115b8" title="Deepcopy a GenTask struct. " alt="" coords="379,369,526,395"/>
+<area shape="rect" id="node16" href="$gensvm__base_8h.html#a98f3696d492bec4485e3f2a42062705f" title="Free allocated GenData struct. " alt="" coords="381,419,524,446"/>
+<area shape="rect" id="node15" href="$gensvm__task_8c.html#a138c30cecb1cf46a002cd6581328a33c" title="Initialize a GenTask structure. " alt="" coords="599,369,737,395"/>
+<area shape="rect" id="node17" href="$gensvm__sparse_8h.html#a1bd9399ffc0b5e4d32ac160eb3143864" title="Free an allocated GenSparse structure. " alt="" coords="589,419,747,446"/>
 </map>

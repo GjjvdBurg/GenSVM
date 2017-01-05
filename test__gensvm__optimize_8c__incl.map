@@ -1,15 +1,15 @@
 <map id="tests/src/test_gensvm_optimize.c" name="tests/src/test_gensvm_optimize.c">
-<area shape="rect" id="node2" href="$minunit_8h.html" title="Minimal unit testing framework for C. " alt="" coords="49,319,133,345"/>
-<area shape="rect" id="node8" href="$gensvm__optimize_8h.html" title="Header file for gensvm_optimize.c. " alt="" coords="309,95,460,121"/>
-<area shape="rect" id="node26" href="$gensvm__init_8h.html" title="Header file for gensvm_init.c. " alt="" coords="129,95,243,121"/>
-<area shape="rect" id="node3" href="$dbg_8h.html" title="Debug macros for the minunit framework. " alt="" coords="153,393,211,420"/>
-<area shape="rect" id="node9" href="$gensvm__sv_8h.html" title="Header file for gensvm_sv.c. " alt="" coords="331,169,438,196"/>
-<area shape="rect" id="node22" href="$gensvm__simplex_8h.html" title="Header file for gensvm_simplex.c. " alt="" coords="463,169,608,196"/>
-<area shape="rect" id="node23" href="$gensvm__update_8h.html" title="Header file for gensvm_update.c. " alt="" coords="633,169,771,196"/>
-<area shape="rect" id="node25" href="$gensvm__zv_8h.html" title="Header file for gensvm_zv.c. " alt="" coords="201,169,307,196"/>
-<area shape="rect" id="node10" href="$gensvm__base_8h.html" title="Header file for gensvm_base.c. " alt="" coords="336,244,460,271"/>
-<area shape="rect" id="node11" href="$gensvm__sparse_8h.html" title="Header file for gensvm_sparse.c. " alt="" coords="371,319,507,345"/>
-<area shape="rect" id="node12" href="$gensvm__globals_8h.html" title="Global definitions. " alt="" coords="460,393,600,420"/>
+<area shape="rect" id="node2" href="$minunit_8h.html" title="Minimal unit testing framework for C. " alt="" coords="83,319,167,345"/>
+<area shape="rect" id="node8" href="$gensvm__optimize_8h.html" title="Header file for gensvm_optimize.c. " alt="" coords="343,95,493,121"/>
+<area shape="rect" id="node26" href="$gensvm__init_8h.html" title="Header file for gensvm_init.c. " alt="" coords="162,95,277,121"/>
+<area shape="rect" id="node3" href="$dbg_8h.html" title="Debug macros for the minunit framework. " alt="" coords="135,393,194,420"/>
+<area shape="rect" id="node9" href="$gensvm__sv_8h.html" title="Header file for gensvm_sv.c. " alt="" coords="365,169,471,196"/>
+<area shape="rect" id="node22" href="$gensvm__simplex_8h.html" title="Header file for gensvm_simplex.c. " alt="" coords="496,169,641,196"/>
+<area shape="rect" id="node23" href="$gensvm__update_8h.html" title="Header file for gensvm_update.c. " alt="" coords="666,169,805,196"/>
+<area shape="rect" id="node25" href="$gensvm__zv_8h.html" title="Header file for gensvm_zv.c. " alt="" coords="234,169,341,196"/>
+<area shape="rect" id="node10" href="$gensvm__base_8h.html" title="Header file for gensvm_base.c. " alt="" coords="399,244,523,271"/>
+<area shape="rect" id="node11" href="$gensvm__sparse_8h.html" title="Header file for gensvm_sparse.c. " alt="" coords="414,319,550,345"/>
+<area shape="rect" id="node12" href="$gensvm__globals_8h.html" title="Global definitions. " alt="" coords="483,393,623,420"/>
 <area shape="rect" id="node13" href="$gensvm__memory_8h.html" title="Header file for gensvm_memory.c. " alt="" coords="765,468,911,495"/>
-<area shape="rect" id="node24" href="$gensvm__print_8h.html" title="Header file for gensvm_print.c. " alt="" coords="582,244,705,271"/>
+<area shape="rect" id="node24" href="$gensvm__print_8h.html" title="Header file for gensvm_print.c. " alt="" coords="631,244,754,271"/>
 </map>

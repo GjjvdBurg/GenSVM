@@ -11,11 +11,11 @@
 <area shape="rect" id="node4" href="$gensvm__consistency_8h.html" title="Header file for gensvm_consistency.c. " alt="" coords="569,251,788,278"/>
 <area shape="rect" id="node8" href="$gensvm__gridsearch_8h.html" title="Header file for gensvm_gridsearch.c. " alt="" coords="813,251,1025,278"/>
 <area shape="rect" id="node11" href="$gensvm__cross__validation_8c.html" title="Function for running cross validation on GenModel. " alt="" coords="1049,251,1271,278"/>
-<area shape="rect" id="node5" href="$gensvm__consistency_8c.html" title="Functions for running consistency repeats. " alt="" coords="523,341,714,367"/>
-<area shape="rect" id="node6" href="$GenSVMgrid_8c.html" title="Command line interface for the grid search program. " alt="" coords="738,341,873,367"/>
-<area shape="rect" id="node7" href="$test__gensvm__consistency_8c.html" title="Unit tests for gensvm_consistency.c. " alt="" coords="333,333,499,375"/>
-<area shape="rect" id="node9" href="$gensvm__gridsearch_8c.html" title="Functions for finding the optimal parameters for the dataset. " alt="" coords="1087,341,1270,367"/>
-<area shape="rect" id="node10" href="$test__gensvm__gridsearch_8c.html" title="Unit tests for gensvm_gridsearch.c. " alt="" coords="897,333,1063,375"/>
+<area shape="rect" id="node5" href="$gensvm__consistency_8c.html" title="Functions for running consistency repeats. " alt="" coords="522,341,713,367"/>
+<area shape="rect" id="node6" href="$GenSVMgrid_8c.html" title="Command line interface for the grid search program. " alt="" coords="737,341,871,367"/>
+<area shape="rect" id="node7" href="$test__gensvm__consistency_8c.html" title="Unit tests for gensvm_consistency.c. " alt="" coords="332,333,497,375"/>
+<area shape="rect" id="node9" href="$gensvm__gridsearch_8c.html" title="Functions for finding the optimal parameters for the dataset. " alt="" coords="1086,341,1269,367"/>
+<area shape="rect" id="node10" href="$test__gensvm__gridsearch_8c.html" title="Unit tests for gensvm_gridsearch.c. " alt="" coords="896,333,1061,375"/>
 <area shape="rect" id="node13" href="$gensvm__train_8c.html" title="Main function for training a GenSVM model. " alt="" coords="210,251,355,278"/>
 <area shape="rect" id="node14" href="$GenSVMtraintest_8c.html" title="Command line interface for training and testing with a GenSVM model. " alt="" coords="380,251,545,278"/>
 <area shape="rect" id="node15" href="$test__gensvm__train_8c.html" title="Unit tests for gensvm_train.c functions. " alt="" coords="20,244,185,285"/>

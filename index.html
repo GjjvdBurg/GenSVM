@@ -62,14 +62,13 @@ $(function() {
 <div class="title">GenSVM C Package </div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><p>GenSVM: A Generalized Multiclass Support Vector Machine.</p>
-<p>Author: Gertjan van den Burg (<a href="#" onclick="location.href='mai'+'lto:'+'ger'+'tj'+'anv'+'an'+'den'+'bu'+'rg@'+'gm'+'ail'+'.c'+'om'; return false;">gertj<span style="display: none;">.nosp@m.</span>anva<span style="display: none;">.nosp@m.</span>ndenb<span style="display: none;">.nosp@m.</span>urg@<span style="display: none;">.nosp@m.</span>gmail<span style="display: none;">.nosp@m.</span>.com</a>)</p>
+<div class="textblock"><p>Paper: <a href="http://jmlr.org/papers/v17/14-526.html">GenSVM: A Generalized Multiclass Support Vector Machine</a> by G.J.J. van den Burg and P.J.F. Groenen (<em>Journal of Machine Learning Research</em>, 2016).</p>
 <p>GitHub: <a href="https://github.com/GjjvdBurg/GenSVM">https://github.com/GjjvdBurg/GenSVM</a></p>
 <h2>Introduction </h2>
 <p>This is the C library for the GenSVM method. GenSVM is a general multiclass support vector machine, which you can use for classification problems with multiple classes. Training GenSVM in cross-validation or grid search setups can be done efficiently due to the ability to use warm starts. See the <a href="http://jmlr.org/papers/v17/14-526.html">paper</a> for more information, and Usage below for how to use GenSVM.</p>
-<p>The library has support for datasets in <a href="https://members.loria.fr/FLauer/files/MSVMpack/MSVMpack.html">MSVMpack</a> and <a href="https://www.csie.ntu.edu.tw/~cjlin/libsvm/">LibSVM/SVMlight</a> format, and can take advantage of sparse datasets. There is also support for nonlinear GenSVM through kernels.</p>
-<p>For documentation on how the library is implemented, see the Doxygen documentation available <a href="https://gjjvdburg.github.io/GenSVM/">here</a>. There are also many unit tests, which you can use to further understand how the library works. Test coverage for the current version is reported <a href="https://gjjvdburg.github.io/GenSVM/cover">here</a>.</p>
-<p>This is the C library for GenSVM, which contains two executables for using the method. Python and R packages for GenSVM are planned. If you are interested in these, please express your interest for the Python package <a href="https://github.com/GjjvdBurg/GenSVM/issues/1">here</a> and for the R package <a href="https://github.com/GjjvdBurg/GenSVM/issues/2">here</a>.</p>
+<p>The library has support for datasets in <a href="https://members.loria.fr/FLauer/files/MSVMpack/MSVMpack.html">MSVMpack</a> and <a href="https://www.csie.ntu.edu.tw/~cjlin/libsvm/">LibSVM/SVMlight</a> format, and can take advantage of sparse datasets. There is also preliminary support for nonlinear GenSVM through kernels.</p>
+<p>For documentation on how the library is implemented, see the <a href="https://gjjvdburg.github.io/GenSVM/">Doxygen documentation available here</a>. There are also many unit tests, which you can use to further understand how the library works. For the latest version of the library you can view the <a href="https://gjjvdburg.github.io/GenSVM/cover">test coverage report</a> online.</p>
+<p>This is the C library for GenSVM which contains two executables for using the method. Python and R packages for GenSVM are planned. If you are interested in these, please express your interest for the Python package <a href="https://github.com/GjjvdBurg/GenSVM/issues/1">here</a> and for the R package <a href="https://github.com/GjjvdBurg/GenSVM/issues/2">here</a>.</p>
 <h2>Usage </h2>
 <p>First, download and compile the library. Minimal requirements for compilation are a working BLAS and LAPACK installation, which you can likely obtain from your package manager. It is however recommended to use ATLAS versions of these libraries, since this will give a significant increase in speed. If you choose not to use ATLAS, remove linking with <code>-latlas</code> in the <code>LDFLAGS</code> variable in the Makefile.</p>
 <p>Then, compile the library with a simple: </p><pre class="fragment">make
@@ -116,7 +115,7 @@ G.J.J. van den Burg
 email: gertjanvandenburg@gmail.com</pre> </div></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Mon Jan 2 2017 11:59:48 for GenSVM by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Thu Jan 5 2017 11:53:28 for GenSVM by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.12
 </small></address>

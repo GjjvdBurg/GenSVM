@@ -17,9 +17,9 @@
 <area shape="rect" id="node10" href="$gensvm__base_8h.html#a98f3696d492bec4485e3f2a42062705f" title="Free allocated GenData struct. " alt="" coords="399,56,541,83"/>
 <area shape="rect" id="node12" href="$gensvm__grid_8h.html#a84c9f299f051a755f1019beeea1ffa8a" title="Free a GenGrid structure. " alt="" coords="401,360,539,387"/>
 <area shape="rect" id="node7" href="$gensvm__task_8h.html#a138c30cecb1cf46a002cd6581328a33c" title="Initialize a GenTask structure. " alt="" coords="665,468,803,495"/>
-<area shape="rect" id="node9" href="$gensvm__task_8h.html#aa22ce798ccd7bba8c6e7861d92e51b0e" title="Free the GenTask struct. " alt="" coords="663,413,805,440"/>
+<area shape="rect" id="node9" href="$gensvm__task_8h.html#aa22ce798ccd7bba8c6e7861d92e51b0e" title="Free the GenTask struct. " alt="" coords="663,415,805,441"/>
 <area shape="rect" id="node11" href="$gensvm__sparse_8h.html#a1bd9399ffc0b5e4d32ac160eb3143864" title="Free an allocated GenSparse structure. " alt="" coords="655,56,813,83"/>
 <area shape="rect" id="node15" href="$gensvm__gridsearch_8h.html#a980959b41c1fbde84b7d9c299d66bac8" title="Check if the kernel parameters change between tasks. " alt="" coords="642,5,826,32"/>
-<area shape="rect" id="node19" href="$gensvm__gridsearch_8h.html#a3d559f87472e29126ad5b3f6271e266b" title="Print the description of the current task on screen. " alt="" coords="628,528,840,555"/>
-<area shape="rect" id="node20" href="$gensvm__print_8h.html#a4502a32a6f7952faad96b8e5c758a7f7" title="Parse a formatted string and write to the output stream. " alt="" coords="888,528,939,555"/>
+<area shape="rect" id="node19" href="$gensvm__gridsearch_8h.html#a3d559f87472e29126ad5b3f6271e266b" title="Print the description of the current task on screen. " alt="" coords="628,525,840,552"/>
+<area shape="rect" id="node20" href="$gensvm__print_8h.html#a4502a32a6f7952faad96b8e5c758a7f7" title="Parse a formatted string and write to the output stream. " alt="" coords="888,525,939,552"/>
 </map>

@@ -1,11 +1,11 @@
 <map id="include/gensvm_init.h" name="include/gensvm_init.h">
-<area shape="rect" id="node2" href="$gensvm__cross__validation_8h.html" title="Header file for gensvm_cross_validation.c. " alt="" coords="668,80,835,121"/>
+<area shape="rect" id="node2" href="$gensvm__cross__validation_8h.html" title="Header file for gensvm_cross_validation.c. " alt="" coords="669,80,836,121"/>
 <area shape="rect" id="node11" href="$gensvm__train_8h.html" title="Header file for gensvm_train.c. " alt="" coords="1083,87,1257,114"/>
 <area shape="rect" id="node15" href="$gensvm__init_8c.html" title="Functions for initializing model and data structures. " alt="" coords="1282,87,1418,114"/>
 <area shape="rect" id="node16" href="$test__gensvm__init_8c.html" title="Unit tests for gensvm_init.c functions. " alt="" coords="1442,80,1607,121"/>
 <area shape="rect" id="node17" href="$test__gensvm__optimize_8c.html" title="Unit tests for gensvm_optimize.c functions. " alt="" coords="1631,80,1797,121"/>
 <area shape="rect" id="node18" href="$test__gensvm__update_8c.html" title="Unit tests for gensvm_update.c functions. " alt="" coords="1821,80,1986,121"/>
-<area shape="rect" id="node3" href="$gensvm__consistency_8h.html" title="Header file for gensvm_consistency.c. " alt="" coords="223,177,442,203"/>
+<area shape="rect" id="node3" href="$gensvm__consistency_8h.html" title="Header file for gensvm_consistency.c. " alt="" coords="253,177,471,203"/>
 <area shape="rect" id="node7" href="$gensvm__gridsearch_8h.html" title="Header file for gensvm_gridsearch.c. " alt="" coords="525,177,737,203"/>
 <area shape="rect" id="node10" href="$gensvm__cross__validation_8c.html" title="Function for running cross validation on GenModel. " alt="" coords="762,177,983,203"/>
 <area shape="rect" id="node4" href="$gensvm__consistency_8c.html" title="Functions for running consistency repeats. " alt="" coords="5,266,196,293"/>

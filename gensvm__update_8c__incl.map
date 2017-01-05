@@ -1,6 +1,6 @@
 <map id="src/gensvm_update.c" name="src/gensvm_update.c">
 <area shape="rect" id="node2" href="$gensvm__update_8h.html" title="Header file for gensvm_update.c. " alt="" coords="563,80,701,107"/>
-<area shape="rect" id="node3" href="$gensvm__base_8h.html" title="Header file for gensvm_base.c. " alt="" coords="507,155,631,181"/>
+<area shape="rect" id="node3" href="$gensvm__base_8h.html" title="Header file for gensvm_base.c. " alt="" coords="521,155,645,181"/>
 <area shape="rect" id="node19" href="$gensvm__print_8h.html" title="Header file for gensvm_print.c. " alt="" coords="648,229,771,256"/>
 <area shape="rect" id="node4" href="$gensvm__sparse_8h.html" title="Header file for gensvm_sparse.c. " alt="" coords="488,229,624,256"/>
 <area shape="rect" id="node5" href="$gensvm__globals_8h.html" title="Global definitions. " alt="" coords="562,304,702,331"/>

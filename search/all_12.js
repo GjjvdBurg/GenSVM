@@ -1,6 +1,5 @@
 var searchData=
 [
-  ['todo',['TODO',['../md_TODO.html',1,'']]],
   ['tasks',['tasks',['../structGenQueue.html#a55b065a6eda83b4aa4122161e88ce03f',1,'GenQueue']]],
   ['test_5fall_5fdoubles_5fstr',['test_all_doubles_str',['../test__gensvm__strutil_8c.html#a956d7f9134cf9871bc637aa8c5f75f53',1,'test_gensvm_strutil.c']]],
   ['test_5fall_5flongs_5fstr',['test_all_longs_str',['../test__gensvm__strutil_8c.html#a3a60c3b6ecb590e20caa7b29863a405d',1,'test_gensvm_strutil.c']]],
@@ -171,7 +170,6 @@ var searchData=
   ['timer',['Timer',['../gensvm__timer_8h.html#acd5034c13fb7f8d19f9f4998bf86f063',1,'gensvm_timer.h']]],
   ['tmpzaz',['tmpZAZ',['../structGenWork.html#afcbeccb46033f3c7b1222e73ab79589c',1,'GenWork']]],
   ['todo_20list',['Todo List',['../todo.html',1,'']]],
-  ['todo_2emd',['TODO.md',['../TODO_8md.html',1,'']]],
   ['train_5fdata',['train_data',['../structGenTask.html#ab233bdc381c2b146ae22137ae9e2b037',1,'GenTask']]],
   ['train_5fdata_5ffile',['train_data_file',['../structGenGrid.html#a85dfaed39685199ce79b5a8f25c64a8c',1,'GenGrid']]],
   ['training_5ferror',['training_error',['../structGenModel.html#ad56215aef94efc33258b0236dab10355',1,'GenModel']]],

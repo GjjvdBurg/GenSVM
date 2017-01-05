@@ -14,10 +14,10 @@
 <area shape="rect" id="node46" href="$gensvm__timer_8h.html#a73278297dac3cd32d59f880dae85a471" title="Calculate the time between two time recordings. " alt="" coords="221,613,390,640"/>
 <area shape="rect" id="node47" href="$gensvm__gridsearch_8c.html#a3d559f87472e29126ad5b3f6271e266b" title="Print the description of the current task on screen. " alt="" coords="447,461,659,488"/>
 <area shape="rect" id="node48" href="$gensvm__base_8h.html#a0cf72f34706ed286c922ce74ee11f0be" title="Free allocated GenModel struct. " alt="" coords="228,1060,383,1087"/>
-<area shape="rect" id="node49" href="$gensvm__base_8h.html#a98f3696d492bec4485e3f2a42062705f" title="Free allocated GenData struct. " alt="" coords="234,1212,377,1239"/>
-<area shape="rect" id="node9" href="$gensvm__cv__util_8c.html#a68cce5815b1a10754a4b9b2315d1d563" title="Create train and test dataset for a CV split with sparse data. " alt="" coords="475,335,630,377"/>
-<area shape="rect" id="node11" href="$gensvm__cv__util_8c.html#a99a835eecb7ddafa52ba497a887b4f5b" title="Create train and test datasets for a CV split with dense data. " alt="" coords="475,270,630,311"/>
-<area shape="rect" id="node10" href="$gensvm__sparse_8h.html#ac45d0a15c75382ad8f3f4232eadf9f4d" title="Initialize a GenSparse structure. " alt="" coords="739,343,891,369"/>
+<area shape="rect" id="node49" href="$gensvm__base_8h.html#a98f3696d492bec4485e3f2a42062705f" title="Free allocated GenData struct. " alt="" coords="234,1161,377,1188"/>
+<area shape="rect" id="node9" href="$gensvm__cv__util_8c.html#a68cce5815b1a10754a4b9b2315d1d563" title="Create train and test dataset for a CV split with sparse data. " alt="" coords="475,334,630,375"/>
+<area shape="rect" id="node11" href="$gensvm__cv__util_8c.html#a99a835eecb7ddafa52ba497a887b4f5b" title="Create train and test datasets for a CV split with dense data. " alt="" coords="475,269,630,310"/>
+<area shape="rect" id="node10" href="$gensvm__sparse_8h.html#ac45d0a15c75382ad8f3f4232eadf9f4d" title="Initialize a GenSparse structure. " alt="" coords="739,341,891,368"/>
 <area shape="rect" id="node16" href="$gensvm__kernel_8h.html#a67af575255ad5d1d0b466338b6ce2143" title="Do the preprocessing steps needed to perform kernel GenSVM. " alt="" coords="453,672,653,699"/>
 <area shape="rect" id="node27" href="$gensvm__kernel_8h.html#a2b68a2eb99cc65b2e4548035ff29071a" title="Compute the kernel postprocessing factor. " alt="" coords="449,613,656,640"/>
 <area shape="rect" id="node17" href="$gensvm__kernel_8c.html#ac0c2480e55a32684801b7c63bbf63855" title="Compute the kernel matrix. " alt="" coords="722,613,909,640"/>
@@ -35,7 +35,7 @@
 <area shape="rect" id="node31" href="$gensvm__base_8h.html#a27542d9e799eb0e6f3cfdfa0934412fc" title="Reallocate memory for GenModel. " alt="" coords="455,1111,650,1137"/>
 <area shape="rect" id="node32" href="$gensvm__init_8h.html#a0cb86a00bfa52b2ebc86e2b98687928c" title="Initialize instance weights. " alt="" coords="455,908,650,935"/>
 <area shape="rect" id="node33" href="$gensvm__optimize_8h.html#afc45b0d1cbcf433860d4d268bc6e4cd7" title="The main training loop for GenSVM. " alt="" coords="483,1009,622,1036"/>
-<area shape="rect" id="node44" href="$gensvm__predict_8h.html#a9ea580930c4e052a9a57b35aade71a02" title="Predict class labels of data given and output in predy. " alt="" coords="467,1225,639,1252"/>
+<area shape="rect" id="node44" href="$gensvm__predict_8h.html#a9ea580930c4e052a9a57b35aade71a02" title="Predict class labels of data given and output in predy. " alt="" coords="467,1212,639,1239"/>
 <area shape="rect" id="node45" href="$gensvm__predict_8h.html#ac9f09ed40eaede14f2a701321d65620b" title="Calculate the predictive performance (percentage correct) " alt="" coords="463,1060,642,1087"/>
 <area shape="rect" id="node34" href="$gensvm__base_8h.html#a52120d849ff52751c7995c24dfa50f00" title="Initialize the workspace structure. " alt="" coords="745,883,886,909"/>
 <area shape="rect" id="node35" href="$gensvm__simplex_8h.html#ada27d56b6de435551330c8300e9089ea" title="Generate matrix of simplex vertex coordinates. " alt="" coords="749,1288,882,1315"/>
@@ -46,6 +46,6 @@
 <area shape="rect" id="node42" href="$gensvm__sv_8h.html#afc35a5c0358a51c8559fe780e7fee5ca" title="Calculate the number of support vectors in a model. " alt="" coords="749,1136,881,1163"/>
 <area shape="rect" id="node43" href="$gensvm__base_8h.html#a25a671211eb5a8e6b2b9ae214a8a6428" title="Free an allocated GenWork instance. " alt="" coords="742,1187,889,1213"/>
 <area shape="rect" id="node38" href="$gensvm__optimize_8c.html#a929b779c3a597dbe8f2fb763c4574221" title="Calculate the scalar errors. " alt="" coords="984,1263,1169,1289"/>
-<area shape="rect" id="node39" href="$gensvm__zv_8h.html#a2b2e19db75b36241c3d26b57b2a35901" title="Wrapper around sparse/dense versions of this function. " alt="" coords="1229,1301,1395,1328"/>
-<area shape="rect" id="node50" href="$gensvm__sparse_8h.html#a1bd9399ffc0b5e4d32ac160eb3143864" title="Free an allocated GenSparse structure. " alt="" coords="474,1276,631,1303"/>
+<area shape="rect" id="node39" href="$gensvm__zv_8h.html#a2b2e19db75b36241c3d26b57b2a35901" title="Wrapper around sparse/dense versions of this function. " alt="" coords="1229,1288,1395,1315"/>
+<area shape="rect" id="node50" href="$gensvm__sparse_8h.html#a1bd9399ffc0b5e4d32ac160eb3143864" title="Free an allocated GenSparse structure. " alt="" coords="474,1263,631,1289"/>
 </map>

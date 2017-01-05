@@ -25,6 +25,5 @@ var searchData=
   ['test_5fgensvm_5ftimer_2ec',['test_gensvm_timer.c',['../test__gensvm__timer_8c.html',1,'']]],
   ['test_5fgensvm_5ftrain_2ec',['test_gensvm_train.c',['../test__gensvm__train_8c.html',1,'']]],
   ['test_5fgensvm_5fupdate_2ec',['test_gensvm_update.c',['../test__gensvm__update_8c.html',1,'']]],
-  ['test_5fgensvm_5fzv_2ec',['test_gensvm_zv.c',['../test__gensvm__zv_8c.html',1,'']]],
-  ['todo_2emd',['TODO.md',['../TODO_8md.html',1,'']]]
+  ['test_5fgensvm_5fzv_2ec',['test_gensvm_zv.c',['../test__gensvm__zv_8c.html',1,'']]]
 ];

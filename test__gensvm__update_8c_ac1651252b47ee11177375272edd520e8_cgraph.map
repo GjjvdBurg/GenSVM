@@ -14,8 +14,8 @@
 <area shape="rect" id="node30" href="$gensvm__base_8h.html#a25a671211eb5a8e6b2b9ae214a8a6428" title="Free an allocated GenWork instance. " alt="" coords="264,613,411,640"/>
 <area shape="rect" id="node7" href="$gensvm__print_8h.html#aede5746344fdce99647541101eaa7f06" title="Parse a formatted string and write it to standard error. " alt="" coords="545,360,585,387"/>
 <area shape="rect" id="node11" href="$gensvm__zv_8h.html#a2b2e19db75b36241c3d26b57b2a35901" title="Wrapper around sparse/dense versions of this function. " alt="" coords="483,208,648,235"/>
-<area shape="rect" id="node12" href="$gensvm__zv_8c.html#af8b307056942df1b5397122666f48521" title="Compute the product Z*V for when Z is a sparse matrix. " alt="" coords="719,234,884,275"/>
-<area shape="rect" id="node13" href="$gensvm__zv_8c.html#a6c114c1ca777387a97e14879cec7f674" title="Compute the product Z*V for when Z is a dense matrix. " alt="" coords="719,169,884,210"/>
+<area shape="rect" id="node12" href="$gensvm__zv_8c.html#af8b307056942df1b5397122666f48521" title="Compute the product Z*V for when Z is a sparse matrix. " alt="" coords="719,233,884,274"/>
+<area shape="rect" id="node13" href="$gensvm__zv_8c.html#a6c114c1ca777387a97e14879cec7f674" title="Compute the product Z*V for when Z is a dense matrix. " alt="" coords="719,167,884,209"/>
 <area shape="rect" id="node16" href="$gensvm__update_8c.html#a9949f0ec9eae2316998136a89aeb2992" title="Wrapper around calculation of Z&#39;*A*Z and Z&#39;*B for sparse and dense. " alt="" coords="485,411,646,437"/>
 <area shape="rect" id="node25" href="$gensvm__update_8c.html#a762bfc3b570c8c1007dd0c8d8a27ae0d" title="Solve AX = B where A is symmetric positive definite. " alt="" coords="535,461,596,488"/>
 <area shape="rect" id="node26" href="$gensvm__update_8c.html#a015783619d7f097db396c176e0ff99a5" title="Solve a system of equations AX = B where A is symmetric. " alt="" coords="535,512,595,539"/>

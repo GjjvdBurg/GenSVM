@@ -1,7 +1,7 @@
 <map id="main" name="main">
 <area shape="rect" id="node2" href="$gensvm__grid_8h.html#a5ce36e116f6632459b6d8dcda774bd3b" title="Initialize a GenGrid structure. " alt="" coords="139,5,274,32"/>
 <area shape="rect" id="node3" href="$gensvm__base_8h.html#a2123ffe5f44db584421e139be7d31b6c" title="Initialize a GenData structure. " alt="" coords="390,512,529,539"/>
-<area shape="rect" id="node4" href="$gensvm__queue_8h.html#a85bebeae36b61f1ae570e36c9edc6233" title="Initialize a GenQueue structure. " alt="" coords="642,1424,791,1451"/>
+<area shape="rect" id="node4" href="$gensvm__queue_8h.html#a85bebeae36b61f1ae570e36c9edc6233" title="Initialize a GenQueue structure. " alt="" coords="642,1500,791,1527"/>
 <area shape="rect" id="node5" href="$gensvm__cmdarg_8h.html#aa1b20adf8fe527b35df95dececc48e7b" title="Check if any command line arguments contain string. " alt="" coords="129,1677,284,1704"/>
 <area shape="rect" id="node6" href="$gensvm__cmdarg_8h.html#a7d900efbe1fa276e0cd619f37b67242d" title="Check if a command line argument equals a string. " alt="" coords="117,1728,296,1755"/>
 <area shape="rect" id="node7" href="$GenSVMgrid_8c.html#a0187cca4c9e6d500ac362eefa3ddef7b" title="Help function. " alt="" coords="401,1779,518,1805"/>
@@ -13,7 +13,7 @@
 <area shape="rect" id="node22" href="$gensvm__io_8h.html#a3ad522e79e5e57c085146133e93a7bcb" title="Read data from file. " alt="" coords="386,56,533,83"/>
 <area shape="rect" id="node25" href="$gensvm__checks_8h.html#a7a431efee7c37f2157cf8bcfaf7752c0" title="Check if the labels are contiguous on [1 .. K]. " alt="" coords="115,1931,298,1973"/>
 <area shape="rect" id="node26" href="$gensvm__sparse_8h.html#a261308f5976bc6023e5e376b42986226" title="Convert a GenSparse structure to a dense matrix. " alt="" coords="111,1997,302,2024"/>
-<area shape="rect" id="node27" href="$gensvm__sparse_8h.html#a1bd9399ffc0b5e4d32ac160eb3143864" title="Free an allocated GenSparse structure. " alt="" coords="638,1576,795,1603"/>
+<area shape="rect" id="node27" href="$gensvm__sparse_8h.html#a1bd9399ffc0b5e4d32ac160eb3143864" title="Free an allocated GenSparse structure. " alt="" coords="638,1551,795,1577"/>
 <area shape="rect" id="node28" href="$gensvm__gridsearch_8h.html#a67fd9dee19091d1226c92af92e5b1281" title="Initialize a GenQueue from a Training instance. " alt="" coords="135,2048,279,2075"/>
 <area shape="rect" id="node30" href="$gensvm__gridsearch_8h.html#aa396ee57d909ea921948adf354c2091d" title="Run the grid search for a GenQueue. " alt="" coords="127,917,286,944"/>
 <area shape="rect" id="node46" href="$gensvm__base_8h.html#a98f3696d492bec4485e3f2a42062705f" title="Free allocated GenData struct. " alt="" coords="388,1475,531,1501"/>
