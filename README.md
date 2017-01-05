@@ -1,12 +1,13 @@
 GenSVM C Package
 ================
 
-GenSVM: A Generalized Multiclass Support Vector Machine.
-
-Author: Gertjan van den Burg (<gertjanvandenburg@gmail.com>)
+Paper: [GenSVM: A Generalized Multiclass Support Vector 
+Machine](http://jmlr.org/papers/v17/14-526.html) by G.J.J. van den Burg and 
+P.J.F. Groenen (*Journal of Machine Learning Research*, 2016).
 
 GitHub: 
 [https://github.com/GjjvdBurg/GenSVM](https://github.com/GjjvdBurg/GenSVM)
+
 
 Introduction
 ------------
@@ -21,16 +22,16 @@ Usage below for how to use GenSVM.
 The library has support for datasets in 
 [MSVMpack](https://members.loria.fr/FLauer/files/MSVMpack/MSVMpack.html) and 
 [LibSVM/SVMlight](https://www.csie.ntu.edu.tw/~cjlin/libsvm/) format, and can 
-take advantage of sparse datasets. There is also support for nonlinear GenSVM 
-through kernels.
+take advantage of sparse datasets. There is also preliminary support for 
+nonlinear GenSVM through kernels.
 
-For documentation on how the library is implemented, see the Doxygen 
-documentation available [here](https://gjjvdburg.github.io/GenSVM/). There are 
+For documentation on how the library is implemented, see the [Doxygen 
+documentation available here](https://gjjvdburg.github.io/GenSVM/). There are 
 also many unit tests, which you can use to further understand how the library 
-works. Test coverage for the current version is reported 
-[here](https://gjjvdburg.github.io/GenSVM/cover).
+works. For the latest version of the library you can view the [test coverage 
+report](https://gjjvdburg.github.io/GenSVM/cover) online.
 
-This is the C library for GenSVM, which contains two executables for using the 
+This is the C library for GenSVM which contains two executables for using the 
 method. Python and R packages for GenSVM are planned. If you are interested in 
 these, please express your interest for the Python package 
 [here](https://github.com/GjjvdBurg/GenSVM/issues/1) and for the R package 
