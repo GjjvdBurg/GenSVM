@@ -95,7 +95,7 @@ bool gensvm_majorize_is_simple(struct GenModel *model, struct GenData *data,
 		if (j == (data->y[i]-1))
 			continue;
 		h = matrix_get(model->H, model->K, i, j);
-		value += (h > 0) ? 1 : 0;
+		value += h > 0;
 		if (value > 1)
 			return false;
 	}
