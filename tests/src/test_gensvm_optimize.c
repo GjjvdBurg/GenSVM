@@ -130,7 +130,7 @@ char *test_gensvm_optimize()
 	// start test code //
 	gensvm_optimize(model, data);
 
-	double eps = 1e-13;
+	double eps = 1e-7;
 	mu_assert(fabs(matrix_get(model->V, model->K-1, 0, 0) -
 				-0.3268931274065331) < eps,
 			"Incorrect model->V at 0, 0");
