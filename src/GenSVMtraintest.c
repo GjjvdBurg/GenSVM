@@ -278,9 +278,6 @@ void parse_command_line(int argc, char **argv, struct GenModel *model,
 	       	char **prediction_outputfile)
 {
 	int i;
-	double gamma = 1.0,
-	       degree = 2.0,
-	       coef = 0.0;
 
 	GENSVM_OUTPUT_FILE = stdout;
 	GENSVM_ERROR_FILE = stderr;
@@ -294,10 +291,10 @@ void parse_command_line(int argc, char **argv, struct GenModel *model,
 		}
 		switch (argv[i-1][1]) {
 			case 'c':
-				coef = atof(argv[i]);
+				model->coef = atof(argv[i]);
 				break;
 			case 'd':
-				degree = atof(argv[i]);
+				model->degree = atof(argv[i]);
 				break;
 			case 'e':
 				model->epsilon = atof(argv[i]);
@@ -305,7 +302,7 @@ void parse_command_line(int argc, char **argv, struct GenModel *model,
 					exit_invalid_param("epsilon", argv);
 				break;
 			case 'g':
-				gamma = atof(argv[i]);
+				model->gamma = atof(argv[i]);
 				break;
 			case 'k':
 				model->kappa = atof(argv[i]);
@@ -368,25 +365,5 @@ void parse_command_line(int argc, char **argv, struct GenModel *model,
 	if (i+2 == argc) {
 		(*testing_inputfile) = Malloc(char, strlen(argv[i])+1);
 		strcpy((*testing_inputfile), argv[i+1]);
-	}
-
-	// set kernel parameters
-	switch (model->kerneltype) {
-		case K_LINEAR:
-			break;
-		case K_POLY:
-			model->kernelparam = Calloc(double, 3);
-			model->kernelparam[0] = gamma;
-			model->kernelparam[1] = coef;
-			model->kernelparam[2] = degree;
-			break;
-		case K_RBF:
-			model->kernelparam = Calloc(double, 1);
-			model->kernelparam[0] = gamma;
-			break;
-		case K_SIGMOID:
-			model->kernelparam = Calloc(double, 1);
-			model->kernelparam[0] = gamma;
-			model->kernelparam[1] = coef;
 	}
 }

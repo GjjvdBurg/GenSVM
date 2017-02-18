@@ -47,7 +47,9 @@ struct GenTask *gensvm_init_task()
 	t->kappa = 0.0;
 	t->lambda = 1.0;
 	t->epsilon = 1e-6;
-	t->kernelparam = NULL;
+	t->gamma = 1.0;
+	t->coef = 0.0;
+	t->degree = 2.0;
 	t->train_data = NULL;
 	t->test_data = NULL;
 	t->performance = 0.0;
@@ -59,16 +61,14 @@ struct GenTask *gensvm_init_task()
  * @brief Free the GenTask struct
  *
  * @details
- * Freeing the allocated memory of the GenTask means freeing _only_ the 
- * kernelparam array, and the task itself. The datasets are not freed, as 
- * these are shared between all tasks.
+ * Freeing the allocated memory of the GenTask means freeing _only_ the task 
+ * itself. The datasets are not freed, as these are shared between all tasks.
  *
  * @param[in] 	t 	GenTask to be freed
  *
  */
 void gensvm_free_task(struct GenTask *t)
 {
-	free(t->kernelparam);
 	free(t);
 	t = NULL;
 }
@@ -77,9 +77,8 @@ void gensvm_free_task(struct GenTask *t)
  * @brief Deepcopy a GenTask struct
  *
  * @details
- * Create a deep copy of a GenTask struct. The kernelparameters are copied to 
- * a new array. Note that the datasets belonging to the tasks are not copied, 
- * only the pointers to the datasets.
+ * Create a deep copy of a GenTask struct. Note that the datasets belonging to 
+ * the tasks are not copied, only the pointers to the datasets.
  *
  * @param[in] 	t 	input GenTask struct to copy
  *
@@ -100,21 +99,9 @@ struct GenTask *gensvm_copy_task(struct GenTask *t)
 	nt->performance = t->performance;
 
 	nt->kerneltype = t->kerneltype;
-	if (nt->kerneltype == K_LINEAR) {
-		nt->kernelparam = NULL;
-	} else if (nt->kerneltype == K_RBF) {
-		nt->kernelparam = Malloc(double, 1);
-		nt->kernelparam[0] = t->kernelparam[0];
-	} else if (nt->kerneltype == K_POLY) {
-		nt->kernelparam = Malloc(double, 3);
-		nt->kernelparam[0] = t->kernelparam[0];
-		nt->kernelparam[1] = t->kernelparam[1];
-		nt->kernelparam[2] = t->kernelparam[2];
-	} else if (nt->kerneltype == K_SIGMOID) {
-		nt->kernelparam = Malloc(double, 2);
-		nt->kernelparam[0] = t->kernelparam[0];
-		nt->kernelparam[1] = t->kernelparam[1];
-	}
+	nt->gamma = t->gamma;
+	nt->coef = t->coef;
+	nt->degree = t->degree;
 
 	return nt;
 }
@@ -140,19 +127,7 @@ void gensvm_task_to_model(struct GenTask *task, struct GenModel *model)
 
 	// copy kernel parameters
 	model->kerneltype = task->kerneltype;
-	if (model->kerneltype == K_LINEAR) {
-		model->kernelparam = NULL;
-	} else if (model->kerneltype == K_RBF) {
-		model->kernelparam = Malloc(double, 1);
-		model->kernelparam[0] = task->kernelparam[0];
-	} else if (model->kerneltype == K_POLY) {
-		model->kernelparam = Malloc(double, 3);
-		model->kernelparam[0] = task->kernelparam[0];
-		model->kernelparam[1] = task->kernelparam[1];
-		model->kernelparam[2] = task->kernelparam[2];
-	} else if (model->kerneltype == K_SIGMOID) {
-		model->kernelparam = Malloc(double, 2);
-		model->kernelparam[0] = task->kernelparam[0];
-		model->kernelparam[1] = task->kernelparam[1];
-	}
+	model->gamma = task->gamma;
+	model->coef = task->coef;
+	model->degree = task->degree;
 }

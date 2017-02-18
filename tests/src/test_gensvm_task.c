@@ -55,7 +55,6 @@ char *test_task_to_model_linear()
 	mu_assert(model->lambda == 1.4, "Incorrect model lambda");
 	mu_assert(model->epsilon == 5e-3, "Incorrect model epsilon");
 	mu_assert(model->kerneltype == K_LINEAR, "Incorrect model kerneltype");
-	mu_assert(model->kernelparam == NULL, "Incorrect model kernelparam");
 	// end test code //
 
 	gensvm_free_model(model);
@@ -75,8 +74,7 @@ char *test_task_to_model_rbf()
 	task->lambda = 1.4;
 	task->epsilon = 5e-3;
 	task->kerneltype = K_RBF;
-	task->kernelparam = Malloc(double, 1);
-	task->kernelparam[0] = 3.1;
+	task->gamma = 3.1;
 
 	gensvm_task_to_model(task, model);
 
@@ -86,7 +84,7 @@ char *test_task_to_model_rbf()
 	mu_assert(model->lambda == 1.4, "Incorrect model lambda");
 	mu_assert(model->epsilon == 5e-3, "Incorrect model epsilon");
 	mu_assert(model->kerneltype == K_RBF, "Incorrect model kerneltype");
-	mu_assert(model->kernelparam[0] == 3.1, "Incorrect model kernelparam");
+	mu_assert(model->gamma == 3.1, "Incorrect model gamma");
 	// end test code //
 
 	gensvm_free_model(model);
@@ -106,10 +104,9 @@ char *test_task_to_model_poly()
 	task->lambda = 1.4;
 	task->epsilon = 5e-3;
 	task->kerneltype = K_POLY;
-	task->kernelparam = Malloc(double, 3);
-	task->kernelparam[0] = 3.1;
-	task->kernelparam[1] = 2.1;
-	task->kernelparam[2] = 1.1;
+	task->gamma = 3.1;
+	task->coef = 2.1;
+	task->degree = 1.1;
 
 	gensvm_task_to_model(task, model);
 
@@ -119,9 +116,9 @@ char *test_task_to_model_poly()
 	mu_assert(model->lambda == 1.4, "Incorrect model lambda");
 	mu_assert(model->epsilon == 5e-3, "Incorrect model epsilon");
 	mu_assert(model->kerneltype == K_POLY, "Incorrect model kerneltype");
-	mu_assert(model->kernelparam[0] == 3.1, "Incorrect model kernelparam");
-	mu_assert(model->kernelparam[1] == 2.1, "Incorrect model kernelparam");
-	mu_assert(model->kernelparam[2] == 1.1, "Incorrect model kernelparam");
+	mu_assert(model->gamma == 3.1, "Incorrect model gamma");
+	mu_assert(model->coef == 2.1, "Incorrect model coef");
+	mu_assert(model->degree == 1.1, "Incorrect model degree");
 	// end test code //
 
 	gensvm_free_model(model);
@@ -141,9 +138,8 @@ char *test_task_to_model_sigmoid()
 	task->lambda = 1.4;
 	task->epsilon = 5e-3;
 	task->kerneltype = K_SIGMOID;
-	task->kernelparam = Malloc(double, 2);
-	task->kernelparam[0] = 3.1;
-	task->kernelparam[1] = 0.1;
+	task->gamma = 3.1;
+	task->coef = 0.1;
 
 	gensvm_task_to_model(task, model);
 
@@ -153,8 +149,8 @@ char *test_task_to_model_sigmoid()
 	mu_assert(model->lambda == 1.4, "Incorrect model lambda");
 	mu_assert(model->epsilon == 5e-3, "Incorrect model epsilon");
 	mu_assert(model->kerneltype == K_SIGMOID, "Incorrect model kerneltype");
-	mu_assert(model->kernelparam[0] == 3.1, "Incorrect model kernelparam");
-	mu_assert(model->kernelparam[1] == 0.1, "Incorrect model kernelparam");
+	mu_assert(model->gamma == 3.1, "Incorrect model gamma");
+	mu_assert(model->coef == 0.1, "Incorrect model coef");
 	// end test code //
 
 	gensvm_free_model(model);
@@ -195,7 +191,6 @@ char *test_copy_task_linear()
 	mu_assert(copy->test_data == test, "Incorrect copy test data");
 	mu_assert(copy->performance == 11.11, "Incorrect copy performance");
 	mu_assert(copy->kerneltype == K_LINEAR, "Incorrect copy kerneltype");
-	mu_assert(copy->kernelparam == NULL, "Incorrect copy kernelparam");
 
 	// end test code //
 	gensvm_free_task(task);
@@ -226,8 +221,7 @@ char *test_copy_task_rbf()
 	task->test_data = test;
 	task->performance = 11.11;
 	task->kerneltype = K_RBF;
-	task->kernelparam = Malloc(double, 1);
-	task->kernelparam[0] = 3.1;
+	task->gamma = 3.1;
 
 	copy = gensvm_copy_task(task);
 
@@ -242,7 +236,7 @@ char *test_copy_task_rbf()
 	mu_assert(copy->test_data == test, "Incorrect copy test data");
 	mu_assert(copy->performance == 11.11, "Incorrect copy performance");
 	mu_assert(copy->kerneltype == K_RBF, "Incorrect copy kerneltype");
-	mu_assert(copy->kernelparam[0] == 3.1, "Incorrect copy kernelparam");
+	mu_assert(copy->gamma == 3.1, "Incorrect copy gamma");
 
 	// end test code //
 	gensvm_free_task(copy);
@@ -272,10 +266,9 @@ char *test_copy_task_poly()
 	task->test_data = test;
 	task->performance = 11.11;
 	task->kerneltype = K_POLY;
-	task->kernelparam = Malloc(double, 3);
-	task->kernelparam[0] = 3.1;
-	task->kernelparam[1] = 2.1;
-	task->kernelparam[2] = 1.1;
+	task->gamma = 3.1;
+	task->coef = 2.1;
+	task->degree = 1.1;
 
 	copy = gensvm_copy_task(task);
 
@@ -290,9 +283,9 @@ char *test_copy_task_poly()
 	mu_assert(copy->test_data == test, "Incorrect copy test data");
 	mu_assert(copy->performance == 11.11, "Incorrect copy performance");
 	mu_assert(copy->kerneltype == K_POLY, "Incorrect copy kerneltype");
-	mu_assert(copy->kernelparam[0] == 3.1, "Incorrect copy kernelparam");
-	mu_assert(copy->kernelparam[1] == 2.1, "Incorrect copy kernelparam");
-	mu_assert(copy->kernelparam[2] == 1.1, "Incorrect copy kernelparam");
+	mu_assert(copy->gamma == 3.1, "Incorrect copy gamma");
+	mu_assert(copy->coef == 2.1, "Incorrect copy coef");
+	mu_assert(copy->degree == 1.1, "Incorrect copy degree");
 
 	// end test code //
 	gensvm_free_task(task);
@@ -322,9 +315,8 @@ char *test_copy_task_sigmoid()
 	task->test_data = test;
 	task->performance = 11.11;
 	task->kerneltype = K_SIGMOID;
-	task->kernelparam = Malloc(double, 2);
-	task->kernelparam[0] = 3.1;
-	task->kernelparam[1] = 0.1;
+	task->gamma = 3.1;
+	task->coef = 0.1;
 
 	copy = gensvm_copy_task(task);
 
@@ -339,8 +331,8 @@ char *test_copy_task_sigmoid()
 	mu_assert(copy->test_data == test, "Incorrect copy test data");
 	mu_assert(copy->performance == 11.11, "Incorrect copy performance");
 	mu_assert(copy->kerneltype == K_SIGMOID, "Incorrect copy kerneltype");
-	mu_assert(copy->kernelparam[0] == 3.1, "Incorrect copy kernelparam");
-	mu_assert(copy->kernelparam[1] == 0.1, "Incorrect copy kernelparam");
+	mu_assert(copy->gamma == 3.1, "Incorrect copy gamma");
+	mu_assert(copy->coef == 0.1, "Incorrect copy coef");
 
 	// end test code //
 	gensvm_free_task(task);

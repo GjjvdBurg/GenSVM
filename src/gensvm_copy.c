@@ -45,26 +45,7 @@ void gensvm_copy_model(struct GenModel *from, struct GenModel *to)
 	to->lambda = from->lambda;
 
 	to->kerneltype = from->kerneltype;
-	switch (to->kerneltype) {
-		case K_LINEAR:
-			break;
-		case K_POLY:
-			if (to->kernelparam) free(to->kernelparam);
-			to->kernelparam = Malloc(double, 3);
-			to->kernelparam[0] = from->kernelparam[0];
-			to->kernelparam[1] = from->kernelparam[1];
-			to->kernelparam[2] = from->kernelparam[2];
-			break;
-		case K_RBF:
-			if (to->kernelparam) free(to->kernelparam);
-			to->kernelparam = Malloc(double, 1);
-			to->kernelparam[0] = from->kernelparam[0];
-			break;
-		case K_SIGMOID:
-			if (to->kernelparam) free(to->kernelparam);
-			to->kernelparam = Malloc(double, 2);
-			to->kernelparam[0] = from->kernelparam[0];
-			to->kernelparam[1] = from->kernelparam[1];
-			break;
-	}
+	to->gamma = from->gamma;
+	to->coef = from->coef;
+	to->degree = from->degree;
 }

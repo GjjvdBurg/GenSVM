@@ -46,29 +46,10 @@
 void gensvm_kernel_copy_kernelparam_to_data(struct GenModel *model, 
 		struct GenData *data)
 {
-	int i;
 	data->kerneltype = model->kerneltype;
-
-	free(data->kernelparam);
-	data->kernelparam = NULL;
-
-	switch (model->kerneltype) {
-		case K_LINEAR:
-			break;
-		case K_POLY:
-			data->kernelparam = Calloc(double, 3);
-			for (i=0; i<3; i++)
-				data->kernelparam[i] = model->kernelparam[i];
-			break;
-		case K_RBF:
-			data->kernelparam = Calloc(double, 1);
-			data->kernelparam[0] = model->kernelparam[0];
-			break;
-		case K_SIGMOID:
-			data->kernelparam = Calloc(double, 2);
-			data->kernelparam[0] = model->kernelparam[0];
-			data->kernelparam[1] = model->kernelparam[1];
-	}
+	data->gamma = model->gamma;
+	data->coef = model->coef;
+	data->degree = model->degree;
 }
 
 
@@ -188,14 +169,16 @@ void gensvm_kernel_compute(struct GenModel *model, struct GenData *data,
 			x1 = &data->RAW[i*(data->m+1)+1];
 			x2 = &data->RAW[j*(data->m+1)+1];
 			if (model->kerneltype == K_POLY)
-				value = gensvm_kernel_dot_poly(x1, x2,
-						model->kernelparam, data->m);
+				value = gensvm_kernel_dot_poly(x1, x2, data->m,
+						model->gamma, model->coef, 
+						model->degree);
 			else if (model->kerneltype == K_RBF)
-				value = gensvm_kernel_dot_rbf(x1, x2,
-						model->kernelparam, data->m);
+				value = gensvm_kernel_dot_rbf(x1, x2, data->m,
+						model-> gamma);
 			else if (model->kerneltype == K_SIGMOID)
-				value = gensvm_kernel_dot_sigmoid(x1, x2,
-						model->kernelparam, data->m);
+				value = gensvm_kernel_dot_sigmoid(x1, x2, 
+						data->m, model->gamma, 
+						model->coef);
 			else {
 				// LCOV_EXCL_START
 				err("[GenSVM Error]: Unknown kernel type in "
@@ -342,14 +325,15 @@ double *gensvm_kernel_cross(struct GenModel *model, struct GenData *data_train,
 			x1 = &data_test->RAW[i*(m+1)+1];
 			x2 = &data_train->RAW[j*(m+1)+1];
 			if (model->kerneltype == K_POLY)
-				value = gensvm_kernel_dot_poly(x1, x2,
-						model->kernelparam, m);
+				value = gensvm_kernel_dot_poly(x1, x2, m, 
+						model->gamma, model->coef, 
+						model->degree);
 			else if (model->kerneltype == K_RBF)
-				value = gensvm_kernel_dot_rbf(x1, x2,
-						model->kernelparam, m);
+				value = gensvm_kernel_dot_rbf(x1, x2, m, 
+						model->gamma);
 			else if (model->kerneltype == K_SIGMOID)
-				value = gensvm_kernel_dot_sigmoid(x1, x2,
-						model->kernelparam, m);
+				value = gensvm_kernel_dot_sigmoid(x1, x2, m,
+						model->gamma, model->coef);
 			else {
 				// LCOV_EXCL_START
 				err("[GenSVM Error]: Unknown kernel type in "
@@ -482,20 +466,18 @@ void gensvm_kernel_testfactor(struct GenData *testdata,
  *
  * @param[in] 	x1 		first vector
  * @param[in] 	x2 		second vector
- * @param[in] 	kernelparam 	array of kernel parameters (gamma is first
- * 				element)
  * @param[in] 	n 		length of the vectors x1 and x2
+ * @param[in] 	gamma 		gamma parameter of the kernel
  * @returns  			kernel evaluation
  */
-double gensvm_kernel_dot_rbf(double *x1, double *x2, double *kernelparam,
-		long n)
+double gensvm_kernel_dot_rbf(double *x1, double *x2, long n, double gamma)
 {
 	long i;
 	double value = 0.0;
 
 	for (i=0; i<n; i++)
 		value += (x1[i] - x2[i]) * (x1[i] - x2[i]);
-	value *= -kernelparam[0];
+	value *= -gamma;
 	return exp(value);
 }
 
@@ -506,23 +488,26 @@ double gensvm_kernel_dot_rbf(double *x1, double *x2, double *kernelparam,
  * The polynomial kernel is computed between two vectors. This kernel is
  * defined as
  * @f[
- * 	k(x_1, x_2) = ( \gamma \langle x_1, x_2 \rangle + c)^d
+ * 	k(x_1, x_2) = ( \gamma \langle x_1, x_2 \rangle + coef)^{degree}
  * @f]
- * where @f$ \gamma @f$, @f$ c @f$ and @f$ d @f$ are kernel parameters.
+ * where @f$ \gamma @f$, @f$ coef @f$ and @f$ degree @f$ are kernel 
+ * parameters.
  *
  * @param[in] 	x1 		first vector
  * @param[in] 	x2 		second vector
- * @param[in] 	kernelparam 	array of kernel parameters (gamma, c, d)
  * @param[in] 	n 		length of the vectors x1 and x2
+ * @param[in] 	gamma 		gamma parameter of the kernel
+ * @param[in] 	coef 		coef parameter of the kernel
+ * @param[in] 	degree 		degree parameter of the kernel
  * @returns 			kernel evaluation
  */
-double gensvm_kernel_dot_poly(double *x1, double *x2, double *kernelparam,
-		long n)
+double gensvm_kernel_dot_poly(double *x1, double *x2, long n, double gamma,
+		double coef, double degree)
 {
 	double value = cblas_ddot(n, x1, 1, x2, 1);
-	value *= kernelparam[0];
-	value += kernelparam[1];
-	return pow(value, kernelparam[2]);
+	value *= gamma;
+	value += coef;
+	return pow(value, degree);
 }
 
 /**
@@ -532,22 +517,23 @@ double gensvm_kernel_dot_poly(double *x1, double *x2, double *kernelparam,
  * The sigmoid kernel is computed between two vectors. This kernel is defined
  * as
  * @f[
- * 	k(x_1, x_2) = \tanh( \gamma \langle x_1 , x_2 \rangle + c)
+ * 	k(x_1, x_2) = \tanh( \gamma \langle x_1 , x_2 \rangle + coef)
  * @f]
- * where @f$ \gamma @f$ and @f$ c @f$ are kernel parameters.
+ * where @f$ \gamma @f$ and @f$ coef @f$ are kernel parameters.
  *
  * @param[in] 	x1 		first vector
  * @param[in] 	x2 		second vector
- * @param[in] 	kernelparam 	array of kernel parameters (gamma, c)
  * @param[in] 	n 		length of the vectors x1 and x2
+ * @param[in] 	gamma 		gamma parameter of the kernel
+ * @param[in] 	coef 		coef parameter of the kernel
  * @returns 			kernel evaluation
  */
-double gensvm_kernel_dot_sigmoid(double *x1, double *x2, double *kernelparam,
-		long n)
+double gensvm_kernel_dot_sigmoid(double *x1, double *x2, long n, double gamma,
+		double coef)
 {
 	double value = cblas_ddot(n, x1, 1, x2, 1);
-	value *= kernelparam[0];
-	value += kernelparam[1];
+	value *= gamma;
+	value += coef;
 	return tanh(value);
 }
 

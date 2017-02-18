@@ -408,440 +408,440 @@ char *test_fill_queue_kernel()
 	mu_assert(q->tasks[71]->lambda == 5.000000,
 			"Incorrect lambda at task 71");
 
-	mu_assert(q->tasks[0]->kernelparam[0] == 0.500000,
-			"Incorrect kernelparam 0 at task 0");
-	mu_assert(q->tasks[1]->kernelparam[0] == 0.500000,
-			"Incorrect kernelparam 0 at task 1");
-	mu_assert(q->tasks[2]->kernelparam[0] == 0.500000,
-			"Incorrect kernelparam 0 at task 2");
-	mu_assert(q->tasks[3]->kernelparam[0] == 0.500000,
-			"Incorrect kernelparam 0 at task 3");
-	mu_assert(q->tasks[4]->kernelparam[0] == 0.500000,
-			"Incorrect kernelparam 0 at task 4");
-	mu_assert(q->tasks[5]->kernelparam[0] == 0.500000,
-			"Incorrect kernelparam 0 at task 5");
-	mu_assert(q->tasks[6]->kernelparam[0] == 1.500000,
-			"Incorrect kernelparam 0 at task 6");
-	mu_assert(q->tasks[7]->kernelparam[0] == 1.500000,
-			"Incorrect kernelparam 0 at task 7");
-	mu_assert(q->tasks[8]->kernelparam[0] == 1.500000,
-			"Incorrect kernelparam 0 at task 8");
-	mu_assert(q->tasks[9]->kernelparam[0] == 1.500000,
-			"Incorrect kernelparam 0 at task 9");
-	mu_assert(q->tasks[10]->kernelparam[0] == 1.500000,
-			"Incorrect kernelparam 0 at task 10");
-	mu_assert(q->tasks[11]->kernelparam[0] == 1.500000,
-			"Incorrect kernelparam 0 at task 11");
-	mu_assert(q->tasks[12]->kernelparam[0] == 0.500000,
-			"Incorrect kernelparam 0 at task 12");
-	mu_assert(q->tasks[13]->kernelparam[0] == 0.500000,
-			"Incorrect kernelparam 0 at task 13");
-	mu_assert(q->tasks[14]->kernelparam[0] == 0.500000,
-			"Incorrect kernelparam 0 at task 14");
-	mu_assert(q->tasks[15]->kernelparam[0] == 0.500000,
-			"Incorrect kernelparam 0 at task 15");
-	mu_assert(q->tasks[16]->kernelparam[0] == 0.500000,
-			"Incorrect kernelparam 0 at task 16");
-	mu_assert(q->tasks[17]->kernelparam[0] == 0.500000,
-			"Incorrect kernelparam 0 at task 17");
-	mu_assert(q->tasks[18]->kernelparam[0] == 1.500000,
-			"Incorrect kernelparam 0 at task 18");
-	mu_assert(q->tasks[19]->kernelparam[0] == 1.500000,
-			"Incorrect kernelparam 0 at task 19");
-	mu_assert(q->tasks[20]->kernelparam[0] == 1.500000,
-			"Incorrect kernelparam 0 at task 20");
-	mu_assert(q->tasks[21]->kernelparam[0] == 1.500000,
-			"Incorrect kernelparam 0 at task 21");
-	mu_assert(q->tasks[22]->kernelparam[0] == 1.500000,
-			"Incorrect kernelparam 0 at task 22");
-	mu_assert(q->tasks[23]->kernelparam[0] == 1.500000,
-			"Incorrect kernelparam 0 at task 23");
-	mu_assert(q->tasks[24]->kernelparam[0] == 0.500000,
-			"Incorrect kernelparam 0 at task 24");
-	mu_assert(q->tasks[25]->kernelparam[0] == 0.500000,
-			"Incorrect kernelparam 0 at task 25");
-	mu_assert(q->tasks[26]->kernelparam[0] == 0.500000,
-			"Incorrect kernelparam 0 at task 26");
-	mu_assert(q->tasks[27]->kernelparam[0] == 0.500000,
-			"Incorrect kernelparam 0 at task 27");
-	mu_assert(q->tasks[28]->kernelparam[0] == 0.500000,
-			"Incorrect kernelparam 0 at task 28");
-	mu_assert(q->tasks[29]->kernelparam[0] == 0.500000,
-			"Incorrect kernelparam 0 at task 29");
-	mu_assert(q->tasks[30]->kernelparam[0] == 1.500000,
-			"Incorrect kernelparam 0 at task 30");
-	mu_assert(q->tasks[31]->kernelparam[0] == 1.500000,
-			"Incorrect kernelparam 0 at task 31");
-	mu_assert(q->tasks[32]->kernelparam[0] == 1.500000,
-			"Incorrect kernelparam 0 at task 32");
-	mu_assert(q->tasks[33]->kernelparam[0] == 1.500000,
-			"Incorrect kernelparam 0 at task 33");
-	mu_assert(q->tasks[34]->kernelparam[0] == 1.500000,
-			"Incorrect kernelparam 0 at task 34");
-	mu_assert(q->tasks[35]->kernelparam[0] == 1.500000,
-			"Incorrect kernelparam 0 at task 35");
-	mu_assert(q->tasks[36]->kernelparam[0] == 0.500000,
-			"Incorrect kernelparam 0 at task 36");
-	mu_assert(q->tasks[37]->kernelparam[0] == 0.500000,
-			"Incorrect kernelparam 0 at task 37");
-	mu_assert(q->tasks[38]->kernelparam[0] == 0.500000,
-			"Incorrect kernelparam 0 at task 38");
-	mu_assert(q->tasks[39]->kernelparam[0] == 0.500000,
-			"Incorrect kernelparam 0 at task 39");
-	mu_assert(q->tasks[40]->kernelparam[0] == 0.500000,
-			"Incorrect kernelparam 0 at task 40");
-	mu_assert(q->tasks[41]->kernelparam[0] == 0.500000,
-			"Incorrect kernelparam 0 at task 41");
-	mu_assert(q->tasks[42]->kernelparam[0] == 1.500000,
-			"Incorrect kernelparam 0 at task 42");
-	mu_assert(q->tasks[43]->kernelparam[0] == 1.500000,
-			"Incorrect kernelparam 0 at task 43");
-	mu_assert(q->tasks[44]->kernelparam[0] == 1.500000,
-			"Incorrect kernelparam 0 at task 44");
-	mu_assert(q->tasks[45]->kernelparam[0] == 1.500000,
-			"Incorrect kernelparam 0 at task 45");
-	mu_assert(q->tasks[46]->kernelparam[0] == 1.500000,
-			"Incorrect kernelparam 0 at task 46");
-	mu_assert(q->tasks[47]->kernelparam[0] == 1.500000,
-			"Incorrect kernelparam 0 at task 47");
-	mu_assert(q->tasks[48]->kernelparam[0] == 0.500000,
-			"Incorrect kernelparam 0 at task 48");
-	mu_assert(q->tasks[49]->kernelparam[0] == 0.500000,
-			"Incorrect kernelparam 0 at task 49");
-	mu_assert(q->tasks[50]->kernelparam[0] == 0.500000,
-			"Incorrect kernelparam 0 at task 50");
-	mu_assert(q->tasks[51]->kernelparam[0] == 0.500000,
-			"Incorrect kernelparam 0 at task 51");
-	mu_assert(q->tasks[52]->kernelparam[0] == 0.500000,
-			"Incorrect kernelparam 0 at task 52");
-	mu_assert(q->tasks[53]->kernelparam[0] == 0.500000,
-			"Incorrect kernelparam 0 at task 53");
-	mu_assert(q->tasks[54]->kernelparam[0] == 1.500000,
-			"Incorrect kernelparam 0 at task 54");
-	mu_assert(q->tasks[55]->kernelparam[0] == 1.500000,
-			"Incorrect kernelparam 0 at task 55");
-	mu_assert(q->tasks[56]->kernelparam[0] == 1.500000,
-			"Incorrect kernelparam 0 at task 56");
-	mu_assert(q->tasks[57]->kernelparam[0] == 1.500000,
-			"Incorrect kernelparam 0 at task 57");
-	mu_assert(q->tasks[58]->kernelparam[0] == 1.500000,
-			"Incorrect kernelparam 0 at task 58");
-	mu_assert(q->tasks[59]->kernelparam[0] == 1.500000,
-			"Incorrect kernelparam 0 at task 59");
-	mu_assert(q->tasks[60]->kernelparam[0] == 0.500000,
-			"Incorrect kernelparam 0 at task 60");
-	mu_assert(q->tasks[61]->kernelparam[0] == 0.500000,
-			"Incorrect kernelparam 0 at task 61");
-	mu_assert(q->tasks[62]->kernelparam[0] == 0.500000,
-			"Incorrect kernelparam 0 at task 62");
-	mu_assert(q->tasks[63]->kernelparam[0] == 0.500000,
-			"Incorrect kernelparam 0 at task 63");
-	mu_assert(q->tasks[64]->kernelparam[0] == 0.500000,
-			"Incorrect kernelparam 0 at task 64");
-	mu_assert(q->tasks[65]->kernelparam[0] == 0.500000,
-			"Incorrect kernelparam 0 at task 65");
-	mu_assert(q->tasks[66]->kernelparam[0] == 1.500000,
-			"Incorrect kernelparam 0 at task 66");
-	mu_assert(q->tasks[67]->kernelparam[0] == 1.500000,
-			"Incorrect kernelparam 0 at task 67");
-	mu_assert(q->tasks[68]->kernelparam[0] == 1.500000,
-			"Incorrect kernelparam 0 at task 68");
-	mu_assert(q->tasks[69]->kernelparam[0] == 1.500000,
-			"Incorrect kernelparam 0 at task 69");
-	mu_assert(q->tasks[70]->kernelparam[0] == 1.500000,
-			"Incorrect kernelparam 0 at task 70");
-	mu_assert(q->tasks[71]->kernelparam[0] == 1.500000,
-			"Incorrect kernelparam 0 at task 71");
+	mu_assert(q->tasks[0]->gamma == 0.500000,
+			"Incorrect gamma at task 0");
+	mu_assert(q->tasks[1]->gamma == 0.500000,
+			"Incorrect gamma at task 1");
+	mu_assert(q->tasks[2]->gamma == 0.500000,
+			"Incorrect gamma at task 2");
+	mu_assert(q->tasks[3]->gamma == 0.500000,
+			"Incorrect gamma at task 3");
+	mu_assert(q->tasks[4]->gamma == 0.500000,
+			"Incorrect gamma at task 4");
+	mu_assert(q->tasks[5]->gamma == 0.500000,
+			"Incorrect gamma at task 5");
+	mu_assert(q->tasks[6]->gamma == 1.500000,
+			"Incorrect gamma at task 6");
+	mu_assert(q->tasks[7]->gamma == 1.500000,
+			"Incorrect gamma at task 7");
+	mu_assert(q->tasks[8]->gamma == 1.500000,
+			"Incorrect gamma at task 8");
+	mu_assert(q->tasks[9]->gamma == 1.500000,
+			"Incorrect gamma at task 9");
+	mu_assert(q->tasks[10]->gamma == 1.500000,
+			"Incorrect gamma at task 10");
+	mu_assert(q->tasks[11]->gamma == 1.500000,
+			"Incorrect gamma at task 11");
+	mu_assert(q->tasks[12]->gamma == 0.500000,
+			"Incorrect gamma at task 12");
+	mu_assert(q->tasks[13]->gamma == 0.500000,
+			"Incorrect gamma at task 13");
+	mu_assert(q->tasks[14]->gamma == 0.500000,
+			"Incorrect gamma at task 14");
+	mu_assert(q->tasks[15]->gamma == 0.500000,
+			"Incorrect gamma at task 15");
+	mu_assert(q->tasks[16]->gamma == 0.500000,
+			"Incorrect gamma at task 16");
+	mu_assert(q->tasks[17]->gamma == 0.500000,
+			"Incorrect gamma at task 17");
+	mu_assert(q->tasks[18]->gamma == 1.500000,
+			"Incorrect gamma at task 18");
+	mu_assert(q->tasks[19]->gamma == 1.500000,
+			"Incorrect gamma at task 19");
+	mu_assert(q->tasks[20]->gamma == 1.500000,
+			"Incorrect gamma at task 20");
+	mu_assert(q->tasks[21]->gamma == 1.500000,
+			"Incorrect gamma at task 21");
+	mu_assert(q->tasks[22]->gamma == 1.500000,
+			"Incorrect gamma at task 22");
+	mu_assert(q->tasks[23]->gamma == 1.500000,
+			"Incorrect gamma at task 23");
+	mu_assert(q->tasks[24]->gamma == 0.500000,
+			"Incorrect gamma at task 24");
+	mu_assert(q->tasks[25]->gamma == 0.500000,
+			"Incorrect gamma at task 25");
+	mu_assert(q->tasks[26]->gamma == 0.500000,
+			"Incorrect gamma at task 26");
+	mu_assert(q->tasks[27]->gamma == 0.500000,
+			"Incorrect gamma at task 27");
+	mu_assert(q->tasks[28]->gamma == 0.500000,
+			"Incorrect gamma at task 28");
+	mu_assert(q->tasks[29]->gamma == 0.500000,
+			"Incorrect gamma at task 29");
+	mu_assert(q->tasks[30]->gamma == 1.500000,
+			"Incorrect gamma at task 30");
+	mu_assert(q->tasks[31]->gamma == 1.500000,
+			"Incorrect gamma at task 31");
+	mu_assert(q->tasks[32]->gamma == 1.500000,
+			"Incorrect gamma at task 32");
+	mu_assert(q->tasks[33]->gamma == 1.500000,
+			"Incorrect gamma at task 33");
+	mu_assert(q->tasks[34]->gamma == 1.500000,
+			"Incorrect gamma at task 34");
+	mu_assert(q->tasks[35]->gamma == 1.500000,
+			"Incorrect gamma at task 35");
+	mu_assert(q->tasks[36]->gamma == 0.500000,
+			"Incorrect gamma at task 36");
+	mu_assert(q->tasks[37]->gamma == 0.500000,
+			"Incorrect gamma at task 37");
+	mu_assert(q->tasks[38]->gamma == 0.500000,
+			"Incorrect gamma at task 38");
+	mu_assert(q->tasks[39]->gamma == 0.500000,
+			"Incorrect gamma at task 39");
+	mu_assert(q->tasks[40]->gamma == 0.500000,
+			"Incorrect gamma at task 40");
+	mu_assert(q->tasks[41]->gamma == 0.500000,
+			"Incorrect gamma at task 41");
+	mu_assert(q->tasks[42]->gamma == 1.500000,
+			"Incorrect gamma at task 42");
+	mu_assert(q->tasks[43]->gamma == 1.500000,
+			"Incorrect gamma at task 43");
+	mu_assert(q->tasks[44]->gamma == 1.500000,
+			"Incorrect gamma at task 44");
+	mu_assert(q->tasks[45]->gamma == 1.500000,
+			"Incorrect gamma at task 45");
+	mu_assert(q->tasks[46]->gamma == 1.500000,
+			"Incorrect gamma at task 46");
+	mu_assert(q->tasks[47]->gamma == 1.500000,
+			"Incorrect gamma at task 47");
+	mu_assert(q->tasks[48]->gamma == 0.500000,
+			"Incorrect gamma at task 48");
+	mu_assert(q->tasks[49]->gamma == 0.500000,
+			"Incorrect gamma at task 49");
+	mu_assert(q->tasks[50]->gamma == 0.500000,
+			"Incorrect gamma at task 50");
+	mu_assert(q->tasks[51]->gamma == 0.500000,
+			"Incorrect gamma at task 51");
+	mu_assert(q->tasks[52]->gamma == 0.500000,
+			"Incorrect gamma at task 52");
+	mu_assert(q->tasks[53]->gamma == 0.500000,
+			"Incorrect gamma at task 53");
+	mu_assert(q->tasks[54]->gamma == 1.500000,
+			"Incorrect gamma at task 54");
+	mu_assert(q->tasks[55]->gamma == 1.500000,
+			"Incorrect gamma at task 55");
+	mu_assert(q->tasks[56]->gamma == 1.500000,
+			"Incorrect gamma at task 56");
+	mu_assert(q->tasks[57]->gamma == 1.500000,
+			"Incorrect gamma at task 57");
+	mu_assert(q->tasks[58]->gamma == 1.500000,
+			"Incorrect gamma at task 58");
+	mu_assert(q->tasks[59]->gamma == 1.500000,
+			"Incorrect gamma at task 59");
+	mu_assert(q->tasks[60]->gamma == 0.500000,
+			"Incorrect gamma at task 60");
+	mu_assert(q->tasks[61]->gamma == 0.500000,
+			"Incorrect gamma at task 61");
+	mu_assert(q->tasks[62]->gamma == 0.500000,
+			"Incorrect gamma at task 62");
+	mu_assert(q->tasks[63]->gamma == 0.500000,
+			"Incorrect gamma at task 63");
+	mu_assert(q->tasks[64]->gamma == 0.500000,
+			"Incorrect gamma at task 64");
+	mu_assert(q->tasks[65]->gamma == 0.500000,
+			"Incorrect gamma at task 65");
+	mu_assert(q->tasks[66]->gamma == 1.500000,
+			"Incorrect gamma at task 66");
+	mu_assert(q->tasks[67]->gamma == 1.500000,
+			"Incorrect gamma at task 67");
+	mu_assert(q->tasks[68]->gamma == 1.500000,
+			"Incorrect gamma at task 68");
+	mu_assert(q->tasks[69]->gamma == 1.500000,
+			"Incorrect gamma at task 69");
+	mu_assert(q->tasks[70]->gamma == 1.500000,
+			"Incorrect gamma at task 70");
+	mu_assert(q->tasks[71]->gamma == 1.500000,
+			"Incorrect gamma at task 71");
 
-	mu_assert(q->tasks[0]->kernelparam[1] == 7.000000,
-			"Incorrect kernelparam 1 at task 0");
-	mu_assert(q->tasks[1]->kernelparam[1] == 7.000000,
-			"Incorrect kernelparam 1 at task 1");
-	mu_assert(q->tasks[2]->kernelparam[1] == 7.000000,
-			"Incorrect kernelparam 1 at task 2");
-	mu_assert(q->tasks[3]->kernelparam[1] == 7.000000,
-			"Incorrect kernelparam 1 at task 3");
-	mu_assert(q->tasks[4]->kernelparam[1] == 7.000000,
-			"Incorrect kernelparam 1 at task 4");
-	mu_assert(q->tasks[5]->kernelparam[1] == 7.000000,
-			"Incorrect kernelparam 1 at task 5");
-	mu_assert(q->tasks[6]->kernelparam[1] == 7.000000,
-			"Incorrect kernelparam 1 at task 6");
-	mu_assert(q->tasks[7]->kernelparam[1] == 7.000000,
-			"Incorrect kernelparam 1 at task 7");
-	mu_assert(q->tasks[8]->kernelparam[1] == 7.000000,
-			"Incorrect kernelparam 1 at task 8");
-	mu_assert(q->tasks[9]->kernelparam[1] == 7.000000,
-			"Incorrect kernelparam 1 at task 9");
-	mu_assert(q->tasks[10]->kernelparam[1] == 7.000000,
-			"Incorrect kernelparam 1 at task 10");
-	mu_assert(q->tasks[11]->kernelparam[1] == 7.000000,
-			"Incorrect kernelparam 1 at task 11");
-	mu_assert(q->tasks[12]->kernelparam[1] == 11.000000,
-			"Incorrect kernelparam 1 at task 12");
-	mu_assert(q->tasks[13]->kernelparam[1] == 11.000000,
-			"Incorrect kernelparam 1 at task 13");
-	mu_assert(q->tasks[14]->kernelparam[1] == 11.000000,
-			"Incorrect kernelparam 1 at task 14");
-	mu_assert(q->tasks[15]->kernelparam[1] == 11.000000,
-			"Incorrect kernelparam 1 at task 15");
-	mu_assert(q->tasks[16]->kernelparam[1] == 11.000000,
-			"Incorrect kernelparam 1 at task 16");
-	mu_assert(q->tasks[17]->kernelparam[1] == 11.000000,
-			"Incorrect kernelparam 1 at task 17");
-	mu_assert(q->tasks[18]->kernelparam[1] == 11.000000,
-			"Incorrect kernelparam 1 at task 18");
-	mu_assert(q->tasks[19]->kernelparam[1] == 11.000000,
-			"Incorrect kernelparam 1 at task 19");
-	mu_assert(q->tasks[20]->kernelparam[1] == 11.000000,
-			"Incorrect kernelparam 1 at task 20");
-	mu_assert(q->tasks[21]->kernelparam[1] == 11.000000,
-			"Incorrect kernelparam 1 at task 21");
-	mu_assert(q->tasks[22]->kernelparam[1] == 11.000000,
-			"Incorrect kernelparam 1 at task 22");
-	mu_assert(q->tasks[23]->kernelparam[1] == 11.000000,
-			"Incorrect kernelparam 1 at task 23");
-	mu_assert(q->tasks[24]->kernelparam[1] == 13.000000,
-			"Incorrect kernelparam 1 at task 24");
-	mu_assert(q->tasks[25]->kernelparam[1] == 13.000000,
-			"Incorrect kernelparam 1 at task 25");
-	mu_assert(q->tasks[26]->kernelparam[1] == 13.000000,
-			"Incorrect kernelparam 1 at task 26");
-	mu_assert(q->tasks[27]->kernelparam[1] == 13.000000,
-			"Incorrect kernelparam 1 at task 27");
-	mu_assert(q->tasks[28]->kernelparam[1] == 13.000000,
-			"Incorrect kernelparam 1 at task 28");
-	mu_assert(q->tasks[29]->kernelparam[1] == 13.000000,
-			"Incorrect kernelparam 1 at task 29");
-	mu_assert(q->tasks[30]->kernelparam[1] == 13.000000,
-			"Incorrect kernelparam 1 at task 30");
-	mu_assert(q->tasks[31]->kernelparam[1] == 13.000000,
-			"Incorrect kernelparam 1 at task 31");
-	mu_assert(q->tasks[32]->kernelparam[1] == 13.000000,
-			"Incorrect kernelparam 1 at task 32");
-	mu_assert(q->tasks[33]->kernelparam[1] == 13.000000,
-			"Incorrect kernelparam 1 at task 33");
-	mu_assert(q->tasks[34]->kernelparam[1] == 13.000000,
-			"Incorrect kernelparam 1 at task 34");
-	mu_assert(q->tasks[35]->kernelparam[1] == 13.000000,
-			"Incorrect kernelparam 1 at task 35");
-	mu_assert(q->tasks[36]->kernelparam[1] == 7.000000,
-			"Incorrect kernelparam 1 at task 36");
-	mu_assert(q->tasks[37]->kernelparam[1] == 7.000000,
-			"Incorrect kernelparam 1 at task 37");
-	mu_assert(q->tasks[38]->kernelparam[1] == 7.000000,
-			"Incorrect kernelparam 1 at task 38");
-	mu_assert(q->tasks[39]->kernelparam[1] == 7.000000,
-			"Incorrect kernelparam 1 at task 39");
-	mu_assert(q->tasks[40]->kernelparam[1] == 7.000000,
-			"Incorrect kernelparam 1 at task 40");
-	mu_assert(q->tasks[41]->kernelparam[1] == 7.000000,
-			"Incorrect kernelparam 1 at task 41");
-	mu_assert(q->tasks[42]->kernelparam[1] == 7.000000,
-			"Incorrect kernelparam 1 at task 42");
-	mu_assert(q->tasks[43]->kernelparam[1] == 7.000000,
-			"Incorrect kernelparam 1 at task 43");
-	mu_assert(q->tasks[44]->kernelparam[1] == 7.000000,
-			"Incorrect kernelparam 1 at task 44");
-	mu_assert(q->tasks[45]->kernelparam[1] == 7.000000,
-			"Incorrect kernelparam 1 at task 45");
-	mu_assert(q->tasks[46]->kernelparam[1] == 7.000000,
-			"Incorrect kernelparam 1 at task 46");
-	mu_assert(q->tasks[47]->kernelparam[1] == 7.000000,
-			"Incorrect kernelparam 1 at task 47");
-	mu_assert(q->tasks[48]->kernelparam[1] == 11.000000,
-			"Incorrect kernelparam 1 at task 48");
-	mu_assert(q->tasks[49]->kernelparam[1] == 11.000000,
-			"Incorrect kernelparam 1 at task 49");
-	mu_assert(q->tasks[50]->kernelparam[1] == 11.000000,
-			"Incorrect kernelparam 1 at task 50");
-	mu_assert(q->tasks[51]->kernelparam[1] == 11.000000,
-			"Incorrect kernelparam 1 at task 51");
-	mu_assert(q->tasks[52]->kernelparam[1] == 11.000000,
-			"Incorrect kernelparam 1 at task 52");
-	mu_assert(q->tasks[53]->kernelparam[1] == 11.000000,
-			"Incorrect kernelparam 1 at task 53");
-	mu_assert(q->tasks[54]->kernelparam[1] == 11.000000,
-			"Incorrect kernelparam 1 at task 54");
-	mu_assert(q->tasks[55]->kernelparam[1] == 11.000000,
-			"Incorrect kernelparam 1 at task 55");
-	mu_assert(q->tasks[56]->kernelparam[1] == 11.000000,
-			"Incorrect kernelparam 1 at task 56");
-	mu_assert(q->tasks[57]->kernelparam[1] == 11.000000,
-			"Incorrect kernelparam 1 at task 57");
-	mu_assert(q->tasks[58]->kernelparam[1] == 11.000000,
-			"Incorrect kernelparam 1 at task 58");
-	mu_assert(q->tasks[59]->kernelparam[1] == 11.000000,
-			"Incorrect kernelparam 1 at task 59");
-	mu_assert(q->tasks[60]->kernelparam[1] == 13.000000,
-			"Incorrect kernelparam 1 at task 60");
-	mu_assert(q->tasks[61]->kernelparam[1] == 13.000000,
-			"Incorrect kernelparam 1 at task 61");
-	mu_assert(q->tasks[62]->kernelparam[1] == 13.000000,
-			"Incorrect kernelparam 1 at task 62");
-	mu_assert(q->tasks[63]->kernelparam[1] == 13.000000,
-			"Incorrect kernelparam 1 at task 63");
-	mu_assert(q->tasks[64]->kernelparam[1] == 13.000000,
-			"Incorrect kernelparam 1 at task 64");
-	mu_assert(q->tasks[65]->kernelparam[1] == 13.000000,
-			"Incorrect kernelparam 1 at task 65");
-	mu_assert(q->tasks[66]->kernelparam[1] == 13.000000,
-			"Incorrect kernelparam 1 at task 66");
-	mu_assert(q->tasks[67]->kernelparam[1] == 13.000000,
-			"Incorrect kernelparam 1 at task 67");
-	mu_assert(q->tasks[68]->kernelparam[1] == 13.000000,
-			"Incorrect kernelparam 1 at task 68");
-	mu_assert(q->tasks[69]->kernelparam[1] == 13.000000,
-			"Incorrect kernelparam 1 at task 69");
-	mu_assert(q->tasks[70]->kernelparam[1] == 13.000000,
-			"Incorrect kernelparam 1 at task 70");
-	mu_assert(q->tasks[71]->kernelparam[1] == 13.000000,
-			"Incorrect kernelparam 1 at task 71");
+	mu_assert(q->tasks[0]->coef == 7.000000,
+			"Incorrect coef at task 0");
+	mu_assert(q->tasks[1]->coef == 7.000000,
+			"Incorrect coef at task 1");
+	mu_assert(q->tasks[2]->coef == 7.000000,
+			"Incorrect coef at task 2");
+	mu_assert(q->tasks[3]->coef == 7.000000,
+			"Incorrect coef at task 3");
+	mu_assert(q->tasks[4]->coef == 7.000000,
+			"Incorrect coef at task 4");
+	mu_assert(q->tasks[5]->coef == 7.000000,
+			"Incorrect coef at task 5");
+	mu_assert(q->tasks[6]->coef == 7.000000,
+			"Incorrect coef at task 6");
+	mu_assert(q->tasks[7]->coef == 7.000000,
+			"Incorrect coef at task 7");
+	mu_assert(q->tasks[8]->coef == 7.000000,
+			"Incorrect coef at task 8");
+	mu_assert(q->tasks[9]->coef == 7.000000,
+			"Incorrect coef at task 9");
+	mu_assert(q->tasks[10]->coef == 7.000000,
+			"Incorrect coef at task 10");
+	mu_assert(q->tasks[11]->coef == 7.000000,
+			"Incorrect coef at task 11");
+	mu_assert(q->tasks[12]->coef == 11.000000,
+			"Incorrect coef at task 12");
+	mu_assert(q->tasks[13]->coef == 11.000000,
+			"Incorrect coef at task 13");
+	mu_assert(q->tasks[14]->coef == 11.000000,
+			"Incorrect coef at task 14");
+	mu_assert(q->tasks[15]->coef == 11.000000,
+			"Incorrect coef at task 15");
+	mu_assert(q->tasks[16]->coef == 11.000000,
+			"Incorrect coef at task 16");
+	mu_assert(q->tasks[17]->coef == 11.000000,
+			"Incorrect coef at task 17");
+	mu_assert(q->tasks[18]->coef == 11.000000,
+			"Incorrect coef at task 18");
+	mu_assert(q->tasks[19]->coef == 11.000000,
+			"Incorrect coef at task 19");
+	mu_assert(q->tasks[20]->coef == 11.000000,
+			"Incorrect coef at task 20");
+	mu_assert(q->tasks[21]->coef == 11.000000,
+			"Incorrect coef at task 21");
+	mu_assert(q->tasks[22]->coef == 11.000000,
+			"Incorrect coef at task 22");
+	mu_assert(q->tasks[23]->coef == 11.000000,
+			"Incorrect coef at task 23");
+	mu_assert(q->tasks[24]->coef == 13.000000,
+			"Incorrect coef at task 24");
+	mu_assert(q->tasks[25]->coef == 13.000000,
+			"Incorrect coef at task 25");
+	mu_assert(q->tasks[26]->coef == 13.000000,
+			"Incorrect coef at task 26");
+	mu_assert(q->tasks[27]->coef == 13.000000,
+			"Incorrect coef at task 27");
+	mu_assert(q->tasks[28]->coef == 13.000000,
+			"Incorrect coef at task 28");
+	mu_assert(q->tasks[29]->coef == 13.000000,
+			"Incorrect coef at task 29");
+	mu_assert(q->tasks[30]->coef == 13.000000,
+			"Incorrect coef at task 30");
+	mu_assert(q->tasks[31]->coef == 13.000000,
+			"Incorrect coef at task 31");
+	mu_assert(q->tasks[32]->coef == 13.000000,
+			"Incorrect coef at task 32");
+	mu_assert(q->tasks[33]->coef == 13.000000,
+			"Incorrect coef at task 33");
+	mu_assert(q->tasks[34]->coef == 13.000000,
+			"Incorrect coef at task 34");
+	mu_assert(q->tasks[35]->coef == 13.000000,
+			"Incorrect coef at task 35");
+	mu_assert(q->tasks[36]->coef == 7.000000,
+			"Incorrect coef at task 36");
+	mu_assert(q->tasks[37]->coef == 7.000000,
+			"Incorrect coef at task 37");
+	mu_assert(q->tasks[38]->coef == 7.000000,
+			"Incorrect coef at task 38");
+	mu_assert(q->tasks[39]->coef == 7.000000,
+			"Incorrect coef at task 39");
+	mu_assert(q->tasks[40]->coef == 7.000000,
+			"Incorrect coef at task 40");
+	mu_assert(q->tasks[41]->coef == 7.000000,
+			"Incorrect coef at task 41");
+	mu_assert(q->tasks[42]->coef == 7.000000,
+			"Incorrect coef at task 42");
+	mu_assert(q->tasks[43]->coef == 7.000000,
+			"Incorrect coef at task 43");
+	mu_assert(q->tasks[44]->coef == 7.000000,
+			"Incorrect coef at task 44");
+	mu_assert(q->tasks[45]->coef == 7.000000,
+			"Incorrect coef at task 45");
+	mu_assert(q->tasks[46]->coef == 7.000000,
+			"Incorrect coef at task 46");
+	mu_assert(q->tasks[47]->coef == 7.000000,
+			"Incorrect coef at task 47");
+	mu_assert(q->tasks[48]->coef == 11.000000,
+			"Incorrect coef at task 48");
+	mu_assert(q->tasks[49]->coef == 11.000000,
+			"Incorrect coef at task 49");
+	mu_assert(q->tasks[50]->coef == 11.000000,
+			"Incorrect coef at task 50");
+	mu_assert(q->tasks[51]->coef == 11.000000,
+			"Incorrect coef at task 51");
+	mu_assert(q->tasks[52]->coef == 11.000000,
+			"Incorrect coef at task 52");
+	mu_assert(q->tasks[53]->coef == 11.000000,
+			"Incorrect coef at task 53");
+	mu_assert(q->tasks[54]->coef == 11.000000,
+			"Incorrect coef at task 54");
+	mu_assert(q->tasks[55]->coef == 11.000000,
+			"Incorrect coef at task 55");
+	mu_assert(q->tasks[56]->coef == 11.000000,
+			"Incorrect coef at task 56");
+	mu_assert(q->tasks[57]->coef == 11.000000,
+			"Incorrect coef at task 57");
+	mu_assert(q->tasks[58]->coef == 11.000000,
+			"Incorrect coef at task 58");
+	mu_assert(q->tasks[59]->coef == 11.000000,
+			"Incorrect coef at task 59");
+	mu_assert(q->tasks[60]->coef == 13.000000,
+			"Incorrect coef at task 60");
+	mu_assert(q->tasks[61]->coef == 13.000000,
+			"Incorrect coef at task 61");
+	mu_assert(q->tasks[62]->coef == 13.000000,
+			"Incorrect coef at task 62");
+	mu_assert(q->tasks[63]->coef == 13.000000,
+			"Incorrect coef at task 63");
+	mu_assert(q->tasks[64]->coef == 13.000000,
+			"Incorrect coef at task 64");
+	mu_assert(q->tasks[65]->coef == 13.000000,
+			"Incorrect coef at task 65");
+	mu_assert(q->tasks[66]->coef == 13.000000,
+			"Incorrect coef at task 66");
+	mu_assert(q->tasks[67]->coef == 13.000000,
+			"Incorrect coef at task 67");
+	mu_assert(q->tasks[68]->coef == 13.000000,
+			"Incorrect coef at task 68");
+	mu_assert(q->tasks[69]->coef == 13.000000,
+			"Incorrect coef at task 69");
+	mu_assert(q->tasks[70]->coef == 13.000000,
+			"Incorrect coef at task 70");
+	mu_assert(q->tasks[71]->coef == 13.000000,
+			"Incorrect coef at task 71");
 
-	mu_assert(q->tasks[0]->kernelparam[2] == 3.000000,
-			"Incorrect kernelparam 2 at task 0");
-	mu_assert(q->tasks[1]->kernelparam[2] == 3.000000,
-			"Incorrect kernelparam 2 at task 1");
-	mu_assert(q->tasks[2]->kernelparam[2] == 3.000000,
-			"Incorrect kernelparam 2 at task 2");
-	mu_assert(q->tasks[3]->kernelparam[2] == 3.000000,
-			"Incorrect kernelparam 2 at task 3");
-	mu_assert(q->tasks[4]->kernelparam[2] == 3.000000,
-			"Incorrect kernelparam 2 at task 4");
-	mu_assert(q->tasks[5]->kernelparam[2] == 3.000000,
-			"Incorrect kernelparam 2 at task 5");
-	mu_assert(q->tasks[6]->kernelparam[2] == 3.000000,
-			"Incorrect kernelparam 2 at task 6");
-	mu_assert(q->tasks[7]->kernelparam[2] == 3.000000,
-			"Incorrect kernelparam 2 at task 7");
-	mu_assert(q->tasks[8]->kernelparam[2] == 3.000000,
-			"Incorrect kernelparam 2 at task 8");
-	mu_assert(q->tasks[9]->kernelparam[2] == 3.000000,
-			"Incorrect kernelparam 2 at task 9");
-	mu_assert(q->tasks[10]->kernelparam[2] == 3.000000,
-			"Incorrect kernelparam 2 at task 10");
-	mu_assert(q->tasks[11]->kernelparam[2] == 3.000000,
-			"Incorrect kernelparam 2 at task 11");
-	mu_assert(q->tasks[12]->kernelparam[2] == 3.000000,
-			"Incorrect kernelparam 2 at task 12");
-	mu_assert(q->tasks[13]->kernelparam[2] == 3.000000,
-			"Incorrect kernelparam 2 at task 13");
-	mu_assert(q->tasks[14]->kernelparam[2] == 3.000000,
-			"Incorrect kernelparam 2 at task 14");
-	mu_assert(q->tasks[15]->kernelparam[2] == 3.000000,
-			"Incorrect kernelparam 2 at task 15");
-	mu_assert(q->tasks[16]->kernelparam[2] == 3.000000,
-			"Incorrect kernelparam 2 at task 16");
-	mu_assert(q->tasks[17]->kernelparam[2] == 3.000000,
-			"Incorrect kernelparam 2 at task 17");
-	mu_assert(q->tasks[18]->kernelparam[2] == 3.000000,
-			"Incorrect kernelparam 2 at task 18");
-	mu_assert(q->tasks[19]->kernelparam[2] == 3.000000,
-			"Incorrect kernelparam 2 at task 19");
-	mu_assert(q->tasks[20]->kernelparam[2] == 3.000000,
-			"Incorrect kernelparam 2 at task 20");
-	mu_assert(q->tasks[21]->kernelparam[2] == 3.000000,
-			"Incorrect kernelparam 2 at task 21");
-	mu_assert(q->tasks[22]->kernelparam[2] == 3.000000,
-			"Incorrect kernelparam 2 at task 22");
-	mu_assert(q->tasks[23]->kernelparam[2] == 3.000000,
-			"Incorrect kernelparam 2 at task 23");
-	mu_assert(q->tasks[24]->kernelparam[2] == 3.000000,
-			"Incorrect kernelparam 2 at task 24");
-	mu_assert(q->tasks[25]->kernelparam[2] == 3.000000,
-			"Incorrect kernelparam 2 at task 25");
-	mu_assert(q->tasks[26]->kernelparam[2] == 3.000000,
-			"Incorrect kernelparam 2 at task 26");
-	mu_assert(q->tasks[27]->kernelparam[2] == 3.000000,
-			"Incorrect kernelparam 2 at task 27");
-	mu_assert(q->tasks[28]->kernelparam[2] == 3.000000,
-			"Incorrect kernelparam 2 at task 28");
-	mu_assert(q->tasks[29]->kernelparam[2] == 3.000000,
-			"Incorrect kernelparam 2 at task 29");
-	mu_assert(q->tasks[30]->kernelparam[2] == 3.000000,
-			"Incorrect kernelparam 2 at task 30");
-	mu_assert(q->tasks[31]->kernelparam[2] == 3.000000,
-			"Incorrect kernelparam 2 at task 31");
-	mu_assert(q->tasks[32]->kernelparam[2] == 3.000000,
-			"Incorrect kernelparam 2 at task 32");
-	mu_assert(q->tasks[33]->kernelparam[2] == 3.000000,
-			"Incorrect kernelparam 2 at task 33");
-	mu_assert(q->tasks[34]->kernelparam[2] == 3.000000,
-			"Incorrect kernelparam 2 at task 34");
-	mu_assert(q->tasks[35]->kernelparam[2] == 3.000000,
-			"Incorrect kernelparam 2 at task 35");
-	mu_assert(q->tasks[36]->kernelparam[2] == 5.000000,
-			"Incorrect kernelparam 2 at task 36");
-	mu_assert(q->tasks[37]->kernelparam[2] == 5.000000,
-			"Incorrect kernelparam 2 at task 37");
-	mu_assert(q->tasks[38]->kernelparam[2] == 5.000000,
-			"Incorrect kernelparam 2 at task 38");
-	mu_assert(q->tasks[39]->kernelparam[2] == 5.000000,
-			"Incorrect kernelparam 2 at task 39");
-	mu_assert(q->tasks[40]->kernelparam[2] == 5.000000,
-			"Incorrect kernelparam 2 at task 40");
-	mu_assert(q->tasks[41]->kernelparam[2] == 5.000000,
-			"Incorrect kernelparam 2 at task 41");
-	mu_assert(q->tasks[42]->kernelparam[2] == 5.000000,
-			"Incorrect kernelparam 2 at task 42");
-	mu_assert(q->tasks[43]->kernelparam[2] == 5.000000,
-			"Incorrect kernelparam 2 at task 43");
-	mu_assert(q->tasks[44]->kernelparam[2] == 5.000000,
-			"Incorrect kernelparam 2 at task 44");
-	mu_assert(q->tasks[45]->kernelparam[2] == 5.000000,
-			"Incorrect kernelparam 2 at task 45");
-	mu_assert(q->tasks[46]->kernelparam[2] == 5.000000,
-			"Incorrect kernelparam 2 at task 46");
-	mu_assert(q->tasks[47]->kernelparam[2] == 5.000000,
-			"Incorrect kernelparam 2 at task 47");
-	mu_assert(q->tasks[48]->kernelparam[2] == 5.000000,
-			"Incorrect kernelparam 2 at task 48");
-	mu_assert(q->tasks[49]->kernelparam[2] == 5.000000,
-			"Incorrect kernelparam 2 at task 49");
-	mu_assert(q->tasks[50]->kernelparam[2] == 5.000000,
-			"Incorrect kernelparam 2 at task 50");
-	mu_assert(q->tasks[51]->kernelparam[2] == 5.000000,
-			"Incorrect kernelparam 2 at task 51");
-	mu_assert(q->tasks[52]->kernelparam[2] == 5.000000,
-			"Incorrect kernelparam 2 at task 52");
-	mu_assert(q->tasks[53]->kernelparam[2] == 5.000000,
-			"Incorrect kernelparam 2 at task 53");
-	mu_assert(q->tasks[54]->kernelparam[2] == 5.000000,
-			"Incorrect kernelparam 2 at task 54");
-	mu_assert(q->tasks[55]->kernelparam[2] == 5.000000,
-			"Incorrect kernelparam 2 at task 55");
-	mu_assert(q->tasks[56]->kernelparam[2] == 5.000000,
-			"Incorrect kernelparam 2 at task 56");
-	mu_assert(q->tasks[57]->kernelparam[2] == 5.000000,
-			"Incorrect kernelparam 2 at task 57");
-	mu_assert(q->tasks[58]->kernelparam[2] == 5.000000,
-			"Incorrect kernelparam 2 at task 58");
-	mu_assert(q->tasks[59]->kernelparam[2] == 5.000000,
-			"Incorrect kernelparam 2 at task 59");
-	mu_assert(q->tasks[60]->kernelparam[2] == 5.000000,
-			"Incorrect kernelparam 2 at task 60");
-	mu_assert(q->tasks[61]->kernelparam[2] == 5.000000,
-			"Incorrect kernelparam 2 at task 61");
-	mu_assert(q->tasks[62]->kernelparam[2] == 5.000000,
-			"Incorrect kernelparam 2 at task 62");
-	mu_assert(q->tasks[63]->kernelparam[2] == 5.000000,
-			"Incorrect kernelparam 2 at task 63");
-	mu_assert(q->tasks[64]->kernelparam[2] == 5.000000,
-			"Incorrect kernelparam 2 at task 64");
-	mu_assert(q->tasks[65]->kernelparam[2] == 5.000000,
-			"Incorrect kernelparam 2 at task 65");
-	mu_assert(q->tasks[66]->kernelparam[2] == 5.000000,
-			"Incorrect kernelparam 2 at task 66");
-	mu_assert(q->tasks[67]->kernelparam[2] == 5.000000,
-			"Incorrect kernelparam 2 at task 67");
-	mu_assert(q->tasks[68]->kernelparam[2] == 5.000000,
-			"Incorrect kernelparam 2 at task 68");
-	mu_assert(q->tasks[69]->kernelparam[2] == 5.000000,
-			"Incorrect kernelparam 2 at task 69");
-	mu_assert(q->tasks[70]->kernelparam[2] == 5.000000,
-			"Incorrect kernelparam 2 at task 70");
-	mu_assert(q->tasks[71]->kernelparam[2] == 5.000000,
-			"Incorrect kernelparam 2 at task 71");
+	mu_assert(q->tasks[0]->degree == 3.000000,
+			"Incorrect degree at task 0");
+	mu_assert(q->tasks[1]->degree == 3.000000,
+			"Incorrect degree at task 1");
+	mu_assert(q->tasks[2]->degree == 3.000000,
+			"Incorrect degree at task 2");
+	mu_assert(q->tasks[3]->degree == 3.000000,
+			"Incorrect degree at task 3");
+	mu_assert(q->tasks[4]->degree == 3.000000,
+			"Incorrect degree at task 4");
+	mu_assert(q->tasks[5]->degree == 3.000000,
+			"Incorrect degree at task 5");
+	mu_assert(q->tasks[6]->degree == 3.000000,
+			"Incorrect degree at task 6");
+	mu_assert(q->tasks[7]->degree == 3.000000,
+			"Incorrect degree at task 7");
+	mu_assert(q->tasks[8]->degree == 3.000000,
+			"Incorrect degree at task 8");
+	mu_assert(q->tasks[9]->degree == 3.000000,
+			"Incorrect degree at task 9");
+	mu_assert(q->tasks[10]->degree == 3.000000,
+			"Incorrect degree at task 10");
+	mu_assert(q->tasks[11]->degree == 3.000000,
+			"Incorrect degree at task 11");
+	mu_assert(q->tasks[12]->degree == 3.000000,
+			"Incorrect degree at task 12");
+	mu_assert(q->tasks[13]->degree == 3.000000,
+			"Incorrect degree at task 13");
+	mu_assert(q->tasks[14]->degree == 3.000000,
+			"Incorrect degree at task 14");
+	mu_assert(q->tasks[15]->degree == 3.000000,
+			"Incorrect degree at task 15");
+	mu_assert(q->tasks[16]->degree == 3.000000,
+			"Incorrect degree at task 16");
+	mu_assert(q->tasks[17]->degree == 3.000000,
+			"Incorrect degree at task 17");
+	mu_assert(q->tasks[18]->degree == 3.000000,
+			"Incorrect degree at task 18");
+	mu_assert(q->tasks[19]->degree == 3.000000,
+			"Incorrect degree at task 19");
+	mu_assert(q->tasks[20]->degree == 3.000000,
+			"Incorrect degree at task 20");
+	mu_assert(q->tasks[21]->degree == 3.000000,
+			"Incorrect degree at task 21");
+	mu_assert(q->tasks[22]->degree == 3.000000,
+			"Incorrect degree at task 22");
+	mu_assert(q->tasks[23]->degree == 3.000000,
+			"Incorrect degree at task 23");
+	mu_assert(q->tasks[24]->degree == 3.000000,
+			"Incorrect degree at task 24");
+	mu_assert(q->tasks[25]->degree == 3.000000,
+			"Incorrect degree at task 25");
+	mu_assert(q->tasks[26]->degree == 3.000000,
+			"Incorrect degree at task 26");
+	mu_assert(q->tasks[27]->degree == 3.000000,
+			"Incorrect degree at task 27");
+	mu_assert(q->tasks[28]->degree == 3.000000,
+			"Incorrect degree at task 28");
+	mu_assert(q->tasks[29]->degree == 3.000000,
+			"Incorrect degree at task 29");
+	mu_assert(q->tasks[30]->degree == 3.000000,
+			"Incorrect degree at task 30");
+	mu_assert(q->tasks[31]->degree == 3.000000,
+			"Incorrect degree at task 31");
+	mu_assert(q->tasks[32]->degree == 3.000000,
+			"Incorrect degree at task 32");
+	mu_assert(q->tasks[33]->degree == 3.000000,
+			"Incorrect degree at task 33");
+	mu_assert(q->tasks[34]->degree == 3.000000,
+			"Incorrect degree at task 34");
+	mu_assert(q->tasks[35]->degree == 3.000000,
+			"Incorrect degree at task 35");
+	mu_assert(q->tasks[36]->degree == 5.000000,
+			"Incorrect degree at task 36");
+	mu_assert(q->tasks[37]->degree == 5.000000,
+			"Incorrect degree at task 37");
+	mu_assert(q->tasks[38]->degree == 5.000000,
+			"Incorrect degree at task 38");
+	mu_assert(q->tasks[39]->degree == 5.000000,
+			"Incorrect degree at task 39");
+	mu_assert(q->tasks[40]->degree == 5.000000,
+			"Incorrect degree at task 40");
+	mu_assert(q->tasks[41]->degree == 5.000000,
+			"Incorrect degree at task 41");
+	mu_assert(q->tasks[42]->degree == 5.000000,
+			"Incorrect degree at task 42");
+	mu_assert(q->tasks[43]->degree == 5.000000,
+			"Incorrect degree at task 43");
+	mu_assert(q->tasks[44]->degree == 5.000000,
+			"Incorrect degree at task 44");
+	mu_assert(q->tasks[45]->degree == 5.000000,
+			"Incorrect degree at task 45");
+	mu_assert(q->tasks[46]->degree == 5.000000,
+			"Incorrect degree at task 46");
+	mu_assert(q->tasks[47]->degree == 5.000000,
+			"Incorrect degree at task 47");
+	mu_assert(q->tasks[48]->degree == 5.000000,
+			"Incorrect degree at task 48");
+	mu_assert(q->tasks[49]->degree == 5.000000,
+			"Incorrect degree at task 49");
+	mu_assert(q->tasks[50]->degree == 5.000000,
+			"Incorrect degree at task 50");
+	mu_assert(q->tasks[51]->degree == 5.000000,
+			"Incorrect degree at task 51");
+	mu_assert(q->tasks[52]->degree == 5.000000,
+			"Incorrect degree at task 52");
+	mu_assert(q->tasks[53]->degree == 5.000000,
+			"Incorrect degree at task 53");
+	mu_assert(q->tasks[54]->degree == 5.000000,
+			"Incorrect degree at task 54");
+	mu_assert(q->tasks[55]->degree == 5.000000,
+			"Incorrect degree at task 55");
+	mu_assert(q->tasks[56]->degree == 5.000000,
+			"Incorrect degree at task 56");
+	mu_assert(q->tasks[57]->degree == 5.000000,
+			"Incorrect degree at task 57");
+	mu_assert(q->tasks[58]->degree == 5.000000,
+			"Incorrect degree at task 58");
+	mu_assert(q->tasks[59]->degree == 5.000000,
+			"Incorrect degree at task 59");
+	mu_assert(q->tasks[60]->degree == 5.000000,
+			"Incorrect degree at task 60");
+	mu_assert(q->tasks[61]->degree == 5.000000,
+			"Incorrect degree at task 61");
+	mu_assert(q->tasks[62]->degree == 5.000000,
+			"Incorrect degree at task 62");
+	mu_assert(q->tasks[63]->degree == 5.000000,
+			"Incorrect degree at task 63");
+	mu_assert(q->tasks[64]->degree == 5.000000,
+			"Incorrect degree at task 64");
+	mu_assert(q->tasks[65]->degree == 5.000000,
+			"Incorrect degree at task 65");
+	mu_assert(q->tasks[66]->degree == 5.000000,
+			"Incorrect degree at task 66");
+	mu_assert(q->tasks[67]->degree == 5.000000,
+			"Incorrect degree at task 67");
+	mu_assert(q->tasks[68]->degree == 5.000000,
+			"Incorrect degree at task 68");
+	mu_assert(q->tasks[69]->degree == 5.000000,
+			"Incorrect degree at task 69");
+	mu_assert(q->tasks[70]->degree == 5.000000,
+			"Incorrect degree at task 70");
+	mu_assert(q->tasks[71]->degree == 5.000000,
+			"Incorrect degree at task 71");
 	gensvm_free_queue(q);
 	// end test code //
 
@@ -871,53 +871,41 @@ char *test_kernel_changed()
 
 	// rbf kernel
 	old->kerneltype = K_RBF;
-	old->kernelparam = Malloc(double, 1);
-	old->kernelparam[0] = 1.0;
-	new->kernelparam = Malloc(double, 1);
-	new->kernelparam[0] = 1.0;
+	old->gamma = 1.0;
+	new->gamma = 1.0;
 	mu_assert(gensvm_kernel_changed(new, old) == false,
 			"Incorrect kernel changed (4)");
-	new->kernelparam[0] = 2.0;
+	new->gamma = 2.0;
 	mu_assert(gensvm_kernel_changed(new, old) == true,
 			"Incorrect kernel changed (5)");
-
-	free(old->kernelparam);
-	free(new->kernelparam);
 
 	// poly kernel
 	old->kerneltype = K_POLY;
 	new->kerneltype = K_POLY;
-	old->kernelparam = Malloc(double, 3);
-	old->kernelparam[0] = 1.0;
-	old->kernelparam[1] = 2.0;
-	old->kernelparam[2] = 3.0;
+	old->gamma = 1.0;
+	old->coef = 2.0;
+	old->degree = 3.0;
 
-	new->kernelparam = Malloc(double, 3);
-	new->kernelparam[0] = 1.0;
-	new->kernelparam[1] = 2.0;
-	new->kernelparam[2] = 3.0;
+	new->gamma = 1.0;
+	new->coef = 2.0;
+	new->degree = 3.0;
 	mu_assert(gensvm_kernel_changed(new, old) == false,
 			"Incorrect kernel changed (6)");
-	new->kernelparam[2] = 5.0;
+	new->degree = 5.0;
 	mu_assert(gensvm_kernel_changed(new, old) == true,
 			"Incorrect kernel changed (7)");
-
-	free(old->kernelparam);
-	free(new->kernelparam);
 
 	// sigmoid kernel
 	old->kerneltype = K_SIGMOID;
 	new->kerneltype = K_SIGMOID;
-	old->kernelparam = Malloc(double, 2);
-	old->kernelparam[0] = 1.0;
-	old->kernelparam[1] = 2.0;
-	new->kernelparam = Malloc(double, 2);
-	new->kernelparam[0] = 1.0;
-	new->kernelparam[1] = 2.0;
+	old->gamma = 1.0;
+	old->coef = 2.0;
+	new->gamma = 1.0;
+	new->coef = 2.0;
 
 	mu_assert(gensvm_kernel_changed(new, old) == false,
 			"Incorrect kernel changed (8)");
-	new->kernelparam[1] = 5.0;
+	new->coef = 5.0;
 	mu_assert(gensvm_kernel_changed(new, old) == true,
 			"Incorrect kernel changed (9)");
 
@@ -980,8 +968,7 @@ char *test_gridsearch_progress_rbf()
 	struct GenTask *task = gensvm_init_task();
 	task->ID = 0;
 	task->kerneltype = K_RBF;
-	task->kernelparam = Malloc(double, 1);
-	task->kernelparam[0] = 3.0;
+	task->gamma = 3.0;
 
 	// start test code //
 	gensvm_gridsearch_progress(task, 10, 0.5, 0.123, 0.7);
@@ -1012,10 +999,9 @@ char *test_gridsearch_progress_poly()
 	struct GenTask *task = gensvm_init_task();
 	task->ID = 0;
 	task->kerneltype = K_POLY;
-	task->kernelparam = Malloc(double, 3);
-	task->kernelparam[0] = 3.0;
-	task->kernelparam[1] = 1.0;
-	task->kernelparam[2] = 2.0;
+	task->gamma = 3.0;
+	task->coef = 1.0;
+	task->degree = 2.0;
 
 	// start test code //
 	gensvm_gridsearch_progress(task, 10, 0.5, 0.123, 0.7);
@@ -1048,9 +1034,8 @@ char *test_gridsearch_progress_sigmoid()
 	struct GenTask *task = gensvm_init_task();
 	task->ID = 0;
 	task->kerneltype = K_SIGMOID;
-	task->kernelparam = Malloc(double, 2);
-	task->kernelparam[0] = 3.0;
-	task->kernelparam[1] = 1.0;
+	task->gamma = 3.0;
+	task->coef = 1.0;
 
 	// start test code //
 	gensvm_gridsearch_progress(task, 10, 0.5, 0.123, 0.7);

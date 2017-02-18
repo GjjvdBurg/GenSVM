@@ -256,8 +256,6 @@ void gensvm_consistency_repeats(struct GenQueue *q, long repeats,
 	}
 
 	free(cv_idx);
-	// make sure no double free occurs with the copied kernelparam
-	model->kernelparam = NULL;
 	gensvm_free_model(model);
 	gensvm_free_queue(nq);
 

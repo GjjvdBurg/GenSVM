@@ -180,8 +180,7 @@ char *test_gensvm_train_seed_kernel()
 	model->epsilon = 1e-15;
 	model->weight_idx = 1;
 	model->kerneltype = K_RBF;
-	model->kernelparam = Calloc(double, 1);
-	model->kernelparam[0] = 0.348;
+	model->gamma = 0.348;
 	model->kernel_eigen_cutoff = 5e-3;
 
 	data->n = 10;

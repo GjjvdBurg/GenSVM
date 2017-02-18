@@ -39,7 +39,6 @@ char *test_kernel_copy_kernelparam_to_data_linear()
 	gensvm_kernel_copy_kernelparam_to_data(model, data);
 
 	mu_assert(data->kerneltype == K_LINEAR, "Incorrect data kerneltype");
-	mu_assert(data->kernelparam == NULL, "Incorrect data kernelparam");
 	// end test code //
 
 	gensvm_free_data(data);
@@ -54,13 +53,12 @@ char *test_kernel_copy_kernelparam_to_data_rbf()
 	struct GenData *data = gensvm_init_data();
 
 	model->kerneltype = K_RBF;
-	model->kernelparam = Calloc(double, 1);
-	model->kernelparam[0] = 1.23;
+	model->gamma = 1.23;
 
 	// start test code //
 	gensvm_kernel_copy_kernelparam_to_data(model, data);
 	mu_assert(data->kerneltype == K_RBF, "Incorrect data->kerneltype");
-	mu_assert(data->kernelparam[0] == 1.23, "Incorrect data->kernelparam[0]");
+	mu_assert(data->gamma == 1.23, "Incorrect data->gamma");
 
 	// end test code //
 
@@ -76,17 +74,16 @@ char *test_kernel_copy_kernelparam_to_data_poly()
 	struct GenData *data = gensvm_init_data();
 
 	model->kerneltype = K_POLY;
-	model->kernelparam = Calloc(double, 3);
-	model->kernelparam[0] = 1.23;
-	model->kernelparam[1] = 2.23;
-	model->kernelparam[2] = 3.23;
+	model->gamma = 1.23;
+	model->coef = 2.23;
+	model->degree = 3.23;
 
 	// start test code //
 	gensvm_kernel_copy_kernelparam_to_data(model, data);
 	mu_assert(data->kerneltype == K_POLY, "Incorrect data->kerneltype");
-	mu_assert(data->kernelparam[0] == 1.23, "Incorrect data->kernelparam[0]");
-	mu_assert(data->kernelparam[1] == 2.23, "Incorrect data->kernelparam[1]");
-	mu_assert(data->kernelparam[2] == 3.23, "Incorrect data->kernelparam[2]");
+	mu_assert(data->gamma == 1.23, "Incorrect data->gamma");
+	mu_assert(data->coef == 2.23, "Incorrect data->coef");
+	mu_assert(data->degree == 3.23, "Incorrect data->degree");
 
 	// end test code //
 
@@ -102,15 +99,14 @@ char *test_kernel_copy_kernelparam_to_data_sigmoid()
 	struct GenData *data = gensvm_init_data();
 
 	model->kerneltype = K_SIGMOID;
-	model->kernelparam = Calloc(double, 2);
-	model->kernelparam[0] = 1.23;
-	model->kernelparam[1] = 2.23;
+	model->gamma = 1.23;
+	model->coef = 2.23;
 
 	// start test code //
 	gensvm_kernel_copy_kernelparam_to_data(model, data);
 	mu_assert(data->kerneltype == K_SIGMOID, "Incorrect data->kerneltype");
-	mu_assert(data->kernelparam[0] == 1.23, "Incorrect data->kernelparam[0]");
-	mu_assert(data->kernelparam[1] == 2.23, "Incorrect data->kernelparam[1]");
+	mu_assert(data->gamma == 1.23, "Incorrect data->gamma");
+	mu_assert(data->coef == 2.23, "Incorrect data->coef");
 
 	// end test code //
 
@@ -122,10 +118,9 @@ char *test_kernel_copy_kernelparam_to_data_sigmoid()
 
 char *test_dot_rbf()
 {
-	double dot;
+	double dot, gamma;
 	double *a = Malloc(double, 5);
 	double *b = Malloc(double, 5);
-	double *kernelparam = Malloc(double, 1);
 
 	a[0] = 0.5203363837176203;
 	a[1] = 0.3860628599460129;
@@ -140,28 +135,26 @@ char *test_dot_rbf()
 	b[4] = 0.8805451245738238;
 
 	// start test code //
-	kernelparam[0] = 1.0;
-	dot = gensvm_kernel_dot_rbf(a, b, kernelparam, 5);
+	gamma = 1.0;
+	dot = gensvm_kernel_dot_rbf(a, b, 5, gamma);
 	mu_assert(fabs(dot - 0.657117701533133) < 1e-14, "Incorrect dot (1)");
 
-	kernelparam[0] = 5.0;
-	dot = gensvm_kernel_dot_rbf(a, b, kernelparam, 5);
+	gamma = 5.0;
+	dot = gensvm_kernel_dot_rbf(a, b, 5, gamma);
 	mu_assert(fabs(dot - 0.122522495044048) < 1e-14, "Incorrect dot (2)");
 
 	// end test code //
 	free(a);
 	free(b);
-	free(kernelparam);
 
 	return NULL;
 }
 
 char *test_dot_poly()
 {
-	double dot;
+	double dot, gamma, coef, degree;
 	double *a = Malloc(double, 5);
 	double *b = Malloc(double, 5);
-	double *kernelparam = Malloc(double, 3);
 
 	a[0] = 0.5203363837176203;
 	a[1] = 0.3860628599460129;
@@ -176,31 +169,29 @@ char *test_dot_poly()
 	b[4] = 0.8805451245738238;
 
 	// start test code //
-	kernelparam[0] = 1.0;
-	kernelparam[1] = 1.0;
-	kernelparam[2] = 1.0;
-	dot = gensvm_kernel_dot_poly(a, b, kernelparam, 5);
+	gamma = 1.0;
+	coef = 1.0;
+	degree = 1.0;
+	dot = gensvm_kernel_dot_poly(a, b, 5, gamma, coef, degree);
 	mu_assert(fabs(dot - 2.31723456944910) < 1e-14, "Incorrect dot (1)");
 
-	kernelparam[0] = 1.5;
-	kernelparam[1] = 2.5;
-	kernelparam[2] = 3.5;
-	dot = gensvm_kernel_dot_poly(a, b, kernelparam, 5);
+	gamma = 1.5;
+	coef = 2.5;
+	degree = 3.5;
+	dot = gensvm_kernel_dot_poly(a, b, 5, gamma, coef, degree);
 	mu_assert(fabs(dot - 189.6989652572890179) < 1e-14, "Incorrect dot (2)");
 
 	// end test code //
 	free(a);
 	free(b);
-	free(kernelparam);
 	return NULL;
 }
 
 char *test_dot_sigmoid()
 {
-	double dot;
+	double dot, gamma, coef;
 	double *a = Malloc(double, 5);
 	double *b = Malloc(double, 5);
-	double *kernelparam = Malloc(double, 2);
 
 	a[0] = 0.5203363837176203;
 	a[1] = 0.3860628599460129;
@@ -215,20 +206,19 @@ char *test_dot_sigmoid()
 	b[4] = 0.8805451245738238;
 
 	// start test code //
-	kernelparam[0] = 1.0;
-	kernelparam[1] = 1.0;
-	dot = gensvm_kernel_dot_sigmoid(a, b, kernelparam, 5);
+	gamma = 1.0;
+	coef = 1.0;
+	dot = gensvm_kernel_dot_sigmoid(a, b, 5, gamma, coef);
 	mu_assert(fabs(dot - 0.9807642810850747) < 1e-14, "Incorrect dot (1)");
 
-	kernelparam[0] = 1.5;
-	kernelparam[1] = 2.5;
-	dot = gensvm_kernel_dot_sigmoid(a, b, kernelparam, 5);
+	gamma = 1.5;
+	coef = 2.5;
+	dot = gensvm_kernel_dot_sigmoid(a, b, 5, gamma, coef);
 	mu_assert(fabs(dot - 0.9997410009167159) < 1e-14, "Incorrect dot (2)");
 
 	// end test code //
 	free(a);
 	free(b);
-	free(kernelparam);
 
 	return NULL;
 }
@@ -263,8 +253,7 @@ char *test_kernel_preprocess_kernel()
 	data->m = 5;
 
 	model->kerneltype = K_RBF;
-	model->kernelparam = Calloc(double, 1);
-	model->kernelparam[0] = 0.348;
+	model->gamma = 0.348;
 	model->kernel_eigen_cutoff = 5e-3;
 
 	data->Z = Calloc(double, data->n * (data->m + 1));
@@ -811,8 +800,7 @@ char *test_kernel_postprocess_kernel()
 	test->RAW = Calloc(double, test->n * (test->m + 1));
 
 	model->kerneltype = K_RBF;
-	model->kernelparam = Calloc(double, 1);
-	model->kernelparam[0] = 1.132;
+	model->gamma = 1.132;
 
 	// start test code //
 
@@ -1104,8 +1092,7 @@ char *test_kernel_compute_rbf()
 	model->n = 10;
 	model->m = 3;
 	model->kerneltype = K_RBF;
-	model->kernelparam = Calloc(double, 1);
-	model->kernelparam[0] = 0.348;
+	model->gamma = 0.348;
 
 	double *K = Calloc(double, data->n * data->n);
 
@@ -1479,10 +1466,9 @@ char *test_kernel_compute_poly()
 	model->n = 10;
 	model->m = 3;
 	model->kerneltype = K_POLY;
-	model->kernelparam = Calloc(double, 3);
-	model->kernelparam[0] = 1.5;
-	model->kernelparam[1] = 3.0;
-	model->kernelparam[2] = 1.78;
+	model->gamma = 1.5;
+	model->coef = 3.0;
+	model->degree = 1.78;
 
 	double *K = Calloc(double, data->n * data->n);
 
@@ -1855,9 +1841,8 @@ char *test_kernel_compute_sigmoid()
 	model->n = 10;
 	model->m = 3;
 	model->kerneltype = K_SIGMOID;
-	model->kernelparam = Calloc(double, 3);
-	model->kernelparam[0] = 1.23;
-	model->kernelparam[1] = 1.6;
+	model->gamma = 1.23;
+	model->coef = 1.6;
 
 	double *K = Calloc(double, data->n * data->n);
 
@@ -2328,7 +2313,7 @@ char *test_kernel_eigendecomp()
 	double *P = NULL;
 	double *Sigma = NULL;
 	long r = gensvm_kernel_eigendecomp(K, n, 1e-2, &P, &Sigma);
-	double eps = 1e-14;
+	double eps = 1e-13;
 
 	mu_assert(r == 7, "Incorrect number of eigenvalues kept");
 
@@ -2589,8 +2574,7 @@ char *test_kernel_cross_rbf()
 	model->n = 10;
 	model->m = 3;
 	model->kerneltype = K_RBF;
-	model->kernelparam = Calloc(double, 1);
-	model->kernelparam[0] = 0.348;
+	model->gamma = 0.348;
 
 	matrix_set(data_1->RAW, data_1->m+1, 0, 0, 1.0000000000000000);
 	matrix_set(data_1->RAW, data_1->m+1, 0, 1, 0.8056271362589000);
@@ -2836,10 +2820,9 @@ char *test_kernel_cross_poly()
 	model->n = 10;
 	model->m = 3;
 	model->kerneltype = K_POLY;
-	model->kernelparam = Calloc(double, 3);
-	model->kernelparam[0] = 1.5;
-	model->kernelparam[1] = 3.0;
-	model->kernelparam[2] = 1.78;
+	model->gamma = 1.5;
+	model->coef = 3.0;
+	model->degree = 1.78;
 
 	matrix_set(data_1->RAW, data_1->m+1, 0, 0, 1.0000000000000000);
 	matrix_set(data_1->RAW, data_1->m+1, 0, 1, 0.8056271362589000);
@@ -3085,9 +3068,8 @@ char *test_kernel_cross_sigmoid()
 	model->n = 10;
 	model->m = 3;
 	model->kerneltype = K_SIGMOID;
-	model->kernelparam = Calloc(double, 3);
-	model->kernelparam[0] = 1.23;
-	model->kernelparam[1] = 1.6;
+	model->gamma = 1.23;
+	model->coef = 1.6;
 
 	matrix_set(data_1->RAW, data_1->m+1, 0, 0, 1.0000000000000000);
 	matrix_set(data_1->RAW, data_1->m+1, 0, 1, 0.8056271362589000);

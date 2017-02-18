@@ -49,7 +49,9 @@
  * @param J 		pointer to regularization vector
  * @param Sigma 	eigenvalues from the reduced eigendecomposition
  * @param kerneltype 	kerneltype used in GenData::Z
- * @param *kernelparam 	kernel parameters used in GenData::Z
+ * @param gamma 	kernel parameter for RBF, poly, and sigmoid
+ * @param coef 		kernel parameter for poly and sigmoid
+ * @param degree 	kernel parameter for poly
  *
  */
 struct GenData {
@@ -75,9 +77,12 @@ struct GenData {
 	KernelType kerneltype;
 	///< kerneltype used to generate the kernel corresponding to the data 
 	///< in Z
- 	double *kernelparam;
-	///< kernelparameters used to generate the kernel corresponding to the 
-	///< data in Z
+	double gamma;
+	///< kernel parameter for RBF, poly, and sigmoid
+	double coef;
+	///< kernel parameter for poly and sigmoid
+	double degree;
+	///< kernel parameter for poly
 };
 
 /**
@@ -101,6 +106,12 @@ struct GenModel {
 	///< parameter for the Huber hinge function
 	double lambda;
 	///< regularization parameter in the loss function
+	double gamma;
+	///< kernel parameter for RBF, poly, and sigmoid
+	double coef;
+	///< kernel parameter for poly and sigmoid
+	double degree;
+	///< kernel parameter for poly
 	double *V;
 	///< augmented weight matrix
 	double *Vbar;
@@ -122,8 +133,6 @@ struct GenModel {
 	///< filename of the data
 	KernelType kerneltype;
 	///< type of kernel used in the model
-	double *kernelparam;
-	///< array of kernel parameters, size depends on kernel type
 	double kernel_eigen_cutoff;
 	///< cutoff value for the ratio of eigenvalues in the reduced 
 	//eigendecomposition.

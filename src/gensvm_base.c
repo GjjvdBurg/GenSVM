@@ -53,7 +53,9 @@ struct GenData *gensvm_init_data()
 
 	// set default values
 	data->kerneltype = K_LINEAR;
-	data->kernelparam = NULL;
+	data->gamma = -1;
+	data->coef = -1;
+	data->degree = -1;
 
 	return data;
 }
@@ -82,7 +84,6 @@ void gensvm_free_data(struct GenData *data)
 		free(data->Z);
 		free(data->RAW);
 	}
-	free(data->kernelparam);
 	free(data->y);
 	free(data->Sigma);
 	free(data);
@@ -108,8 +109,10 @@ struct GenModel *gensvm_init_model()
 	model->epsilon = 1e-6;
 	model->kappa = 0.0;
 	model->weight_idx = 1;
+	model->gamma = 1.0;
+	model->coef = 0.0;
+	model->degree = 2.0;
 	model->kerneltype = K_LINEAR;
-	model->kernelparam = NULL;
 	model->kernel_eigen_cutoff = 1e-8;
 
 	model->V = NULL;
@@ -213,7 +216,6 @@ void gensvm_free_model(struct GenModel *model)
 	free(model->Q);
 	free(model->H);
 	free(model->rho);
-	free(model->kernelparam);
 	free(model->data_file);
 
 	free(model);

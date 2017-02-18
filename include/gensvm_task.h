@@ -45,7 +45,9 @@
  * @param lambda 	parameter for the GenModel
  * @param epsilon 	parameter for the GenModel
  * @param kerneltype 	parameter for the GenModel
- * @param kernelparam 	kernel parameters for the GenModel
+ * @param gamma 	parameter for the GenModel
+ * @param coef 		parameter for the GenModel
+ * @param degree 	parameter for the GenModel
  * @param train_data 	pointer to the training data
  * @param test_data 	pointer to the test data (if any)
  * @param performance 	performance after cross validation
@@ -67,8 +69,12 @@ struct GenTask {
 	///< lambda parameter for the GenModel
 	double epsilon;
 	///< epsilon parameter for the GenModel
-	double *kernelparam;
-	///< kernelparam parameters for the GenModel
+	double gamma;
+	///< gamma parameter for the GenModel
+	double coef;
+	///< coef parameter for the GenModel
+	double degree;
+	///< degree parameter for the GenModel
 	struct GenData *train_data;
 	///< pointer to the training data
 	struct GenData *test_data;

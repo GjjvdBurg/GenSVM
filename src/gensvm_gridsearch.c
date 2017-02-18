@@ -80,8 +80,6 @@ void gensvm_fill_queue(struct GenGrid *grid, struct GenQueue *queue,
 		task->test_data = test_data;
 		task->folds = grid->folds;
 		task->kerneltype = grid->kerneltype;
-		task->kernelparam = Calloc(double, grid->Ng +
-				grid->Nc + grid->Nd);
 		queue->tasks[i] = task;
 	}
 
@@ -140,8 +138,7 @@ void gensvm_fill_queue(struct GenGrid *grid, struct GenQueue *queue,
 	while (i < N) {
 		for (j=0; j<grid->Ne; j++) {
 			for (k=0; k<cnt; k++) {
-				queue->tasks[i]->epsilon =
-					grid->epsilons[j];
+				queue->tasks[i]->epsilon = grid->epsilons[j];
 				i++;
 			}
 		}
@@ -152,8 +149,7 @@ void gensvm_fill_queue(struct GenGrid *grid, struct GenQueue *queue,
 	while (i < N && grid->Ng > 0) {
 		for (j=0; j<grid->Ng; j++) {
 			for (k=0; k<cnt; k++) {
-				queue->tasks[i]->kernelparam[0] =
-					grid->gammas[j];
+				queue->tasks[i]->gamma = grid->gammas[j];
 				i++;
 			}
 		}
@@ -164,8 +160,7 @@ void gensvm_fill_queue(struct GenGrid *grid, struct GenQueue *queue,
 	while (i < N && grid->Nc > 0) {
 		for (j=0; j<grid->Nc; j++) {
 			for (k=0; k<cnt; k++) {
-				queue->tasks[i]->kernelparam[1] =
-					grid->coefs[j];
+				queue->tasks[i]->coef = grid->coefs[j];
 				i++;
 			}
 		}
@@ -176,8 +171,7 @@ void gensvm_fill_queue(struct GenGrid *grid, struct GenQueue *queue,
 	while (i < N && grid->Nd > 0) {
 		for (j=0; j<grid->Nd; j++) {
 			for (k=0; k<cnt; k++) {
-				queue->tasks[i]->kernelparam[2] =
-					grid->degrees[j];
+				queue->tasks[i]->degree = grid->degrees[j];
 				i++;
 			}
 		}
@@ -200,24 +194,27 @@ void gensvm_fill_queue(struct GenGrid *grid, struct GenQueue *queue,
  */
 bool gensvm_kernel_changed(struct GenTask *newtask, struct GenTask *oldtask)
 {
-	int i;
 	if (oldtask == NULL)
 		return true;
 	if (newtask->kerneltype != oldtask->kerneltype) {
 		return true;
 	} else if (newtask->kerneltype == K_POLY) {
-		for (i=0; i<3; i++)
-			if (newtask->kernelparam[i] != oldtask->kernelparam[i])
-				return true;
+		if (newtask->gamma != oldtask->gamma)
+			return true;
+		if (newtask->coef != oldtask->coef)
+			return true;
+		if (newtask->degree != oldtask->degree)
+			return true;
 		return false;
 	} else if (newtask->kerneltype == K_RBF) {
-		if (newtask->kernelparam[0] != oldtask->kernelparam[0])
+		if (newtask->gamma != oldtask->gamma)
 			return true;
 		return false;
 	} else if (newtask->kerneltype == K_SIGMOID) {
-		for (i=0; i<2; i++)
-			if (newtask->kernelparam[i] != oldtask->kernelparam[i])
-				return true;
+		if (newtask->gamma != oldtask->gamma)
+			return true;
+		if (newtask->coef != oldtask->coef)
+			return true;
 		return false;
 	}
 	return false;
@@ -331,8 +328,6 @@ void gensvm_train_queue(struct GenQueue *q)
 	note("\nTotal elapsed training time: %8.8f seconds\n",
 			gensvm_elapsed_time(&main_s, &main_e));
 
-	// make sure no double free occurs with the copied kernelparam
-	model->kernelparam = NULL;
 	gensvm_free_model(model);
 	for (f=0; f<folds; f++) {
 		gensvm_free_data(train_folds[f]);
@@ -365,15 +360,12 @@ void gensvm_gridsearch_progress(struct GenTask *task, long N, double perf,
 	char buffer[GENSVM_MAX_LINE_LENGTH];
 	sprintf(buffer, "(%03li/%03li)\t", task->ID+1, N);
 	if (task->kerneltype == K_POLY)
-		sprintf(buffer + strlen(buffer), "d = %2.2f\t",
-				task->kernelparam[2]);
+		sprintf(buffer + strlen(buffer), "d = %2.2f\t", task->degree);
 	if (task->kerneltype == K_POLY || task->kerneltype == K_SIGMOID)
-		sprintf(buffer + strlen(buffer), "c = %2.2f\t",
-				task->kernelparam[1]);
+		sprintf(buffer + strlen(buffer), "c = %2.2f\t", task->coef);
 	if (task->kerneltype == K_POLY || task->kerneltype == K_SIGMOID ||
 			task->kerneltype == K_RBF)
-		sprintf(buffer + strlen(buffer), "g = %3.3f\t",
-				task->kernelparam[0]);
+		sprintf(buffer + strlen(buffer), "g = %3.3f\t", task->gamma);
 	sprintf(buffer + strlen(buffer), "eps = %g\tw = %i\tk = %2.2f\t"
 			"l = %f\tp = %2.2f\t", task->epsilon,
 			task->weight_idx, task->kappa, task->lambda, task->p);
