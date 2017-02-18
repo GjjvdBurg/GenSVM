@@ -46,6 +46,7 @@ char *test_task_to_model_linear()
 	task->lambda = 1.4;
 	task->epsilon = 5e-3;
 	task->kerneltype = K_LINEAR;
+	task->max_iter = 100;
 
 	gensvm_task_to_model(task, model);
 
@@ -55,6 +56,7 @@ char *test_task_to_model_linear()
 	mu_assert(model->lambda == 1.4, "Incorrect model lambda");
 	mu_assert(model->epsilon == 5e-3, "Incorrect model epsilon");
 	mu_assert(model->kerneltype == K_LINEAR, "Incorrect model kerneltype");
+	mu_assert(model->max_iter == 100, "Incorrect model max_iter");
 	// end test code //
 
 	gensvm_free_model(model);

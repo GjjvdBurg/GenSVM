@@ -53,6 +53,7 @@ struct GenTask *gensvm_init_task()
 	t->train_data = NULL;
 	t->test_data = NULL;
 	t->performance = 0.0;
+	t->max_iter = 1000000000;
 
 	return t;
 }
@@ -103,6 +104,8 @@ struct GenTask *gensvm_copy_task(struct GenTask *t)
 	nt->coef = t->coef;
 	nt->degree = t->degree;
 
+	nt->max_iter = t->max_iter;
+
 	return nt;
 }
 
@@ -130,4 +133,7 @@ void gensvm_task_to_model(struct GenTask *task, struct GenModel *model)
 	model->gamma = task->gamma;
 	model->coef = task->coef;
 	model->degree = task->degree;
+
+	// copy other parameters
+	model->max_iter = task->max_iter;
 }

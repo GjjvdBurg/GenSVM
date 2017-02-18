@@ -38,6 +38,7 @@ char *test_copy_model_linear()
 	from_model->kappa = 1.0;
 	from_model->weight_idx = 2;
 	from_model->kerneltype = K_LINEAR;
+	from_model->max_iter = 100;
 
 	gensvm_copy_model(from_model, to_model);
 
@@ -48,6 +49,7 @@ char *test_copy_model_linear()
 	mu_assert(to_model->weight_idx == 2,
 		       	"to_model->weight_idx incorrect.");
 	mu_assert(to_model->kerneltype == K_LINEAR, "to->kerneltype incorrect");
+	mu_assert(to_model->max_iter == 100, "to->max_iter incorrect");
 
 	gensvm_free_model(from_model);
 	gensvm_free_model(to_model);

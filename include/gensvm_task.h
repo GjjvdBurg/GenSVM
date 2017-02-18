@@ -75,6 +75,8 @@ struct GenTask {
 	///< coef parameter for the GenModel
 	double degree;
 	///< degree parameter for the GenModel
+	long max_iter;
+	///< maximum number of iterations of the algorithm
 	struct GenData *train_data;
 	///< pointer to the training data
 	struct GenData *test_data;

@@ -136,6 +136,8 @@ struct GenModel {
 	double kernel_eigen_cutoff;
 	///< cutoff value for the ratio of eigenvalues in the reduced 
 	//eigendecomposition.
+	long max_iter;
+	///< maximum number of iterations of the algorithm
 };
 
 /**

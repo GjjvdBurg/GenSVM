@@ -48,4 +48,6 @@ void gensvm_copy_model(struct GenModel *from, struct GenModel *to)
 	to->gamma = from->gamma;
 	to->coef = from->coef;
 	to->degree = from->degree;
+
+	to->max_iter = from->max_iter;
 }

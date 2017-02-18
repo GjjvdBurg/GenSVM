@@ -114,6 +114,7 @@ struct GenModel *gensvm_init_model()
 	model->degree = 2.0;
 	model->kerneltype = K_LINEAR;
 	model->kernel_eigen_cutoff = 1e-8;
+	model->max_iter = 1000000000;
 
 	model->V = NULL;
 	model->Vbar = NULL;
