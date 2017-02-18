@@ -31,13 +31,13 @@
             <td class="headerValue">coverage.all</td>
             <td></td>
             <td class="headerItem">Lines:</td>
-            <td class="headerCovTableEntry">176</td>
-            <td class="headerCovTableEntry">176</td>
+            <td class="headerCovTableEntry">165</td>
+            <td class="headerCovTableEntry">165</td>
             <td class="headerCovTableEntryHi">100.0 %</td>
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2017-01-12 14:06:18</td>
+            <td class="headerValue">2017-02-17 18:59:15</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">13</td>
@@ -108,552 +108,538 @@
 <span class="lineNum">      46 </span><span class="lineCov">          6 : void gensvm_kernel_copy_kernelparam_to_data(struct GenModel *model, </span>
 <span class="lineNum">      47 </span>            :                 struct GenData *data)
 <span class="lineNum">      48 </span>            : {
-<span class="lineNum">      49 </span>            :         int i;
-<span class="lineNum">      50 </span><span class="lineCov">          6 :         data-&gt;kerneltype = model-&gt;kerneltype;</span>
-<span class="lineNum">      51 </span>            : 
-<span class="lineNum">      52 </span><span class="lineCov">          6 :         free(data-&gt;kernelparam);</span>
-<span class="lineNum">      53 </span><span class="lineCov">          6 :         data-&gt;kernelparam = NULL;</span>
+<span class="lineNum">      49 </span><span class="lineCov">          6 :         data-&gt;kerneltype = model-&gt;kerneltype;</span>
+<span class="lineNum">      50 </span><span class="lineCov">          6 :         data-&gt;gamma = model-&gt;gamma;</span>
+<span class="lineNum">      51 </span><span class="lineCov">          6 :         data-&gt;coef = model-&gt;coef;</span>
+<span class="lineNum">      52 </span><span class="lineCov">          6 :         data-&gt;degree = model-&gt;degree;</span>
+<span class="lineNum">      53 </span><span class="lineCov">          6 : }</span>
 <span class="lineNum">      54 </span>            : 
-<span class="lineNum">      55 </span><span class="lineCov">          6 :         switch (model-&gt;kerneltype) {</span>
-<span class="lineNum">      56 </span>            :                 case K_LINEAR:
-<span class="lineNum">      57 </span><span class="lineCov">          1 :                         break;</span>
-<span class="lineNum">      58 </span>            :                 case K_POLY:
-<span class="lineNum">      59 </span><span class="lineCov">          1 :                         data-&gt;kernelparam = Calloc(double, 3);</span>
-<span class="lineNum">      60 </span><span class="lineCov">          4 :                         for (i=0; i&lt;3; i++)</span>
-<span class="lineNum">      61 </span><span class="lineCov">          3 :                                 data-&gt;kernelparam[i] = model-&gt;kernelparam[i];</span>
-<span class="lineNum">      62 </span><span class="lineCov">          1 :                         break;</span>
-<span class="lineNum">      63 </span>            :                 case K_RBF:
-<span class="lineNum">      64 </span><span class="lineCov">          3 :                         data-&gt;kernelparam = Calloc(double, 1);</span>
-<span class="lineNum">      65 </span><span class="lineCov">          3 :                         data-&gt;kernelparam[0] = model-&gt;kernelparam[0];</span>
-<span class="lineNum">      66 </span><span class="lineCov">          3 :                         break;</span>
-<span class="lineNum">      67 </span>            :                 case K_SIGMOID:
-<span class="lineNum">      68 </span><span class="lineCov">          1 :                         data-&gt;kernelparam = Calloc(double, 2);</span>
-<span class="lineNum">      69 </span><span class="lineCov">          1 :                         data-&gt;kernelparam[0] = model-&gt;kernelparam[0];</span>
-<span class="lineNum">      70 </span><span class="lineCov">          1 :                         data-&gt;kernelparam[1] = model-&gt;kernelparam[1];</span>
-<span class="lineNum">      71 </span>            :         }
-<span class="lineNum">      72 </span><span class="lineCov">          6 : }</span>
-<span class="lineNum">      73 </span>            : 
-<span class="lineNum">      74 </span>            : 
-<span class="lineNum">      75 </span>            : /**
-<span class="lineNum">      76 </span>            :  * @brief Do the preprocessing steps needed to perform kernel GenSVM
-<span class="lineNum">      77 </span>            :  *
-<span class="lineNum">      78 </span>            :  * @details
-<span class="lineNum">      79 </span>            :  * To achieve nonlinearity through kernels in GenSVM, a preprocessing step is
-<span class="lineNum">      80 </span>            :  * needed. This preprocessing step computes the full kernel matrix, and an
-<span class="lineNum">      81 </span>            :  * eigendecomposition of this matrix. Next, it computes a matrix @f$\textbf{M}
-<span class="lineNum">      82 </span>            :  * = \textbf{P}\boldsymbol{\Sigma}@f$ which takes the role as data matrix in
-<span class="lineNum">      83 </span>            :  * the optimization algorithm.
-<span class="lineNum">      84 </span>            :  *
-<span class="lineNum">      85 </span>            :  * @sa
-<span class="lineNum">      86 </span>            :  * gensvm_kernel_compute(), gensvm_kernel_eigendecomp(), 
-<span class="lineNum">      87 </span>            :  * gensvm_kernel_trainfactor(), gensvm_kernel_postprocess()
-<span class="lineNum">      88 </span>            :  *
-<span class="lineNum">      89 </span>            :  * @param[in]           model   input GenSVM model
-<span class="lineNum">      90 </span>            :  * @param[in,out]       data    input structure with the data. On exit,
-<span class="lineNum">      91 </span>            :  *                              contains the training factor in GenData::Z,
-<span class="lineNum">      92 </span>            :  *                              and the original data in GenData::RAW
-<a name="93"><span class="lineNum">      93 </span>            :  *</a>
-<span class="lineNum">      94 </span>            :  */
-<span class="lineNum">      95 </span><span class="lineCov">          4 : void gensvm_kernel_preprocess(struct GenModel *model, struct GenData *data)</span>
-<span class="lineNum">      96 </span>            : {
-<span class="lineNum">      97 </span><span class="lineCov">          4 :         if (model-&gt;kerneltype == K_LINEAR) {</span>
-<span class="lineNum">      98 </span><span class="lineCov">          2 :                 data-&gt;r = data-&gt;m;</span>
-<span class="lineNum">      99 </span><span class="lineCov">          2 :                 return;</span>
-<span class="lineNum">     100 </span>            :         }
-<span class="lineNum">     101 </span>            : 
-<span class="lineNum">     102 </span><span class="lineCov">          2 :         long r, n = data-&gt;n;</span>
-<span class="lineNum">     103 </span><span class="lineCov">          2 :         double *P = NULL,</span>
-<span class="lineNum">     104 </span><span class="lineCov">          2 :                *Sigma = NULL,</span>
-<span class="lineNum">     105 </span><span class="lineCov">          2 :                *K = NULL;</span>
-<span class="lineNum">     106 </span>            : 
-<span class="lineNum">     107 </span>            :         // build the kernel matrix
-<span class="lineNum">     108 </span><span class="lineCov">          2 :         K = Calloc(double, n*n);</span>
-<span class="lineNum">     109 </span><span class="lineCov">          2 :         gensvm_kernel_compute(model, data, K);</span>
-<span class="lineNum">     110 </span>            : 
-<span class="lineNum">     111 </span>            :         // generate the eigen decomposition
-<span class="lineNum">     112 </span><span class="lineCov">          2 :         r = gensvm_kernel_eigendecomp(K, n, model-&gt;kernel_eigen_cutoff, &amp;P, </span>
-<span class="lineNum">     113 </span>            :                         &amp;Sigma);
-<span class="lineNum">     114 </span>            : 
-<span class="lineNum">     115 </span>            :         // build M and set to data (leave RAW intact)
-<span class="lineNum">     116 </span><span class="lineCov">          2 :         gensvm_kernel_trainfactor(data, P, Sigma, r);</span>
-<span class="lineNum">     117 </span>            : 
-<span class="lineNum">     118 </span>            :         // Set Sigma to data-&gt;Sigma (need it again for prediction)
-<span class="lineNum">     119 </span><span class="lineCov">          2 :         if (data-&gt;Sigma != NULL) {</span>
-<span class="lineNum">     120 </span><span class="lineCov">          1 :                 free(data-&gt;Sigma);</span>
-<span class="lineNum">     121 </span><span class="lineCov">          1 :                 data-&gt;Sigma = NULL;</span>
-<span class="lineNum">     122 </span>            :         }
-<span class="lineNum">     123 </span><span class="lineCov">          2 :         data-&gt;Sigma = Sigma;</span>
-<span class="lineNum">     124 </span>            : 
-<span class="lineNum">     125 </span>            :         // write kernel params to data
-<span class="lineNum">     126 </span><span class="lineCov">          2 :         gensvm_kernel_copy_kernelparam_to_data(model, data);</span>
-<span class="lineNum">     127 </span>            : 
-<span class="lineNum">     128 </span><span class="lineCov">          2 :         free(K);</span>
-<span class="lineNum">     129 </span><span class="lineCov">          2 :         free(P);</span>
-<span class="lineNum">     130 </span>            : }
-<span class="lineNum">     131 </span>            : 
-<span class="lineNum">     132 </span>            : /**
-<span class="lineNum">     133 </span>            :  * @brief Compute the kernel postprocessing factor
-<span class="lineNum">     134 </span>            :  *
-<span class="lineNum">     135 </span>            :  * @details
-<span class="lineNum">     136 </span>            :  * This function computes the postprocessing factor needed to do predictions 
-<span class="lineNum">     137 </span>            :  * with kernels in GenSVM. This is a wrapper around gensvm_kernel_cross() and 
-<span class="lineNum">     138 </span>            :  * gensvm_kernel_testfactor().
-<span class="lineNum">     139 </span>            :  *
-<span class="lineNum">     140 </span>            :  * @param[in]           model           a GenSVM model
-<span class="lineNum">     141 </span>            :  * @param[in]           traindata       the training dataset
-<span class="lineNum">     142 </span>            :  * @param[in,out]       testdata        the test dataset. On exit, GenData::Z
-<a name="143"><span class="lineNum">     143 </span>            :  *                                      contains the testfactor</a>
-<span class="lineNum">     144 </span>            :  */
-<span class="lineNum">     145 </span><span class="lineCov">          2 : void gensvm_kernel_postprocess(struct GenModel *model,</span>
-<span class="lineNum">     146 </span>            :                 struct GenData *traindata, struct GenData *testdata)
-<span class="lineNum">     147 </span>            : {
-<span class="lineNum">     148 </span><span class="lineCov">          2 :         if (model-&gt;kerneltype == K_LINEAR) {</span>
-<span class="lineNum">     149 </span><span class="lineCov">          1 :                 testdata-&gt;r = testdata-&gt;m;</span>
-<span class="lineNum">     150 </span><span class="lineCov">          1 :                 return;</span>
-<span class="lineNum">     151 </span>            :         }
-<span class="lineNum">     152 </span>            : 
-<span class="lineNum">     153 </span>            :         // build the cross kernel matrix between train and test
-<span class="lineNum">     154 </span><span class="lineCov">          1 :         double *K2 = gensvm_kernel_cross(model, traindata, testdata);</span>
-<span class="lineNum">     155 </span>            : 
-<span class="lineNum">     156 </span>            :         // generate the data matrix N = K2 * M * Sigma^{-2}
-<span class="lineNum">     157 </span><span class="lineCov">          1 :         gensvm_kernel_testfactor(testdata, traindata, K2);</span>
-<span class="lineNum">     158 </span>            : 
-<span class="lineNum">     159 </span><span class="lineCov">          1 :         free(K2);</span>
-<span class="lineNum">     160 </span>            : }
-<span class="lineNum">     161 </span>            : 
-<span class="lineNum">     162 </span>            : /**
-<span class="lineNum">     163 </span>            :  * @brief Compute the kernel matrix
-<span class="lineNum">     164 </span>            :  *
-<span class="lineNum">     165 </span>            :  * @details
-<span class="lineNum">     166 </span>            :  * This function computes the kernel matrix of a data matrix based on the
-<span class="lineNum">     167 </span>            :  * requested kernel type and the kernel parameters. The potential types of
-<span class="lineNum">     168 </span>            :  * kernel functions are document in KernelType. This function uses a naive
-<span class="lineNum">     169 </span>            :  * multiplication and computes the entire upper triangle of the kernel matrix,
-<span class="lineNum">     170 </span>            :  * then copies this over to the lower triangle.
-<span class="lineNum">     171 </span>            :  *
-<span class="lineNum">     172 </span>            :  * @param[in]   model   a GenModel structure with the model
-<span class="lineNum">     173 </span>            :  * @param[in]   data    a GenData structure with the data
-<span class="lineNum">     174 </span>            :  * @param[out]  K       an nxn preallocated kernel matrix
-<a name="175"><span class="lineNum">     175 </span>            :  *</a>
-<span class="lineNum">     176 </span>            :  */
-<span class="lineNum">     177 </span><span class="lineCov">          5 : void gensvm_kernel_compute(struct GenModel *model, struct GenData *data,</span>
-<span class="lineNum">     178 </span>            :                 double *K)
-<span class="lineNum">     179 </span>            : {
-<span class="lineNum">     180 </span>            :         long i, j;
-<span class="lineNum">     181 </span><span class="lineCov">          5 :         long n = data-&gt;n;</span>
-<span class="lineNum">     182 </span>            :         double value;
-<span class="lineNum">     183 </span><span class="lineCov">          5 :         double *x1 = NULL,</span>
-<span class="lineNum">     184 </span><span class="lineCov">          5 :                *x2 = NULL;</span>
-<span class="lineNum">     185 </span>            : 
-<span class="lineNum">     186 </span><span class="lineCov">         55 :         for (i=0; i&lt;n; i++) {</span>
-<span class="lineNum">     187 </span><span class="lineCov">        325 :                 for (j=i; j&lt;n; j++) {</span>
-<span class="lineNum">     188 </span><span class="lineCov">        275 :                         x1 = &amp;data-&gt;RAW[i*(data-&gt;m+1)+1];</span>
-<span class="lineNum">     189 </span><span class="lineCov">        275 :                         x2 = &amp;data-&gt;RAW[j*(data-&gt;m+1)+1];</span>
-<span class="lineNum">     190 </span><span class="lineCov">        275 :                         if (model-&gt;kerneltype == K_POLY)</span>
-<span class="lineNum">     191 </span><span class="lineCov">         55 :                                 value = gensvm_kernel_dot_poly(x1, x2,</span>
-<span class="lineNum">     192 </span>            :                                                 model-&gt;kernelparam, data-&gt;m);
-<span class="lineNum">     193 </span><span class="lineCov">        220 :                         else if (model-&gt;kerneltype == K_RBF)</span>
-<span class="lineNum">     194 </span><span class="lineCov">        165 :                                 value = gensvm_kernel_dot_rbf(x1, x2,</span>
-<span class="lineNum">     195 </span>            :                                                 model-&gt;kernelparam, data-&gt;m);
-<span class="lineNum">     196 </span><span class="lineCov">         55 :                         else if (model-&gt;kerneltype == K_SIGMOID)</span>
-<span class="lineNum">     197 </span><span class="lineCov">         55 :                                 value = gensvm_kernel_dot_sigmoid(x1, x2,</span>
-<span class="lineNum">     198 </span>            :                                                 model-&gt;kernelparam, data-&gt;m);
-<span class="lineNum">     199 </span>            :                         else {
-<span class="lineNum">     200 </span>            :                                 // LCOV_EXCL_START
-<span class="lineNum">     201 </span>            :                                 err(&quot;[GenSVM Error]: Unknown kernel type in &quot;
-<span class="lineNum">     202 </span>            :                                                 &quot;gensvm_make_kernel\n&quot;);
-<span class="lineNum">     203 </span>            :                                 exit(EXIT_FAILURE);
-<span class="lineNum">     204 </span>            :                                 // LCOV_EXCL_STOP
-<span class="lineNum">     205 </span>            :                         }
-<span class="lineNum">     206 </span><span class="lineCov">        275 :                         matrix_set(K, n, i, j, value);</span>
-<span class="lineNum">     207 </span><span class="lineCov">        275 :                         matrix_set(K, n, j, i, value);</span>
-<span class="lineNum">     208 </span>            :                 }
-<span class="lineNum">     209 </span>            :         }
-<span class="lineNum">     210 </span><span class="lineCov">          5 : }</span>
-<span class="lineNum">     211 </span>            : 
-<span class="lineNum">     212 </span>            : /**
-<span class="lineNum">     213 </span>            :  * @brief Find the (reduced) eigendecomposition of a kernel matrix
-<span class="lineNum">     214 </span>            :  *
-<span class="lineNum">     215 </span>            :  * @details
-<span class="lineNum">     216 </span>            :  * Compute the reduced eigendecomposition of the kernel matrix. This uses the 
-<span class="lineNum">     217 </span>            :  * LAPACK function dsyevx to do the computation. Only those 
-<span class="lineNum">     218 </span>            :  * eigenvalues/eigenvectors are kept for which the ratio between the 
-<span class="lineNum">     219 </span>            :  * eigenvalue and the largest eigenvalue is larger than cutoff.  This function 
-<span class="lineNum">     220 </span>            :  * uses the highest precision eigenvalues, twice the underflow threshold (see 
-<span class="lineNum">     221 </span>            :  * dsyevx documentation). 
-<span class="lineNum">     222 </span>            :  *
-<span class="lineNum">     223 </span>            :  * @param[in]           K               the kernel matrix
-<span class="lineNum">     224 </span>            :  * @param[in]           n               the dimension of the kernel matrix
-<span class="lineNum">     225 </span>            :  * @param[in]           cutoff          mimimum ratio of eigenvalue to largest
-<span class="lineNum">     226 </span>            :  *                                      eigenvalue for the eigenvector to be 
-<span class="lineNum">     227 </span>            :  *                                      included
-<span class="lineNum">     228 </span>            :  * @param[out]          P_ret           on exit contains the eigenvectors
-<span class="lineNum">     229 </span>            :  * @param[out]          Sigma_ret       on exit contains the eigenvalues
-<span class="lineNum">     230 </span>            :  *
-<a name="231"><span class="lineNum">     231 </span>            :  * @return                      the number of eigenvalues kept</a>
-<span class="lineNum">     232 </span>            :  */
-<span class="lineNum">     233 </span><span class="lineCov">          3 : long gensvm_kernel_eigendecomp(double *K, long n, double cutoff, double **P_ret,</span>
-<span class="lineNum">     234 </span>            :                 double **Sigma_ret)
-<span class="lineNum">     235 </span>            : {
-<span class="lineNum">     236 </span><span class="lineCov">          3 :         int M, status, LWORK, *IWORK = NULL,</span>
-<span class="lineNum">     237 </span><span class="lineCov">          3 :             *IFAIL = NULL;</span>
-<span class="lineNum">     238 </span>            :         long i, j, num_eigen, cutoff_idx;
-<span class="lineNum">     239 </span><span class="lineCov">          3 :         double max_eigen, abstol, *WORK = NULL,</span>
-<span class="lineNum">     240 </span><span class="lineCov">          3 :                *Sigma = NULL,</span>
-<span class="lineNum">     241 </span><span class="lineCov">          3 :                *P = NULL;</span>
-<span class="lineNum">     242 </span>            : 
-<span class="lineNum">     243 </span><span class="lineCov">          3 :         double *tempSigma = Malloc(double, n);</span>
-<span class="lineNum">     244 </span><span class="lineCov">          3 :         double *tempP = Malloc(double, n*n);</span>
-<span class="lineNum">     245 </span>            : 
-<span class="lineNum">     246 </span><span class="lineCov">          3 :         IWORK = Malloc(int, 5*n);</span>
-<span class="lineNum">     247 </span><span class="lineCov">          3 :         IFAIL = Malloc(int, n);</span>
-<span class="lineNum">     248 </span>            : 
-<span class="lineNum">     249 </span>            :         // highest precision eigenvalues, may reduce for speed
-<span class="lineNum">     250 </span><span class="lineCov">          3 :         abstol = 2.0*dlamch('S');</span>
-<span class="lineNum">     251 </span>            : 
-<span class="lineNum">     252 </span>            :         // first perform a workspace query to determine optimal size of the
-<span class="lineNum">     253 </span>            :         // WORK array.
-<span class="lineNum">     254 </span><span class="lineCov">          3 :         WORK = Malloc(double, 1);</span>
-<span class="lineNum">     255 </span><span class="lineCov">          3 :         status = dsyevx('V', 'A', 'U', n, K, n, 0, 0, 0, 0, abstol, &amp;M,</span>
-<span class="lineNum">     256 </span>            :                         tempSigma, tempP, n, WORK, -1, IWORK, IFAIL);
-<span class="lineNum">     257 </span><span class="lineCov">          3 :         LWORK = WORK[0];</span>
+<span class="lineNum">      55 </span>            : 
+<span class="lineNum">      56 </span>            : /**
+<span class="lineNum">      57 </span>            :  * @brief Do the preprocessing steps needed to perform kernel GenSVM
+<span class="lineNum">      58 </span>            :  *
+<span class="lineNum">      59 </span>            :  * @details
+<span class="lineNum">      60 </span>            :  * To achieve nonlinearity through kernels in GenSVM, a preprocessing step is
+<span class="lineNum">      61 </span>            :  * needed. This preprocessing step computes the full kernel matrix, and an
+<span class="lineNum">      62 </span>            :  * eigendecomposition of this matrix. Next, it computes a matrix @f$\textbf{M}
+<span class="lineNum">      63 </span>            :  * = \textbf{P}\boldsymbol{\Sigma}@f$ which takes the role as data matrix in
+<span class="lineNum">      64 </span>            :  * the optimization algorithm.
+<span class="lineNum">      65 </span>            :  *
+<span class="lineNum">      66 </span>            :  * @sa
+<span class="lineNum">      67 </span>            :  * gensvm_kernel_compute(), gensvm_kernel_eigendecomp(), 
+<span class="lineNum">      68 </span>            :  * gensvm_kernel_trainfactor(), gensvm_kernel_postprocess()
+<span class="lineNum">      69 </span>            :  *
+<span class="lineNum">      70 </span>            :  * @param[in]           model   input GenSVM model
+<span class="lineNum">      71 </span>            :  * @param[in,out]       data    input structure with the data. On exit,
+<span class="lineNum">      72 </span>            :  *                              contains the training factor in GenData::Z,
+<span class="lineNum">      73 </span>            :  *                              and the original data in GenData::RAW
+<a name="74"><span class="lineNum">      74 </span>            :  *</a>
+<span class="lineNum">      75 </span>            :  */
+<span class="lineNum">      76 </span><span class="lineCov">          4 : void gensvm_kernel_preprocess(struct GenModel *model, struct GenData *data)</span>
+<span class="lineNum">      77 </span>            : {
+<span class="lineNum">      78 </span><span class="lineCov">          4 :         if (model-&gt;kerneltype == K_LINEAR) {</span>
+<span class="lineNum">      79 </span><span class="lineCov">          2 :                 data-&gt;r = data-&gt;m;</span>
+<span class="lineNum">      80 </span><span class="lineCov">          2 :                 return;</span>
+<span class="lineNum">      81 </span>            :         }
+<span class="lineNum">      82 </span>            : 
+<span class="lineNum">      83 </span><span class="lineCov">          2 :         long r, n = data-&gt;n;</span>
+<span class="lineNum">      84 </span><span class="lineCov">          2 :         double *P = NULL,</span>
+<span class="lineNum">      85 </span><span class="lineCov">          2 :                *Sigma = NULL,</span>
+<span class="lineNum">      86 </span><span class="lineCov">          2 :                *K = NULL;</span>
+<span class="lineNum">      87 </span>            : 
+<span class="lineNum">      88 </span>            :         // build the kernel matrix
+<span class="lineNum">      89 </span><span class="lineCov">          2 :         K = Calloc(double, n*n);</span>
+<span class="lineNum">      90 </span><span class="lineCov">          2 :         gensvm_kernel_compute(model, data, K);</span>
+<span class="lineNum">      91 </span>            : 
+<span class="lineNum">      92 </span>            :         // generate the eigen decomposition
+<span class="lineNum">      93 </span><span class="lineCov">          2 :         r = gensvm_kernel_eigendecomp(K, n, model-&gt;kernel_eigen_cutoff, &amp;P, </span>
+<span class="lineNum">      94 </span>            :                         &amp;Sigma);
+<span class="lineNum">      95 </span>            : 
+<span class="lineNum">      96 </span>            :         // build M and set to data (leave RAW intact)
+<span class="lineNum">      97 </span><span class="lineCov">          2 :         gensvm_kernel_trainfactor(data, P, Sigma, r);</span>
+<span class="lineNum">      98 </span>            : 
+<span class="lineNum">      99 </span>            :         // Set Sigma to data-&gt;Sigma (need it again for prediction)
+<span class="lineNum">     100 </span><span class="lineCov">          2 :         if (data-&gt;Sigma != NULL) {</span>
+<span class="lineNum">     101 </span><span class="lineCov">          1 :                 free(data-&gt;Sigma);</span>
+<span class="lineNum">     102 </span><span class="lineCov">          1 :                 data-&gt;Sigma = NULL;</span>
+<span class="lineNum">     103 </span>            :         }
+<span class="lineNum">     104 </span><span class="lineCov">          2 :         data-&gt;Sigma = Sigma;</span>
+<span class="lineNum">     105 </span>            : 
+<span class="lineNum">     106 </span>            :         // write kernel params to data
+<span class="lineNum">     107 </span><span class="lineCov">          2 :         gensvm_kernel_copy_kernelparam_to_data(model, data);</span>
+<span class="lineNum">     108 </span>            : 
+<span class="lineNum">     109 </span><span class="lineCov">          2 :         free(K);</span>
+<span class="lineNum">     110 </span><span class="lineCov">          2 :         free(P);</span>
+<span class="lineNum">     111 </span>            : }
+<span class="lineNum">     112 </span>            : 
+<span class="lineNum">     113 </span>            : /**
+<span class="lineNum">     114 </span>            :  * @brief Compute the kernel postprocessing factor
+<span class="lineNum">     115 </span>            :  *
+<span class="lineNum">     116 </span>            :  * @details
+<span class="lineNum">     117 </span>            :  * This function computes the postprocessing factor needed to do predictions 
+<span class="lineNum">     118 </span>            :  * with kernels in GenSVM. This is a wrapper around gensvm_kernel_cross() and 
+<span class="lineNum">     119 </span>            :  * gensvm_kernel_testfactor().
+<span class="lineNum">     120 </span>            :  *
+<span class="lineNum">     121 </span>            :  * @param[in]           model           a GenSVM model
+<span class="lineNum">     122 </span>            :  * @param[in]           traindata       the training dataset
+<span class="lineNum">     123 </span>            :  * @param[in,out]       testdata        the test dataset. On exit, GenData::Z
+<a name="124"><span class="lineNum">     124 </span>            :  *                                      contains the testfactor</a>
+<span class="lineNum">     125 </span>            :  */
+<span class="lineNum">     126 </span><span class="lineCov">          2 : void gensvm_kernel_postprocess(struct GenModel *model,</span>
+<span class="lineNum">     127 </span>            :                 struct GenData *traindata, struct GenData *testdata)
+<span class="lineNum">     128 </span>            : {
+<span class="lineNum">     129 </span><span class="lineCov">          2 :         if (model-&gt;kerneltype == K_LINEAR) {</span>
+<span class="lineNum">     130 </span><span class="lineCov">          1 :                 testdata-&gt;r = testdata-&gt;m;</span>
+<span class="lineNum">     131 </span><span class="lineCov">          1 :                 return;</span>
+<span class="lineNum">     132 </span>            :         }
+<span class="lineNum">     133 </span>            : 
+<span class="lineNum">     134 </span>            :         // build the cross kernel matrix between train and test
+<span class="lineNum">     135 </span><span class="lineCov">          1 :         double *K2 = gensvm_kernel_cross(model, traindata, testdata);</span>
+<span class="lineNum">     136 </span>            : 
+<span class="lineNum">     137 </span>            :         // generate the data matrix N = K2 * M * Sigma^{-2}
+<span class="lineNum">     138 </span><span class="lineCov">          1 :         gensvm_kernel_testfactor(testdata, traindata, K2);</span>
+<span class="lineNum">     139 </span>            : 
+<span class="lineNum">     140 </span><span class="lineCov">          1 :         free(K2);</span>
+<span class="lineNum">     141 </span>            : }
+<span class="lineNum">     142 </span>            : 
+<span class="lineNum">     143 </span>            : /**
+<span class="lineNum">     144 </span>            :  * @brief Compute the kernel matrix
+<span class="lineNum">     145 </span>            :  *
+<span class="lineNum">     146 </span>            :  * @details
+<span class="lineNum">     147 </span>            :  * This function computes the kernel matrix of a data matrix based on the
+<span class="lineNum">     148 </span>            :  * requested kernel type and the kernel parameters. The potential types of
+<span class="lineNum">     149 </span>            :  * kernel functions are document in KernelType. This function uses a naive
+<span class="lineNum">     150 </span>            :  * multiplication and computes the entire upper triangle of the kernel matrix,
+<span class="lineNum">     151 </span>            :  * then copies this over to the lower triangle.
+<span class="lineNum">     152 </span>            :  *
+<span class="lineNum">     153 </span>            :  * @param[in]   model   a GenModel structure with the model
+<span class="lineNum">     154 </span>            :  * @param[in]   data    a GenData structure with the data
+<span class="lineNum">     155 </span>            :  * @param[out]  K       an nxn preallocated kernel matrix
+<a name="156"><span class="lineNum">     156 </span>            :  *</a>
+<span class="lineNum">     157 </span>            :  */
+<span class="lineNum">     158 </span><span class="lineCov">          5 : void gensvm_kernel_compute(struct GenModel *model, struct GenData *data,</span>
+<span class="lineNum">     159 </span>            :                 double *K)
+<span class="lineNum">     160 </span>            : {
+<span class="lineNum">     161 </span>            :         long i, j;
+<span class="lineNum">     162 </span><span class="lineCov">          5 :         long n = data-&gt;n;</span>
+<span class="lineNum">     163 </span>            :         double value;
+<span class="lineNum">     164 </span><span class="lineCov">          5 :         double *x1 = NULL,</span>
+<span class="lineNum">     165 </span><span class="lineCov">          5 :                *x2 = NULL;</span>
+<span class="lineNum">     166 </span>            : 
+<span class="lineNum">     167 </span><span class="lineCov">         55 :         for (i=0; i&lt;n; i++) {</span>
+<span class="lineNum">     168 </span><span class="lineCov">        325 :                 for (j=i; j&lt;n; j++) {</span>
+<span class="lineNum">     169 </span><span class="lineCov">        275 :                         x1 = &amp;data-&gt;RAW[i*(data-&gt;m+1)+1];</span>
+<span class="lineNum">     170 </span><span class="lineCov">        275 :                         x2 = &amp;data-&gt;RAW[j*(data-&gt;m+1)+1];</span>
+<span class="lineNum">     171 </span><span class="lineCov">        275 :                         if (model-&gt;kerneltype == K_POLY)</span>
+<span class="lineNum">     172 </span><span class="lineCov">         55 :                                 value = gensvm_kernel_dot_poly(x1, x2, data-&gt;m,</span>
+<span class="lineNum">     173 </span>            :                                                 model-&gt;gamma, model-&gt;coef, 
+<span class="lineNum">     174 </span>            :                                                 model-&gt;degree);
+<span class="lineNum">     175 </span><span class="lineCov">        220 :                         else if (model-&gt;kerneltype == K_RBF)</span>
+<span class="lineNum">     176 </span><span class="lineCov">        165 :                                 value = gensvm_kernel_dot_rbf(x1, x2, data-&gt;m,</span>
+<span class="lineNum">     177 </span>            :                                                 model-&gt; gamma);
+<span class="lineNum">     178 </span><span class="lineCov">         55 :                         else if (model-&gt;kerneltype == K_SIGMOID)</span>
+<span class="lineNum">     179 </span><span class="lineCov">         55 :                                 value = gensvm_kernel_dot_sigmoid(x1, x2, </span>
+<span class="lineNum">     180 </span>            :                                                 data-&gt;m, model-&gt;gamma, 
+<span class="lineNum">     181 </span>            :                                                 model-&gt;coef);
+<span class="lineNum">     182 </span>            :                         else {
+<span class="lineNum">     183 </span>            :                                 // LCOV_EXCL_START
+<span class="lineNum">     184 </span>            :                                 err(&quot;[GenSVM Error]: Unknown kernel type in &quot;
+<span class="lineNum">     185 </span>            :                                                 &quot;gensvm_make_kernel\n&quot;);
+<span class="lineNum">     186 </span>            :                                 exit(EXIT_FAILURE);
+<span class="lineNum">     187 </span>            :                                 // LCOV_EXCL_STOP
+<span class="lineNum">     188 </span>            :                         }
+<span class="lineNum">     189 </span><span class="lineCov">        275 :                         matrix_set(K, n, i, j, value);</span>
+<span class="lineNum">     190 </span><span class="lineCov">        275 :                         matrix_set(K, n, j, i, value);</span>
+<span class="lineNum">     191 </span>            :                 }
+<span class="lineNum">     192 </span>            :         }
+<span class="lineNum">     193 </span><span class="lineCov">          5 : }</span>
+<span class="lineNum">     194 </span>            : 
+<span class="lineNum">     195 </span>            : /**
+<span class="lineNum">     196 </span>            :  * @brief Find the (reduced) eigendecomposition of a kernel matrix
+<span class="lineNum">     197 </span>            :  *
+<span class="lineNum">     198 </span>            :  * @details
+<span class="lineNum">     199 </span>            :  * Compute the reduced eigendecomposition of the kernel matrix. This uses the 
+<span class="lineNum">     200 </span>            :  * LAPACK function dsyevx to do the computation. Only those 
+<span class="lineNum">     201 </span>            :  * eigenvalues/eigenvectors are kept for which the ratio between the 
+<span class="lineNum">     202 </span>            :  * eigenvalue and the largest eigenvalue is larger than cutoff.  This function 
+<span class="lineNum">     203 </span>            :  * uses the highest precision eigenvalues, twice the underflow threshold (see 
+<span class="lineNum">     204 </span>            :  * dsyevx documentation). 
+<span class="lineNum">     205 </span>            :  *
+<span class="lineNum">     206 </span>            :  * @param[in]           K               the kernel matrix
+<span class="lineNum">     207 </span>            :  * @param[in]           n               the dimension of the kernel matrix
+<span class="lineNum">     208 </span>            :  * @param[in]           cutoff          mimimum ratio of eigenvalue to largest
+<span class="lineNum">     209 </span>            :  *                                      eigenvalue for the eigenvector to be 
+<span class="lineNum">     210 </span>            :  *                                      included
+<span class="lineNum">     211 </span>            :  * @param[out]          P_ret           on exit contains the eigenvectors
+<span class="lineNum">     212 </span>            :  * @param[out]          Sigma_ret       on exit contains the eigenvalues
+<span class="lineNum">     213 </span>            :  *
+<a name="214"><span class="lineNum">     214 </span>            :  * @return                      the number of eigenvalues kept</a>
+<span class="lineNum">     215 </span>            :  */
+<span class="lineNum">     216 </span><span class="lineCov">          3 : long gensvm_kernel_eigendecomp(double *K, long n, double cutoff, double **P_ret,</span>
+<span class="lineNum">     217 </span>            :                 double **Sigma_ret)
+<span class="lineNum">     218 </span>            : {
+<span class="lineNum">     219 </span><span class="lineCov">          3 :         int M, status, LWORK, *IWORK = NULL,</span>
+<span class="lineNum">     220 </span><span class="lineCov">          3 :             *IFAIL = NULL;</span>
+<span class="lineNum">     221 </span>            :         long i, j, num_eigen, cutoff_idx;
+<span class="lineNum">     222 </span><span class="lineCov">          3 :         double max_eigen, abstol, *WORK = NULL,</span>
+<span class="lineNum">     223 </span><span class="lineCov">          3 :                *Sigma = NULL,</span>
+<span class="lineNum">     224 </span><span class="lineCov">          3 :                *P = NULL;</span>
+<span class="lineNum">     225 </span>            : 
+<span class="lineNum">     226 </span><span class="lineCov">          3 :         double *tempSigma = Malloc(double, n);</span>
+<span class="lineNum">     227 </span><span class="lineCov">          3 :         double *tempP = Malloc(double, n*n);</span>
+<span class="lineNum">     228 </span>            : 
+<span class="lineNum">     229 </span><span class="lineCov">          3 :         IWORK = Malloc(int, 5*n);</span>
+<span class="lineNum">     230 </span><span class="lineCov">          3 :         IFAIL = Malloc(int, n);</span>
+<span class="lineNum">     231 </span>            : 
+<span class="lineNum">     232 </span>            :         // highest precision eigenvalues, may reduce for speed
+<span class="lineNum">     233 </span><span class="lineCov">          3 :         abstol = 2.0*dlamch('S');</span>
+<span class="lineNum">     234 </span>            : 
+<span class="lineNum">     235 </span>            :         // first perform a workspace query to determine optimal size of the
+<span class="lineNum">     236 </span>            :         // WORK array.
+<span class="lineNum">     237 </span><span class="lineCov">          3 :         WORK = Malloc(double, 1);</span>
+<span class="lineNum">     238 </span><span class="lineCov">          3 :         status = dsyevx('V', 'A', 'U', n, K, n, 0, 0, 0, 0, abstol, &amp;M,</span>
+<span class="lineNum">     239 </span>            :                         tempSigma, tempP, n, WORK, -1, IWORK, IFAIL);
+<span class="lineNum">     240 </span><span class="lineCov">          3 :         LWORK = WORK[0];</span>
+<span class="lineNum">     241 </span>            : 
+<span class="lineNum">     242 </span>            :         // allocate the requested memory for the eigendecomposition
+<span class="lineNum">     243 </span><span class="lineCov">          3 :         WORK = (double *)realloc(WORK, LWORK*sizeof(double));</span>
+<span class="lineNum">     244 </span><span class="lineCov">          3 :         status = dsyevx('V', 'A', 'U', n, K, n, 0, 0, 0, 0, abstol, &amp;M,</span>
+<span class="lineNum">     245 </span>            :                         tempSigma, tempP, n, WORK, LWORK, IWORK, IFAIL);
+<span class="lineNum">     246 </span>            : 
+<span class="lineNum">     247 </span><span class="lineCov">          3 :         if (status != 0) {</span>
+<span class="lineNum">     248 </span>            :                 // LCOV_EXCL_START
+<span class="lineNum">     249 </span>            :                 err(&quot;[GenSVM Error]: Nonzero exit status from dsyevx.\n&quot;);
+<span class="lineNum">     250 </span>            :                 exit(EXIT_FAILURE);
+<span class="lineNum">     251 </span>            :                 // LCOV_EXCL_STOP
+<span class="lineNum">     252 </span>            :         }
+<span class="lineNum">     253 </span>            : 
+<span class="lineNum">     254 </span>            :         // Select the desired number of eigenvalues, depending on their size.
+<span class="lineNum">     255 </span>            :         // dsyevx sorts eigenvalues in ascending order.
+<span class="lineNum">     256 </span><span class="lineCov">          3 :         max_eigen = tempSigma[n-1];</span>
+<span class="lineNum">     257 </span><span class="lineCov">          3 :         cutoff_idx = 0;</span>
 <span class="lineNum">     258 </span>            : 
-<span class="lineNum">     259 </span>            :         // allocate the requested memory for the eigendecomposition
-<span class="lineNum">     260 </span><span class="lineCov">          3 :         WORK = (double *)realloc(WORK, LWORK*sizeof(double));</span>
-<span class="lineNum">     261 </span><span class="lineCov">          3 :         status = dsyevx('V', 'A', 'U', n, K, n, 0, 0, 0, 0, abstol, &amp;M,</span>
-<span class="lineNum">     262 </span>            :                         tempSigma, tempP, n, WORK, LWORK, IWORK, IFAIL);
-<span class="lineNum">     263 </span>            : 
-<span class="lineNum">     264 </span><span class="lineCov">          3 :         if (status != 0) {</span>
-<span class="lineNum">     265 </span>            :                 // LCOV_EXCL_START
-<span class="lineNum">     266 </span>            :                 err(&quot;[GenSVM Error]: Nonzero exit status from dsyevx.\n&quot;);
-<span class="lineNum">     267 </span>            :                 exit(EXIT_FAILURE);
-<span class="lineNum">     268 </span>            :                 // LCOV_EXCL_STOP
-<span class="lineNum">     269 </span>            :         }
-<span class="lineNum">     270 </span>            : 
-<span class="lineNum">     271 </span>            :         // Select the desired number of eigenvalues, depending on their size.
-<span class="lineNum">     272 </span>            :         // dsyevx sorts eigenvalues in ascending order.
-<span class="lineNum">     273 </span><span class="lineCov">          3 :         max_eigen = tempSigma[n-1];</span>
-<span class="lineNum">     274 </span><span class="lineCov">          3 :         cutoff_idx = 0;</span>
-<span class="lineNum">     275 </span>            : 
-<span class="lineNum">     276 </span><span class="lineCov">         13 :         for (i=0; i&lt;n; i++) {</span>
-<span class="lineNum">     277 </span><span class="lineCov">         13 :                 if (tempSigma[i]/max_eigen &gt; cutoff) {</span>
-<span class="lineNum">     278 </span><span class="lineCov">          3 :                         cutoff_idx = i;</span>
-<span class="lineNum">     279 </span><span class="lineCov">          3 :                         break;</span>
-<span class="lineNum">     280 </span>            :                 }
-<span class="lineNum">     281 </span>            :         }
-<span class="lineNum">     282 </span>            : 
-<span class="lineNum">     283 </span><span class="lineCov">          3 :         num_eigen = n - cutoff_idx;</span>
-<span class="lineNum">     284 </span>            : 
-<span class="lineNum">     285 </span><span class="lineCov">          3 :         Sigma = Calloc(double, num_eigen);</span>
-<span class="lineNum">     286 </span><span class="lineCov">         23 :         for (i=0; i&lt;num_eigen; i++) {</span>
-<span class="lineNum">     287 </span><span class="lineCov">         20 :                 Sigma[i] = tempSigma[n-1 - i];</span>
-<span class="lineNum">     288 </span>            :         }
-<span class="lineNum">     289 </span>            : 
-<span class="lineNum">     290 </span>            :         // revert P to row-major order and copy only the the columns
-<span class="lineNum">     291 </span>            :         // corresponding to the selected eigenvalues
-<span class="lineNum">     292 </span><span class="lineCov">          3 :         P = Calloc(double, n*num_eigen);</span>
-<span class="lineNum">     293 </span><span class="lineCov">         23 :         for (j=n-1; j&gt;n-1-num_eigen; j--) {</span>
-<span class="lineNum">     294 </span><span class="lineCov">        220 :                 for (i=0; i&lt;n; i++) {</span>
-<span class="lineNum">     295 </span><span class="lineCov">        200 :                         P[i*num_eigen + (n-1)-j] = tempP[i + j*n];</span>
-<span class="lineNum">     296 </span>            :                 }
-<span class="lineNum">     297 </span>            :         }
-<span class="lineNum">     298 </span>            : 
-<span class="lineNum">     299 </span><span class="lineCov">          3 :         free(tempSigma);</span>
-<span class="lineNum">     300 </span><span class="lineCov">          3 :         free(tempP);</span>
-<span class="lineNum">     301 </span><span class="lineCov">          3 :         free(IWORK);</span>
-<span class="lineNum">     302 </span><span class="lineCov">          3 :         free(IFAIL);</span>
-<span class="lineNum">     303 </span><span class="lineCov">          3 :         free(WORK);</span>
-<span class="lineNum">     304 </span>            : 
-<span class="lineNum">     305 </span><span class="lineCov">          3 :         *Sigma_ret = Sigma;</span>
-<span class="lineNum">     306 </span><span class="lineCov">          3 :         *P_ret = P;</span>
-<span class="lineNum">     307 </span>            : 
-<span class="lineNum">     308 </span><span class="lineCov">          3 :         return num_eigen;</span>
-<span class="lineNum">     309 </span>            : }
-<span class="lineNum">     310 </span>            : 
-<span class="lineNum">     311 </span>            : /**
-<span class="lineNum">     312 </span>            :  * @brief Compute the kernel crossproduct between two datasets
-<span class="lineNum">     313 </span>            :  *
-<span class="lineNum">     314 </span>            :  * @details
-<span class="lineNum">     315 </span>            :  * Given a training set @f$\textbf{X}@f$ with feature space mapping 
-<span class="lineNum">     316 </span>            :  * @f$\boldsymbol{\Phi}@f$ and a test set @f$\textbf{X}_2@f$ with feature 
-<span class="lineNum">     317 </span>            :  * space mapping @f$\boldsymbol{\Phi}_2@f$, the crosskernel @f$\textbf{K}_2@f$ 
-<span class="lineNum">     318 </span>            :  * is given by @f$\textbf{K}_2 = \boldsymbol{\Phi}_2 \boldsymbol{\Phi}'@f$.  
-<span class="lineNum">     319 </span>            :  * Thus, an element in row @f$i@f$ and column @f$j@f$ in @f$\textbf{K}_2@f$ 
-<span class="lineNum">     320 </span>            :  * equals the kernel product between the @f$i@f$-th row of @f$\textbf{X}_2@f$ 
-<span class="lineNum">     321 </span>            :  * and the @f$j@f$-th row of @f$\textbf{X}@f$.
-<span class="lineNum">     322 </span>            :  *
-<span class="lineNum">     323 </span>            :  * @param[in]   model           the GenSVM model
-<span class="lineNum">     324 </span>            :  * @param[in]   data_train      the training dataset
-<span class="lineNum">     325 </span>            :  * @param[in]   data_test       the test dataset
-<span class="lineNum">     326 </span>            :  *
-<a name="327"><span class="lineNum">     327 </span>            :  * @return      the matrix @f$\textbf{K}_2@f$</a>
-<span class="lineNum">     328 </span>            :  */
-<span class="lineNum">     329 </span><span class="lineCov">          4 : double *gensvm_kernel_cross(struct GenModel *model, struct GenData *data_train,</span>
-<span class="lineNum">     330 </span>            :                 struct GenData *data_test)
-<span class="lineNum">     331 </span>            : {
-<span class="lineNum">     332 </span>            :         long i, j;
-<span class="lineNum">     333 </span><span class="lineCov">          4 :         long n_train = data_train-&gt;n;</span>
-<span class="lineNum">     334 </span><span class="lineCov">          4 :         long n_test = data_test-&gt;n;</span>
-<span class="lineNum">     335 </span><span class="lineCov">          4 :         long m = data_test-&gt;m;</span>
-<span class="lineNum">     336 </span><span class="lineCov">          4 :         double value, *x1 = NULL,</span>
-<span class="lineNum">     337 </span><span class="lineCov">          4 :                *x2 = NULL,</span>
-<span class="lineNum">     338 </span><span class="lineCov">          4 :                *K2 = Calloc(double, n_test * n_train);</span>
-<span class="lineNum">     339 </span>            : 
-<span class="lineNum">     340 </span><span class="lineCov">         27 :         for (i=0; i&lt;n_test; i++) {</span>
-<span class="lineNum">     341 </span><span class="lineCov">        253 :                 for (j=0; j&lt;n_train; j++) {</span>
-<span class="lineNum">     342 </span><span class="lineCov">        230 :                         x1 = &amp;data_test-&gt;RAW[i*(m+1)+1];</span>
-<span class="lineNum">     343 </span><span class="lineCov">        230 :                         x2 = &amp;data_train-&gt;RAW[j*(m+1)+1];</span>
-<span class="lineNum">     344 </span><span class="lineCov">        230 :                         if (model-&gt;kerneltype == K_POLY)</span>
-<span class="lineNum">     345 </span><span class="lineCov">         50 :                                 value = gensvm_kernel_dot_poly(x1, x2,</span>
-<span class="lineNum">     346 </span>            :                                                 model-&gt;kernelparam, m);
-<span class="lineNum">     347 </span><span class="lineCov">        180 :                         else if (model-&gt;kerneltype == K_RBF)</span>
-<span class="lineNum">     348 </span><span class="lineCov">        130 :                                 value = gensvm_kernel_dot_rbf(x1, x2,</span>
-<span class="lineNum">     349 </span>            :                                                 model-&gt;kernelparam, m);
-<span class="lineNum">     350 </span><span class="lineCov">         50 :                         else if (model-&gt;kerneltype == K_SIGMOID)</span>
-<span class="lineNum">     351 </span><span class="lineCov">         50 :                                 value = gensvm_kernel_dot_sigmoid(x1, x2,</span>
-<span class="lineNum">     352 </span>            :                                                 model-&gt;kernelparam, m);
-<span class="lineNum">     353 </span>            :                         else {
-<span class="lineNum">     354 </span>            :                                 // LCOV_EXCL_START
-<span class="lineNum">     355 </span>            :                                 err(&quot;[GenSVM Error]: Unknown kernel type in &quot;
-<span class="lineNum">     356 </span>            :                                                 &quot;gensvm_make_crosskernel\n&quot;);
-<span class="lineNum">     357 </span>            :                                 exit(EXIT_FAILURE);
-<span class="lineNum">     358 </span>            :                                 // LCOV_EXCL_STOP
-<span class="lineNum">     359 </span>            :                         }
-<span class="lineNum">     360 </span><span class="lineCov">        230 :                         matrix_set(K2, n_train, i, j, value);</span>
-<span class="lineNum">     361 </span>            :                 }
-<span class="lineNum">     362 </span>            :         }
-<span class="lineNum">     363 </span><span class="lineCov">          4 :         return K2;</span>
-<span class="lineNum">     364 </span>            : }
-<span class="lineNum">     365 </span>            : 
-<span class="lineNum">     366 </span>            : /**
-<span class="lineNum">     367 </span>            :  * @brief Compute the training factor as part of kernel preprocessing
-<span class="lineNum">     368 </span>            :  *
-<span class="lineNum">     369 </span>            :  * @details
-<span class="lineNum">     370 </span>            :  * This function computes the matrix product @f$\textbf{M} = 
-<span class="lineNum">     371 </span>            :  * \textbf{P}\boldsymbol{\Sigma}@f$ and stores the result in GenData::Z, 
-<span class="lineNum">     372 </span>            :  * preceded by a column of ones. It also sets GenData::r to the number of 
-<span class="lineNum">     373 </span>            :  * eigenvectors that were includedin P and Sigma. Note that P and Sigma 
-<span class="lineNum">     374 </span>            :  * correspond to the reduced eigendecomposition of the kernel matrix.
-<span class="lineNum">     375 </span>            :  *
-<span class="lineNum">     376 </span>            :  * @param[in,out]       data    a GenData structure. On exit, GenData::Z and
-<span class="lineNum">     377 </span>            :  *                              GenData::r are updated as described above.
-<span class="lineNum">     378 </span>            :  * @param[in]           P       the eigenvectors
-<span class="lineNum">     379 </span>            :  * @param[in]           Sigma   the eigenvalues
-<a name="380"><span class="lineNum">     380 </span>            :  * @param[in]           r       the number of eigenvalues and eigenvectors</a>
-<span class="lineNum">     381 </span>            :  */
-<span class="lineNum">     382 </span><span class="lineCov">          3 : void gensvm_kernel_trainfactor(struct GenData *data, double *P, double *Sigma,</span>
-<span class="lineNum">     383 </span>            :                 long r)
-<span class="lineNum">     384 </span>            : {
-<span class="lineNum">     385 </span><span class="lineCov">          3 :         long i, j, n = data-&gt;n;</span>
-<span class="lineNum">     386 </span>            :         double value;
-<span class="lineNum">     387 </span>            : 
-<span class="lineNum">     388 </span>            :         // allocate Z
-<span class="lineNum">     389 </span><span class="lineCov">          3 :         data-&gt;Z = Calloc(double, n*(r+1));</span>
-<span class="lineNum">     390 </span>            : 
-<span class="lineNum">     391 </span>            :         // Write data-&gt;Z = [1 M] = [1 P*Sigma]
-<span class="lineNum">     392 </span><span class="lineCov">         33 :         for (i=0; i&lt;n; i++) {</span>
-<span class="lineNum">     393 </span><span class="lineCov">        230 :                 for (j=0; j&lt;r; j++) {</span>
-<span class="lineNum">     394 </span><span class="lineCov">        200 :                         value = matrix_get(P, r, i, j);</span>
-<span class="lineNum">     395 </span><span class="lineCov">        200 :                         value *= matrix_get(Sigma, 1, j, 0);</span>
-<span class="lineNum">     396 </span><span class="lineCov">        200 :                         matrix_set(data-&gt;Z, r+1, i, j+1, value);</span>
-<span class="lineNum">     397 </span>            :                 }
-<span class="lineNum">     398 </span><span class="lineCov">         30 :                 matrix_set(data-&gt;Z, r+1, i, 0, 1.0);</span>
-<span class="lineNum">     399 </span>            :         }
-<span class="lineNum">     400 </span>            : 
-<span class="lineNum">     401 </span>            :         // Set data-&gt;r to r so data knows the width of Z
-<span class="lineNum">     402 </span><span class="lineCov">          3 :         data-&gt;r = r;</span>
-<span class="lineNum">     403 </span><span class="lineCov">          3 : }</span>
-<span class="lineNum">     404 </span>            : 
-<span class="lineNum">     405 </span>            : /**
-<span class="lineNum">     406 </span>            :  * @brief Calculate the matrix product for the testfactor
-<span class="lineNum">     407 </span>            :  *
-<span class="lineNum">     408 </span>            :  * @details
-<span class="lineNum">     409 </span>            :  * To predict class labels when kernels are used, a transformation of the
-<span class="lineNum">     410 </span>            :  * testdata has to be performed to get the simplex space vectors. This
-<span class="lineNum">     411 </span>            :  * transformation is based on the matrix @f$\textbf{K}_2@f$ (as calculated by
-<span class="lineNum">     412 </span>            :  * gensvm_make_crosskernel()) and the matrices @f$\textbf{M} = 
-<span class="lineNum">     413 </span>            :  * \textbf{P}*\boldsymbol{\Sigma}@f$) and @f$\boldsymbol{\Sigma}@f$. The 
-<span class="lineNum">     414 </span>            :  * testfactor is equal to @f$\textbf{K}_2 \textbf{M} 
-<span class="lineNum">     415 </span>            :  * \boldsymbol{\Sigma}^{-2}@f$.
-<span class="lineNum">     416 </span>            :  *
-<span class="lineNum">     417 </span>            :  * @param[out]  testdata        a GenData struct with the testdata, contains
-<span class="lineNum">     418 </span>            :  *                              the testfactor in GenData::Z on exit preceded 
-<span class="lineNum">     419 </span>            :  *                              by a column of ones.
-<span class="lineNum">     420 </span>            :  * @param[in]   traindata       a GenData struct with the training data
-<a name="421"><span class="lineNum">     421 </span>            :  * @param[in]   K2              crosskernel between the train and test data</a>
-<span class="lineNum">     422 </span>            :  */
-<span class="lineNum">     423 </span><span class="lineCov">          2 : void gensvm_kernel_testfactor(struct GenData *testdata,</span>
-<span class="lineNum">     424 </span>            :                 struct GenData *traindata, double *K2)
-<span class="lineNum">     425 </span>            : {
-<span class="lineNum">     426 </span>            :         long n1, n2, r, i, j;
-<span class="lineNum">     427 </span><span class="lineCov">          2 :         double value, *N = NULL,</span>
-<span class="lineNum">     428 </span><span class="lineCov">          2 :                *M = NULL;</span>
+<span class="lineNum">     259 </span><span class="lineCov">         13 :         for (i=0; i&lt;n; i++) {</span>
+<span class="lineNum">     260 </span><span class="lineCov">         13 :                 if (tempSigma[i]/max_eigen &gt; cutoff) {</span>
+<span class="lineNum">     261 </span><span class="lineCov">          3 :                         cutoff_idx = i;</span>
+<span class="lineNum">     262 </span><span class="lineCov">          3 :                         break;</span>
+<span class="lineNum">     263 </span>            :                 }
+<span class="lineNum">     264 </span>            :         }
+<span class="lineNum">     265 </span>            : 
+<span class="lineNum">     266 </span><span class="lineCov">          3 :         num_eigen = n - cutoff_idx;</span>
+<span class="lineNum">     267 </span>            : 
+<span class="lineNum">     268 </span><span class="lineCov">          3 :         Sigma = Calloc(double, num_eigen);</span>
+<span class="lineNum">     269 </span><span class="lineCov">         23 :         for (i=0; i&lt;num_eigen; i++) {</span>
+<span class="lineNum">     270 </span><span class="lineCov">         20 :                 Sigma[i] = tempSigma[n-1 - i];</span>
+<span class="lineNum">     271 </span>            :         }
+<span class="lineNum">     272 </span>            : 
+<span class="lineNum">     273 </span>            :         // revert P to row-major order and copy only the the columns
+<span class="lineNum">     274 </span>            :         // corresponding to the selected eigenvalues
+<span class="lineNum">     275 </span><span class="lineCov">          3 :         P = Calloc(double, n*num_eigen);</span>
+<span class="lineNum">     276 </span><span class="lineCov">         23 :         for (j=n-1; j&gt;n-1-num_eigen; j--) {</span>
+<span class="lineNum">     277 </span><span class="lineCov">        220 :                 for (i=0; i&lt;n; i++) {</span>
+<span class="lineNum">     278 </span><span class="lineCov">        200 :                         P[i*num_eigen + (n-1)-j] = tempP[i + j*n];</span>
+<span class="lineNum">     279 </span>            :                 }
+<span class="lineNum">     280 </span>            :         }
+<span class="lineNum">     281 </span>            : 
+<span class="lineNum">     282 </span><span class="lineCov">          3 :         free(tempSigma);</span>
+<span class="lineNum">     283 </span><span class="lineCov">          3 :         free(tempP);</span>
+<span class="lineNum">     284 </span><span class="lineCov">          3 :         free(IWORK);</span>
+<span class="lineNum">     285 </span><span class="lineCov">          3 :         free(IFAIL);</span>
+<span class="lineNum">     286 </span><span class="lineCov">          3 :         free(WORK);</span>
+<span class="lineNum">     287 </span>            : 
+<span class="lineNum">     288 </span><span class="lineCov">          3 :         *Sigma_ret = Sigma;</span>
+<span class="lineNum">     289 </span><span class="lineCov">          3 :         *P_ret = P;</span>
+<span class="lineNum">     290 </span>            : 
+<span class="lineNum">     291 </span><span class="lineCov">          3 :         return num_eigen;</span>
+<span class="lineNum">     292 </span>            : }
+<span class="lineNum">     293 </span>            : 
+<span class="lineNum">     294 </span>            : /**
+<span class="lineNum">     295 </span>            :  * @brief Compute the kernel crossproduct between two datasets
+<span class="lineNum">     296 </span>            :  *
+<span class="lineNum">     297 </span>            :  * @details
+<span class="lineNum">     298 </span>            :  * Given a training set @f$\textbf{X}@f$ with feature space mapping 
+<span class="lineNum">     299 </span>            :  * @f$\boldsymbol{\Phi}@f$ and a test set @f$\textbf{X}_2@f$ with feature 
+<span class="lineNum">     300 </span>            :  * space mapping @f$\boldsymbol{\Phi}_2@f$, the crosskernel @f$\textbf{K}_2@f$ 
+<span class="lineNum">     301 </span>            :  * is given by @f$\textbf{K}_2 = \boldsymbol{\Phi}_2 \boldsymbol{\Phi}'@f$.  
+<span class="lineNum">     302 </span>            :  * Thus, an element in row @f$i@f$ and column @f$j@f$ in @f$\textbf{K}_2@f$ 
+<span class="lineNum">     303 </span>            :  * equals the kernel product between the @f$i@f$-th row of @f$\textbf{X}_2@f$ 
+<span class="lineNum">     304 </span>            :  * and the @f$j@f$-th row of @f$\textbf{X}@f$.
+<span class="lineNum">     305 </span>            :  *
+<span class="lineNum">     306 </span>            :  * @param[in]   model           the GenSVM model
+<span class="lineNum">     307 </span>            :  * @param[in]   data_train      the training dataset
+<span class="lineNum">     308 </span>            :  * @param[in]   data_test       the test dataset
+<span class="lineNum">     309 </span>            :  *
+<a name="310"><span class="lineNum">     310 </span>            :  * @return      the matrix @f$\textbf{K}_2@f$</a>
+<span class="lineNum">     311 </span>            :  */
+<span class="lineNum">     312 </span><span class="lineCov">          4 : double *gensvm_kernel_cross(struct GenModel *model, struct GenData *data_train,</span>
+<span class="lineNum">     313 </span>            :                 struct GenData *data_test)
+<span class="lineNum">     314 </span>            : {
+<span class="lineNum">     315 </span>            :         long i, j;
+<span class="lineNum">     316 </span><span class="lineCov">          4 :         long n_train = data_train-&gt;n;</span>
+<span class="lineNum">     317 </span><span class="lineCov">          4 :         long n_test = data_test-&gt;n;</span>
+<span class="lineNum">     318 </span><span class="lineCov">          4 :         long m = data_test-&gt;m;</span>
+<span class="lineNum">     319 </span><span class="lineCov">          4 :         double value, *x1 = NULL,</span>
+<span class="lineNum">     320 </span><span class="lineCov">          4 :                *x2 = NULL,</span>
+<span class="lineNum">     321 </span><span class="lineCov">          4 :                *K2 = Calloc(double, n_test * n_train);</span>
+<span class="lineNum">     322 </span>            : 
+<span class="lineNum">     323 </span><span class="lineCov">         27 :         for (i=0; i&lt;n_test; i++) {</span>
+<span class="lineNum">     324 </span><span class="lineCov">        253 :                 for (j=0; j&lt;n_train; j++) {</span>
+<span class="lineNum">     325 </span><span class="lineCov">        230 :                         x1 = &amp;data_test-&gt;RAW[i*(m+1)+1];</span>
+<span class="lineNum">     326 </span><span class="lineCov">        230 :                         x2 = &amp;data_train-&gt;RAW[j*(m+1)+1];</span>
+<span class="lineNum">     327 </span><span class="lineCov">        230 :                         if (model-&gt;kerneltype == K_POLY)</span>
+<span class="lineNum">     328 </span><span class="lineCov">         50 :                                 value = gensvm_kernel_dot_poly(x1, x2, m, </span>
+<span class="lineNum">     329 </span>            :                                                 model-&gt;gamma, model-&gt;coef, 
+<span class="lineNum">     330 </span>            :                                                 model-&gt;degree);
+<span class="lineNum">     331 </span><span class="lineCov">        180 :                         else if (model-&gt;kerneltype == K_RBF)</span>
+<span class="lineNum">     332 </span><span class="lineCov">        130 :                                 value = gensvm_kernel_dot_rbf(x1, x2, m, </span>
+<span class="lineNum">     333 </span>            :                                                 model-&gt;gamma);
+<span class="lineNum">     334 </span><span class="lineCov">         50 :                         else if (model-&gt;kerneltype == K_SIGMOID)</span>
+<span class="lineNum">     335 </span><span class="lineCov">         50 :                                 value = gensvm_kernel_dot_sigmoid(x1, x2, m,</span>
+<span class="lineNum">     336 </span>            :                                                 model-&gt;gamma, model-&gt;coef);
+<span class="lineNum">     337 </span>            :                         else {
+<span class="lineNum">     338 </span>            :                                 // LCOV_EXCL_START
+<span class="lineNum">     339 </span>            :                                 err(&quot;[GenSVM Error]: Unknown kernel type in &quot;
+<span class="lineNum">     340 </span>            :                                                 &quot;gensvm_make_crosskernel\n&quot;);
+<span class="lineNum">     341 </span>            :                                 exit(EXIT_FAILURE);
+<span class="lineNum">     342 </span>            :                                 // LCOV_EXCL_STOP
+<span class="lineNum">     343 </span>            :                         }
+<span class="lineNum">     344 </span><span class="lineCov">        230 :                         matrix_set(K2, n_train, i, j, value);</span>
+<span class="lineNum">     345 </span>            :                 }
+<span class="lineNum">     346 </span>            :         }
+<span class="lineNum">     347 </span><span class="lineCov">          4 :         return K2;</span>
+<span class="lineNum">     348 </span>            : }
+<span class="lineNum">     349 </span>            : 
+<span class="lineNum">     350 </span>            : /**
+<span class="lineNum">     351 </span>            :  * @brief Compute the training factor as part of kernel preprocessing
+<span class="lineNum">     352 </span>            :  *
+<span class="lineNum">     353 </span>            :  * @details
+<span class="lineNum">     354 </span>            :  * This function computes the matrix product @f$\textbf{M} = 
+<span class="lineNum">     355 </span>            :  * \textbf{P}\boldsymbol{\Sigma}@f$ and stores the result in GenData::Z, 
+<span class="lineNum">     356 </span>            :  * preceded by a column of ones. It also sets GenData::r to the number of 
+<span class="lineNum">     357 </span>            :  * eigenvectors that were includedin P and Sigma. Note that P and Sigma 
+<span class="lineNum">     358 </span>            :  * correspond to the reduced eigendecomposition of the kernel matrix.
+<span class="lineNum">     359 </span>            :  *
+<span class="lineNum">     360 </span>            :  * @param[in,out]       data    a GenData structure. On exit, GenData::Z and
+<span class="lineNum">     361 </span>            :  *                              GenData::r are updated as described above.
+<span class="lineNum">     362 </span>            :  * @param[in]           P       the eigenvectors
+<span class="lineNum">     363 </span>            :  * @param[in]           Sigma   the eigenvalues
+<a name="364"><span class="lineNum">     364 </span>            :  * @param[in]           r       the number of eigenvalues and eigenvectors</a>
+<span class="lineNum">     365 </span>            :  */
+<span class="lineNum">     366 </span><span class="lineCov">          3 : void gensvm_kernel_trainfactor(struct GenData *data, double *P, double *Sigma,</span>
+<span class="lineNum">     367 </span>            :                 long r)
+<span class="lineNum">     368 </span>            : {
+<span class="lineNum">     369 </span><span class="lineCov">          3 :         long i, j, n = data-&gt;n;</span>
+<span class="lineNum">     370 </span>            :         double value;
+<span class="lineNum">     371 </span>            : 
+<span class="lineNum">     372 </span>            :         // allocate Z
+<span class="lineNum">     373 </span><span class="lineCov">          3 :         data-&gt;Z = Calloc(double, n*(r+1));</span>
+<span class="lineNum">     374 </span>            : 
+<span class="lineNum">     375 </span>            :         // Write data-&gt;Z = [1 M] = [1 P*Sigma]
+<span class="lineNum">     376 </span><span class="lineCov">         33 :         for (i=0; i&lt;n; i++) {</span>
+<span class="lineNum">     377 </span><span class="lineCov">        230 :                 for (j=0; j&lt;r; j++) {</span>
+<span class="lineNum">     378 </span><span class="lineCov">        200 :                         value = matrix_get(P, r, i, j);</span>
+<span class="lineNum">     379 </span><span class="lineCov">        200 :                         value *= matrix_get(Sigma, 1, j, 0);</span>
+<span class="lineNum">     380 </span><span class="lineCov">        200 :                         matrix_set(data-&gt;Z, r+1, i, j+1, value);</span>
+<span class="lineNum">     381 </span>            :                 }
+<span class="lineNum">     382 </span><span class="lineCov">         30 :                 matrix_set(data-&gt;Z, r+1, i, 0, 1.0);</span>
+<span class="lineNum">     383 </span>            :         }
+<span class="lineNum">     384 </span>            : 
+<span class="lineNum">     385 </span>            :         // Set data-&gt;r to r so data knows the width of Z
+<span class="lineNum">     386 </span><span class="lineCov">          3 :         data-&gt;r = r;</span>
+<span class="lineNum">     387 </span><span class="lineCov">          3 : }</span>
+<span class="lineNum">     388 </span>            : 
+<span class="lineNum">     389 </span>            : /**
+<span class="lineNum">     390 </span>            :  * @brief Calculate the matrix product for the testfactor
+<span class="lineNum">     391 </span>            :  *
+<span class="lineNum">     392 </span>            :  * @details
+<span class="lineNum">     393 </span>            :  * To predict class labels when kernels are used, a transformation of the
+<span class="lineNum">     394 </span>            :  * testdata has to be performed to get the simplex space vectors. This
+<span class="lineNum">     395 </span>            :  * transformation is based on the matrix @f$\textbf{K}_2@f$ (as calculated by
+<span class="lineNum">     396 </span>            :  * gensvm_make_crosskernel()) and the matrices @f$\textbf{M} = 
+<span class="lineNum">     397 </span>            :  * \textbf{P}*\boldsymbol{\Sigma}@f$) and @f$\boldsymbol{\Sigma}@f$. The 
+<span class="lineNum">     398 </span>            :  * testfactor is equal to @f$\textbf{K}_2 \textbf{M} 
+<span class="lineNum">     399 </span>            :  * \boldsymbol{\Sigma}^{-2}@f$.
+<span class="lineNum">     400 </span>            :  *
+<span class="lineNum">     401 </span>            :  * @param[out]  testdata        a GenData struct with the testdata, contains
+<span class="lineNum">     402 </span>            :  *                              the testfactor in GenData::Z on exit preceded 
+<span class="lineNum">     403 </span>            :  *                              by a column of ones.
+<span class="lineNum">     404 </span>            :  * @param[in]   traindata       a GenData struct with the training data
+<a name="405"><span class="lineNum">     405 </span>            :  * @param[in]   K2              crosskernel between the train and test data</a>
+<span class="lineNum">     406 </span>            :  */
+<span class="lineNum">     407 </span><span class="lineCov">          2 : void gensvm_kernel_testfactor(struct GenData *testdata,</span>
+<span class="lineNum">     408 </span>            :                 struct GenData *traindata, double *K2)
+<span class="lineNum">     409 </span>            : {
+<span class="lineNum">     410 </span>            :         long n1, n2, r, i, j;
+<span class="lineNum">     411 </span><span class="lineCov">          2 :         double value, *N = NULL,</span>
+<span class="lineNum">     412 </span><span class="lineCov">          2 :                *M = NULL;</span>
+<span class="lineNum">     413 </span>            : 
+<span class="lineNum">     414 </span><span class="lineCov">          2 :         n1 = traindata-&gt;n;</span>
+<span class="lineNum">     415 </span><span class="lineCov">          2 :         n2 = testdata-&gt;n;</span>
+<span class="lineNum">     416 </span><span class="lineCov">          2 :         r = traindata-&gt;r;</span>
+<span class="lineNum">     417 </span>            : 
+<span class="lineNum">     418 </span><span class="lineCov">          2 :         N = Calloc(double, n2*r);</span>
+<span class="lineNum">     419 </span><span class="lineCov">          2 :         M = Calloc(double, n1*r);</span>
+<span class="lineNum">     420 </span>            : 
+<span class="lineNum">     421 </span>            :         // copy M from traindata-&gt;Z because we need it in dgemm without column
+<span class="lineNum">     422 </span>            :         // of 1's.
+<span class="lineNum">     423 </span><span class="lineCov">         22 :         for (i=0; i&lt;n1; i++) {</span>
+<span class="lineNum">     424 </span><span class="lineCov">        100 :                 for (j=0; j&lt;r; j++) {</span>
+<span class="lineNum">     425 </span><span class="lineCov">         80 :                         value = matrix_get(traindata-&gt;Z, r+1, i, j+1);</span>
+<span class="lineNum">     426 </span><span class="lineCov">         80 :                         matrix_set(M, r, i, j, value);</span>
+<span class="lineNum">     427 </span>            :                 }
+<span class="lineNum">     428 </span>            :         }
 <span class="lineNum">     429 </span>            : 
-<span class="lineNum">     430 </span><span class="lineCov">          2 :         n1 = traindata-&gt;n;</span>
-<span class="lineNum">     431 </span><span class="lineCov">          2 :         n2 = testdata-&gt;n;</span>
-<span class="lineNum">     432 </span><span class="lineCov">          2 :         r = traindata-&gt;r;</span>
+<span class="lineNum">     430 </span>            :         // Multiply K2 with M and store in N
+<span class="lineNum">     431 </span><span class="lineCov">          2 :         cblas_dgemm(CblasRowMajor, CblasNoTrans, CblasNoTrans, n2, r, n1, 1.0,</span>
+<span class="lineNum">     432 </span>            :                         K2, n1, M, r, 0.0, N, r);
 <span class="lineNum">     433 </span>            : 
-<span class="lineNum">     434 </span><span class="lineCov">          2 :         N = Calloc(double, n2*r);</span>
-<span class="lineNum">     435 </span><span class="lineCov">          2 :         M = Calloc(double, n1*r);</span>
-<span class="lineNum">     436 </span>            : 
-<span class="lineNum">     437 </span>            :         // copy M from traindata-&gt;Z because we need it in dgemm without column
-<span class="lineNum">     438 </span>            :         // of 1's.
-<span class="lineNum">     439 </span><span class="lineCov">         22 :         for (i=0; i&lt;n1; i++) {</span>
-<span class="lineNum">     440 </span><span class="lineCov">        100 :                 for (j=0; j&lt;r; j++) {</span>
-<span class="lineNum">     441 </span><span class="lineCov">         80 :                         value = matrix_get(traindata-&gt;Z, r+1, i, j+1);</span>
-<span class="lineNum">     442 </span><span class="lineCov">         80 :                         matrix_set(M, r, i, j, value);</span>
-<span class="lineNum">     443 </span>            :                 }
-<span class="lineNum">     444 </span>            :         }
-<span class="lineNum">     445 </span>            : 
-<span class="lineNum">     446 </span>            :         // Multiply K2 with M and store in N
-<span class="lineNum">     447 </span><span class="lineCov">          2 :         cblas_dgemm(CblasRowMajor, CblasNoTrans, CblasNoTrans, n2, r, n1, 1.0,</span>
-<span class="lineNum">     448 </span>            :                         K2, n1, M, r, 0.0, N, r);
-<span class="lineNum">     449 </span>            : 
-<span class="lineNum">     450 </span>            :         // Multiply N with Sigma^{-2}
-<span class="lineNum">     451 </span><span class="lineCov">         10 :         for (j=0; j&lt;r; j++) {</span>
-<span class="lineNum">     452 </span><span class="lineCov">          8 :                 value = pow(matrix_get(traindata-&gt;Sigma, 1, j, 0), -2.0);</span>
-<span class="lineNum">     453 </span><span class="lineCov">         63 :                 for (i=0; i&lt;n2; i++)</span>
-<span class="lineNum">     454 </span><span class="lineCov">         55 :                         matrix_mul(N, r, i, j, value);</span>
-<span class="lineNum">     455 </span>            :         }
+<span class="lineNum">     434 </span>            :         // Multiply N with Sigma^{-2}
+<span class="lineNum">     435 </span><span class="lineCov">         10 :         for (j=0; j&lt;r; j++) {</span>
+<span class="lineNum">     436 </span><span class="lineCov">          8 :                 value = pow(matrix_get(traindata-&gt;Sigma, 1, j, 0), -2.0);</span>
+<span class="lineNum">     437 </span><span class="lineCov">         63 :                 for (i=0; i&lt;n2; i++)</span>
+<span class="lineNum">     438 </span><span class="lineCov">         55 :                         matrix_mul(N, r, i, j, value);</span>
+<span class="lineNum">     439 </span>            :         }
+<span class="lineNum">     440 </span>            : 
+<span class="lineNum">     441 </span>            :         // write N to Z with a column of ones
+<span class="lineNum">     442 </span><span class="lineCov">          2 :         testdata-&gt;Z = Calloc(double, n2*(r+1));</span>
+<span class="lineNum">     443 </span><span class="lineCov">         15 :         for (i=0; i&lt;n2; i++) {</span>
+<span class="lineNum">     444 </span><span class="lineCov">         68 :                 for (j=0; j&lt;r; j++) {</span>
+<span class="lineNum">     445 </span><span class="lineCov">         55 :                         matrix_set(testdata-&gt;Z, r+1, i, j+1,</span>
+<span class="lineNum">     446 </span>            :                                         matrix_get(N, r, i, j));
+<span class="lineNum">     447 </span>            :                 }
+<span class="lineNum">     448 </span><span class="lineCov">         13 :                 matrix_set(testdata-&gt;Z, r+1, i, 0, 1.0);</span>
+<span class="lineNum">     449 </span>            :         }
+<span class="lineNum">     450 </span>            :         // Set r to testdata
+<span class="lineNum">     451 </span><span class="lineCov">          2 :         testdata-&gt;r = r;</span>
+<span class="lineNum">     452 </span>            : 
+<span class="lineNum">     453 </span><span class="lineCov">          2 :         free(M);</span>
+<span class="lineNum">     454 </span><span class="lineCov">          2 :         free(N);</span>
+<span class="lineNum">     455 </span><span class="lineCov">          2 : }</span>
 <span class="lineNum">     456 </span>            : 
-<span class="lineNum">     457 </span>            :         // write N to Z with a column of ones
-<span class="lineNum">     458 </span><span class="lineCov">          2 :         testdata-&gt;Z = Calloc(double, n2*(r+1));</span>
-<span class="lineNum">     459 </span><span class="lineCov">         15 :         for (i=0; i&lt;n2; i++) {</span>
-<span class="lineNum">     460 </span><span class="lineCov">         68 :                 for (j=0; j&lt;r; j++) {</span>
-<span class="lineNum">     461 </span><span class="lineCov">         55 :                         matrix_set(testdata-&gt;Z, r+1, i, j+1,</span>
-<span class="lineNum">     462 </span>            :                                         matrix_get(N, r, i, j));
-<span class="lineNum">     463 </span>            :                 }
-<span class="lineNum">     464 </span><span class="lineCov">         13 :                 matrix_set(testdata-&gt;Z, r+1, i, 0, 1.0);</span>
-<span class="lineNum">     465 </span>            :         }
-<span class="lineNum">     466 </span>            :         // Set r to testdata
-<span class="lineNum">     467 </span><span class="lineCov">          2 :         testdata-&gt;r = r;</span>
-<span class="lineNum">     468 </span>            : 
-<span class="lineNum">     469 </span><span class="lineCov">          2 :         free(M);</span>
-<span class="lineNum">     470 </span><span class="lineCov">          2 :         free(N);</span>
-<span class="lineNum">     471 </span><span class="lineCov">          2 : }</span>
-<span class="lineNum">     472 </span>            : 
-<span class="lineNum">     473 </span>            : /**
-<span class="lineNum">     474 </span>            :  * @brief Compute the RBF kernel between two vectors
-<span class="lineNum">     475 </span>            :  *
-<span class="lineNum">     476 </span>            :  * @details
-<span class="lineNum">     477 </span>            :  * The RBF kernel is computed between two vectors. This kernel is defined as
-<span class="lineNum">     478 </span>            :  * @f[
-<span class="lineNum">     479 </span>            :  *      k(x_1, x_2) = \exp( -\gamma \| x_1 - x_2 \|^2 )
-<span class="lineNum">     480 </span>            :  * @f]
-<span class="lineNum">     481 </span>            :  * where @f$ \gamma @f$ is a kernel parameter specified.
-<span class="lineNum">     482 </span>            :  *
-<span class="lineNum">     483 </span>            :  * @param[in]   x1              first vector
-<span class="lineNum">     484 </span>            :  * @param[in]   x2              second vector
-<span class="lineNum">     485 </span>            :  * @param[in]   kernelparam     array of kernel parameters (gamma is first
-<span class="lineNum">     486 </span>            :  *                              element)
-<span class="lineNum">     487 </span>            :  * @param[in]   n               length of the vectors x1 and x2
-<a name="488"><span class="lineNum">     488 </span>            :  * @returns                     kernel evaluation</a>
-<span class="lineNum">     489 </span>            :  */
-<span class="lineNum">     490 </span><span class="lineCov">        297 : double gensvm_kernel_dot_rbf(double *x1, double *x2, double *kernelparam,</span>
-<span class="lineNum">     491 </span>            :                 long n)
-<span class="lineNum">     492 </span>            : {
-<span class="lineNum">     493 </span>            :         long i;
-<span class="lineNum">     494 </span><span class="lineCov">        297 :         double value = 0.0;</span>
-<span class="lineNum">     495 </span>            : 
-<span class="lineNum">     496 </span><span class="lineCov">       1572 :         for (i=0; i&lt;n; i++)</span>
-<span class="lineNum">     497 </span><span class="lineCov">       1275 :                 value += (x1[i] - x2[i]) * (x1[i] - x2[i]);</span>
-<span class="lineNum">     498 </span><span class="lineCov">        297 :         value *= -kernelparam[0];</span>
-<span class="lineNum">     499 </span><span class="lineCov">        297 :         return exp(value);</span>
-<span class="lineNum">     500 </span>            : }
-<span class="lineNum">     501 </span>            : 
-<span class="lineNum">     502 </span>            : /**
-<span class="lineNum">     503 </span>            :  * @brief Compute the polynomial kernel between two vectors
-<span class="lineNum">     504 </span>            :  *
-<span class="lineNum">     505 </span>            :  * @details
-<span class="lineNum">     506 </span>            :  * The polynomial kernel is computed between two vectors. This kernel is
-<span class="lineNum">     507 </span>            :  * defined as
-<span class="lineNum">     508 </span>            :  * @f[
-<span class="lineNum">     509 </span>            :  *      k(x_1, x_2) = ( \gamma \langle x_1, x_2 \rangle + c)^d
-<span class="lineNum">     510 </span>            :  * @f]
-<span class="lineNum">     511 </span>            :  * where @f$ \gamma @f$, @f$ c @f$ and @f$ d @f$ are kernel parameters.
-<span class="lineNum">     512 </span>            :  *
-<span class="lineNum">     513 </span>            :  * @param[in]   x1              first vector
-<span class="lineNum">     514 </span>            :  * @param[in]   x2              second vector
-<span class="lineNum">     515 </span>            :  * @param[in]   kernelparam     array of kernel parameters (gamma, c, d)
-<span class="lineNum">     516 </span>            :  * @param[in]   n               length of the vectors x1 and x2
-<a name="517"><span class="lineNum">     517 </span>            :  * @returns                     kernel evaluation</a>
-<span class="lineNum">     518 </span>            :  */
-<span class="lineNum">     519 </span><span class="lineCov">        107 : double gensvm_kernel_dot_poly(double *x1, double *x2, double *kernelparam,</span>
-<span class="lineNum">     520 </span>            :                 long n)
-<span class="lineNum">     521 </span>            : {
-<span class="lineNum">     522 </span><span class="lineCov">        107 :         double value = cblas_ddot(n, x1, 1, x2, 1);</span>
-<span class="lineNum">     523 </span><span class="lineCov">        107 :         value *= kernelparam[0];</span>
-<span class="lineNum">     524 </span><span class="lineCov">        107 :         value += kernelparam[1];</span>
-<span class="lineNum">     525 </span><span class="lineCov">        107 :         return pow(value, kernelparam[2]);</span>
-<span class="lineNum">     526 </span>            : }
-<span class="lineNum">     527 </span>            : 
-<span class="lineNum">     528 </span>            : /**
-<span class="lineNum">     529 </span>            :  * @brief Compute the sigmoid kernel between two vectors
-<span class="lineNum">     530 </span>            :  *
-<span class="lineNum">     531 </span>            :  * @details
-<span class="lineNum">     532 </span>            :  * The sigmoid kernel is computed between two vectors. This kernel is defined
-<span class="lineNum">     533 </span>            :  * as
-<span class="lineNum">     534 </span>            :  * @f[
-<span class="lineNum">     535 </span>            :  *      k(x_1, x_2) = \tanh( \gamma \langle x_1 , x_2 \rangle + c)
-<span class="lineNum">     536 </span>            :  * @f]
-<span class="lineNum">     537 </span>            :  * where @f$ \gamma @f$ and @f$ c @f$ are kernel parameters.
-<span class="lineNum">     538 </span>            :  *
-<span class="lineNum">     539 </span>            :  * @param[in]   x1              first vector
-<span class="lineNum">     540 </span>            :  * @param[in]   x2              second vector
-<span class="lineNum">     541 </span>            :  * @param[in]   kernelparam     array of kernel parameters (gamma, c)
-<span class="lineNum">     542 </span>            :  * @param[in]   n               length of the vectors x1 and x2
-<a name="543"><span class="lineNum">     543 </span>            :  * @returns                     kernel evaluation</a>
-<span class="lineNum">     544 </span>            :  */
-<span class="lineNum">     545 </span><span class="lineCov">        107 : double gensvm_kernel_dot_sigmoid(double *x1, double *x2, double *kernelparam,</span>
-<span class="lineNum">     546 </span>            :                 long n)
-<span class="lineNum">     547 </span>            : {
-<span class="lineNum">     548 </span><span class="lineCov">        107 :         double value = cblas_ddot(n, x1, 1, x2, 1);</span>
-<span class="lineNum">     549 </span><span class="lineCov">        107 :         value *= kernelparam[0];</span>
-<span class="lineNum">     550 </span><span class="lineCov">        107 :         value += kernelparam[1];</span>
-<span class="lineNum">     551 </span><span class="lineCov">        107 :         return tanh(value);</span>
-<span class="lineNum">     552 </span>            : }
-<span class="lineNum">     553 </span>            : 
-<span class="lineNum">     554 </span>            : /**
-<span class="lineNum">     555 </span>            :  * @brief Compute the eigenvalues and optionally the eigenvectors of a
-<span class="lineNum">     556 </span>            :  * symmetric matrix.
-<span class="lineNum">     557 </span>            :  *
-<span class="lineNum">     558 </span>            :  * @details
-<span class="lineNum">     559 </span>            :  * This is a wrapper function around the external LAPACK function.
-<span class="lineNum">     560 </span>            :  *
-<span class="lineNum">     561 </span>            :  * See the LAPACK documentation at:
-<span class="lineNum">     562 </span>            :  * http://www.netlib.org/lapack/explore-html/d2/d97/dsyevx_8f.html
-<a name="563"><span class="lineNum">     563 </span>            :  *</a>
-<span class="lineNum">     564 </span>            :  */
-<span class="lineNum">     565 </span><span class="lineCov">          6 : int dsyevx(char JOBZ, char RANGE, char UPLO, int N, double *A, int LDA,</span>
-<span class="lineNum">     566 </span>            :                 double VL, double VU, int IL, int IU, double ABSTOL, int *M,
-<span class="lineNum">     567 </span>            :                 double *W, double *Z, int LDZ, double *WORK, int LWORK,
-<span class="lineNum">     568 </span>            :                 int *IWORK, int *IFAIL)
-<span class="lineNum">     569 </span>            : {
-<span class="lineNum">     570 </span>            :         extern void dsyevx_(char *JOBZ, char *RANGE, char *UPLO, int *Np,
-<span class="lineNum">     571 </span>            :                         double *A, int *LDAp, double *VLp, double *VUp,
-<span class="lineNum">     572 </span>            :                         int *ILp, int *IUp, double *ABSTOLp, int *M,
-<span class="lineNum">     573 </span>            :                         double *W, double *Z, int *LDZp, double *WORK,
-<span class="lineNum">     574 </span>            :                         int *LWORKp, int *IWORK, int *IFAIL, int *INFOp);
-<span class="lineNum">     575 </span>            :         int INFO;
-<span class="lineNum">     576 </span><span class="lineCov">          6 :         dsyevx_(&amp;JOBZ, &amp;RANGE, &amp;UPLO, &amp;N, A, &amp;LDA, &amp;VL, &amp;VU, &amp;IL, &amp;IU, &amp;ABSTOL,</span>
-<span class="lineNum">     577 </span>            :                         M, W, Z, &amp;LDZ, WORK, &amp;LWORK, IWORK, IFAIL, &amp;INFO);
-<span class="lineNum">     578 </span><span class="lineCov">          6 :         return INFO;</span>
-<span class="lineNum">     579 </span>            : }
-<span class="lineNum">     580 </span>            : 
-<span class="lineNum">     581 </span>            : /**
-<span class="lineNum">     582 </span>            :  * @brief Determine double precision machine parameters.
-<span class="lineNum">     583 </span>            :  *
-<span class="lineNum">     584 </span>            :  * @details
-<span class="lineNum">     585 </span>            :  * This is a wrapper function around the external LAPACK function.
-<span class="lineNum">     586 </span>            :  *
-<span class="lineNum">     587 </span>            :  * See the LAPACK documentation at:
-<a name="588"><span class="lineNum">     588 </span>            :  * http://www.netlib.org/lapack/explore-html/d5/dd4/dlamch_8f.html</a>
-<span class="lineNum">     589 </span>            :  */
-<span class="lineNum">     590 </span><span class="lineCov">          3 : double dlamch(char CMACH)</span>
-<span class="lineNum">     591 </span>            : {
-<span class="lineNum">     592 </span>            :         extern double dlamch_(char *CMACH);
-<span class="lineNum">     593 </span><span class="lineCov">          3 :         return dlamch_(&amp;CMACH);</span>
-<span class="lineNum">     594 </span>            : }
+<span class="lineNum">     457 </span>            : /**
+<span class="lineNum">     458 </span>            :  * @brief Compute the RBF kernel between two vectors
+<span class="lineNum">     459 </span>            :  *
+<span class="lineNum">     460 </span>            :  * @details
+<span class="lineNum">     461 </span>            :  * The RBF kernel is computed between two vectors. This kernel is defined as
+<span class="lineNum">     462 </span>            :  * @f[
+<span class="lineNum">     463 </span>            :  *      k(x_1, x_2) = \exp( -\gamma \| x_1 - x_2 \|^2 )
+<span class="lineNum">     464 </span>            :  * @f]
+<span class="lineNum">     465 </span>            :  * where @f$ \gamma @f$ is a kernel parameter specified.
+<span class="lineNum">     466 </span>            :  *
+<span class="lineNum">     467 </span>            :  * @param[in]   x1              first vector
+<span class="lineNum">     468 </span>            :  * @param[in]   x2              second vector
+<span class="lineNum">     469 </span>            :  * @param[in]   n               length of the vectors x1 and x2
+<span class="lineNum">     470 </span>            :  * @param[in]   gamma           gamma parameter of the kernel
+<a name="471"><span class="lineNum">     471 </span>            :  * @returns                     kernel evaluation</a>
+<span class="lineNum">     472 </span>            :  */
+<span class="lineNum">     473 </span><span class="lineCov">        297 : double gensvm_kernel_dot_rbf(double *x1, double *x2, long n, double gamma)</span>
+<span class="lineNum">     474 </span>            : {
+<span class="lineNum">     475 </span>            :         long i;
+<span class="lineNum">     476 </span><span class="lineCov">        297 :         double value = 0.0;</span>
+<span class="lineNum">     477 </span>            : 
+<span class="lineNum">     478 </span><span class="lineCov">       1572 :         for (i=0; i&lt;n; i++)</span>
+<span class="lineNum">     479 </span><span class="lineCov">       1275 :                 value += (x1[i] - x2[i]) * (x1[i] - x2[i]);</span>
+<span class="lineNum">     480 </span><span class="lineCov">        297 :         value *= -gamma;</span>
+<span class="lineNum">     481 </span><span class="lineCov">        297 :         return exp(value);</span>
+<span class="lineNum">     482 </span>            : }
+<span class="lineNum">     483 </span>            : 
+<span class="lineNum">     484 </span>            : /**
+<span class="lineNum">     485 </span>            :  * @brief Compute the polynomial kernel between two vectors
+<span class="lineNum">     486 </span>            :  *
+<span class="lineNum">     487 </span>            :  * @details
+<span class="lineNum">     488 </span>            :  * The polynomial kernel is computed between two vectors. This kernel is
+<span class="lineNum">     489 </span>            :  * defined as
+<span class="lineNum">     490 </span>            :  * @f[
+<span class="lineNum">     491 </span>            :  *      k(x_1, x_2) = ( \gamma \langle x_1, x_2 \rangle + coef)^{degree}
+<span class="lineNum">     492 </span>            :  * @f]
+<span class="lineNum">     493 </span>            :  * where @f$ \gamma @f$, @f$ coef @f$ and @f$ degree @f$ are kernel 
+<span class="lineNum">     494 </span>            :  * parameters.
+<span class="lineNum">     495 </span>            :  *
+<span class="lineNum">     496 </span>            :  * @param[in]   x1              first vector
+<span class="lineNum">     497 </span>            :  * @param[in]   x2              second vector
+<span class="lineNum">     498 </span>            :  * @param[in]   n               length of the vectors x1 and x2
+<span class="lineNum">     499 </span>            :  * @param[in]   gamma           gamma parameter of the kernel
+<span class="lineNum">     500 </span>            :  * @param[in]   coef            coef parameter of the kernel
+<span class="lineNum">     501 </span>            :  * @param[in]   degree          degree parameter of the kernel
+<a name="502"><span class="lineNum">     502 </span>            :  * @returns                     kernel evaluation</a>
+<span class="lineNum">     503 </span>            :  */
+<span class="lineNum">     504 </span><span class="lineCov">        107 : double gensvm_kernel_dot_poly(double *x1, double *x2, long n, double gamma,</span>
+<span class="lineNum">     505 </span>            :                 double coef, double degree)
+<span class="lineNum">     506 </span>            : {
+<span class="lineNum">     507 </span><span class="lineCov">        107 :         double value = cblas_ddot(n, x1, 1, x2, 1);</span>
+<span class="lineNum">     508 </span><span class="lineCov">        107 :         value *= gamma;</span>
+<span class="lineNum">     509 </span><span class="lineCov">        107 :         value += coef;</span>
+<span class="lineNum">     510 </span><span class="lineCov">        107 :         return pow(value, degree);</span>
+<span class="lineNum">     511 </span>            : }
+<span class="lineNum">     512 </span>            : 
+<span class="lineNum">     513 </span>            : /**
+<span class="lineNum">     514 </span>            :  * @brief Compute the sigmoid kernel between two vectors
+<span class="lineNum">     515 </span>            :  *
+<span class="lineNum">     516 </span>            :  * @details
+<span class="lineNum">     517 </span>            :  * The sigmoid kernel is computed between two vectors. This kernel is defined
+<span class="lineNum">     518 </span>            :  * as
+<span class="lineNum">     519 </span>            :  * @f[
+<span class="lineNum">     520 </span>            :  *      k(x_1, x_2) = \tanh( \gamma \langle x_1 , x_2 \rangle + coef)
+<span class="lineNum">     521 </span>            :  * @f]
+<span class="lineNum">     522 </span>            :  * where @f$ \gamma @f$ and @f$ coef @f$ are kernel parameters.
+<span class="lineNum">     523 </span>            :  *
+<span class="lineNum">     524 </span>            :  * @param[in]   x1              first vector
+<span class="lineNum">     525 </span>            :  * @param[in]   x2              second vector
+<span class="lineNum">     526 </span>            :  * @param[in]   n               length of the vectors x1 and x2
+<span class="lineNum">     527 </span>            :  * @param[in]   gamma           gamma parameter of the kernel
+<span class="lineNum">     528 </span>            :  * @param[in]   coef            coef parameter of the kernel
+<a name="529"><span class="lineNum">     529 </span>            :  * @returns                     kernel evaluation</a>
+<span class="lineNum">     530 </span>            :  */
+<span class="lineNum">     531 </span><span class="lineCov">        107 : double gensvm_kernel_dot_sigmoid(double *x1, double *x2, long n, double gamma,</span>
+<span class="lineNum">     532 </span>            :                 double coef)
+<span class="lineNum">     533 </span>            : {
+<span class="lineNum">     534 </span><span class="lineCov">        107 :         double value = cblas_ddot(n, x1, 1, x2, 1);</span>
+<span class="lineNum">     535 </span><span class="lineCov">        107 :         value *= gamma;</span>
+<span class="lineNum">     536 </span><span class="lineCov">        107 :         value += coef;</span>
+<span class="lineNum">     537 </span><span class="lineCov">        107 :         return tanh(value);</span>
+<span class="lineNum">     538 </span>            : }
+<span class="lineNum">     539 </span>            : 
+<span class="lineNum">     540 </span>            : /**
+<span class="lineNum">     541 </span>            :  * @brief Compute the eigenvalues and optionally the eigenvectors of a
+<span class="lineNum">     542 </span>            :  * symmetric matrix.
+<span class="lineNum">     543 </span>            :  *
+<span class="lineNum">     544 </span>            :  * @details
+<span class="lineNum">     545 </span>            :  * This is a wrapper function around the external LAPACK function.
+<span class="lineNum">     546 </span>            :  *
+<span class="lineNum">     547 </span>            :  * See the LAPACK documentation at:
+<span class="lineNum">     548 </span>            :  * http://www.netlib.org/lapack/explore-html/d2/d97/dsyevx_8f.html
+<a name="549"><span class="lineNum">     549 </span>            :  *</a>
+<span class="lineNum">     550 </span>            :  */
+<span class="lineNum">     551 </span><span class="lineCov">          6 : int dsyevx(char JOBZ, char RANGE, char UPLO, int N, double *A, int LDA,</span>
+<span class="lineNum">     552 </span>            :                 double VL, double VU, int IL, int IU, double ABSTOL, int *M,
+<span class="lineNum">     553 </span>            :                 double *W, double *Z, int LDZ, double *WORK, int LWORK,
+<span class="lineNum">     554 </span>            :                 int *IWORK, int *IFAIL)
+<span class="lineNum">     555 </span>            : {
+<span class="lineNum">     556 </span>            :         extern void dsyevx_(char *JOBZ, char *RANGE, char *UPLO, int *Np,
+<span class="lineNum">     557 </span>            :                         double *A, int *LDAp, double *VLp, double *VUp,
+<span class="lineNum">     558 </span>            :                         int *ILp, int *IUp, double *ABSTOLp, int *M,
+<span class="lineNum">     559 </span>            :                         double *W, double *Z, int *LDZp, double *WORK,
+<span class="lineNum">     560 </span>            :                         int *LWORKp, int *IWORK, int *IFAIL, int *INFOp);
+<span class="lineNum">     561 </span>            :         int INFO;
+<span class="lineNum">     562 </span><span class="lineCov">          6 :         dsyevx_(&amp;JOBZ, &amp;RANGE, &amp;UPLO, &amp;N, A, &amp;LDA, &amp;VL, &amp;VU, &amp;IL, &amp;IU, &amp;ABSTOL,</span>
+<span class="lineNum">     563 </span>            :                         M, W, Z, &amp;LDZ, WORK, &amp;LWORK, IWORK, IFAIL, &amp;INFO);
+<span class="lineNum">     564 </span><span class="lineCov">          6 :         return INFO;</span>
+<span class="lineNum">     565 </span>            : }
+<span class="lineNum">     566 </span>            : 
+<span class="lineNum">     567 </span>            : /**
+<span class="lineNum">     568 </span>            :  * @brief Determine double precision machine parameters.
+<span class="lineNum">     569 </span>            :  *
+<span class="lineNum">     570 </span>            :  * @details
+<span class="lineNum">     571 </span>            :  * This is a wrapper function around the external LAPACK function.
+<span class="lineNum">     572 </span>            :  *
+<span class="lineNum">     573 </span>            :  * See the LAPACK documentation at:
+<a name="574"><span class="lineNum">     574 </span>            :  * http://www.netlib.org/lapack/explore-html/d5/dd4/dlamch_8f.html</a>
+<span class="lineNum">     575 </span>            :  */
+<span class="lineNum">     576 </span><span class="lineCov">          3 : double dlamch(char CMACH)</span>
+<span class="lineNum">     577 </span>            : {
+<span class="lineNum">     578 </span>            :         extern double dlamch_(char *CMACH);
+<span class="lineNum">     579 </span><span class="lineCov">          3 :         return dlamch_(&amp;CMACH);</span>
+<span class="lineNum">     580 </span>            : }
 </pre>
       </td>
     </tr>

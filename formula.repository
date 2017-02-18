@@ -77,3 +77,7 @@
 \form#76:$ \varepsilon_i = 1 $
 \form#77:$ \boldsymbol{\delta}_{kj}' $
 \form#78:\[ (\textbf{Z}'\textbf{AZ} + \lambda \textbf{J})\textbf{V} = (\textbf{Z}'\textbf{AZ}\overline{\textbf{V}} + \textbf{Z}' \textbf{B}) \]
+\form#79:\[ k(x_1, x_2) = ( \gamma \langle x_1, x_2 \rangle + coef)^{degree} \]
+\form#80:$ coef $
+\form#81:$ degree $
+\form#82:\[ k(x_1, x_2) = \tanh( \gamma \langle x_1 , x_2 \rangle + coef) \]

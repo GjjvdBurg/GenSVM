@@ -31,13 +31,13 @@
             <td class="headerValue">coverage.all</td>
             <td></td>
             <td class="headerItem">Lines:</td>
-            <td class="headerCovTableEntry">25</td>
-            <td class="headerCovTableEntry">25</td>
+            <td class="headerCovTableEntry">11</td>
+            <td class="headerCovTableEntry">11</td>
             <td class="headerCovTableEntryHi">100.0 %</td>
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2017-01-12 14:06:18</td>
+            <td class="headerValue">2017-02-17 18:59:15</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">1</td>
@@ -107,29 +107,10 @@
 <span class="lineNum">      45 </span><span class="lineCov">          7 :         to-&gt;lambda = from-&gt;lambda;</span>
 <span class="lineNum">      46 </span>            : 
 <span class="lineNum">      47 </span><span class="lineCov">          7 :         to-&gt;kerneltype = from-&gt;kerneltype;</span>
-<span class="lineNum">      48 </span><span class="lineCov">          7 :         switch (to-&gt;kerneltype) {</span>
-<span class="lineNum">      49 </span>            :                 case K_LINEAR:
-<span class="lineNum">      50 </span><span class="lineCov">          1 :                         break;</span>
-<span class="lineNum">      51 </span>            :                 case K_POLY:
-<span class="lineNum">      52 </span><span class="lineCov">          2 :                         if (to-&gt;kernelparam) free(to-&gt;kernelparam);</span>
-<span class="lineNum">      53 </span><span class="lineCov">          2 :                         to-&gt;kernelparam = Malloc(double, 3);</span>
-<span class="lineNum">      54 </span><span class="lineCov">          2 :                         to-&gt;kernelparam[0] = from-&gt;kernelparam[0];</span>
-<span class="lineNum">      55 </span><span class="lineCov">          2 :                         to-&gt;kernelparam[1] = from-&gt;kernelparam[1];</span>
-<span class="lineNum">      56 </span><span class="lineCov">          2 :                         to-&gt;kernelparam[2] = from-&gt;kernelparam[2];</span>
-<span class="lineNum">      57 </span><span class="lineCov">          2 :                         break;</span>
-<span class="lineNum">      58 </span>            :                 case K_RBF:
-<span class="lineNum">      59 </span><span class="lineCov">          2 :                         if (to-&gt;kernelparam) free(to-&gt;kernelparam);</span>
-<span class="lineNum">      60 </span><span class="lineCov">          2 :                         to-&gt;kernelparam = Malloc(double, 1);</span>
-<span class="lineNum">      61 </span><span class="lineCov">          2 :                         to-&gt;kernelparam[0] = from-&gt;kernelparam[0];</span>
-<span class="lineNum">      62 </span><span class="lineCov">          2 :                         break;</span>
-<span class="lineNum">      63 </span>            :                 case K_SIGMOID:
-<span class="lineNum">      64 </span><span class="lineCov">          2 :                         if (to-&gt;kernelparam) free(to-&gt;kernelparam);</span>
-<span class="lineNum">      65 </span><span class="lineCov">          2 :                         to-&gt;kernelparam = Malloc(double, 2);</span>
-<span class="lineNum">      66 </span><span class="lineCov">          2 :                         to-&gt;kernelparam[0] = from-&gt;kernelparam[0];</span>
-<span class="lineNum">      67 </span><span class="lineCov">          2 :                         to-&gt;kernelparam[1] = from-&gt;kernelparam[1];</span>
-<span class="lineNum">      68 </span><span class="lineCov">          2 :                         break;</span>
-<span class="lineNum">      69 </span>            :         }
-<span class="lineNum">      70 </span><span class="lineCov">          7 : }</span>
+<span class="lineNum">      48 </span><span class="lineCov">          7 :         to-&gt;gamma = from-&gt;gamma;</span>
+<span class="lineNum">      49 </span><span class="lineCov">          7 :         to-&gt;coef = from-&gt;coef;</span>
+<span class="lineNum">      50 </span><span class="lineCov">          7 :         to-&gt;degree = from-&gt;degree;</span>
+<span class="lineNum">      51 </span><span class="lineCov">          7 : }</span>
 </pre>
       </td>
     </tr>

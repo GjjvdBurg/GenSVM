@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2017-01-12 14:06:18</td>
+            <td class="headerValue">2017-02-17 18:59:15</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">5</td>
@@ -223,26 +223,26 @@
 <span class="lineNum">     161 </span><span class="lineCov">        469 :         gensvm_calculate_errors(model, data, work-&gt;ZV);</span>
 <span class="lineNum">     162 </span><span class="lineCov">        469 :         gensvm_calculate_huber(model);</span>
 <span class="lineNum">     163 </span>            : 
-<span class="lineNum">     164 </span><span class="lineCov">       4889 :         for (i=0; i&lt;n; i++) {</span>
-<span class="lineNum">     165 </span><span class="lineCov">       4420 :                 rowvalue = 0;</span>
-<span class="lineNum">     166 </span><span class="lineCov">       4420 :                 value = 0;</span>
-<span class="lineNum">     167 </span><span class="lineCov">      22084 :                 for (j=0; j&lt;K; j++) {</span>
-<span class="lineNum">     168 </span><span class="lineCov">      17664 :                         if (j == (data-&gt;y[i]-1))</span>
-<span class="lineNum">     169 </span><span class="lineCov">       4420 :                                 continue;</span>
-<span class="lineNum">     170 </span><span class="lineCov">      13244 :                         value = matrix_get(model-&gt;H, K, i, j);</span>
-<span class="lineNum">     171 </span><span class="lineCov">      13244 :                         value = pow(value, model-&gt;p);</span>
-<span class="lineNum">     172 </span><span class="lineCov">      13244 :                         rowvalue += value;</span>
+<span class="lineNum">     164 </span><span class="lineCov">       4891 :         for (i=0; i&lt;n; i++) {</span>
+<span class="lineNum">     165 </span><span class="lineCov">       4422 :                 rowvalue = 0;</span>
+<span class="lineNum">     166 </span><span class="lineCov">       4422 :                 value = 0;</span>
+<span class="lineNum">     167 </span><span class="lineCov">      22094 :                 for (j=0; j&lt;K; j++) {</span>
+<span class="lineNum">     168 </span><span class="lineCov">      17672 :                         if (j == (data-&gt;y[i]-1))</span>
+<span class="lineNum">     169 </span><span class="lineCov">       4422 :                                 continue;</span>
+<span class="lineNum">     170 </span><span class="lineCov">      13250 :                         value = matrix_get(model-&gt;H, K, i, j);</span>
+<span class="lineNum">     171 </span><span class="lineCov">      13250 :                         value = pow(value, model-&gt;p);</span>
+<span class="lineNum">     172 </span><span class="lineCov">      13250 :                         rowvalue += value;</span>
 <span class="lineNum">     173 </span>            :                 }
-<span class="lineNum">     174 </span><span class="lineCov">       4420 :                 rowvalue = pow(rowvalue, 1.0/(model-&gt;p));</span>
-<span class="lineNum">     175 </span><span class="lineCov">       4420 :                 rowvalue *= model-&gt;rho[i];</span>
-<span class="lineNum">     176 </span><span class="lineCov">       4420 :                 loss += rowvalue;</span>
+<span class="lineNum">     174 </span><span class="lineCov">       4422 :                 rowvalue = pow(rowvalue, 1.0/(model-&gt;p));</span>
+<span class="lineNum">     175 </span><span class="lineCov">       4422 :                 rowvalue *= model-&gt;rho[i];</span>
+<span class="lineNum">     176 </span><span class="lineCov">       4422 :                 loss += rowvalue;</span>
 <span class="lineNum">     177 </span>            :         }
 <span class="lineNum">     178 </span><span class="lineCov">        469 :         loss /= ((double) n);</span>
 <span class="lineNum">     179 </span>            : 
 <span class="lineNum">     180 </span><span class="lineCov">        469 :         value = 0;</span>
-<span class="lineNum">     181 </span><span class="lineCov">       2314 :         for (i=1; i&lt;m+1; i++) {</span>
-<span class="lineNum">     182 </span><span class="lineCov">       7374 :                 for (j=0; j&lt;K-1; j++) {</span>
-<span class="lineNum">     183 </span><span class="lineCov">       5529 :                         value += pow(matrix_get(model-&gt;V, K-1, i, j), 2.0);</span>
+<span class="lineNum">     181 </span><span class="lineCov">       2317 :         for (i=1; i&lt;m+1; i++) {</span>
+<span class="lineNum">     182 </span><span class="lineCov">       7386 :                 for (j=0; j&lt;K-1; j++) {</span>
+<span class="lineNum">     183 </span><span class="lineCov">       5538 :                         value += pow(matrix_get(model-&gt;V, K-1, i, j), 2.0);</span>
 <span class="lineNum">     184 </span>            :                 }
 <span class="lineNum">     185 </span>            :         }
 <span class="lineNum">     186 </span><span class="lineCov">        469 :         loss += model-&gt;lambda * value;</span>
@@ -269,11 +269,11 @@
 <span class="lineNum">     207 </span><span class="lineCov">        312 :         long m = model-&gt;m;</span>
 <span class="lineNum">     208 </span><span class="lineCov">        312 :         long K = model-&gt;K;</span>
 <span class="lineNum">     209 </span>            : 
-<span class="lineNum">     210 </span><span class="lineCov">       1842 :         for (i=0; i&lt;m+1; i++) {</span>
-<span class="lineNum">     211 </span><span class="lineCov">       6116 :                 for (j=0; j&lt;K-1; j++) {</span>
-<span class="lineNum">     212 </span><span class="lineCov">       4586 :                         matrix_mul(model-&gt;V, K-1, i, j, 2.0);</span>
-<span class="lineNum">     213 </span><span class="lineCov">       4586 :                         value = - matrix_get(model-&gt;Vbar, K-1, i, j);</span>
-<span class="lineNum">     214 </span><span class="lineCov">       4586 :                         matrix_add(model-&gt;V, K-1, i, j, value);</span>
+<span class="lineNum">     210 </span><span class="lineCov">       1845 :         for (i=0; i&lt;m+1; i++) {</span>
+<span class="lineNum">     211 </span><span class="lineCov">       6128 :                 for (j=0; j&lt;K-1; j++) {</span>
+<span class="lineNum">     212 </span><span class="lineCov">       4595 :                         matrix_mul(model-&gt;V, K-1, i, j, 2.0);</span>
+<span class="lineNum">     213 </span><span class="lineCov">       4595 :                         value = - matrix_get(model-&gt;Vbar, K-1, i, j);</span>
+<span class="lineNum">     214 </span><span class="lineCov">       4595 :                         matrix_add(model-&gt;V, K-1, i, j, value);</span>
 <span class="lineNum">     215 </span>            :                 }
 <span class="lineNum">     216 </span>            :         }
 <span class="lineNum">     217 </span><span class="lineCov">        312 : }</span>
@@ -302,17 +302,17 @@
 <span class="lineNum">     240 </span>            :         long i, j;
 <span class="lineNum">     241 </span>            :         double q, value;
 <span class="lineNum">     242 </span>            : 
-<span class="lineNum">     243 </span><span class="lineCov">       4913 :         for (i=0; i&lt;model-&gt;n; i++) {</span>
-<span class="lineNum">     244 </span><span class="lineCov">      22168 :                 for (j=0; j&lt;model-&gt;K; j++) {</span>
-<span class="lineNum">     245 </span><span class="lineCov">      17727 :                         q = matrix_get(model-&gt;Q, model-&gt;K, i, j);</span>
-<span class="lineNum">     246 </span><span class="lineCov">      17727 :                         value = 0.0;</span>
-<span class="lineNum">     247 </span><span class="lineCov">      17727 :                         if (q &lt;= -model-&gt;kappa) {</span>
+<span class="lineNum">     243 </span><span class="lineCov">       4915 :         for (i=0; i&lt;model-&gt;n; i++) {</span>
+<span class="lineNum">     244 </span><span class="lineCov">      22178 :                 for (j=0; j&lt;model-&gt;K; j++) {</span>
+<span class="lineNum">     245 </span><span class="lineCov">      17735 :                         q = matrix_get(model-&gt;Q, model-&gt;K, i, j);</span>
+<span class="lineNum">     246 </span><span class="lineCov">      17735 :                         value = 0.0;</span>
+<span class="lineNum">     247 </span><span class="lineCov">      17735 :                         if (q &lt;= -model-&gt;kappa) {</span>
 <span class="lineNum">     248 </span><span class="lineCov">         59 :                                 value = 1.0 - q - (model-&gt;kappa+1.0)/2.0;</span>
-<span class="lineNum">     249 </span><span class="lineCov">      17668 :                         } else if (q &lt;= 1.0) {</span>
-<span class="lineNum">     250 </span><span class="lineCov">      15361 :                                 value = 1.0/(2.0*model-&gt;kappa+2.0)*pow(1.0 - q,</span>
+<span class="lineNum">     249 </span><span class="lineCov">      17676 :                         } else if (q &lt;= 1.0) {</span>
+<span class="lineNum">     250 </span><span class="lineCov">      15363 :                                 value = 1.0/(2.0*model-&gt;kappa+2.0)*pow(1.0 - q,</span>
 <span class="lineNum">     251 </span>            :                                                 2.0);
 <span class="lineNum">     252 </span>            :                         }
-<span class="lineNum">     253 </span><span class="lineCov">      17727 :                         matrix_set(model-&gt;H, model-&gt;K, i, j, value);</span>
+<span class="lineNum">     253 </span><span class="lineCov">      17735 :                         matrix_set(model-&gt;H, model-&gt;K, i, j, value);</span>
 <span class="lineNum">     254 </span>            :                 }
 <span class="lineNum">     255 </span>            :         }
 <span class="lineNum">     256 </span><span class="lineCov">        472 : }</span>
@@ -343,13 +343,13 @@
 <span class="lineNum">     281 </span>            : 
 <span class="lineNum">     282 </span><span class="lineCov">        472 :         gensvm_calculate_ZV(model, data, ZV);</span>
 <span class="lineNum">     283 </span>            : 
-<span class="lineNum">     284 </span><span class="lineCov">       4916 :         for (i=0; i&lt;n; i++) {</span>
-<span class="lineNum">     285 </span><span class="lineCov">      22180 :                 for (j=0; j&lt;K; j++) {</span>
-<span class="lineNum">     286 </span><span class="lineCov">      17736 :                         if (j == (data-&gt;y[i]-1))</span>
-<span class="lineNum">     287 </span><span class="lineCov">       4444 :                                 continue;</span>
-<span class="lineNum">     288 </span><span class="lineCov">      13292 :                         uu_row = &amp;model-&gt;UU[((data-&gt;y[i]-1)*K+j)*(K-1)];</span>
-<span class="lineNum">     289 </span><span class="lineCov">      13292 :                         q = cblas_ddot(K-1, &amp;ZV[i*(K-1)], 1, uu_row, 1);</span>
-<span class="lineNum">     290 </span><span class="lineCov">      13292 :                         matrix_set(model-&gt;Q, K, i, j, q);</span>
+<span class="lineNum">     284 </span><span class="lineCov">       4918 :         for (i=0; i&lt;n; i++) {</span>
+<span class="lineNum">     285 </span><span class="lineCov">      22190 :                 for (j=0; j&lt;K; j++) {</span>
+<span class="lineNum">     286 </span><span class="lineCov">      17744 :                         if (j == (data-&gt;y[i]-1))</span>
+<span class="lineNum">     287 </span><span class="lineCov">       4446 :                                 continue;</span>
+<span class="lineNum">     288 </span><span class="lineCov">      13298 :                         uu_row = &amp;model-&gt;UU[((data-&gt;y[i]-1)*K+j)*(K-1)];</span>
+<span class="lineNum">     289 </span><span class="lineCov">      13298 :                         q = cblas_ddot(K-1, &amp;ZV[i*(K-1)], 1, uu_row, 1);</span>
+<span class="lineNum">     290 </span><span class="lineCov">      13298 :                         matrix_set(model-&gt;Q, K, i, j, q);</span>
 <span class="lineNum">     291 </span>            :                 }
 <span class="lineNum">     292 </span>            :         }
 <span class="lineNum">     293 </span><span class="lineCov">        472 : }</span>

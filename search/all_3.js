@@ -3,6 +3,7 @@ var searchData=
   ['data_5ffile',['data_file',['../structGenModel.html#a37a7a0982b9efa014ed48ff8ced7a013',1,'GenModel']]],
   ['dbg_2eh',['dbg.h',['../dbg_8h.html',1,'']]],
   ['debug',['debug',['../dbg_8h.html#adaa78f48cc5f16815291697278ab4ab5',1,'dbg.h']]],
+  ['degree',['degree',['../structGenData.html#ab7d12351c9405a44fd9ca7499dc89d8b',1,'GenData::degree()'],['../structGenModel.html#a8c1895ad7f175ea06327914059f3cf12',1,'GenModel::degree()'],['../structGenTask.html#a8f4cb5fb4984f9472d3551cc465db74a',1,'GenTask::degree()']]],
   ['degrees',['degrees',['../structGenGrid.html#a90d437750b7ae845d3f2bd9156a8df14',1,'GenGrid']]],
   ['dlamch',['dlamch',['../gensvm__kernel_8h.html#ab8b09d9e218aa2642a9f078b1daa9237',1,'dlamch(char CMACH):&#160;gensvm_kernel.c'],['../gensvm__kernel_8c.html#ab8b09d9e218aa2642a9f078b1daa9237',1,'dlamch(char CMACH):&#160;gensvm_kernel.c']]],
   ['dposv',['dposv',['../gensvm__update_8h.html#a762bfc3b570c8c1007dd0c8d8a27ae0d',1,'dposv(char UPLO, int N, int NRHS, double *A, int LDA, double *B, int LDB):&#160;gensvm_update.c'],['../gensvm__update_8c.html#a762bfc3b570c8c1007dd0c8d8a27ae0d',1,'dposv(char UPLO, int N, int NRHS, double *A, int LDA, double *B, int LDB):&#160;gensvm_update.c']]],

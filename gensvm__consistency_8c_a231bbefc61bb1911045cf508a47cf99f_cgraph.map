@@ -28,9 +28,9 @@
 <area shape="rect" id="node26" href="$gensvm__kernel_8c.html#a004601c881f44348a9b5c5b8c40f29a5" title="Find the (reduced) eigendecomposition of a kernel matrix. " alt="" coords="701,157,919,184"/>
 <area shape="rect" id="node29" href="$gensvm__kernel_8c.html#a4caf1f9ac5d2e0c98ae027ddd46215e4" title="Compute the training factor as part of kernel preprocessing. " alt="" coords="711,208,909,235"/>
 <area shape="rect" id="node30" href="$gensvm__kernel_8c.html#a92cb913a3f8dc089b83fdc98abf4a453" title="Copy the kernelparameters from GenModel to GenData. " alt="" coords="726,259,894,301"/>
-<area shape="rect" id="node22" href="$gensvm__kernel_8c.html#a46cc9302c9eaf45858a807ffdf052ebf" title="Compute the polynomial kernel between two vectors. " alt="" coords="979,401,1164,428"/>
-<area shape="rect" id="node23" href="$gensvm__kernel_8c.html#ac084336bb477beb37723d987457a5b7d" title="Compute the RBF kernel between two vectors. " alt="" coords="984,300,1159,327"/>
-<area shape="rect" id="node24" href="$gensvm__kernel_8c.html#af3f724b2781532a0b14c58a24b49147f" title="Compute the sigmoid kernel between two vectors. " alt="" coords="967,351,1176,377"/>
+<area shape="rect" id="node22" href="$gensvm__kernel_8c.html#a9360b598f7e58911d2c00455306365eb" title="Compute the polynomial kernel between two vectors. " alt="" coords="979,401,1164,428"/>
+<area shape="rect" id="node23" href="$gensvm__kernel_8c.html#a520a66a6afaa320dbcc520b2773f3a2d" title="Compute the RBF kernel between two vectors. " alt="" coords="984,300,1159,327"/>
+<area shape="rect" id="node24" href="$gensvm__kernel_8c.html#a13231a7d4bdae5d54f566329583e58ea" title="Compute the sigmoid kernel between two vectors. " alt="" coords="967,351,1176,377"/>
 <area shape="rect" id="node25" href="$gensvm__print_8h.html#aede5746344fdce99647541101eaa7f06" title="Parse a formatted string and write it to standard error. " alt="" coords="1051,452,1091,479"/>
 <area shape="rect" id="node27" href="$gensvm__kernel_8c.html#ab8b09d9e218aa2642a9f078b1daa9237" title="Determine double precision machine parameters. " alt="" coords="1036,132,1107,159"/>
 <area shape="rect" id="node28" href="$gensvm__kernel_8c.html#a36d0f7deb87d01203d8f3a0a49f6f0f7" title="Compute the eigenvalues and optionally the eigenvectors of a symmetric matrix. " alt="" coords="1037,183,1106,209"/>

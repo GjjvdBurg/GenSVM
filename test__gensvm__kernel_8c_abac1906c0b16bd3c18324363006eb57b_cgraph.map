@@ -6,9 +6,9 @@
 <area shape="rect" id="node12" href="$gensvm__base_8h.html#a98f3696d492bec4485e3f2a42062705f" title="Free allocated GenData struct. " alt="" coords="265,208,408,235"/>
 <area shape="rect" id="node5" href="$gensvm__kernel_8c.html#abe3161aaaef57e62c2c9a6ae71b2127e" title="Compute the kernel crossproduct between two datasets. " alt="" coords="503,81,665,108"/>
 <area shape="rect" id="node10" href="$gensvm__kernel_8c.html#acbe565e8fe856bc208b7d178e54631a2" title="Calculate the matrix product for the testfactor. " alt="" coords="488,132,680,159"/>
-<area shape="rect" id="node6" href="$gensvm__kernel_8c.html#a46cc9302c9eaf45858a807ffdf052ebf" title="Compute the polynomial kernel between two vectors. " alt="" coords="740,5,925,32"/>
-<area shape="rect" id="node7" href="$gensvm__kernel_8c.html#ac084336bb477beb37723d987457a5b7d" title="Compute the RBF kernel between two vectors. " alt="" coords="745,56,920,83"/>
-<area shape="rect" id="node8" href="$gensvm__kernel_8c.html#af3f724b2781532a0b14c58a24b49147f" title="Compute the sigmoid kernel between two vectors. " alt="" coords="728,107,937,133"/>
+<area shape="rect" id="node6" href="$gensvm__kernel_8c.html#a9360b598f7e58911d2c00455306365eb" title="Compute the polynomial kernel between two vectors. " alt="" coords="740,5,925,32"/>
+<area shape="rect" id="node7" href="$gensvm__kernel_8c.html#a520a66a6afaa320dbcc520b2773f3a2d" title="Compute the RBF kernel between two vectors. " alt="" coords="745,56,920,83"/>
+<area shape="rect" id="node8" href="$gensvm__kernel_8c.html#a13231a7d4bdae5d54f566329583e58ea" title="Compute the sigmoid kernel between two vectors. " alt="" coords="728,107,937,133"/>
 <area shape="rect" id="node9" href="$gensvm__print_8h.html#aede5746344fdce99647541101eaa7f06" title="Parse a formatted string and write it to standard error. " alt="" coords="813,157,853,184"/>
 <area shape="rect" id="node13" href="$gensvm__sparse_8h.html#a1bd9399ffc0b5e4d32ac160eb3143864" title="Free an allocated GenSparse structure. " alt="" coords="505,208,663,235"/>
 </map>
