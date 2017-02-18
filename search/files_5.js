@@ -1,29 +1,4 @@
 var searchData=
 [
-  ['test_5fgensvm_5fbase_2ec',['test_gensvm_base.c',['../test__gensvm__base_8c.html',1,'']]],
-  ['test_5fgensvm_5fchecks_2ec',['test_gensvm_checks.c',['../test__gensvm__checks_8c.html',1,'']]],
-  ['test_5fgensvm_5fcmdarg_2ec',['test_gensvm_cmdarg.c',['../test__gensvm__cmdarg_8c.html',1,'']]],
-  ['test_5fgensvm_5fconsistency_2ec',['test_gensvm_consistency.c',['../test__gensvm__consistency_8c.html',1,'']]],
-  ['test_5fgensvm_5fcopy_2ec',['test_gensvm_copy.c',['../test__gensvm__copy_8c.html',1,'']]],
-  ['test_5fgensvm_5fcross_5fvalidation_2ec',['test_gensvm_cross_validation.c',['../test__gensvm__cross__validation_8c.html',1,'']]],
-  ['test_5fgensvm_5fcv_5futil_2ec',['test_gensvm_cv_util.c',['../test__gensvm__cv__util_8c.html',1,'']]],
-  ['test_5fgensvm_5fdebug_2ec',['test_gensvm_debug.c',['../test__gensvm__debug_8c.html',1,'']]],
-  ['test_5fgensvm_5fgrid_2ec',['test_gensvm_grid.c',['../test__gensvm__grid_8c.html',1,'']]],
-  ['test_5fgensvm_5fgridsearch_2ec',['test_gensvm_gridsearch.c',['../test__gensvm__gridsearch_8c.html',1,'']]],
-  ['test_5fgensvm_5finit_2ec',['test_gensvm_init.c',['../test__gensvm__init_8c.html',1,'']]],
-  ['test_5fgensvm_5fio_2ec',['test_gensvm_io.c',['../test__gensvm__io_8c.html',1,'']]],
-  ['test_5fgensvm_5fkernel_2ec',['test_gensvm_kernel.c',['../test__gensvm__kernel_8c.html',1,'']]],
-  ['test_5fgensvm_5foptimize_2ec',['test_gensvm_optimize.c',['../test__gensvm__optimize_8c.html',1,'']]],
-  ['test_5fgensvm_5fpredict_2ec',['test_gensvm_predict.c',['../test__gensvm__predict_8c.html',1,'']]],
-  ['test_5fgensvm_5fprint_2ec',['test_gensvm_print.c',['../test__gensvm__print_8c.html',1,'']]],
-  ['test_5fgensvm_5fqueue_2ec',['test_gensvm_queue.c',['../test__gensvm__queue_8c.html',1,'']]],
-  ['test_5fgensvm_5fsimplex_2ec',['test_gensvm_simplex.c',['../test__gensvm__simplex_8c.html',1,'']]],
-  ['test_5fgensvm_5fsparse_2ec',['test_gensvm_sparse.c',['../test__gensvm__sparse_8c.html',1,'']]],
-  ['test_5fgensvm_5fstrutil_2ec',['test_gensvm_strutil.c',['../test__gensvm__strutil_8c.html',1,'']]],
-  ['test_5fgensvm_5fsv_2ec',['test_gensvm_sv.c',['../test__gensvm__sv_8c.html',1,'']]],
-  ['test_5fgensvm_5ftask_2ec',['test_gensvm_task.c',['../test__gensvm__task_8c.html',1,'']]],
-  ['test_5fgensvm_5ftimer_2ec',['test_gensvm_timer.c',['../test__gensvm__timer_8c.html',1,'']]],
-  ['test_5fgensvm_5ftrain_2ec',['test_gensvm_train.c',['../test__gensvm__train_8c.html',1,'']]],
-  ['test_5fgensvm_5fupdate_2ec',['test_gensvm_update.c',['../test__gensvm__update_8c.html',1,'']]],
-  ['test_5fgensvm_5fzv_2ec',['test_gensvm_zv.c',['../test__gensvm__zv_8c.html',1,'']]]
+  ['specifications_2edox',['specifications.dox',['../specifications_8dox.html',1,'']]]
 ];

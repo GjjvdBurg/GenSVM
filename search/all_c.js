@@ -7,6 +7,7 @@ var searchData=
   ['matrix_5fget',['matrix_get',['../gensvm__globals_8h.html#a647406850fa178d8787d9ee3901c7df0',1,'gensvm_globals.h']]],
   ['matrix_5fmul',['matrix_mul',['../gensvm__globals_8h.html#a496bad43eb8a3aac0ecf017aeee77832',1,'gensvm_globals.h']]],
   ['matrix_5fset',['matrix_set',['../gensvm__globals_8h.html#a566e6bb4294bfa252bd5043d5116b921',1,'gensvm_globals.h']]],
+  ['max_5fiter',['max_iter',['../structGenModel.html#ad9c87868a66776308489227c958b8daf',1,'GenModel::max_iter()'],['../structGenTask.html#a7c36a183aa7831c64749c12b4575fa9c',1,'GenTask::max_iter()']]],
   ['maximum',['maximum',['../gensvm__globals_8h.html#a16d3e1e07cc8de5fb046838a0bb4585b',1,'gensvm_globals.h']]],
   ['memset',['Memset',['../gensvm__memory_8h.html#a1b21f717efbbd18bd9ab4c448f9d32ed',1,'gensvm_memory.h']]],
   ['min_5fmax_5fdefine',['MIN_MAX_DEFINE',['../gensvm__globals_8h.html#aa4f5f19120bed2feb0aa0f492ecccbe6',1,'gensvm_globals.h']]],

@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['dbg_2eh',['dbg.h',['../dbg_8h.html',1,'']]]
+  ['changelog_2emd',['CHANGELOG.md',['../CHANGELOG_8md.html',1,'']]]
 ];

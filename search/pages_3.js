@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['libsvm_2fsvmlight_20data_20file_20specification',['LibSVM/SVMlight Data File Specification',['../spec_libsvm_data_file.html',1,'']]]
+  ['implementation_20details_20for_20majorization_20steps',['Implementation details for majorization steps',['../update_math.html',1,'']]]
 ];

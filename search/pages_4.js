@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['model_20file_20specification',['Model File Specification',['../spec_model_file.html',1,'']]]
+  ['libsvm_2fsvmlight_20data_20file_20specification',['LibSVM/SVMlight Data File Specification',['../spec_libsvm_data_file.html',1,'']]]
 ];

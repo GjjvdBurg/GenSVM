@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['implementation_20details_20for_20majorization_20steps',['Implementation details for majorization steps',['../update_math.html',1,'']]]
+  ['gensvm_20c_20package',['GenSVM C Package',['../index.html',1,'']]],
+  ['grid_20input_20file_20specification',['Grid Input File Specification',['../spec_grid_file.html',1,'']]]
 ];
