@@ -35,7 +35,7 @@
  *
  * @returns 	initialized GenTask
  */
-struct GenTask *gensvm_init_task()
+struct GenTask *gensvm_init_task(void)
 {
 	struct GenTask *t = Malloc(struct GenTask, 1);
 

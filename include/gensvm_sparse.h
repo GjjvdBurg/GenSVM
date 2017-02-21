@@ -68,7 +68,7 @@ struct GenSparse {
 	///< column indices, should be of length nnz
 };
 
-struct GenSparse *gensvm_init_sparse();
+struct GenSparse *gensvm_init_sparse(void);
 void gensvm_free_sparse(struct GenSparse *sp);
 long gensvm_count_nnz(double *A, long rows, long cols);
 bool gensvm_nnz_comparison(long nnz, long rows, long cols);

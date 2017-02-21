@@ -115,7 +115,7 @@ struct GenGrid {
 };
 
 // function declarations
-struct GenGrid *gensvm_init_grid();
+struct GenGrid *gensvm_init_grid(void);
 void gensvm_free_grid(struct GenGrid *grid);
 
 #endif

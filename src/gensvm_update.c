@@ -536,7 +536,6 @@ void gensvm_get_ZAZ_ZB_sparse(struct GenModel *model, struct GenData *data,
 	}
 }
 
-
 /**
  * @brief Wrapper around calculation of Z'*A*Z and Z'*B for sparse and dense
  *

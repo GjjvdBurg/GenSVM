@@ -52,7 +52,6 @@ void gensvm_kernel_copy_kernelparam_to_data(struct GenModel *model,
 	data->degree = model->degree;
 }
 
-
 /**
  * @brief Do the preprocessing steps needed to perform kernel GenSVM
  *

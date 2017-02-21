@@ -173,12 +173,12 @@ struct GenWork {
 };
 
 // function declarations
-struct GenModel *gensvm_init_model();
+struct GenModel *gensvm_init_model(void);
 void gensvm_allocate_model(struct GenModel *model);
 void gensvm_reallocate_model(struct GenModel *model, long n, long m);
 void gensvm_free_model(struct GenModel *model);
 
-struct GenData *gensvm_init_data();
+struct GenData *gensvm_init_data(void);
 void gensvm_free_data(struct GenData *data);
 
 struct GenWork *gensvm_init_work(struct GenModel *model);

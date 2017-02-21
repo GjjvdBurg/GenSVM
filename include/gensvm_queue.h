@@ -54,7 +54,7 @@ struct GenQueue {
 };
 
 // function declarations
-struct GenQueue *gensvm_init_queue();
+struct GenQueue *gensvm_init_queue(void);
 void gensvm_free_queue(struct GenQueue *q);
 struct GenTask *get_next_task(struct GenQueue *q);
 

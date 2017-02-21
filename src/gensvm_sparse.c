@@ -35,7 +35,7 @@
  *
  * @return 	initialized GenSparse instance
  */
-struct GenSparse *gensvm_init_sparse()
+struct GenSparse *gensvm_init_sparse(void)
 {
 	struct GenSparse *sp = Malloc(struct GenSparse, 1);
 	sp->nnz = 0;
@@ -131,7 +131,6 @@ bool gensvm_could_sparse(double *A, long rows, long cols)
 	long nnz = gensvm_count_nnz(A, rows, cols);
 	return gensvm_nnz_comparison(nnz, rows, cols);
 }
-
 
 /**
  * @brief Convert a dense matrix to a GenSparse structure if advantageous

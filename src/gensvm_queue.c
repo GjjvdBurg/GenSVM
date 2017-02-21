@@ -35,7 +35,7 @@
  *
  * @returns 	initialized GenQueue
  */
-struct GenQueue *gensvm_init_queue()
+struct GenQueue *gensvm_init_queue(void)
 {
 	struct GenQueue *q = Malloc(struct GenQueue, 1);
 

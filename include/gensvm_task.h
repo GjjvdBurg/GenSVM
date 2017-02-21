@@ -85,7 +85,7 @@ struct GenTask {
 	///< performance after cross validation
 };
 
-struct GenTask *gensvm_init_task();
+struct GenTask *gensvm_init_task(void);
 struct GenTask *gensvm_copy_task(struct GenTask *t);
 void gensvm_free_task(struct GenTask *t);
 void gensvm_task_to_model(struct GenTask *task, struct GenModel *model);

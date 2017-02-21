@@ -42,7 +42,7 @@
  * @returns 	initialized GenData
  *
  */
-struct GenData *gensvm_init_data()
+struct GenData *gensvm_init_data(void)
 {
 	struct GenData *data = Malloc(struct GenData, 1);
 	data->Sigma = NULL;
@@ -99,7 +99,7 @@ void gensvm_free_data(struct GenData *data)
  *
  * @returns 	initialized GenModel
  */
-struct GenModel *gensvm_init_model()
+struct GenModel *gensvm_init_model(void)
 {
 	struct GenModel *model = Malloc(struct GenModel, 1);
 

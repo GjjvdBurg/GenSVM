@@ -41,7 +41,7 @@
  * @return  	initialized GenGrid struct
  *
  */
-struct GenGrid *gensvm_init_grid()
+struct GenGrid *gensvm_init_grid(void)
 {
 	struct GenGrid *grid = Malloc(struct GenGrid, 1);
 
