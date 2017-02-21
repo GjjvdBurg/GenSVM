@@ -1,6 +1,6 @@
 <map id="test_gensvm_get_update" name="test_gensvm_get_update">
-<area shape="rect" id="node2" href="$gensvm__base_8h.html#a96f35734dcba63d95e08addd2dabce3d" title="Initialize a GenModel structure. " alt="" coords="262,5,413,32"/>
-<area shape="rect" id="node3" href="$gensvm__base_8h.html#a2123ffe5f44db584421e139be7d31b6c" title="Initialize a GenData structure. " alt="" coords="268,56,407,83"/>
+<area shape="rect" id="node2" href="$gensvm__base_8h.html#a974512c4a2d61a39154cb34b19cefc3a" title="Initialize a GenModel structure. " alt="" coords="262,5,413,32"/>
+<area shape="rect" id="node3" href="$gensvm__base_8h.html#a1dfbbfcaab181c1f0d04d9d24a4807ea" title="Initialize a GenData structure. " alt="" coords="268,56,407,83"/>
 <area shape="rect" id="node4" href="$gensvm__base_8h.html#a52120d849ff52751c7995c24dfa50f00" title="Initialize the workspace structure. " alt="" coords="267,107,408,133"/>
 <area shape="rect" id="node5" href="$gensvm__base_8h.html#a3b6c01ec77b5726843f7dd6c68593f6a" title="Allocate memory for a GenModel. " alt="" coords="247,157,428,184"/>
 <area shape="rect" id="node6" href="$gensvm__init_8h.html#a0cb86a00bfa52b2ebc86e2b98687928c" title="Initialize instance weights. " alt="" coords="240,360,435,387"/>

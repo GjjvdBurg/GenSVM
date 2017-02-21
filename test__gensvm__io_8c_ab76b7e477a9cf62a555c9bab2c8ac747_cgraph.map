@@ -1,5 +1,5 @@
 <map id="test_gensvm_write_model" name="test_gensvm_write_model">
-<area shape="rect" id="node2" href="$gensvm__base_8h.html#a96f35734dcba63d95e08addd2dabce3d" title="Initialize a GenModel structure. " alt="" coords="254,5,405,32"/>
+<area shape="rect" id="node2" href="$gensvm__base_8h.html#a974512c4a2d61a39154cb34b19cefc3a" title="Initialize a GenModel structure. " alt="" coords="254,5,405,32"/>
 <area shape="rect" id="node3" href="$gensvm__io_8h.html#ad8ba06570122de73779a64e90dccf108" title="Write model to file. " alt="" coords="248,56,411,83"/>
 <area shape="rect" id="node6" href="$gensvm__base_8h.html#a0cf72f34706ed286c922ce74ee11f0be" title="Free allocated GenModel struct. " alt="" coords="252,107,407,133"/>
 <area shape="rect" id="node4" href="$gensvm__print_8h.html#aede5746344fdce99647541101eaa7f06" title="Parse a formatted string and write it to standard error. " alt="" coords="661,56,701,83"/>

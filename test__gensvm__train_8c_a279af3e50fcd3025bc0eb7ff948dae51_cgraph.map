@@ -1,6 +1,6 @@
 <map id="test_gensvm_train_seed_kernel" name="test_gensvm_train_seed_kernel">
-<area shape="rect" id="node2" href="$gensvm__base_8h.html#a96f35734dcba63d95e08addd2dabce3d" title="Initialize a GenModel structure. " alt="" coords="237,173,387,200"/>
-<area shape="rect" id="node3" href="$gensvm__base_8h.html#a2123ffe5f44db584421e139be7d31b6c" title="Initialize a GenData structure. " alt="" coords="243,224,381,251"/>
+<area shape="rect" id="node2" href="$gensvm__base_8h.html#a974512c4a2d61a39154cb34b19cefc3a" title="Initialize a GenModel structure. " alt="" coords="237,173,387,200"/>
+<area shape="rect" id="node3" href="$gensvm__base_8h.html#a1dfbbfcaab181c1f0d04d9d24a4807ea" title="Initialize a GenData structure. " alt="" coords="243,224,381,251"/>
 <area shape="rect" id="node4" href="$gensvm__train_8h.html#a56a1e1d4c735d878b689e2997fdc236c" title="Utility function for training a GenSVM model. " alt="" coords="257,275,367,301"/>
 <area shape="rect" id="node46" href="$gensvm__base_8h.html#a0cf72f34706ed286c922ce74ee11f0be" title="Free allocated GenModel struct. " alt="" coords="235,325,389,352"/>
 <area shape="rect" id="node47" href="$gensvm__base_8h.html#a98f3696d492bec4485e3f2a42062705f" title="Free allocated GenData struct. " alt="" coords="241,452,383,479"/>

@@ -140,7 +140,18 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Copy model parameters between two <a class="el" href="structGenModel.html" title="A structure to represent a single GenSVM model. ">GenModel</a> structs. </p>
-<p>The parameters copied are <a class="el" href="structGenModel.html#ad0bdea8b762a642ac422bf5272e0593c" title="which weights to use (1 = unit, 2 = group) ">GenModel::weight_idx</a>, <a class="el" href="structGenModel.html#aee292fba96dcb9893f27b4eac1a00374" title="stopping criterion for the IM algorithm. ">GenModel::epsilon</a>, <a class="el" href="structGenModel.html#a5959721cc6fd6aa5bd7d688cecca6e21" title="parameter for the L-p norm in the loss function ">GenModel::p</a>, <a class="el" href="structGenModel.html#a8b2133a50ab35beb1861f2ba3b17cf73" title="parameter for the Huber hinge function ">GenModel::kappa</a>, and <a class="el" href="structGenModel.html#aaecf006ba448c5f6cba27a1fe95527fa" title="regularization parameter in the loss function ">GenModel::lambda</a>.</p>
+<p>The parameters copied are:</p><ul>
+<li><a class="el" href="structGenModel.html#ad0bdea8b762a642ac422bf5272e0593c" title="which weights to use (1 = unit, 2 = group) ">GenModel::weight_idx</a></li>
+<li><a class="el" href="structGenModel.html#aee292fba96dcb9893f27b4eac1a00374" title="stopping criterion for the IM algorithm. ">GenModel::epsilon</a></li>
+<li><a class="el" href="structGenModel.html#a5959721cc6fd6aa5bd7d688cecca6e21" title="parameter for the L-p norm in the loss function ">GenModel::p</a></li>
+<li><a class="el" href="structGenModel.html#a8b2133a50ab35beb1861f2ba3b17cf73" title="parameter for the Huber hinge function ">GenModel::kappa</a></li>
+<li><a class="el" href="structGenModel.html#aaecf006ba448c5f6cba27a1fe95527fa" title="regularization parameter in the loss function ">GenModel::lambda</a></li>
+<li><a class="el" href="structGenModel.html#aa46df9c4c83ba7c772a5cc2e9f55012b" title="type of kernel used in the model ">GenModel::kerneltype</a></li>
+<li><a class="el" href="structGenModel.html#aa798ddc7a6b5f534bc3e34d14ef7f13e" title="kernel parameter for RBF, poly, and sigmoid ">GenModel::gamma</a></li>
+<li><a class="el" href="structGenModel.html#aa516ff1d694d62111f12d149c057b775" title="kernel parameter for poly and sigmoid ">GenModel::coef</a></li>
+<li><a class="el" href="structGenModel.html#a8c1895ad7f175ea06327914059f3cf12" title="kernel parameter for poly ">GenModel::degree</a></li>
+<li><a class="el" href="structGenModel.html#ad9c87868a66776308489227c958b8daf" title="maximum number of iterations of the algorithm ">GenModel::max_iter</a></li>
+</ul>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">from</td><td><a class="el" href="structGenModel.html" title="A structure to represent a single GenSVM model. ">GenModel</a> to copy parameters from </td></tr>
@@ -149,14 +160,14 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="gensvm__copy_8c_source.html#l00039">39</a> of file <a class="el" href="gensvm__copy_8c_source.html">gensvm_copy.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="gensvm__copy_8c_source.html#l00048">48</a> of file <a class="el" href="gensvm__copy_8c_source.html">gensvm_copy.c</a>.</p>
 
 </div>
 </div>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Fri Feb 17 2017 19:16:13 for GenSVM by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Tue Feb 21 2017 18:44:21 for GenSVM by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.13
 </small></address>

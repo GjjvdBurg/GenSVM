@@ -1,5 +1,5 @@
 <map id="test_copy_model_sigmoid_1" name="test_copy_model_sigmoid_1">
-<area shape="rect" id="node2" href="$gensvm__base_8h.html#a96f35734dcba63d95e08addd2dabce3d" title="Initialize a GenModel structure. " alt="" coords="265,5,415,32"/>
+<area shape="rect" id="node2" href="$gensvm__base_8h.html#a974512c4a2d61a39154cb34b19cefc3a" title="Initialize a GenModel structure. " alt="" coords="265,5,415,32"/>
 <area shape="rect" id="node3" href="$gensvm__copy_8h.html#abcc682229f6973ebb304104f76873f2b" title="Copy model parameters between two GenModel structs. " alt="" coords="260,56,420,83"/>
 <area shape="rect" id="node4" href="$gensvm__base_8h.html#a0cf72f34706ed286c922ce74ee11f0be" title="Free allocated GenModel struct. " alt="" coords="263,107,417,133"/>
 </map>

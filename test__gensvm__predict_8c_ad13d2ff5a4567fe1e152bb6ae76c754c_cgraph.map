@@ -1,5 +1,5 @@
 <map id="test_gensvm_prediction_perf" name="test_gensvm_prediction_perf">
-<area shape="rect" id="node2" href="$gensvm__base_8h.html#a2123ffe5f44db584421e139be7d31b6c" title="Initialize a GenData structure. " alt="" coords="284,5,423,32"/>
+<area shape="rect" id="node2" href="$gensvm__base_8h.html#a1dfbbfcaab181c1f0d04d9d24a4807ea" title="Initialize a GenData structure. " alt="" coords="284,5,423,32"/>
 <area shape="rect" id="node3" href="$gensvm__predict_8h.html#ac9f09ed40eaede14f2a701321d65620b" title="Calculate the predictive performance (percentage correct) " alt="" coords="264,56,443,83"/>
 <area shape="rect" id="node4" href="$gensvm__base_8h.html#a98f3696d492bec4485e3f2a42062705f" title="Free allocated GenData struct. " alt="" coords="282,107,425,133"/>
 <area shape="rect" id="node5" href="$gensvm__sparse_8h.html#a1bd9399ffc0b5e4d32ac160eb3143864" title="Free an allocated GenSparse structure. " alt="" coords="491,107,648,133"/>

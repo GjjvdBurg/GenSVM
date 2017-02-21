@@ -1,6 +1,6 @@
 <map id="test_gensvm_calculate_errors" name="test_gensvm_calculate_errors">
-<area shape="rect" id="node2" href="$gensvm__base_8h.html#a96f35734dcba63d95e08addd2dabce3d" title="Initialize a GenModel structure. " alt="" coords="243,5,393,32"/>
-<area shape="rect" id="node3" href="$gensvm__base_8h.html#a2123ffe5f44db584421e139be7d31b6c" title="Initialize a GenData structure. " alt="" coords="249,56,387,83"/>
+<area shape="rect" id="node2" href="$gensvm__base_8h.html#a974512c4a2d61a39154cb34b19cefc3a" title="Initialize a GenModel structure. " alt="" coords="243,5,393,32"/>
+<area shape="rect" id="node3" href="$gensvm__base_8h.html#a1dfbbfcaab181c1f0d04d9d24a4807ea" title="Initialize a GenData structure. " alt="" coords="249,56,387,83"/>
 <area shape="rect" id="node4" href="$gensvm__base_8h.html#a3b6c01ec77b5726843f7dd6c68593f6a" title="Allocate memory for a GenModel. " alt="" coords="227,107,409,133"/>
 <area shape="rect" id="node5" href="$gensvm__simplex_8h.html#ada27d56b6de435551330c8300e9089ea" title="Generate matrix of simplex vertex coordinates. " alt="" coords="251,157,385,184"/>
 <area shape="rect" id="node6" href="$gensvm__simplex_8h.html#a99b48c0294e8275dd092fc5cf947bf0f" title="Generate the simplex difference matrix. " alt="" coords="237,208,399,235"/>

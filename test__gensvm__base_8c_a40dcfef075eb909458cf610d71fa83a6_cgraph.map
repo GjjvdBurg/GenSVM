@@ -1,5 +1,5 @@
 <map id="test_reallocate_free_model" name="test_reallocate_free_model">
-<area shape="rect" id="node2" href="$gensvm__base_8h.html#a96f35734dcba63d95e08addd2dabce3d" title="Initialize a GenModel structure. " alt="" coords="227,5,378,32"/>
+<area shape="rect" id="node2" href="$gensvm__base_8h.html#a974512c4a2d61a39154cb34b19cefc3a" title="Initialize a GenModel structure. " alt="" coords="227,5,378,32"/>
 <area shape="rect" id="node3" href="$gensvm__base_8h.html#a3b6c01ec77b5726843f7dd6c68593f6a" title="Allocate memory for a GenModel. " alt="" coords="212,56,393,83"/>
 <area shape="rect" id="node4" href="$gensvm__base_8h.html#a27542d9e799eb0e6f3cfdfa0934412fc" title="Reallocate memory for GenModel. " alt="" coords="205,107,400,133"/>
 <area shape="rect" id="node5" href="$gensvm__base_8h.html#a0cf72f34706ed286c922ce74ee11f0be" title="Free allocated GenModel struct. " alt="" coords="225,157,380,184"/>

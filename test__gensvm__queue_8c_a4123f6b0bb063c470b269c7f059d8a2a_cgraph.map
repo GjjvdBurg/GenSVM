@@ -1,6 +1,6 @@
 <map id="test_get_next_task" name="test_get_next_task">
-<area shape="rect" id="node2" href="$gensvm__queue_8h.html#a85bebeae36b61f1ae570e36c9edc6233" title="Initialize a GenQueue structure. " alt="" coords="203,5,352,32"/>
-<area shape="rect" id="node3" href="$gensvm__task_8h.html#a138c30cecb1cf46a002cd6581328a33c" title="Initialize a GenTask structure. " alt="" coords="209,56,346,83"/>
+<area shape="rect" id="node2" href="$gensvm__queue_8h.html#a42224204589d0e1fa5810a05e1b95751" title="Initialize a GenQueue structure. " alt="" coords="203,5,352,32"/>
+<area shape="rect" id="node3" href="$gensvm__task_8h.html#a5d23d747d99f4861dbeb085b2fa318e4" title="Initialize a GenTask structure. " alt="" coords="209,56,346,83"/>
 <area shape="rect" id="node4" href="$gensvm__queue_8h.html#aaeee41d004f0cc2372f7e91f5ce0aaaa" title="Get new GenTask from GenQueue. " alt="" coords="220,107,335,133"/>
 <area shape="rect" id="node5" href="$gensvm__queue_8h.html#a8e3e8058ceff7af13f845d39dcd4d3b8" title="Free the GenQueue struct. " alt="" coords="200,157,355,184"/>
 <area shape="rect" id="node6" href="$gensvm__task_8h.html#aa22ce798ccd7bba8c6e7861d92e51b0e" title="Free the GenTask struct. " alt="" coords="403,157,545,184"/>

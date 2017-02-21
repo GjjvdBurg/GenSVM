@@ -1,4 +1,4 @@
 <map id="test_init_free_task" name="test_init_free_task">
-<area shape="rect" id="node2" href="$gensvm__task_8h.html#a138c30cecb1cf46a002cd6581328a33c" title="Initialize a GenTask structure. " alt="" coords="199,5,336,32"/>
+<area shape="rect" id="node2" href="$gensvm__task_8h.html#a5d23d747d99f4861dbeb085b2fa318e4" title="Initialize a GenTask structure. " alt="" coords="199,5,336,32"/>
 <area shape="rect" id="node3" href="$gensvm__task_8h.html#aa22ce798ccd7bba8c6e7861d92e51b0e" title="Free the GenTask struct. " alt="" coords="196,56,339,83"/>
 </map>

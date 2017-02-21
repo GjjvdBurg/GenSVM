@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2017-02-17 19:16:12</td>
+            <td class="headerValue">2017-02-21 18:44:20</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">11</td>
@@ -598,115 +598,114 @@
 <span class="lineNum">     536 </span>            :         }
 <span class="lineNum">     537 </span><span class="lineCov">          1 : }</span>
 <span class="lineNum">     538 </span>            : 
-<span class="lineNum">     539 </span>            : 
-<span class="lineNum">     540 </span>            : /**
-<span class="lineNum">     541 </span>            :  * @brief Wrapper around calculation of Z'*A*Z and Z'*B for sparse and dense
-<span class="lineNum">     542 </span>            :  *
-<span class="lineNum">     543 </span>            :  * @details
-<span class="lineNum">     544 </span>            :  * This is a wrapper around gensvm_get_ZAZ_ZB_dense() and 
-<span class="lineNum">     545 </span>            :  * gensvm_get_ZAZ_ZB_sparse(). See the documentation of those functions for 
-<span class="lineNum">     546 </span>            :  * more info.
-<span class="lineNum">     547 </span>            :  *
-<span class="lineNum">     548 </span>            :  * @param[in]    model  a GenModel struct
-<span class="lineNum">     549 </span>            :  * @param[in]    data   a GenData struct
-<span class="lineNum">     550 </span>            :  * @param[in]    work   a GenWork struct
-<a name="551"><span class="lineNum">     551 </span>            :  *</a>
-<span class="lineNum">     552 </span>            :  */
-<span class="lineNum">     553 </span><span class="lineCov">        466 : void gensvm_get_ZAZ_ZB(struct GenModel *model, struct GenData *data,</span>
-<span class="lineNum">     554 </span>            :                 struct GenWork *work)
-<span class="lineNum">     555 </span>            : {
-<span class="lineNum">     556 </span><span class="lineCov">        466 :         gensvm_reset_work(work);</span>
-<span class="lineNum">     557 </span>            : 
-<span class="lineNum">     558 </span><span class="lineCov">        466 :         if (data-&gt;Z == NULL)</span>
-<span class="lineNum">     559 </span><span class="lineCov">          1 :                 gensvm_get_ZAZ_ZB_sparse(model, data, work);</span>
-<span class="lineNum">     560 </span>            :         else
-<span class="lineNum">     561 </span><span class="lineCov">        465 :                 gensvm_get_ZAZ_ZB_dense(model, data, work);</span>
-<span class="lineNum">     562 </span><span class="lineCov">        466 : }</span>
-<span class="lineNum">     563 </span>            : 
-<span class="lineNum">     564 </span>            : /**
-<span class="lineNum">     565 </span>            :  * @brief Solve AX = B where A is symmetric positive definite.
-<span class="lineNum">     566 </span>            :  *
-<span class="lineNum">     567 </span>            :  * @details
-<span class="lineNum">     568 </span>            :  * Solve a linear system of equations AX = B where A is symmetric positive
-<span class="lineNum">     569 </span>            :  * definite. This function is a wrapper for the external  LAPACK routine
-<span class="lineNum">     570 </span>            :  * dposv.
-<span class="lineNum">     571 </span>            :  *
-<span class="lineNum">     572 </span>            :  * @param[in]           UPLO    which triangle of A is stored
-<span class="lineNum">     573 </span>            :  * @param[in]           N       order of A
-<span class="lineNum">     574 </span>            :  * @param[in]           NRHS    number of columns of B
-<span class="lineNum">     575 </span>            :  * @param[in,out]       A       double precision array of size (LDA, N). On
-<span class="lineNum">     576 </span>            :  *                              exit contains the upper or lower factor of the
-<span class="lineNum">     577 </span>            :  *                              Cholesky factorization of A.
-<span class="lineNum">     578 </span>            :  * @param[in]           LDA     leading dimension of A
-<span class="lineNum">     579 </span>            :  * @param[in,out]       B       double precision array of size (LDB, NRHS). On
-<span class="lineNum">     580 </span>            :  *                              exit contains the N-by-NRHS solution matrix X.
-<span class="lineNum">     581 </span>            :  * @param[in]           LDB     the leading dimension of B
-<span class="lineNum">     582 </span>            :  * @returns                     info parameter which contains the status of the
-<span class="lineNum">     583 </span>            :  *                              computation:
-<span class="lineNum">     584 </span>            :  *                                      - =0:   success
-<span class="lineNum">     585 </span>            :  *                                      - &lt;0:        if -i, the i-th argument had
-<span class="lineNum">     586 </span>            :  *                                              an illegal value
-<span class="lineNum">     587 </span>            :  *                                      - &gt;0:        if i, the leading minor of A
-<span class="lineNum">     588 </span>            :  *                                              was not positive definite
-<span class="lineNum">     589 </span>            :  *
-<span class="lineNum">     590 </span>            :  * See the LAPACK documentation at:
-<a name="591"><span class="lineNum">     591 </span>            :  * http://www.netlib.org/lapack/explore-html/dc/de9/group__double_p_osolve.html</a>
-<span class="lineNum">     592 </span>            :  */
-<span class="lineNum">     593 </span><span class="lineCov">        467 : int dposv(char UPLO, int N, int NRHS, double *A, int LDA, double *B,</span>
-<span class="lineNum">     594 </span>            :                 int LDB)
-<span class="lineNum">     595 </span>            : {
-<span class="lineNum">     596 </span>            :         extern void dposv_(char *UPLO, int *Np, int *NRHSp, double *A,
-<span class="lineNum">     597 </span>            :                         int *LDAp, double *B, int *LDBp, int *INFOp);
-<span class="lineNum">     598 </span>            :         int INFO;
-<span class="lineNum">     599 </span><span class="lineCov">        467 :         dposv_(&amp;UPLO, &amp;N, &amp;NRHS, A, &amp;LDA, B, &amp;LDB, &amp;INFO);</span>
-<span class="lineNum">     600 </span><span class="lineCov">        467 :         return INFO;</span>
-<span class="lineNum">     601 </span>            : }
-<span class="lineNum">     602 </span>            : 
-<span class="lineNum">     603 </span>            : /**
-<span class="lineNum">     604 </span>            :  * @brief Solve a system of equations AX = B where A is symmetric.
-<span class="lineNum">     605 </span>            :  *
-<span class="lineNum">     606 </span>            :  * @details
-<span class="lineNum">     607 </span>            :  * Solve a linear system of equations AX = B where A is symmetric. This
-<span class="lineNum">     608 </span>            :  * function is a wrapper for the external LAPACK routine dsysv.
-<span class="lineNum">     609 </span>            :  *
-<span class="lineNum">     610 </span>            :  * @param[in]           UPLO    which triangle of A is stored
-<span class="lineNum">     611 </span>            :  * @param[in]           N       order of A
-<span class="lineNum">     612 </span>            :  * @param[in]           NRHS    number of columns of B
-<span class="lineNum">     613 </span>            :  * @param[in,out]       A       double precision array of size (LDA, N). On
-<span class="lineNum">     614 </span>            :  *                              exit contains the block diagonal matrix D and
-<span class="lineNum">     615 </span>            :  *                              the multipliers used to obtain the factor U or
-<span class="lineNum">     616 </span>            :  *                              L from the factorization A = U*D*U**T or
-<span class="lineNum">     617 </span>            :  *                              A = L*D*L**T.
-<span class="lineNum">     618 </span>            :  * @param[in]           LDA     leading dimension of A
-<span class="lineNum">     619 </span>            :  * @param[in]           IPIV    integer array containing the details of D
-<span class="lineNum">     620 </span>            :  * @param[in,out]       B       double precision array of size (LDB, NRHS). On
-<span class="lineNum">     621 </span>            :  *                              exit contains the N-by-NRHS matrix X
-<span class="lineNum">     622 </span>            :  * @param[in]           LDB     leading dimension of B
-<span class="lineNum">     623 </span>            :  * @param[out]          WORK    double precision array of size max(1,LWORK). On
-<span class="lineNum">     624 </span>            :  *                              exit, WORK(1) contains the optimal LWORK
-<span class="lineNum">     625 </span>            :  * @param[in]           LWORK   the length of WORK, can be used for determining
-<span class="lineNum">     626 </span>            :  *                              the optimal blocksize for dsystrf.
-<span class="lineNum">     627 </span>            :  * @returns                     info parameter which contains the status of the
-<span class="lineNum">     628 </span>            :  *                              computation:
-<span class="lineNum">     629 </span>            :  *                                      - =0:   success
-<span class="lineNum">     630 </span>            :  *                                      - &lt;0:        if -i, the i-th argument had an
-<span class="lineNum">     631 </span>            :  *                                              illegal value
-<span class="lineNum">     632 </span>            :  *                                      - &gt;0:        if i, D(i, i) is exactly zero,
-<span class="lineNum">     633 </span>            :  *                                              no solution can be computed.
-<span class="lineNum">     634 </span>            :  *
-<span class="lineNum">     635 </span>            :  * See the LAPACK documentation at:
-<a name="636"><span class="lineNum">     636 </span>            :  * http://www.netlib.org/lapack/explore-html/d6/d0e/group__double_s_ysolve.html</a>
-<span class="lineNum">     637 </span>            :  */
-<span class="lineNum">     638 </span><span class="lineCov">          2 : int dsysv(char UPLO, int N, int NRHS, double *A, int LDA, int *IPIV,</span>
-<span class="lineNum">     639 </span>            :                 double *B, int LDB, double *WORK, int LWORK)
-<span class="lineNum">     640 </span>            : {
-<span class="lineNum">     641 </span>            :         extern void dsysv_(char *UPLO, int *Np, int *NRHSp, double *A,
-<span class="lineNum">     642 </span>            :                         int *LDAp, int *IPIV, double *B, int *LDBp,
-<span class="lineNum">     643 </span>            :                         double *WORK, int *LWORK, int *INFOp);
-<span class="lineNum">     644 </span>            :         int INFO;
-<span class="lineNum">     645 </span><span class="lineCov">          2 :         dsysv_(&amp;UPLO, &amp;N, &amp;NRHS, A, &amp;LDA, IPIV, B, &amp;LDB, WORK, &amp;LWORK, &amp;INFO);</span>
-<span class="lineNum">     646 </span><span class="lineCov">          2 :         return INFO;</span>
-<span class="lineNum">     647 </span>            : }
+<span class="lineNum">     539 </span>            : /**
+<span class="lineNum">     540 </span>            :  * @brief Wrapper around calculation of Z'*A*Z and Z'*B for sparse and dense
+<span class="lineNum">     541 </span>            :  *
+<span class="lineNum">     542 </span>            :  * @details
+<span class="lineNum">     543 </span>            :  * This is a wrapper around gensvm_get_ZAZ_ZB_dense() and 
+<span class="lineNum">     544 </span>            :  * gensvm_get_ZAZ_ZB_sparse(). See the documentation of those functions for 
+<span class="lineNum">     545 </span>            :  * more info.
+<span class="lineNum">     546 </span>            :  *
+<span class="lineNum">     547 </span>            :  * @param[in]    model  a GenModel struct
+<span class="lineNum">     548 </span>            :  * @param[in]    data   a GenData struct
+<span class="lineNum">     549 </span>            :  * @param[in]    work   a GenWork struct
+<a name="550"><span class="lineNum">     550 </span>            :  *</a>
+<span class="lineNum">     551 </span>            :  */
+<span class="lineNum">     552 </span><span class="lineCov">        466 : void gensvm_get_ZAZ_ZB(struct GenModel *model, struct GenData *data,</span>
+<span class="lineNum">     553 </span>            :                 struct GenWork *work)
+<span class="lineNum">     554 </span>            : {
+<span class="lineNum">     555 </span><span class="lineCov">        466 :         gensvm_reset_work(work);</span>
+<span class="lineNum">     556 </span>            : 
+<span class="lineNum">     557 </span><span class="lineCov">        466 :         if (data-&gt;Z == NULL)</span>
+<span class="lineNum">     558 </span><span class="lineCov">          1 :                 gensvm_get_ZAZ_ZB_sparse(model, data, work);</span>
+<span class="lineNum">     559 </span>            :         else
+<span class="lineNum">     560 </span><span class="lineCov">        465 :                 gensvm_get_ZAZ_ZB_dense(model, data, work);</span>
+<span class="lineNum">     561 </span><span class="lineCov">        466 : }</span>
+<span class="lineNum">     562 </span>            : 
+<span class="lineNum">     563 </span>            : /**
+<span class="lineNum">     564 </span>            :  * @brief Solve AX = B where A is symmetric positive definite.
+<span class="lineNum">     565 </span>            :  *
+<span class="lineNum">     566 </span>            :  * @details
+<span class="lineNum">     567 </span>            :  * Solve a linear system of equations AX = B where A is symmetric positive
+<span class="lineNum">     568 </span>            :  * definite. This function is a wrapper for the external  LAPACK routine
+<span class="lineNum">     569 </span>            :  * dposv.
+<span class="lineNum">     570 </span>            :  *
+<span class="lineNum">     571 </span>            :  * @param[in]           UPLO    which triangle of A is stored
+<span class="lineNum">     572 </span>            :  * @param[in]           N       order of A
+<span class="lineNum">     573 </span>            :  * @param[in]           NRHS    number of columns of B
+<span class="lineNum">     574 </span>            :  * @param[in,out]       A       double precision array of size (LDA, N). On
+<span class="lineNum">     575 </span>            :  *                              exit contains the upper or lower factor of the
+<span class="lineNum">     576 </span>            :  *                              Cholesky factorization of A.
+<span class="lineNum">     577 </span>            :  * @param[in]           LDA     leading dimension of A
+<span class="lineNum">     578 </span>            :  * @param[in,out]       B       double precision array of size (LDB, NRHS). On
+<span class="lineNum">     579 </span>            :  *                              exit contains the N-by-NRHS solution matrix X.
+<span class="lineNum">     580 </span>            :  * @param[in]           LDB     the leading dimension of B
+<span class="lineNum">     581 </span>            :  * @returns                     info parameter which contains the status of the
+<span class="lineNum">     582 </span>            :  *                              computation:
+<span class="lineNum">     583 </span>            :  *                                      - =0:   success
+<span class="lineNum">     584 </span>            :  *                                      - &lt;0:        if -i, the i-th argument had
+<span class="lineNum">     585 </span>            :  *                                              an illegal value
+<span class="lineNum">     586 </span>            :  *                                      - &gt;0:        if i, the leading minor of A
+<span class="lineNum">     587 </span>            :  *                                              was not positive definite
+<span class="lineNum">     588 </span>            :  *
+<span class="lineNum">     589 </span>            :  * See the LAPACK documentation at:
+<a name="590"><span class="lineNum">     590 </span>            :  * http://www.netlib.org/lapack/explore-html/dc/de9/group__double_p_osolve.html</a>
+<span class="lineNum">     591 </span>            :  */
+<span class="lineNum">     592 </span><span class="lineCov">        467 : int dposv(char UPLO, int N, int NRHS, double *A, int LDA, double *B,</span>
+<span class="lineNum">     593 </span>            :                 int LDB)
+<span class="lineNum">     594 </span>            : {
+<span class="lineNum">     595 </span>            :         extern void dposv_(char *UPLO, int *Np, int *NRHSp, double *A,
+<span class="lineNum">     596 </span>            :                         int *LDAp, double *B, int *LDBp, int *INFOp);
+<span class="lineNum">     597 </span>            :         int INFO;
+<span class="lineNum">     598 </span><span class="lineCov">        467 :         dposv_(&amp;UPLO, &amp;N, &amp;NRHS, A, &amp;LDA, B, &amp;LDB, &amp;INFO);</span>
+<span class="lineNum">     599 </span><span class="lineCov">        467 :         return INFO;</span>
+<span class="lineNum">     600 </span>            : }
+<span class="lineNum">     601 </span>            : 
+<span class="lineNum">     602 </span>            : /**
+<span class="lineNum">     603 </span>            :  * @brief Solve a system of equations AX = B where A is symmetric.
+<span class="lineNum">     604 </span>            :  *
+<span class="lineNum">     605 </span>            :  * @details
+<span class="lineNum">     606 </span>            :  * Solve a linear system of equations AX = B where A is symmetric. This
+<span class="lineNum">     607 </span>            :  * function is a wrapper for the external LAPACK routine dsysv.
+<span class="lineNum">     608 </span>            :  *
+<span class="lineNum">     609 </span>            :  * @param[in]           UPLO    which triangle of A is stored
+<span class="lineNum">     610 </span>            :  * @param[in]           N       order of A
+<span class="lineNum">     611 </span>            :  * @param[in]           NRHS    number of columns of B
+<span class="lineNum">     612 </span>            :  * @param[in,out]       A       double precision array of size (LDA, N). On
+<span class="lineNum">     613 </span>            :  *                              exit contains the block diagonal matrix D and
+<span class="lineNum">     614 </span>            :  *                              the multipliers used to obtain the factor U or
+<span class="lineNum">     615 </span>            :  *                              L from the factorization A = U*D*U**T or
+<span class="lineNum">     616 </span>            :  *                              A = L*D*L**T.
+<span class="lineNum">     617 </span>            :  * @param[in]           LDA     leading dimension of A
+<span class="lineNum">     618 </span>            :  * @param[in]           IPIV    integer array containing the details of D
+<span class="lineNum">     619 </span>            :  * @param[in,out]       B       double precision array of size (LDB, NRHS). On
+<span class="lineNum">     620 </span>            :  *                              exit contains the N-by-NRHS matrix X
+<span class="lineNum">     621 </span>            :  * @param[in]           LDB     leading dimension of B
+<span class="lineNum">     622 </span>            :  * @param[out]          WORK    double precision array of size max(1,LWORK). On
+<span class="lineNum">     623 </span>            :  *                              exit, WORK(1) contains the optimal LWORK
+<span class="lineNum">     624 </span>            :  * @param[in]           LWORK   the length of WORK, can be used for determining
+<span class="lineNum">     625 </span>            :  *                              the optimal blocksize for dsystrf.
+<span class="lineNum">     626 </span>            :  * @returns                     info parameter which contains the status of the
+<span class="lineNum">     627 </span>            :  *                              computation:
+<span class="lineNum">     628 </span>            :  *                                      - =0:   success
+<span class="lineNum">     629 </span>            :  *                                      - &lt;0:        if -i, the i-th argument had an
+<span class="lineNum">     630 </span>            :  *                                              illegal value
+<span class="lineNum">     631 </span>            :  *                                      - &gt;0:        if i, D(i, i) is exactly zero,
+<span class="lineNum">     632 </span>            :  *                                              no solution can be computed.
+<span class="lineNum">     633 </span>            :  *
+<span class="lineNum">     634 </span>            :  * See the LAPACK documentation at:
+<a name="635"><span class="lineNum">     635 </span>            :  * http://www.netlib.org/lapack/explore-html/d6/d0e/group__double_s_ysolve.html</a>
+<span class="lineNum">     636 </span>            :  */
+<span class="lineNum">     637 </span><span class="lineCov">          2 : int dsysv(char UPLO, int N, int NRHS, double *A, int LDA, int *IPIV,</span>
+<span class="lineNum">     638 </span>            :                 double *B, int LDB, double *WORK, int LWORK)
+<span class="lineNum">     639 </span>            : {
+<span class="lineNum">     640 </span>            :         extern void dsysv_(char *UPLO, int *Np, int *NRHSp, double *A,
+<span class="lineNum">     641 </span>            :                         int *LDAp, int *IPIV, double *B, int *LDBp,
+<span class="lineNum">     642 </span>            :                         double *WORK, int *LWORK, int *INFOp);
+<span class="lineNum">     643 </span>            :         int INFO;
+<span class="lineNum">     644 </span><span class="lineCov">          2 :         dsysv_(&amp;UPLO, &amp;N, &amp;NRHS, A, &amp;LDA, IPIV, B, &amp;LDB, WORK, &amp;LWORK, &amp;INFO);</span>
+<span class="lineNum">     645 </span><span class="lineCov">          2 :         return INFO;</span>
+<span class="lineNum">     646 </span>            : }
 </pre>
       </td>
     </tr>

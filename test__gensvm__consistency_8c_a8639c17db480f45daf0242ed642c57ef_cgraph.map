@@ -8,13 +8,13 @@
 <area shape="rect" id="node3" href="$gensvm__consistency_8h.html#add252b18e89e7d427852e695d059439b" title="Comparison function for doubl. " alt="" coords="385,5,500,32"/>
 <area shape="rect" id="node5" href="$gensvm__consistency_8h.html#aca3f1bc047438e84d54e3ea7daa4d8e0" title="Calculate the percentile of an array of doubles. " alt="" coords="369,56,516,83"/>
 <area shape="rect" id="node6" href="$gensvm__consistency_8c.html#add252b18e89e7d427852e695d059439b" title="Comparison function for doubl. " alt="" coords="777,107,891,133"/>
-<area shape="rect" id="node9" href="$gensvm__queue_8h.html#a85bebeae36b61f1ae570e36c9edc6233" title="Initialize a GenQueue structure. " alt="" coords="568,107,717,133"/>
-<area shape="rect" id="node10" href="$gensvm__task_8h.html#a138c30cecb1cf46a002cd6581328a33c" title="Initialize a GenTask structure. " alt="" coords="374,157,511,184"/>
+<area shape="rect" id="node9" href="$gensvm__queue_8h.html#a42224204589d0e1fa5810a05e1b95751" title="Initialize a GenQueue structure. " alt="" coords="568,107,717,133"/>
+<area shape="rect" id="node10" href="$gensvm__task_8h.html#a5d23d747d99f4861dbeb085b2fa318e4" title="Initialize a GenTask structure. " alt="" coords="374,157,511,184"/>
 <area shape="rect" id="node11" href="$gensvm__consistency_8h.html#a2aeae848b37214d45331e29c542c3577" title="Create GenQueue of tasks with performance above a given percentile. " alt="" coords="368,208,517,235"/>
 <area shape="rect" id="node16" href="$gensvm__queue_8h.html#a8e3e8058ceff7af13f845d39dcd4d3b8" title="Free the GenQueue struct. " alt="" coords="365,284,520,311"/>
 <area shape="rect" id="node12" href="$gensvm__consistency_8c.html#aca3f1bc047438e84d54e3ea7daa4d8e0" title="Calculate the percentile of an array of doubles. " alt="" coords="569,157,716,184"/>
 <area shape="rect" id="node13" href="$gensvm__print_8h.html#a4502a32a6f7952faad96b8e5c758a7f7" title="Parse a formatted string and write to the output stream. " alt="" coords="617,208,668,235"/>
 <area shape="rect" id="node14" href="$gensvm__task_8h.html#a7cac73e4b9ba194849ff6bc4a46115b8" title="Deepcopy a GenTask struct. " alt="" coords="569,259,716,285"/>
-<area shape="rect" id="node15" href="$gensvm__task_8c.html#a138c30cecb1cf46a002cd6581328a33c" title="Initialize a GenTask structure. " alt="" coords="765,259,903,285"/>
+<area shape="rect" id="node15" href="$gensvm__task_8c.html#a5d23d747d99f4861dbeb085b2fa318e4" title="Initialize a GenTask structure. " alt="" coords="765,259,903,285"/>
 <area shape="rect" id="node17" href="$gensvm__task_8h.html#aa22ce798ccd7bba8c6e7861d92e51b0e" title="Free the GenTask struct. " alt="" coords="571,309,714,336"/>
 </map>

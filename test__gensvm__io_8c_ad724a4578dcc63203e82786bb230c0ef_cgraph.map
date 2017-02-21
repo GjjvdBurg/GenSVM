@@ -1,5 +1,5 @@
 <map id="test_gensvm_read_data_no_label" name="test_gensvm_read_data_no_label">
-<area shape="rect" id="node2" href="$gensvm__base_8h.html#a2123ffe5f44db584421e139be7d31b6c" title="Initialize a GenData structure. " alt="" coords="236,56,375,83"/>
+<area shape="rect" id="node2" href="$gensvm__base_8h.html#a1dfbbfcaab181c1f0d04d9d24a4807ea" title="Initialize a GenData structure. " alt="" coords="236,56,375,83"/>
 <area shape="rect" id="node3" href="$gensvm__io_8h.html#a3ad522e79e5e57c085146133e93a7bcb" title="Read data from file. " alt="" coords="232,107,379,133"/>
 <area shape="rect" id="node11" href="$gensvm__base_8h.html#a98f3696d492bec4485e3f2a42062705f" title="Free allocated GenData struct. " alt="" coords="234,183,377,209"/>
 <area shape="rect" id="node4" href="$gensvm__print_8h.html#aede5746344fdce99647541101eaa7f06" title="Parse a formatted string and write it to standard error. " alt="" coords="502,5,542,32"/>
@@ -8,6 +8,6 @@
 <area shape="rect" id="node9" href="$gensvm__sparse_8h.html#a331d6368a9fdca45c86ec68401344acc" title="Convert a dense matrix to a GenSparse structure if advantageous. " alt="" coords="427,157,617,184"/>
 <area shape="rect" id="node6" href="$gensvm__sparse_8c.html#a88aab6b67242e2a4993a5c9c796161e7" title="Count the number of nonzeros in a matrix. " alt="" coords="685,107,832,133"/>
 <area shape="rect" id="node7" href="$gensvm__sparse_8c.html#a711923bcf3725efda4110c25801e6f20" title="Compare the number of nonzeros is such that sparsity if worth it. " alt="" coords="665,56,852,83"/>
-<area shape="rect" id="node10" href="$gensvm__sparse_8c.html#ac45d0a15c75382ad8f3f4232eadf9f4d" title="Initialize a GenSparse structure. " alt="" coords="683,157,835,184"/>
+<area shape="rect" id="node10" href="$gensvm__sparse_8c.html#a3b4a12d69275cd76865aea9b0fa51346" title="Initialize a GenSparse structure. " alt="" coords="683,157,835,184"/>
 <area shape="rect" id="node12" href="$gensvm__sparse_8h.html#a1bd9399ffc0b5e4d32ac160eb3143864" title="Free an allocated GenSparse structure. " alt="" coords="443,208,601,235"/>
 </map>

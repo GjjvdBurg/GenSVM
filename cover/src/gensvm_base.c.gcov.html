@@ -31,13 +31,13 @@
             <td class="headerValue">coverage.all</td>
             <td></td>
             <td class="headerItem">Lines:</td>
-            <td class="headerCovTableEntry">129</td>
-            <td class="headerCovTableEntry">129</td>
+            <td class="headerCovTableEntry">132</td>
+            <td class="headerCovTableEntry">132</td>
             <td class="headerCovTableEntryHi">100.0 %</td>
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2017-02-17 19:16:12</td>
+            <td class="headerValue">2017-02-21 18:44:20</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">9</td>
@@ -104,7 +104,7 @@
 <span class="lineNum">      42 </span>            :  * @returns     initialized GenData
 <a name="43"><span class="lineNum">      43 </span>            :  *</a>
 <span class="lineNum">      44 </span>            :  */
-<span class="lineNum">      45 </span><span class="lineCov">         76 : struct GenData *gensvm_init_data()</span>
+<span class="lineNum">      45 </span><span class="lineCov">         76 : struct GenData *gensvm_init_data(void)</span>
 <span class="lineNum">      46 </span>            : {
 <span class="lineNum">      47 </span><span class="lineCov">         76 :         struct GenData *data = Malloc(struct GenData, 1);</span>
 <span class="lineNum">      48 </span><span class="lineCov">         76 :         data-&gt;Sigma = NULL;</span>
@@ -161,7 +161,7 @@
 <span class="lineNum">      99 </span>            :  *
 <a name="100"><span class="lineNum">     100 </span>            :  * @returns     initialized GenModel</a>
 <span class="lineNum">     101 </span>            :  */
-<span class="lineNum">     102 </span><span class="lineCov">         72 : struct GenModel *gensvm_init_model()</span>
+<span class="lineNum">     102 </span><span class="lineCov">         72 : struct GenModel *gensvm_init_model(void)</span>
 <span class="lineNum">     103 </span>            : {
 <span class="lineNum">     104 </span><span class="lineCov">         72 :         struct GenModel *model = Malloc(struct GenModel, 1);</span>
 <span class="lineNum">     105 </span>            : 
@@ -177,201 +177,204 @@
 <span class="lineNum">     115 </span><span class="lineCov">         72 :         model-&gt;kerneltype = K_LINEAR;</span>
 <span class="lineNum">     116 </span><span class="lineCov">         72 :         model-&gt;kernel_eigen_cutoff = 1e-8;</span>
 <span class="lineNum">     117 </span><span class="lineCov">         72 :         model-&gt;max_iter = 1000000000;</span>
-<span class="lineNum">     118 </span>            : 
-<span class="lineNum">     119 </span><span class="lineCov">         72 :         model-&gt;V = NULL;</span>
-<span class="lineNum">     120 </span><span class="lineCov">         72 :         model-&gt;Vbar = NULL;</span>
-<span class="lineNum">     121 </span><span class="lineCov">         72 :         model-&gt;U = NULL;</span>
-<span class="lineNum">     122 </span><span class="lineCov">         72 :         model-&gt;UU = NULL;</span>
-<span class="lineNum">     123 </span><span class="lineCov">         72 :         model-&gt;Q = NULL;</span>
-<span class="lineNum">     124 </span><span class="lineCov">         72 :         model-&gt;H = NULL;</span>
-<span class="lineNum">     125 </span><span class="lineCov">         72 :         model-&gt;rho = NULL;</span>
-<span class="lineNum">     126 </span><span class="lineCov">         72 :         model-&gt;data_file = NULL;</span>
-<span class="lineNum">     127 </span>            : 
-<span class="lineNum">     128 </span><span class="lineCov">         72 :         return model;</span>
-<span class="lineNum">     129 </span>            : }
+<span class="lineNum">     118 </span><span class="lineCov">         72 :         model-&gt;training_error = -1;</span>
+<span class="lineNum">     119 </span><span class="lineCov">         72 :         model-&gt;elapsed_iter = -1;</span>
+<span class="lineNum">     120 </span><span class="lineCov">         72 :         model-&gt;status = -1;</span>
+<span class="lineNum">     121 </span>            : 
+<span class="lineNum">     122 </span><span class="lineCov">         72 :         model-&gt;V = NULL;</span>
+<span class="lineNum">     123 </span><span class="lineCov">         72 :         model-&gt;Vbar = NULL;</span>
+<span class="lineNum">     124 </span><span class="lineCov">         72 :         model-&gt;U = NULL;</span>
+<span class="lineNum">     125 </span><span class="lineCov">         72 :         model-&gt;UU = NULL;</span>
+<span class="lineNum">     126 </span><span class="lineCov">         72 :         model-&gt;Q = NULL;</span>
+<span class="lineNum">     127 </span><span class="lineCov">         72 :         model-&gt;H = NULL;</span>
+<span class="lineNum">     128 </span><span class="lineCov">         72 :         model-&gt;rho = NULL;</span>
+<span class="lineNum">     129 </span><span class="lineCov">         72 :         model-&gt;data_file = NULL;</span>
 <span class="lineNum">     130 </span>            : 
-<span class="lineNum">     131 </span>            : /**
-<span class="lineNum">     132 </span>            :  * @brief Allocate memory for a GenModel
-<span class="lineNum">     133 </span>            :  *
-<span class="lineNum">     134 </span>            :  * @details
-<span class="lineNum">     135 </span>            :  * This function can be used to allocate the memory needed for a GenModel. All
-<span class="lineNum">     136 </span>            :  * arrays in the model are specified and initialized to 0.
-<span class="lineNum">     137 </span>            :  *
-<span class="lineNum">     138 </span>            :  * @param[in]   model   GenModel to allocate
-<a name="139"><span class="lineNum">     139 </span>            :  *</a>
-<span class="lineNum">     140 </span>            :  */
-<span class="lineNum">     141 </span><span class="lineCov">         27 : void gensvm_allocate_model(struct GenModel *model)</span>
-<span class="lineNum">     142 </span>            : {
-<span class="lineNum">     143 </span><span class="lineCov">         27 :         long n = model-&gt;n;</span>
-<span class="lineNum">     144 </span><span class="lineCov">         27 :         long m = model-&gt;m;</span>
-<span class="lineNum">     145 </span><span class="lineCov">         27 :         long K = model-&gt;K;</span>
-<span class="lineNum">     146 </span>            : 
-<span class="lineNum">     147 </span><span class="lineCov">         27 :         model-&gt;V = Calloc(double, (m+1)*(K-1));</span>
-<span class="lineNum">     148 </span><span class="lineCov">         27 :         model-&gt;Vbar = Calloc(double, (m+1)*(K-1));</span>
-<span class="lineNum">     149 </span><span class="lineCov">         27 :         model-&gt;U = Calloc(double, K*(K-1));</span>
-<span class="lineNum">     150 </span><span class="lineCov">         27 :         model-&gt;UU = Calloc(double, K*K*(K-1));</span>
-<span class="lineNum">     151 </span><span class="lineCov">         27 :         model-&gt;Q = Calloc(double, n*K);</span>
-<span class="lineNum">     152 </span><span class="lineCov">         27 :         model-&gt;H = Calloc(double, n*K);</span>
-<span class="lineNum">     153 </span><span class="lineCov">         27 :         model-&gt;rho = Calloc(double, n);</span>
-<span class="lineNum">     154 </span><span class="lineCov">         27 : }</span>
-<span class="lineNum">     155 </span>            : 
-<span class="lineNum">     156 </span>            : /**
-<span class="lineNum">     157 </span>            :  * @brief Reallocate memory for GenModel
-<span class="lineNum">     158 </span>            :  *
-<span class="lineNum">     159 </span>            :  * @details
-<span class="lineNum">     160 </span>            :  * This function can be used to reallocate existing memory for a GenModel,
-<span class="lineNum">     161 </span>            :  * upon a change in the model dimensions. This is used in combination with
-<span class="lineNum">     162 </span>            :  * kernels.
-<span class="lineNum">     163 </span>            :  *
-<span class="lineNum">     164 </span>            :  * @param[in]   model   GenModel to reallocate
-<span class="lineNum">     165 </span>            :  * @param[in]   n       new value of GenModel-&gt;n
-<span class="lineNum">     166 </span>            :  * @param[in]   m       new value of GenModel-&gt;m
-<a name="167"><span class="lineNum">     167 </span>            :  *</a>
-<span class="lineNum">     168 </span>            :  */
-<span class="lineNum">     169 </span><span class="lineCov">          6 : void gensvm_reallocate_model(struct GenModel *model, long n, long m)</span>
-<span class="lineNum">     170 </span>            : {
-<span class="lineNum">     171 </span><span class="lineCov">          6 :         long K = model-&gt;K;</span>
-<span class="lineNum">     172 </span>            : 
-<span class="lineNum">     173 </span><span class="lineCov">          6 :         if (model-&gt;n == n &amp;&amp; model-&gt;m == m)</span>
-<span class="lineNum">     174 </span><span class="lineCov">          3 :                 return;</span>
-<span class="lineNum">     175 </span><span class="lineCov">          3 :         if (model-&gt;n != n) {</span>
-<span class="lineNum">     176 </span><span class="lineCov">          1 :                 model-&gt;Q = Realloc(model-&gt;Q, double, n*K);</span>
-<span class="lineNum">     177 </span><span class="lineCov">          1 :                 Memset(model-&gt;Q, double, n*K);</span>
-<span class="lineNum">     178 </span>            : 
-<span class="lineNum">     179 </span><span class="lineCov">          1 :                 model-&gt;H = Realloc(model-&gt;H, double, n*K);</span>
-<span class="lineNum">     180 </span><span class="lineCov">          1 :                 Memset(model-&gt;H, double, n*K);</span>
+<span class="lineNum">     131 </span><span class="lineCov">         72 :         return model;</span>
+<span class="lineNum">     132 </span>            : }
+<span class="lineNum">     133 </span>            : 
+<span class="lineNum">     134 </span>            : /**
+<span class="lineNum">     135 </span>            :  * @brief Allocate memory for a GenModel
+<span class="lineNum">     136 </span>            :  *
+<span class="lineNum">     137 </span>            :  * @details
+<span class="lineNum">     138 </span>            :  * This function can be used to allocate the memory needed for a GenModel. All
+<span class="lineNum">     139 </span>            :  * arrays in the model are specified and initialized to 0.
+<span class="lineNum">     140 </span>            :  *
+<span class="lineNum">     141 </span>            :  * @param[in]   model   GenModel to allocate
+<a name="142"><span class="lineNum">     142 </span>            :  *</a>
+<span class="lineNum">     143 </span>            :  */
+<span class="lineNum">     144 </span><span class="lineCov">         27 : void gensvm_allocate_model(struct GenModel *model)</span>
+<span class="lineNum">     145 </span>            : {
+<span class="lineNum">     146 </span><span class="lineCov">         27 :         long n = model-&gt;n;</span>
+<span class="lineNum">     147 </span><span class="lineCov">         27 :         long m = model-&gt;m;</span>
+<span class="lineNum">     148 </span><span class="lineCov">         27 :         long K = model-&gt;K;</span>
+<span class="lineNum">     149 </span>            : 
+<span class="lineNum">     150 </span><span class="lineCov">         27 :         model-&gt;V = Calloc(double, (m+1)*(K-1));</span>
+<span class="lineNum">     151 </span><span class="lineCov">         27 :         model-&gt;Vbar = Calloc(double, (m+1)*(K-1));</span>
+<span class="lineNum">     152 </span><span class="lineCov">         27 :         model-&gt;U = Calloc(double, K*(K-1));</span>
+<span class="lineNum">     153 </span><span class="lineCov">         27 :         model-&gt;UU = Calloc(double, K*K*(K-1));</span>
+<span class="lineNum">     154 </span><span class="lineCov">         27 :         model-&gt;Q = Calloc(double, n*K);</span>
+<span class="lineNum">     155 </span><span class="lineCov">         27 :         model-&gt;H = Calloc(double, n*K);</span>
+<span class="lineNum">     156 </span><span class="lineCov">         27 :         model-&gt;rho = Calloc(double, n);</span>
+<span class="lineNum">     157 </span><span class="lineCov">         27 : }</span>
+<span class="lineNum">     158 </span>            : 
+<span class="lineNum">     159 </span>            : /**
+<span class="lineNum">     160 </span>            :  * @brief Reallocate memory for GenModel
+<span class="lineNum">     161 </span>            :  *
+<span class="lineNum">     162 </span>            :  * @details
+<span class="lineNum">     163 </span>            :  * This function can be used to reallocate existing memory for a GenModel,
+<span class="lineNum">     164 </span>            :  * upon a change in the model dimensions. This is used in combination with
+<span class="lineNum">     165 </span>            :  * kernels.
+<span class="lineNum">     166 </span>            :  *
+<span class="lineNum">     167 </span>            :  * @param[in]   model   GenModel to reallocate
+<span class="lineNum">     168 </span>            :  * @param[in]   n       new value of GenModel-&gt;n
+<span class="lineNum">     169 </span>            :  * @param[in]   m       new value of GenModel-&gt;m
+<a name="170"><span class="lineNum">     170 </span>            :  *</a>
+<span class="lineNum">     171 </span>            :  */
+<span class="lineNum">     172 </span><span class="lineCov">          6 : void gensvm_reallocate_model(struct GenModel *model, long n, long m)</span>
+<span class="lineNum">     173 </span>            : {
+<span class="lineNum">     174 </span><span class="lineCov">          6 :         long K = model-&gt;K;</span>
+<span class="lineNum">     175 </span>            : 
+<span class="lineNum">     176 </span><span class="lineCov">          6 :         if (model-&gt;n == n &amp;&amp; model-&gt;m == m)</span>
+<span class="lineNum">     177 </span><span class="lineCov">          3 :                 return;</span>
+<span class="lineNum">     178 </span><span class="lineCov">          3 :         if (model-&gt;n != n) {</span>
+<span class="lineNum">     179 </span><span class="lineCov">          1 :                 model-&gt;Q = Realloc(model-&gt;Q, double, n*K);</span>
+<span class="lineNum">     180 </span><span class="lineCov">          1 :                 Memset(model-&gt;Q, double, n*K);</span>
 <span class="lineNum">     181 </span>            : 
-<span class="lineNum">     182 </span><span class="lineCov">          1 :                 model-&gt;rho = Realloc(model-&gt;rho, double, n);</span>
-<span class="lineNum">     183 </span><span class="lineCov">          1 :                 Memset(model-&gt;rho, double, n);</span>
+<span class="lineNum">     182 </span><span class="lineCov">          1 :                 model-&gt;H = Realloc(model-&gt;H, double, n*K);</span>
+<span class="lineNum">     183 </span><span class="lineCov">          1 :                 Memset(model-&gt;H, double, n*K);</span>
 <span class="lineNum">     184 </span>            : 
-<span class="lineNum">     185 </span><span class="lineCov">          1 :                 model-&gt;n = n;</span>
-<span class="lineNum">     186 </span>            :         }
-<span class="lineNum">     187 </span><span class="lineCov">          3 :         if (model-&gt;m != m) {</span>
-<span class="lineNum">     188 </span><span class="lineCov">          3 :                 model-&gt;V = Realloc(model-&gt;V, double, (m+1)*(K-1));</span>
-<span class="lineNum">     189 </span><span class="lineCov">          3 :                 Memset(model-&gt;V, double, (m+1)*(K-1));</span>
-<span class="lineNum">     190 </span>            : 
-<span class="lineNum">     191 </span><span class="lineCov">          3 :                 model-&gt;Vbar = Realloc(model-&gt;Vbar, double, (m+1)*(K-1));</span>
-<span class="lineNum">     192 </span><span class="lineCov">          3 :                 Memset(model-&gt;Vbar, double, (m+1)*(K-1));</span>
+<span class="lineNum">     185 </span><span class="lineCov">          1 :                 model-&gt;rho = Realloc(model-&gt;rho, double, n);</span>
+<span class="lineNum">     186 </span><span class="lineCov">          1 :                 Memset(model-&gt;rho, double, n);</span>
+<span class="lineNum">     187 </span>            : 
+<span class="lineNum">     188 </span><span class="lineCov">          1 :                 model-&gt;n = n;</span>
+<span class="lineNum">     189 </span>            :         }
+<span class="lineNum">     190 </span><span class="lineCov">          3 :         if (model-&gt;m != m) {</span>
+<span class="lineNum">     191 </span><span class="lineCov">          3 :                 model-&gt;V = Realloc(model-&gt;V, double, (m+1)*(K-1));</span>
+<span class="lineNum">     192 </span><span class="lineCov">          3 :                 Memset(model-&gt;V, double, (m+1)*(K-1));</span>
 <span class="lineNum">     193 </span>            : 
-<span class="lineNum">     194 </span><span class="lineCov">          3 :                 model-&gt;m = m;</span>
-<span class="lineNum">     195 </span>            :         }
-<span class="lineNum">     196 </span>            : }
-<span class="lineNum">     197 </span>            : 
-<span class="lineNum">     198 </span>            : /**
-<span class="lineNum">     199 </span>            :  * @brief Free allocated GenModel struct
-<span class="lineNum">     200 </span>            :  *
-<span class="lineNum">     201 </span>            :  * @details
-<span class="lineNum">     202 </span>            :  * Simply free a previously allocated GenModel by freeing all its component
-<span class="lineNum">     203 </span>            :  * arrays. Note that the model struct itself is also freed here.
-<span class="lineNum">     204 </span>            :  *
-<span class="lineNum">     205 </span>            :  * @param[in]   model   GenModel to free
-<a name="206"><span class="lineNum">     206 </span>            :  *</a>
-<span class="lineNum">     207 </span>            :  */
-<span class="lineNum">     208 </span><span class="lineCov">         73 : void gensvm_free_model(struct GenModel *model)</span>
-<span class="lineNum">     209 </span>            : {
-<span class="lineNum">     210 </span><span class="lineCov">         73 :         if (model == NULL)</span>
-<span class="lineNum">     211 </span><span class="lineCov">          1 :                 return;</span>
-<span class="lineNum">     212 </span>            : 
-<span class="lineNum">     213 </span><span class="lineCov">         72 :         free(model-&gt;V);</span>
-<span class="lineNum">     214 </span><span class="lineCov">         72 :         free(model-&gt;Vbar);</span>
-<span class="lineNum">     215 </span><span class="lineCov">         72 :         free(model-&gt;U);</span>
-<span class="lineNum">     216 </span><span class="lineCov">         72 :         free(model-&gt;UU);</span>
-<span class="lineNum">     217 </span><span class="lineCov">         72 :         free(model-&gt;Q);</span>
-<span class="lineNum">     218 </span><span class="lineCov">         72 :         free(model-&gt;H);</span>
-<span class="lineNum">     219 </span><span class="lineCov">         72 :         free(model-&gt;rho);</span>
-<span class="lineNum">     220 </span><span class="lineCov">         72 :         free(model-&gt;data_file);</span>
-<span class="lineNum">     221 </span>            : 
-<span class="lineNum">     222 </span><span class="lineCov">         72 :         free(model);</span>
-<span class="lineNum">     223 </span><span class="lineCov">         72 :         model = NULL;</span>
-<span class="lineNum">     224 </span>            : }
-<span class="lineNum">     225 </span>            : 
-<span class="lineNum">     226 </span>            : /**
-<span class="lineNum">     227 </span>            :  * @brief Initialize the workspace structure
-<span class="lineNum">     228 </span>            :  *
-<span class="lineNum">     229 </span>            :  * @details
-<span class="lineNum">     230 </span>            :  * During the computations in gensvm_get_update(), a number of matrices need 
-<span class="lineNum">     231 </span>            :  * to be allocated which are used to store intermediate results. To avoid 
-<span class="lineNum">     232 </span>            :  * reallocating these matrices at every call to gensvm_get_update(), we create 
-<span class="lineNum">     233 </span>            :  * here a workspace with these matrices. This workspace is created once by 
-<span class="lineNum">     234 </span>            :  * gensvm_optimize(), and is passed to gensvm_get_update() and 
-<span class="lineNum">     235 </span>            :  * gensvm_get_loss(). See the documentation of the GenWork structure for 
-<span class="lineNum">     236 </span>            :  * information on each allocated field.
-<span class="lineNum">     237 </span>            :  *
-<span class="lineNum">     238 </span>            :  * @param[in]   model   a GenModel with the dimensionality of the problem
-<span class="lineNum">     239 </span>            :  * @returns             an allocated GenWork instance
-<a name="240"><span class="lineNum">     240 </span>            :  *</a>
-<span class="lineNum">     241 </span>            :  */
-<span class="lineNum">     242 </span><span class="lineCov">          9 : struct GenWork *gensvm_init_work(struct GenModel *model)</span>
-<span class="lineNum">     243 </span>            : {
-<span class="lineNum">     244 </span><span class="lineCov">          9 :         long n = model-&gt;n;</span>
-<span class="lineNum">     245 </span><span class="lineCov">          9 :         long m = model-&gt;m;</span>
-<span class="lineNum">     246 </span><span class="lineCov">          9 :         long K = model-&gt;K;</span>
-<span class="lineNum">     247 </span>            : 
-<span class="lineNum">     248 </span><span class="lineCov">          9 :         struct GenWork *work = Malloc(struct GenWork, 1);</span>
-<span class="lineNum">     249 </span><span class="lineCov">          9 :         work-&gt;n = n;</span>
-<span class="lineNum">     250 </span><span class="lineCov">          9 :         work-&gt;m = m;</span>
-<span class="lineNum">     251 </span><span class="lineCov">          9 :         work-&gt;K = K;</span>
-<span class="lineNum">     252 </span>            : 
-<span class="lineNum">     253 </span><span class="lineCov">          9 :         work-&gt;LZ = Calloc(double, n*(m+1));</span>
-<span class="lineNum">     254 </span><span class="lineCov">          9 :         work-&gt;ZB = Calloc(double, (m+1)*(K-1)),</span>
-<span class="lineNum">     255 </span><span class="lineCov">          9 :         work-&gt;ZBc = Calloc(double, (m+1)*(K-1)),</span>
-<span class="lineNum">     256 </span><span class="lineCov">          9 :         work-&gt;ZAZ = Calloc(double, (m+1)*(m+1)),</span>
-<span class="lineNum">     257 </span><span class="lineCov">          9 :         work-&gt;tmpZAZ = Calloc(double, (m+1)*(m+1)),</span>
-<span class="lineNum">     258 </span><span class="lineCov">          9 :         work-&gt;ZV = Calloc(double, n*(K-1));</span>
-<span class="lineNum">     259 </span><span class="lineCov">          9 :         work-&gt;beta = Calloc(double, K-1);</span>
-<span class="lineNum">     260 </span>            : 
-<span class="lineNum">     261 </span><span class="lineCov">          9 :         return work;</span>
-<span class="lineNum">     262 </span>            : }
+<span class="lineNum">     194 </span><span class="lineCov">          3 :                 model-&gt;Vbar = Realloc(model-&gt;Vbar, double, (m+1)*(K-1));</span>
+<span class="lineNum">     195 </span><span class="lineCov">          3 :                 Memset(model-&gt;Vbar, double, (m+1)*(K-1));</span>
+<span class="lineNum">     196 </span>            : 
+<span class="lineNum">     197 </span><span class="lineCov">          3 :                 model-&gt;m = m;</span>
+<span class="lineNum">     198 </span>            :         }
+<span class="lineNum">     199 </span>            : }
+<span class="lineNum">     200 </span>            : 
+<span class="lineNum">     201 </span>            : /**
+<span class="lineNum">     202 </span>            :  * @brief Free allocated GenModel struct
+<span class="lineNum">     203 </span>            :  *
+<span class="lineNum">     204 </span>            :  * @details
+<span class="lineNum">     205 </span>            :  * Simply free a previously allocated GenModel by freeing all its component
+<span class="lineNum">     206 </span>            :  * arrays. Note that the model struct itself is also freed here.
+<span class="lineNum">     207 </span>            :  *
+<span class="lineNum">     208 </span>            :  * @param[in]   model   GenModel to free
+<a name="209"><span class="lineNum">     209 </span>            :  *</a>
+<span class="lineNum">     210 </span>            :  */
+<span class="lineNum">     211 </span><span class="lineCov">         73 : void gensvm_free_model(struct GenModel *model)</span>
+<span class="lineNum">     212 </span>            : {
+<span class="lineNum">     213 </span><span class="lineCov">         73 :         if (model == NULL)</span>
+<span class="lineNum">     214 </span><span class="lineCov">          1 :                 return;</span>
+<span class="lineNum">     215 </span>            : 
+<span class="lineNum">     216 </span><span class="lineCov">         72 :         free(model-&gt;V);</span>
+<span class="lineNum">     217 </span><span class="lineCov">         72 :         free(model-&gt;Vbar);</span>
+<span class="lineNum">     218 </span><span class="lineCov">         72 :         free(model-&gt;U);</span>
+<span class="lineNum">     219 </span><span class="lineCov">         72 :         free(model-&gt;UU);</span>
+<span class="lineNum">     220 </span><span class="lineCov">         72 :         free(model-&gt;Q);</span>
+<span class="lineNum">     221 </span><span class="lineCov">         72 :         free(model-&gt;H);</span>
+<span class="lineNum">     222 </span><span class="lineCov">         72 :         free(model-&gt;rho);</span>
+<span class="lineNum">     223 </span><span class="lineCov">         72 :         free(model-&gt;data_file);</span>
+<span class="lineNum">     224 </span>            : 
+<span class="lineNum">     225 </span><span class="lineCov">         72 :         free(model);</span>
+<span class="lineNum">     226 </span><span class="lineCov">         72 :         model = NULL;</span>
+<span class="lineNum">     227 </span>            : }
+<span class="lineNum">     228 </span>            : 
+<span class="lineNum">     229 </span>            : /**
+<span class="lineNum">     230 </span>            :  * @brief Initialize the workspace structure
+<span class="lineNum">     231 </span>            :  *
+<span class="lineNum">     232 </span>            :  * @details
+<span class="lineNum">     233 </span>            :  * During the computations in gensvm_get_update(), a number of matrices need 
+<span class="lineNum">     234 </span>            :  * to be allocated which are used to store intermediate results. To avoid 
+<span class="lineNum">     235 </span>            :  * reallocating these matrices at every call to gensvm_get_update(), we create 
+<span class="lineNum">     236 </span>            :  * here a workspace with these matrices. This workspace is created once by 
+<span class="lineNum">     237 </span>            :  * gensvm_optimize(), and is passed to gensvm_get_update() and 
+<span class="lineNum">     238 </span>            :  * gensvm_get_loss(). See the documentation of the GenWork structure for 
+<span class="lineNum">     239 </span>            :  * information on each allocated field.
+<span class="lineNum">     240 </span>            :  *
+<span class="lineNum">     241 </span>            :  * @param[in]   model   a GenModel with the dimensionality of the problem
+<span class="lineNum">     242 </span>            :  * @returns             an allocated GenWork instance
+<a name="243"><span class="lineNum">     243 </span>            :  *</a>
+<span class="lineNum">     244 </span>            :  */
+<span class="lineNum">     245 </span><span class="lineCov">          9 : struct GenWork *gensvm_init_work(struct GenModel *model)</span>
+<span class="lineNum">     246 </span>            : {
+<span class="lineNum">     247 </span><span class="lineCov">          9 :         long n = model-&gt;n;</span>
+<span class="lineNum">     248 </span><span class="lineCov">          9 :         long m = model-&gt;m;</span>
+<span class="lineNum">     249 </span><span class="lineCov">          9 :         long K = model-&gt;K;</span>
+<span class="lineNum">     250 </span>            : 
+<span class="lineNum">     251 </span><span class="lineCov">          9 :         struct GenWork *work = Malloc(struct GenWork, 1);</span>
+<span class="lineNum">     252 </span><span class="lineCov">          9 :         work-&gt;n = n;</span>
+<span class="lineNum">     253 </span><span class="lineCov">          9 :         work-&gt;m = m;</span>
+<span class="lineNum">     254 </span><span class="lineCov">          9 :         work-&gt;K = K;</span>
+<span class="lineNum">     255 </span>            : 
+<span class="lineNum">     256 </span><span class="lineCov">          9 :         work-&gt;LZ = Calloc(double, n*(m+1));</span>
+<span class="lineNum">     257 </span><span class="lineCov">          9 :         work-&gt;ZB = Calloc(double, (m+1)*(K-1)),</span>
+<span class="lineNum">     258 </span><span class="lineCov">          9 :         work-&gt;ZBc = Calloc(double, (m+1)*(K-1)),</span>
+<span class="lineNum">     259 </span><span class="lineCov">          9 :         work-&gt;ZAZ = Calloc(double, (m+1)*(m+1)),</span>
+<span class="lineNum">     260 </span><span class="lineCov">          9 :         work-&gt;tmpZAZ = Calloc(double, (m+1)*(m+1)),</span>
+<span class="lineNum">     261 </span><span class="lineCov">          9 :         work-&gt;ZV = Calloc(double, n*(K-1));</span>
+<span class="lineNum">     262 </span><span class="lineCov">          9 :         work-&gt;beta = Calloc(double, K-1);</span>
 <span class="lineNum">     263 </span>            : 
-<span class="lineNum">     264 </span>            : /**
-<span class="lineNum">     265 </span>            :  * @brief Free an allocated GenWork instance
-<span class="lineNum">     266 </span>            :  *
-<span class="lineNum">     267 </span>            :  * @details
-<span class="lineNum">     268 </span>            :  * This function simply frees every matrix allocated for in the GenWork 
-<span class="lineNum">     269 </span>            :  * workspace.
-<span class="lineNum">     270 </span>            :  *
-<span class="lineNum">     271 </span>            :  * @param[in]   work    a pointer to an allocated GenWork instance
-<a name="272"><span class="lineNum">     272 </span>            :  *</a>
-<span class="lineNum">     273 </span>            :  */
-<span class="lineNum">     274 </span><span class="lineCov">          9 : void gensvm_free_work(struct GenWork *work)</span>
-<span class="lineNum">     275 </span>            : {
-<span class="lineNum">     276 </span><span class="lineCov">          9 :         free(work-&gt;LZ);</span>
-<span class="lineNum">     277 </span><span class="lineCov">          9 :         free(work-&gt;ZB);</span>
-<span class="lineNum">     278 </span><span class="lineCov">          9 :         free(work-&gt;ZBc);</span>
-<span class="lineNum">     279 </span><span class="lineCov">          9 :         free(work-&gt;ZAZ);</span>
-<span class="lineNum">     280 </span><span class="lineCov">          9 :         free(work-&gt;tmpZAZ);</span>
-<span class="lineNum">     281 </span><span class="lineCov">          9 :         free(work-&gt;ZV);</span>
-<span class="lineNum">     282 </span><span class="lineCov">          9 :         free(work-&gt;beta);</span>
-<span class="lineNum">     283 </span><span class="lineCov">          9 :         free(work);</span>
-<span class="lineNum">     284 </span><span class="lineCov">          9 :         work = NULL;</span>
-<span class="lineNum">     285 </span><span class="lineCov">          9 : }</span>
-<span class="lineNum">     286 </span>            : 
-<span class="lineNum">     287 </span>            : /**
-<span class="lineNum">     288 </span>            :  * @brief Reset all matrices of a GenWork instance
-<span class="lineNum">     289 </span>            :  *
-<span class="lineNum">     290 </span>            :  * @details
-<span class="lineNum">     291 </span>            :  * In the gensvm_get_update() function, it is expected for some matrices that 
-<span class="lineNum">     292 </span>            :  * all their entries are initialized to 0. This function sets the memory for 
-<span class="lineNum">     293 </span>            :  * each of the matrices in the GenWork workspace to 0 to facilitate this.
-<span class="lineNum">     294 </span>            :  *
-<span class="lineNum">     295 </span>            :  * @param[in,out]       work    an initialized GenWork instance. On exit, the
-<span class="lineNum">     296 </span>            :  *                              matrices of the GenWork instance are all 
-<a name="297"><span class="lineNum">     297 </span>            :  *                              initialized to 0.</a>
-<span class="lineNum">     298 </span>            :  */
-<span class="lineNum">     299 </span><span class="lineCov">        467 : void gensvm_reset_work(struct GenWork *work)</span>
-<span class="lineNum">     300 </span>            : {
-<span class="lineNum">     301 </span><span class="lineCov">        467 :         long n = work-&gt;n;</span>
-<span class="lineNum">     302 </span><span class="lineCov">        467 :         long m = work-&gt;m;</span>
-<span class="lineNum">     303 </span><span class="lineCov">        467 :         long K = work-&gt;K;</span>
-<span class="lineNum">     304 </span>            : 
-<span class="lineNum">     305 </span><span class="lineCov">        467 :         Memset(work-&gt;LZ, double, n*(m+1));</span>
-<span class="lineNum">     306 </span><span class="lineCov">        467 :         Memset(work-&gt;ZB, double, (m+1)*(K-1)),</span>
-<span class="lineNum">     307 </span><span class="lineCov">        467 :         Memset(work-&gt;ZBc, double, (m+1)*(K-1)),</span>
-<span class="lineNum">     308 </span><span class="lineCov">        467 :         Memset(work-&gt;ZAZ, double, (m+1)*(m+1)),</span>
-<span class="lineNum">     309 </span><span class="lineCov">        467 :         Memset(work-&gt;tmpZAZ, double, (m+1)*(m+1)),</span>
-<span class="lineNum">     310 </span><span class="lineCov">        467 :         Memset(work-&gt;ZV, double, n*(K-1));</span>
-<span class="lineNum">     311 </span><span class="lineCov">        467 :         Memset(work-&gt;beta, double, K-1);</span>
-<span class="lineNum">     312 </span><span class="lineCov">        467 : }</span>
+<span class="lineNum">     264 </span><span class="lineCov">          9 :         return work;</span>
+<span class="lineNum">     265 </span>            : }
+<span class="lineNum">     266 </span>            : 
+<span class="lineNum">     267 </span>            : /**
+<span class="lineNum">     268 </span>            :  * @brief Free an allocated GenWork instance
+<span class="lineNum">     269 </span>            :  *
+<span class="lineNum">     270 </span>            :  * @details
+<span class="lineNum">     271 </span>            :  * This function simply frees every matrix allocated for in the GenWork 
+<span class="lineNum">     272 </span>            :  * workspace.
+<span class="lineNum">     273 </span>            :  *
+<span class="lineNum">     274 </span>            :  * @param[in]   work    a pointer to an allocated GenWork instance
+<a name="275"><span class="lineNum">     275 </span>            :  *</a>
+<span class="lineNum">     276 </span>            :  */
+<span class="lineNum">     277 </span><span class="lineCov">          9 : void gensvm_free_work(struct GenWork *work)</span>
+<span class="lineNum">     278 </span>            : {
+<span class="lineNum">     279 </span><span class="lineCov">          9 :         free(work-&gt;LZ);</span>
+<span class="lineNum">     280 </span><span class="lineCov">          9 :         free(work-&gt;ZB);</span>
+<span class="lineNum">     281 </span><span class="lineCov">          9 :         free(work-&gt;ZBc);</span>
+<span class="lineNum">     282 </span><span class="lineCov">          9 :         free(work-&gt;ZAZ);</span>
+<span class="lineNum">     283 </span><span class="lineCov">          9 :         free(work-&gt;tmpZAZ);</span>
+<span class="lineNum">     284 </span><span class="lineCov">          9 :         free(work-&gt;ZV);</span>
+<span class="lineNum">     285 </span><span class="lineCov">          9 :         free(work-&gt;beta);</span>
+<span class="lineNum">     286 </span><span class="lineCov">          9 :         free(work);</span>
+<span class="lineNum">     287 </span><span class="lineCov">          9 :         work = NULL;</span>
+<span class="lineNum">     288 </span><span class="lineCov">          9 : }</span>
+<span class="lineNum">     289 </span>            : 
+<span class="lineNum">     290 </span>            : /**
+<span class="lineNum">     291 </span>            :  * @brief Reset all matrices of a GenWork instance
+<span class="lineNum">     292 </span>            :  *
+<span class="lineNum">     293 </span>            :  * @details
+<span class="lineNum">     294 </span>            :  * In the gensvm_get_update() function, it is expected for some matrices that 
+<span class="lineNum">     295 </span>            :  * all their entries are initialized to 0. This function sets the memory for 
+<span class="lineNum">     296 </span>            :  * each of the matrices in the GenWork workspace to 0 to facilitate this.
+<span class="lineNum">     297 </span>            :  *
+<span class="lineNum">     298 </span>            :  * @param[in,out]       work    an initialized GenWork instance. On exit, the
+<span class="lineNum">     299 </span>            :  *                              matrices of the GenWork instance are all 
+<a name="300"><span class="lineNum">     300 </span>            :  *                              initialized to 0.</a>
+<span class="lineNum">     301 </span>            :  */
+<span class="lineNum">     302 </span><span class="lineCov">        467 : void gensvm_reset_work(struct GenWork *work)</span>
+<span class="lineNum">     303 </span>            : {
+<span class="lineNum">     304 </span><span class="lineCov">        467 :         long n = work-&gt;n;</span>
+<span class="lineNum">     305 </span><span class="lineCov">        467 :         long m = work-&gt;m;</span>
+<span class="lineNum">     306 </span><span class="lineCov">        467 :         long K = work-&gt;K;</span>
+<span class="lineNum">     307 </span>            : 
+<span class="lineNum">     308 </span><span class="lineCov">        467 :         Memset(work-&gt;LZ, double, n*(m+1));</span>
+<span class="lineNum">     309 </span><span class="lineCov">        467 :         Memset(work-&gt;ZB, double, (m+1)*(K-1)),</span>
+<span class="lineNum">     310 </span><span class="lineCov">        467 :         Memset(work-&gt;ZBc, double, (m+1)*(K-1)),</span>
+<span class="lineNum">     311 </span><span class="lineCov">        467 :         Memset(work-&gt;ZAZ, double, (m+1)*(m+1)),</span>
+<span class="lineNum">     312 </span><span class="lineCov">        467 :         Memset(work-&gt;tmpZAZ, double, (m+1)*(m+1)),</span>
+<span class="lineNum">     313 </span><span class="lineCov">        467 :         Memset(work-&gt;ZV, double, n*(K-1));</span>
+<span class="lineNum">     314 </span><span class="lineCov">        467 :         Memset(work-&gt;beta, double, K-1);</span>
+<span class="lineNum">     315 </span><span class="lineCov">        467 : }</span>
 </pre>
       </td>
     </tr>

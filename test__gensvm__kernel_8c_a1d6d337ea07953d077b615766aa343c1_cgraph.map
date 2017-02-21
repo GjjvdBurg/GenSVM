@@ -1,5 +1,5 @@
 <map id="test_kernel_trainfactor" name="test_kernel_trainfactor">
-<area shape="rect" id="node2" href="$gensvm__base_8h.html#a2123ffe5f44db584421e139be7d31b6c" title="Initialize a GenData structure. " alt="" coords="253,5,392,32"/>
+<area shape="rect" id="node2" href="$gensvm__base_8h.html#a1dfbbfcaab181c1f0d04d9d24a4807ea" title="Initialize a GenData structure. " alt="" coords="253,5,392,32"/>
 <area shape="rect" id="node3" href="$gensvm__kernel_8h.html#a4caf1f9ac5d2e0c98ae027ddd46215e4" title="Compute the training factor as part of kernel preprocessing. " alt="" coords="224,56,421,83"/>
 <area shape="rect" id="node4" href="$gensvm__base_8h.html#a98f3696d492bec4485e3f2a42062705f" title="Free allocated GenData struct. " alt="" coords="251,107,394,133"/>
 <area shape="rect" id="node5" href="$gensvm__sparse_8h.html#a1bd9399ffc0b5e4d32ac160eb3143864" title="Free an allocated GenSparse structure. " alt="" coords="469,107,627,133"/>

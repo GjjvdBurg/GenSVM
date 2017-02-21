@@ -23,8 +23,8 @@
 <area shape="rect" id="node3" href="$gensvm__kernel_8h.html#a520a66a6afaa320dbcc520b2773f3a2d" title="Compute the RBF kernel between two vectors. " alt="" coords="419,5,593,32"/>
 <area shape="rect" id="node5" href="$gensvm__kernel_8h.html#a9360b598f7e58911d2c00455306365eb" title="Compute the polynomial kernel between two vectors. " alt="" coords="413,56,599,83"/>
 <area shape="rect" id="node7" href="$gensvm__kernel_8h.html#a13231a7d4bdae5d54f566329583e58ea" title="Compute the sigmoid kernel between two vectors. " alt="" coords="401,107,611,133"/>
-<area shape="rect" id="node9" href="$gensvm__base_8h.html#a96f35734dcba63d95e08addd2dabce3d" title="Initialize a GenModel structure. " alt="" coords="431,572,581,599"/>
-<area shape="rect" id="node10" href="$gensvm__base_8h.html#a2123ffe5f44db584421e139be7d31b6c" title="Initialize a GenData structure. " alt="" coords="437,724,575,751"/>
+<area shape="rect" id="node9" href="$gensvm__base_8h.html#a974512c4a2d61a39154cb34b19cefc3a" title="Initialize a GenModel structure. " alt="" coords="431,572,581,599"/>
+<area shape="rect" id="node10" href="$gensvm__base_8h.html#a1dfbbfcaab181c1f0d04d9d24a4807ea" title="Initialize a GenData structure. " alt="" coords="437,724,575,751"/>
 <area shape="rect" id="node11" href="$gensvm__kernel_8h.html#a67af575255ad5d1d0b466338b6ce2143" title="Do the preprocessing steps needed to perform kernel GenSVM. " alt="" coords="406,317,606,344"/>
 <area shape="rect" id="node22" href="$gensvm__base_8h.html#a0cf72f34706ed286c922ce74ee11f0be" title="Free allocated GenModel struct. " alt="" coords="429,521,583,548"/>
 <area shape="rect" id="node23" href="$gensvm__base_8h.html#a98f3696d492bec4485e3f2a42062705f" title="Free allocated GenData struct. " alt="" coords="435,673,577,700"/>

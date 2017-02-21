@@ -1,5 +1,5 @@
 <map id="test_reset_work" name="test_reset_work">
-<area shape="rect" id="node2" href="$gensvm__base_8h.html#a96f35734dcba63d95e08addd2dabce3d" title="Initialize a GenModel structure. " alt="" coords="182,5,333,32"/>
+<area shape="rect" id="node2" href="$gensvm__base_8h.html#a974512c4a2d61a39154cb34b19cefc3a" title="Initialize a GenModel structure. " alt="" coords="182,5,333,32"/>
 <area shape="rect" id="node3" href="$gensvm__base_8h.html#a52120d849ff52751c7995c24dfa50f00" title="Initialize the workspace structure. " alt="" coords="187,56,328,83"/>
 <area shape="rect" id="node4" href="$test__gensvm__base_8c.html#a6f1f543caca3102fac75c792fbe2a733" title="fill_with_noise" alt="" coords="200,107,315,133"/>
 <area shape="rect" id="node5" href="$gensvm__base_8h.html#a866ddca7070aacee709a6cfd563a595f" title="Reset all matrices of a GenWork instance. " alt="" coords="181,157,334,184"/>

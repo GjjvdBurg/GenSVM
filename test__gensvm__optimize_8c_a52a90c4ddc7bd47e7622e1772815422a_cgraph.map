@@ -1,5 +1,5 @@
 <map id="test_gensvm_calculate_huber" name="test_gensvm_calculate_huber">
-<area shape="rect" id="node2" href="$gensvm__base_8h.html#a96f35734dcba63d95e08addd2dabce3d" title="Initialize a GenModel structure. " alt="" coords="242,5,393,32"/>
+<area shape="rect" id="node2" href="$gensvm__base_8h.html#a974512c4a2d61a39154cb34b19cefc3a" title="Initialize a GenModel structure. " alt="" coords="242,5,393,32"/>
 <area shape="rect" id="node3" href="$gensvm__base_8h.html#a3b6c01ec77b5726843f7dd6c68593f6a" title="Allocate memory for a GenModel. " alt="" coords="227,56,408,83"/>
 <area shape="rect" id="node4" href="$gensvm__optimize_8h.html#ae7099ec85e4fa9c433d9e3858efe58b3" title="Calculate the Huber hinge errors. " alt="" coords="225,107,409,133"/>
 <area shape="rect" id="node5" href="$gensvm__base_8h.html#a0cf72f34706ed286c922ce74ee11f0be" title="Free allocated GenModel struct. " alt="" coords="240,157,395,184"/>

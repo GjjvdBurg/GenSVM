@@ -8,8 +8,8 @@
 <area shape="rect" id="node20" href="$test__gensvm__update_8c.html#ac1651252b47ee11177375272edd520e8" title="test_gensvm_get_update" alt="" coords="131,507,317,534"/>
 <area shape="rect" id="node44" href="$test__gensvm__update_8c.html#ad9df2a8f224786b9e4faf5cbb9c6d2a2" title="test_gensvm_get_update\l_sparse" alt="" coords="131,559,317,600"/>
 <area shape="rect" id="node48" href="$test__gensvm__update_8c.html#a60fe8f5e6d8a103f9d26058e817220cf" title="RUN_TESTS" alt="" coords="175,726,273,753"/>
-<area shape="rect" id="node3" href="$gensvm__base_8h.html#a96f35734dcba63d95e08addd2dabce3d" title="Initialize a GenModel structure. " alt="" coords="387,187,538,214"/>
-<area shape="rect" id="node4" href="$gensvm__base_8h.html#a2123ffe5f44db584421e139be7d31b6c" title="Initialize a GenData structure. " alt="" coords="393,457,532,483"/>
+<area shape="rect" id="node3" href="$gensvm__base_8h.html#a974512c4a2d61a39154cb34b19cefc3a" title="Initialize a GenModel structure. " alt="" coords="387,187,538,214"/>
+<area shape="rect" id="node4" href="$gensvm__base_8h.html#a1dfbbfcaab181c1f0d04d9d24a4807ea" title="Initialize a GenData structure. " alt="" coords="393,457,532,483"/>
 <area shape="rect" id="node5" href="$gensvm__base_8h.html#a3b6c01ec77b5726843f7dd6c68593f6a" title="Allocate memory for a GenModel. " alt="" coords="372,238,553,265"/>
 <area shape="rect" id="node6" href="$gensvm__update_8h.html#ae90a65a5a2a2313251356d3667a8b069" title="Calculate the value of omega for a single instance. " alt="" coords="367,137,559,163"/>
 <area shape="rect" id="node7" href="$gensvm__base_8h.html#a0cf72f34706ed286c922ce74ee11f0be" title="Free allocated GenModel struct. " alt="" coords="385,289,540,315"/>
@@ -45,5 +45,5 @@
 <area shape="rect" id="node39" href="$gensvm__update_8c.html#ae51dd734ea3e73944d9eb890d63cb361" title="Compute majorization coefficients for non&#45;simple instance. " alt="" coords="1324,823,1487,864"/>
 <area shape="rect" id="node45" href="$gensvm__sparse_8h.html#a331d6368a9fdca45c86ec68401344acc" title="Convert a dense matrix to a GenSparse structure if advantageous. " alt="" coords="367,913,558,939"/>
 <area shape="rect" id="node46" href="$gensvm__sparse_8c.html#a88aab6b67242e2a4993a5c9c796161e7" title="Count the number of nonzeros in a matrix. " alt="" coords="617,913,764,939"/>
-<area shape="rect" id="node47" href="$gensvm__sparse_8c.html#ac45d0a15c75382ad8f3f4232eadf9f4d" title="Initialize a GenSparse structure. " alt="" coords="615,963,767,990"/>
+<area shape="rect" id="node47" href="$gensvm__sparse_8c.html#a3b4a12d69275cd76865aea9b0fa51346" title="Initialize a GenSparse structure. " alt="" coords="615,963,767,990"/>
 </map>

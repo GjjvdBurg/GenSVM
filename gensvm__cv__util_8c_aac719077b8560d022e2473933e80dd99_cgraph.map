@@ -1,5 +1,5 @@
 <map id="gensvm_get_tt_split" name="gensvm_get_tt_split">
 <area shape="rect" id="node2" href="$gensvm__cv__util_8c.html#a68cce5815b1a10754a4b9b2315d1d563" title="Create train and test dataset for a CV split with sparse data. " alt="" coords="208,5,363,47"/>
 <area shape="rect" id="node4" href="$gensvm__cv__util_8c.html#a99a835eecb7ddafa52ba497a887b4f5b" title="Create train and test datasets for a CV split with dense data. " alt="" coords="208,71,363,112"/>
-<area shape="rect" id="node3" href="$gensvm__sparse_8h.html#ac45d0a15c75382ad8f3f4232eadf9f4d" title="Initialize a GenSparse structure. " alt="" coords="411,13,563,39"/>
+<area shape="rect" id="node3" href="$gensvm__sparse_8h.html#a3b4a12d69275cd76865aea9b0fa51346" title="Initialize a GenSparse structure. " alt="" coords="411,13,563,39"/>
 </map>

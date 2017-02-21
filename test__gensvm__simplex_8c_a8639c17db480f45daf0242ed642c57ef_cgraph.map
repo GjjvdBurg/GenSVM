@@ -3,10 +3,10 @@
 <area shape="rect" id="node6" href="$test__gensvm__simplex_8c.html#a661f284aeb31133eb932cd0dd632ff9c" title="test_simplex_2" alt="" coords="167,107,288,133"/>
 <area shape="rect" id="node7" href="$test__gensvm__simplex_8c.html#a897bf3f32c19bb6defd9d5892135cd38" title="test_gensvm_simplex_diff" alt="" coords="131,157,324,184"/>
 <area shape="rect" id="node13" href="$test__gensvm__simplex_8c.html#a60fe8f5e6d8a103f9d26058e817220cf" title="RUN_TESTS" alt="" coords="178,208,277,235"/>
-<area shape="rect" id="node3" href="$gensvm__base_8h.html#a96f35734dcba63d95e08addd2dabce3d" title="Initialize a GenModel structure. " alt="" coords="387,5,538,32"/>
+<area shape="rect" id="node3" href="$gensvm__base_8h.html#a974512c4a2d61a39154cb34b19cefc3a" title="Initialize a GenModel structure. " alt="" coords="387,5,538,32"/>
 <area shape="rect" id="node4" href="$gensvm__simplex_8h.html#ada27d56b6de435551330c8300e9089ea" title="Generate matrix of simplex vertex coordinates. " alt="" coords="396,56,529,83"/>
 <area shape="rect" id="node5" href="$gensvm__base_8h.html#a0cf72f34706ed286c922ce74ee11f0be" title="Free allocated GenModel struct. " alt="" coords="385,107,540,133"/>
-<area shape="rect" id="node8" href="$gensvm__base_8h.html#a2123ffe5f44db584421e139be7d31b6c" title="Initialize a GenData structure. " alt="" coords="393,208,532,235"/>
+<area shape="rect" id="node8" href="$gensvm__base_8h.html#a1dfbbfcaab181c1f0d04d9d24a4807ea" title="Initialize a GenData structure. " alt="" coords="393,208,532,235"/>
 <area shape="rect" id="node9" href="$gensvm__base_8h.html#a3b6c01ec77b5726843f7dd6c68593f6a" title="Allocate memory for a GenModel. " alt="" coords="372,259,553,285"/>
 <area shape="rect" id="node10" href="$gensvm__simplex_8h.html#a99b48c0294e8275dd092fc5cf947bf0f" title="Generate the simplex difference matrix. " alt="" coords="382,309,543,336"/>
 <area shape="rect" id="node11" href="$gensvm__base_8h.html#a98f3696d492bec4485e3f2a42062705f" title="Free allocated GenData struct. " alt="" coords="391,157,534,184"/>

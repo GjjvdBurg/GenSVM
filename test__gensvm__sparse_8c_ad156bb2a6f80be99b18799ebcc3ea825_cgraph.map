@@ -1,4 +1,4 @@
 <map id="test_init_free_sparse" name="test_init_free_sparse">
-<area shape="rect" id="node2" href="$gensvm__sparse_8h.html#ac45d0a15c75382ad8f3f4232eadf9f4d" title="Initialize a GenSparse structure. " alt="" coords="215,5,367,32"/>
+<area shape="rect" id="node2" href="$gensvm__sparse_8h.html#a3b4a12d69275cd76865aea9b0fa51346" title="Initialize a GenSparse structure. " alt="" coords="215,5,367,32"/>
 <area shape="rect" id="node3" href="$gensvm__sparse_8h.html#a1bd9399ffc0b5e4d32ac160eb3143864" title="Free an allocated GenSparse structure. " alt="" coords="212,56,369,83"/>
 </map>

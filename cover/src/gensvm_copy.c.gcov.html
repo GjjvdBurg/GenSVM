@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2017-02-17 19:16:12</td>
+            <td class="headerValue">2017-02-21 18:44:20</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">1</td>
@@ -92,27 +92,36 @@
 <span class="lineNum">      30 </span>            :  * @brief Copy model parameters between two GenModel structs
 <span class="lineNum">      31 </span>            :  *
 <span class="lineNum">      32 </span>            :  * @details
-<span class="lineNum">      33 </span>            :  * The parameters copied are GenModel::weight_idx, GenModel::epsilon,
-<span class="lineNum">      34 </span>            :  * GenModel::p, GenModel::kappa, and GenModel::lambda.
-<span class="lineNum">      35 </span>            :  *
-<span class="lineNum">      36 </span>            :  * @param[in]           from    GenModel to copy parameters from
-<a name="37"><span class="lineNum">      37 </span>            :  * @param[in,out]       to      GenModel to copy parameters to</a>
-<span class="lineNum">      38 </span>            :  */
-<span class="lineNum">      39 </span><span class="lineCov">          7 : void gensvm_copy_model(struct GenModel *from, struct GenModel *to)</span>
-<span class="lineNum">      40 </span>            : {
-<span class="lineNum">      41 </span><span class="lineCov">          7 :         to-&gt;weight_idx = from-&gt;weight_idx;</span>
-<span class="lineNum">      42 </span><span class="lineCov">          7 :         to-&gt;epsilon = from-&gt;epsilon;</span>
-<span class="lineNum">      43 </span><span class="lineCov">          7 :         to-&gt;p = from-&gt;p;</span>
-<span class="lineNum">      44 </span><span class="lineCov">          7 :         to-&gt;kappa = from-&gt;kappa;</span>
-<span class="lineNum">      45 </span><span class="lineCov">          7 :         to-&gt;lambda = from-&gt;lambda;</span>
-<span class="lineNum">      46 </span>            : 
-<span class="lineNum">      47 </span><span class="lineCov">          7 :         to-&gt;kerneltype = from-&gt;kerneltype;</span>
-<span class="lineNum">      48 </span><span class="lineCov">          7 :         to-&gt;gamma = from-&gt;gamma;</span>
-<span class="lineNum">      49 </span><span class="lineCov">          7 :         to-&gt;coef = from-&gt;coef;</span>
-<span class="lineNum">      50 </span><span class="lineCov">          7 :         to-&gt;degree = from-&gt;degree;</span>
-<span class="lineNum">      51 </span>            : 
-<span class="lineNum">      52 </span><span class="lineCov">          7 :         to-&gt;max_iter = from-&gt;max_iter;</span>
-<span class="lineNum">      53 </span><span class="lineCov">          7 : }</span>
+<span class="lineNum">      33 </span>            :  * The parameters copied are:
+<span class="lineNum">      34 </span>            :  *  - GenModel::weight_idx
+<span class="lineNum">      35 </span>            :  *  - GenModel::epsilon
+<span class="lineNum">      36 </span>            :  *  - GenModel::p
+<span class="lineNum">      37 </span>            :  *  - GenModel::kappa
+<span class="lineNum">      38 </span>            :  *  - GenModel::lambda
+<span class="lineNum">      39 </span>            :  *  - GenModel::kerneltype
+<span class="lineNum">      40 </span>            :  *  - GenModel::gamma
+<span class="lineNum">      41 </span>            :  *  - GenModel::coef
+<span class="lineNum">      42 </span>            :  *  - GenModel::degree
+<span class="lineNum">      43 </span>            :  *  - GenModel::max_iter
+<span class="lineNum">      44 </span>            :  *
+<span class="lineNum">      45 </span>            :  * @param[in]           from    GenModel to copy parameters from
+<a name="46"><span class="lineNum">      46 </span>            :  * @param[in,out]       to      GenModel to copy parameters to</a>
+<span class="lineNum">      47 </span>            :  */
+<span class="lineNum">      48 </span><span class="lineCov">          7 : void gensvm_copy_model(struct GenModel *from, struct GenModel *to)</span>
+<span class="lineNum">      49 </span>            : {
+<span class="lineNum">      50 </span><span class="lineCov">          7 :         to-&gt;weight_idx = from-&gt;weight_idx;</span>
+<span class="lineNum">      51 </span><span class="lineCov">          7 :         to-&gt;epsilon = from-&gt;epsilon;</span>
+<span class="lineNum">      52 </span><span class="lineCov">          7 :         to-&gt;p = from-&gt;p;</span>
+<span class="lineNum">      53 </span><span class="lineCov">          7 :         to-&gt;kappa = from-&gt;kappa;</span>
+<span class="lineNum">      54 </span><span class="lineCov">          7 :         to-&gt;lambda = from-&gt;lambda;</span>
+<span class="lineNum">      55 </span>            : 
+<span class="lineNum">      56 </span><span class="lineCov">          7 :         to-&gt;kerneltype = from-&gt;kerneltype;</span>
+<span class="lineNum">      57 </span><span class="lineCov">          7 :         to-&gt;gamma = from-&gt;gamma;</span>
+<span class="lineNum">      58 </span><span class="lineCov">          7 :         to-&gt;coef = from-&gt;coef;</span>
+<span class="lineNum">      59 </span><span class="lineCov">          7 :         to-&gt;degree = from-&gt;degree;</span>
+<span class="lineNum">      60 </span>            : 
+<span class="lineNum">      61 </span><span class="lineCov">          7 :         to-&gt;max_iter = from-&gt;max_iter;</span>
+<span class="lineNum">      62 </span><span class="lineCov">          7 : }</span>
 </pre>
       </td>
     </tr>

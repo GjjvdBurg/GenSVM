@@ -129,6 +129,9 @@ Public Attributes</h2></td></tr>
 <tr class="memitem:ad56215aef94efc33258b0236dab10355"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structGenModel.html#ad56215aef94efc33258b0236dab10355">training_error</a></td></tr>
 <tr class="memdesc:ad56215aef94efc33258b0236dab10355"><td class="mdescLeft">&#160;</td><td class="mdescRight">loss function value after training has finished  <a href="#ad56215aef94efc33258b0236dab10355">More...</a><br /></td></tr>
 <tr class="separator:ad56215aef94efc33258b0236dab10355"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5afc3c4fcb0f0e9f96c5b6ac9800b94a"><td class="memItemLeft" align="right" valign="top">long&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structGenModel.html#a5afc3c4fcb0f0e9f96c5b6ac9800b94a">elapsed_iter</a></td></tr>
+<tr class="memdesc:a5afc3c4fcb0f0e9f96c5b6ac9800b94a"><td class="mdescLeft">&#160;</td><td class="mdescRight">number of elapsed iterations in training  <a href="#a5afc3c4fcb0f0e9f96c5b6ac9800b94a">More...</a><br /></td></tr>
+<tr class="separator:a5afc3c4fcb0f0e9f96c5b6ac9800b94a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a37a7a0982b9efa014ed48ff8ced7a013"><td class="memItemLeft" align="right" valign="top">char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structGenModel.html#a37a7a0982b9efa014ed48ff8ced7a013">data_file</a></td></tr>
 <tr class="memdesc:a37a7a0982b9efa014ed48ff8ced7a013"><td class="mdescLeft">&#160;</td><td class="mdescRight">filename of the data  <a href="#a37a7a0982b9efa014ed48ff8ced7a013">More...</a><br /></td></tr>
 <tr class="separator:a37a7a0982b9efa014ed48ff8ced7a013"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -141,6 +144,9 @@ Public Attributes</h2></td></tr>
 <tr class="memitem:ad9c87868a66776308489227c958b8daf"><td class="memItemLeft" align="right" valign="top">long&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structGenModel.html#ad9c87868a66776308489227c958b8daf">max_iter</a></td></tr>
 <tr class="memdesc:ad9c87868a66776308489227c958b8daf"><td class="mdescLeft">&#160;</td><td class="mdescRight">maximum number of iterations of the algorithm  <a href="#ad9c87868a66776308489227c958b8daf">More...</a><br /></td></tr>
 <tr class="separator:ad9c87868a66776308489227c958b8daf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a211e350fce7739072e41fc731bc70e30"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structGenModel.html#a211e350fce7739072e41fc731bc70e30">status</a></td></tr>
+<tr class="memdesc:a211e350fce7739072e41fc731bc70e30"><td class="mdescLeft">&#160;</td><td class="mdescRight">status of the model after training  <a href="#a211e350fce7739072e41fc731bc70e30">More...</a><br /></td></tr>
+<tr class="separator:a211e350fce7739072e41fc731bc70e30"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>A structure to represent a single GenSVM model. </p>
@@ -179,7 +185,7 @@ Public Attributes</h2></td></tr>
 
 <p>filename of the data </p>
 
-<p class="definition">Definition at line <a class="el" href="gensvm__base_8h_source.html#l00132">132</a> of file <a class="el" href="gensvm__base_8h_source.html">gensvm_base.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="gensvm__base_8h_source.html#l00134">134</a> of file <a class="el" href="gensvm__base_8h_source.html">gensvm_base.h</a>.</p>
 
 </div>
 </div>
@@ -198,6 +204,24 @@ Public Attributes</h2></td></tr>
 <p>kernel parameter for poly </p>
 
 <p class="definition">Definition at line <a class="el" href="gensvm__base_8h_source.html#l00113">113</a> of file <a class="el" href="gensvm__base_8h_source.html">gensvm_base.h</a>.</p>
+
+</div>
+</div>
+<a id="a5afc3c4fcb0f0e9f96c5b6ac9800b94a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5afc3c4fcb0f0e9f96c5b6ac9800b94a">&#9670;&nbsp;</a></span>elapsed_iter</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">long GenModel::elapsed_iter</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>number of elapsed iterations in training </p>
+
+<p class="definition">Definition at line <a class="el" href="gensvm__base_8h_source.html#l00132">132</a> of file <a class="el" href="gensvm__base_8h_source.html">gensvm_base.h</a>.</p>
 
 </div>
 </div>
@@ -305,7 +329,7 @@ Public Attributes</h2></td></tr>
 
 <p>cutoff value for the ratio of eigenvalues in the reduced </p>
 
-<p class="definition">Definition at line <a class="el" href="gensvm__base_8h_source.html#l00136">136</a> of file <a class="el" href="gensvm__base_8h_source.html">gensvm_base.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="gensvm__base_8h_source.html#l00138">138</a> of file <a class="el" href="gensvm__base_8h_source.html">gensvm_base.h</a>.</p>
 
 </div>
 </div>
@@ -323,7 +347,7 @@ Public Attributes</h2></td></tr>
 
 <p>type of kernel used in the model </p>
 
-<p class="definition">Definition at line <a class="el" href="gensvm__base_8h_source.html#l00134">134</a> of file <a class="el" href="gensvm__base_8h_source.html">gensvm_base.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="gensvm__base_8h_source.html#l00136">136</a> of file <a class="el" href="gensvm__base_8h_source.html">gensvm_base.h</a>.</p>
 
 </div>
 </div>
@@ -377,7 +401,7 @@ Public Attributes</h2></td></tr>
 
 <p>maximum number of iterations of the algorithm </p>
 
-<p class="definition">Definition at line <a class="el" href="gensvm__base_8h_source.html#l00139">139</a> of file <a class="el" href="gensvm__base_8h_source.html">gensvm_base.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="gensvm__base_8h_source.html#l00141">141</a> of file <a class="el" href="gensvm__base_8h_source.html">gensvm_base.h</a>.</p>
 
 </div>
 </div>
@@ -450,6 +474,24 @@ Public Attributes</h2></td></tr>
 <p>vector of instance weights </p>
 
 <p class="definition">Definition at line <a class="el" href="gensvm__base_8h_source.html#l00128">128</a> of file <a class="el" href="gensvm__base_8h_source.html">gensvm_base.h</a>.</p>
+
+</div>
+</div>
+<a id="a211e350fce7739072e41fc731bc70e30"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a211e350fce7739072e41fc731bc70e30">&#9670;&nbsp;</a></span>status</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int GenModel::status</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>status of the model after training </p>
+
+<p class="definition">Definition at line <a class="el" href="gensvm__base_8h_source.html#l00143">143</a> of file <a class="el" href="gensvm__base_8h_source.html">gensvm_base.h</a>.</p>
 
 </div>
 </div>
@@ -566,7 +608,7 @@ Public Attributes</h2></td></tr>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Fri Feb 17 2017 19:16:13 for GenSVM by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Tue Feb 21 2017 18:44:22 for GenSVM by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.13
 </small></address>

@@ -3,5 +3,5 @@
 <area shape="rect" id="node5" href="$gensvm__sparse_8h.html#a261308f5976bc6023e5e376b42986226" title="Convert a GenSparse structure to a dense matrix. " alt="" coords="216,81,407,108"/>
 <area shape="rect" id="node6" href="$gensvm__sparse_8h.html#a1bd9399ffc0b5e4d32ac160eb3143864" title="Free an allocated GenSparse structure. " alt="" coords="233,132,390,159"/>
 <area shape="rect" id="node3" href="$gensvm__sparse_8c.html#a88aab6b67242e2a4993a5c9c796161e7" title="Count the number of nonzeros in a matrix. " alt="" coords="457,5,604,32"/>
-<area shape="rect" id="node4" href="$gensvm__sparse_8c.html#ac45d0a15c75382ad8f3f4232eadf9f4d" title="Initialize a GenSparse structure. " alt="" coords="455,56,607,83"/>
+<area shape="rect" id="node4" href="$gensvm__sparse_8c.html#a3b4a12d69275cd76865aea9b0fa51346" title="Initialize a GenSparse structure. " alt="" coords="455,56,607,83"/>
 </map>

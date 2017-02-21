@@ -1,6 +1,6 @@
 <map id="test_gensvm_predict_labels_dense" name="test_gensvm_predict_labels_dense">
-<area shape="rect" id="node2" href="$gensvm__base_8h.html#a2123ffe5f44db584421e139be7d31b6c" title="Initialize a GenData structure. " alt="" coords="233,5,372,32"/>
-<area shape="rect" id="node3" href="$gensvm__base_8h.html#a96f35734dcba63d95e08addd2dabce3d" title="Initialize a GenModel structure. " alt="" coords="227,56,378,83"/>
+<area shape="rect" id="node2" href="$gensvm__base_8h.html#a1dfbbfcaab181c1f0d04d9d24a4807ea" title="Initialize a GenData structure. " alt="" coords="233,5,372,32"/>
+<area shape="rect" id="node3" href="$gensvm__base_8h.html#a974512c4a2d61a39154cb34b19cefc3a" title="Initialize a GenModel structure. " alt="" coords="227,56,378,83"/>
 <area shape="rect" id="node4" href="$gensvm__base_8h.html#a3b6c01ec77b5726843f7dd6c68593f6a" title="Allocate memory for a GenModel. " alt="" coords="212,107,393,133"/>
 <area shape="rect" id="node5" href="$gensvm__predict_8h.html#a9ea580930c4e052a9a57b35aade71a02" title="Predict class labels of data given and output in predy. " alt="" coords="217,157,389,184"/>
 <area shape="rect" id="node10" href="$gensvm__base_8h.html#a98f3696d492bec4485e3f2a42062705f" title="Free allocated GenData struct. " alt="" coords="231,208,374,235"/>
