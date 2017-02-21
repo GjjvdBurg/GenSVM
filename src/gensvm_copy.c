@@ -30,8 +30,17 @@
  * @brief Copy model parameters between two GenModel structs
  *
  * @details
- * The parameters copied are GenModel::weight_idx, GenModel::epsilon,
- * GenModel::p, GenModel::kappa, and GenModel::lambda.
+ * The parameters copied are:
+ *  - GenModel::weight_idx
+ *  - GenModel::epsilon
+ *  - GenModel::p
+ *  - GenModel::kappa
+ *  - GenModel::lambda
+ *  - GenModel::kerneltype
+ *  - GenModel::gamma
+ *  - GenModel::coef
+ *  - GenModel::degree
+ *  - GenModel::max_iter
  *
  * @param[in] 		from 	GenModel to copy parameters from
  * @param[in,out] 	to 	GenModel to copy parameters to
