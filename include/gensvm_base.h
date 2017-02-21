@@ -129,6 +129,8 @@ struct GenModel {
 	///< vector of instance weights
 	double training_error;
 	///< loss function value after training has finished
+	long elapsed_iter;
+	///< number of elapsed iterations in training
 	char *data_file;
 	///< filename of the data
 	KernelType kerneltype;

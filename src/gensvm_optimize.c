@@ -123,6 +123,9 @@ void gensvm_optimize(struct GenModel *model, struct GenData *data)
 	// store the training error in the model
 	model->training_error = (Lbar - L)/L;
 
+	// store the iteration count in the model
+	model->elapsed_iter = it - 1;
+
 	// free the workspace
 	gensvm_free_work(work);
 }
