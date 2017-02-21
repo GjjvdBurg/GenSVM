@@ -1,5 +1,11 @@
 # Change Log
 
+## Version 0.1.4
+
+- Keep track of elapsed iterations during training
+- Keep a training status
+- Explicitly specify "void" as arguments to functions
+
 ## Version 0.1.3
 
 - Allow max_iter to be set in the model

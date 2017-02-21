@@ -1,4 +1,4 @@
-VERSION=0.1.3
+VERSION=0.1.4
 CC=gcc
 CFLAGS=-Wall -DVERSION=$(VERSION) -g -O3
 INCLUDE= -Iinclude
