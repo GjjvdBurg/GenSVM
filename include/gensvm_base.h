@@ -140,6 +140,8 @@ struct GenModel {
 	//eigendecomposition.
 	long max_iter;
 	///< maximum number of iterations of the algorithm
+	int status;
+	///< status of the model after training
 };
 
 /**

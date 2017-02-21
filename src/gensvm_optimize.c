@@ -104,13 +104,21 @@ void gensvm_optimize(struct GenModel *model, struct GenData *data)
 		it++;
 	}
 
+	// status == 0 means training was successful
+	model->status = 0;
+
 	// print warnings if necessary
-	if (L > Lbar)
+	if (L > Lbar) {
 		err("[GenSVM Warning]: Negative step occurred in "
 				"majorization.\n");
-	if (it >= model->max_iter)
+		model->status = 1;
+	}
+
+	if (it >= model->max_iter) {
 		err("[GenSVM Warning]: maximum number of iterations "
 				"reached.\n");
+		model->status = 2;
+	}
 
 	// print final iteration count and loss
 	note("Optimization finished, iter = %li, loss = %15.16f, "
