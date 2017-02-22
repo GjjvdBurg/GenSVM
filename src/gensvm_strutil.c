@@ -132,8 +132,7 @@ char **str_split(char *original, const char *delims, int *len_ret)
 	char *copy = NULL,
 	     *token = NULL,
 	     **result = NULL;
-	int i, count;
-
+	size_t i, count;
 	size_t len = strlen(original);
 	size_t n_delim = strlen(delims);
 
