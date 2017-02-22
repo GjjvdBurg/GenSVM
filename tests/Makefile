@@ -1,5 +1,5 @@
 CC=gcc
-CFLAGS=-Wall -g -rdynamic -DNDEBUG $(OPTFLAGS)
+CFLAGS=-Wall -Wno-unused-result -Wsign-compare -g -rdynamic -DNDEBUG $(OPTFLAGS)
 INCLUDE=-I../include/ -I./include
 LIB=-L../lib
 

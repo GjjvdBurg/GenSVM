@@ -1,6 +1,7 @@
 VERSION=0.1.4
 CC=gcc
-CFLAGS=-Wall -DVERSION=$(VERSION) -g -O3
+CFLAGS=-Wall -Wno-unused-result -Wsign-compare -Wstrict-prototypes \
+       -DVERSION=$(VERSION) -g -O3
 INCLUDE= -Iinclude
 LIB= -Llib
 DOXY=doxygen
