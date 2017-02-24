@@ -118,6 +118,7 @@ struct GenModel *gensvm_init_model(void)
 	model->training_error = -1;
 	model->elapsed_iter = -1;
 	model->status = -1;
+	model->seed = -1;
 
 	model->V = NULL;
 	model->Vbar = NULL;

@@ -95,6 +95,7 @@ void exit_with_help(char **argv)
 			"3=SIGMOID)\n");
 	printf("-x                   : data files are in LibSVM/SVMlight "
 			"format\n");
+	printf("-z seed              : seed for the random number generator\n");
 	printf("\n");
 
 	exit(EXIT_FAILURE);
@@ -164,9 +165,6 @@ int main(int argc, char **argv)
 		traindata->Z = traindata->RAW;
 		gensvm_free_sparse(traindata->spZ);
 	}
-
-	// seed the random number generator
-	srand(time(NULL));
 
 	// load a seed model from file if it is specified
 	if (gensvm_check_argv_eq(argc, argv, "-s")) {
@@ -347,6 +345,9 @@ void parse_command_line(int argc, char **argv, struct GenModel *model,
 				break;
 			case 'x':
 				i--;
+				break;
+			case 'z':
+				model->seed = atoi(argv[i]);
 				break;
 			default:
 				// this one should always print explicitly to 

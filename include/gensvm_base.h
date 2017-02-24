@@ -142,6 +142,8 @@ struct GenModel {
 	///< maximum number of iterations of the algorithm
 	int status;
 	///< status of the model after training
+	long seed;
+	///< seed for the random number generator (-1 = random)
 };
 
 /**

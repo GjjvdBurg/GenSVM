@@ -53,7 +53,7 @@ extern FILE *GENSVM_ERROR_FILE;
 
 // function declarations
 void exit_with_help(char **argv);
-void parse_command_line(int argc, char **argv, char *input_filename);
+long parse_command_line(int argc, char **argv, char *input_filename);
 void read_grid_from_file(char *input_filename, struct GenGrid *grid);
 
 /**
@@ -77,6 +77,7 @@ void exit_with_help(char **argv)
 	printf("-h | -help : print this help.\n");
 	printf("-q         : quiet mode (no output, not even errors!)\n");
 	printf("-x         : data files are in LibSVM/SVMlight format\n");
+	printf("-z         : seed for the random number generator\n");
 
 	exit(EXIT_FAILURE);
 }
@@ -101,6 +102,7 @@ void exit_with_help(char **argv)
  */
 int main(int argc, char **argv)
 {
+	long seed;
 	bool libsvm_format = false;
 	char input_filename[GENSVM_MAX_LINE_LENGTH];
 
@@ -112,7 +114,7 @@ int main(int argc, char **argv)
 	if (argc < MINARGS || gensvm_check_argv(argc, argv, "-help")
 			|| gensvm_check_argv_eq(argc, argv, "-h") )
 		exit_with_help(argv);
-	parse_command_line(argc, argv, input_filename);
+	seed = parse_command_line(argc, argv, input_filename);
 	libsvm_format = gensvm_check_argv(argc, argv, "-x");
 
 	note("Reading grid file\n");
@@ -154,7 +156,7 @@ int main(int argc, char **argv)
 	note("Creating queue\n");
 	gensvm_fill_queue(grid, q, train_data, test_data);
 
-	srand(time(NULL));
+	srand(seed);
 
 	note("Starting training\n");
 	gensvm_train_queue(q);
@@ -186,10 +188,12 @@ int main(int argc, char **argv)
  * @param[in] 	argv 		array of command line arguments
  * @param[in] 	input_filename 	pre-allocated buffer for the grid
  * 				filename.
+ * @returns 			seed for the RNG
  *
  */
-void parse_command_line(int argc, char **argv, char *input_filename)
+long parse_command_line(int argc, char **argv, char *input_filename)
 {
+	long seed = time(NULL);
 	int i;
 
 	GENSVM_OUTPUT_FILE = stdout;
@@ -208,6 +212,9 @@ void parse_command_line(int argc, char **argv, char *input_filename)
 			case 'x':
 				i--;
 				break;
+			case 'z':
+				seed = atoi(argv[i]);
+				break;
 			default:
 				fprintf(stderr, "Unknown option: -%c\n",
 						argv[i-1][1]);
@@ -219,6 +226,8 @@ void parse_command_line(int argc, char **argv, char *input_filename)
 		exit_with_help(argv);
 
 	strcpy(input_filename, argv[i]);
+
+	return seed;
 }
 
 /**

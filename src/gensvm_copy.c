@@ -41,6 +41,7 @@
  *  - GenModel::coef
  *  - GenModel::degree
  *  - GenModel::max_iter
+ *  - GenModel::seed
  *
  * @param[in] 		from 	GenModel to copy parameters from
  * @param[in,out] 	to 	GenModel to copy parameters to
@@ -59,4 +60,5 @@ void gensvm_copy_model(struct GenModel *from, struct GenModel *to)
 	to->degree = from->degree;
 
 	to->max_iter = from->max_iter;
+	to->seed = from->seed;
 }

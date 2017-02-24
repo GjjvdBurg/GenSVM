@@ -44,6 +44,8 @@
 void gensvm_train(struct GenModel *model, struct GenData *data,
 		struct GenModel *seed_model)
 {
+	long real_seed;
+
 	// copy dataset parameters to model
 	model->n = data->n;
 	model->m = data->m;
@@ -51,6 +53,10 @@ void gensvm_train(struct GenModel *model, struct GenData *data,
 
 	// allocate model
 	gensvm_allocate_model(model);
+
+	// set the random seed
+	real_seed = (model->seed == -1) ? time(NULL) : model->seed;
+	srand(real_seed);
 
 	// initialize the V matrix (potentially with a seed model)
 	gensvm_init_V(seed_model, model, data);
