@@ -10,16 +10,13 @@ DOXYFILE=$(DOCDIR)/Doxyfile
 LCOV=lcov
 GENHTML=genhtml
 
-EXECS=gensvm gensvm_grid
-
 # Should be a cleaner way to do this if we rename the exec sources
-EXECS_C=src/GenSVMtraintest.c src/GenSVMgrid.c
-SRC=$(filter-out $(EXECS_C),$(wildcard src/*.c))
+SRC=$(wildcard src/*.c)
 OBJ=$(patsubst %.c,%.o,$(SRC))
 
 .PHONY: all clean doc test cover
 
-all: lib/libgensvm.a $(EXECS)
+all: lib/libgensvm.a
 
 ifdef NOATLAS
 override LDFLAGS+=-lcblas -llapack -lm
@@ -34,7 +31,7 @@ doc: cover
 	$(DOXY) $(DOXYFILE)
 
 clean:
-	rm -rf $(EXECS) *.o src/*.o lib/*.a *.{gcno,gcov} src/*.{gcno,gcda}
+	rm -rf *.o src/*.o lib/*.a *.{gcno,gcov} src/*.{gcno,gcda}
 	$(MAKE) -C tests clean
 
 test: lib/libgensvm.a
@@ -57,14 +54,6 @@ cover: lib/libgensvm.a
 lib/libgensvm.a: $(OBJ)
 	@ar rcs lib/libgensvm.a $(OBJ)
 	@echo libgensvm.a...
-
-gensvm: src/GenSVMtraintest.c lib/libgensvm.a
-	@$(CC) -o $@ $< $(CFLAGS) $(INCLUDE) $(LIB) -lgensvm $(LDFLAGS)
-	@echo gensvm ...
-
-gensvm_grid: src/GenSVMgrid.c lib/libgensvm.a
-	@$(CC) -o $@ $< $(CFLAGS) $(INCLUDE) $(LIB) -lgensvm $(LDFLAGS)
-	@echo gensvm_grid ...
 
 src/%.o: src/%.c
 	@$(CC) $(CFLAGS) $(INCLUDE) $(LDFLAGS) -c $< -o $@
