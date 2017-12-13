@@ -103,6 +103,10 @@ struct GenModel *gensvm_init_model(void)
 {
 	struct GenModel *model = Malloc(struct GenModel, 1);
 
+	model->n = 0;
+	model->m = 0;
+	model->K = 0;
+
 	// set default values
 	model->p = 1.0;
 	model->lambda = pow(2, -8.0);
