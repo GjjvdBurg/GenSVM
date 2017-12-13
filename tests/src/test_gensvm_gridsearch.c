@@ -940,7 +940,7 @@ char *test_gridsearch_progress_linear()
 	task->ID = 0;
 
 	// start test code //
-	gensvm_gridsearch_progress(task, 10, 0.5, 0.123, 0.7);
+	gensvm_gridsearch_progress(task, 10, 0.5, 0.123, 0.7, true);
 	fclose(GENSVM_OUTPUT_FILE);
 
 	char buffer[GENSVM_MAX_LINE_LENGTH];
@@ -971,7 +971,7 @@ char *test_gridsearch_progress_rbf()
 	task->gamma = 3.0;
 
 	// start test code //
-	gensvm_gridsearch_progress(task, 10, 0.5, 0.123, 0.7);
+	gensvm_gridsearch_progress(task, 10, 0.5, 0.123, 0.7, true);
 	fclose(GENSVM_OUTPUT_FILE);
 
 	char buffer[GENSVM_MAX_LINE_LENGTH];
@@ -1004,7 +1004,7 @@ char *test_gridsearch_progress_poly()
 	task->degree = 2.0;
 
 	// start test code //
-	gensvm_gridsearch_progress(task, 10, 0.5, 0.123, 0.7);
+	gensvm_gridsearch_progress(task, 10, 0.5, 0.123, 0.7, true);
 	fclose(GENSVM_OUTPUT_FILE);
 
 	char buffer[GENSVM_MAX_LINE_LENGTH];
@@ -1038,7 +1038,7 @@ char *test_gridsearch_progress_sigmoid()
 	task->coef = 1.0;
 
 	// start test code //
-	gensvm_gridsearch_progress(task, 10, 0.5, 0.123, 0.7);
+	gensvm_gridsearch_progress(task, 10, 0.5, 0.123, 0.7, true);
 	fclose(GENSVM_OUTPUT_FILE);
 
 	char buffer[GENSVM_MAX_LINE_LENGTH];

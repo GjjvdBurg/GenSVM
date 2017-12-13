@@ -2,6 +2,8 @@
 #include <numpy/arrayobject.h>
 #include "include/gensvm_base.h"
 #include "include/gensvm_predict.h"
+#include "include/gensvm_task.h"
+#include "include/gensvm_gridsearch.h"
 
 void set_model(struct GenModel *model, double p, double lambda, 
 		double kappa, double epsilon, int weight_idx, int kernel_index,
@@ -21,6 +23,43 @@ void set_model(struct GenModel *model, double p, double lambda,
 	model->max_iter = max_iter;
 	model->seed = random_seed;
 }
+
+
+void set_seed_model(struct GenModel *model, double p, double lambda, 
+		double kappa, double epsilon, int weight_idx, int kernel_index,
+		double degree, double gamma, double coef, 
+		double kernel_eigen_cutoff, long max_iter, long random_seed, 
+		char *seed_V, long n_var, long n_class)
+{
+	model->p = p;
+	model->lambda = lambda;
+	model->kappa = kappa;
+	model->epsilon = epsilon;
+	model->weight_idx = weight_idx;
+	model->kerneltype = kernel_index;
+	model->gamma = gamma;
+	model->coef = coef;
+	model->degree = degree;
+	model->kernel_eigen_cutoff = kernel_eigen_cutoff;
+	model->max_iter = max_iter;
+	model->seed = random_seed;
+
+	model->n = 0;
+	model->m = n_var;
+	model->K = n_class;
+
+	gensvm_allocate_model(model);
+
+	double *seed_Vd = (double *) seed_V;
+
+	long i, j;
+	for (i=0; i<model->m+1; i++) {
+		for (j=0; j<model->K-1; j++) {
+			model->V[i*(n_class-1)+j] = seed_Vd[i*(n_class-1)+j];
+		}
+	}
+}
+
 
 void copy_X(struct GenData *data, double *Xd)
 {
@@ -164,4 +203,58 @@ void gensvm_predict(char *X, char *V, long n_test, long m, long K,
 
 	gensvm_free_model(model);
 	gensvm_free_data(data);
+}
+
+void set_task(struct GenTask *t, int ID, struct GenData *data, int folds, 
+		double p, double lambda, double kappa, double epsilon, 
+		double weight_idx, int kernel_index, double degree, 
+		double gamma, double coef, long max_iter)
+{
+	t->ID = ID;
+	t->train_data = data;
+	t->folds = folds;
+	t->p = p;
+	t->lambda = lambda;
+	t->kappa = kappa;
+	t->epsilon = epsilon;
+	t->weight_idx = weight_idx;
+	t->kerneltype = kernel_index;
+	t->degree = degree;
+	t->gamma = gamma;
+	t->coef = coef;
+	t->max_iter = max_iter;
+}
+
+void gensvm_train_q_helper(struct GenQueue *q, char *CV_IDX, 
+		int store_pred)
+{
+	long *cv_idx = (long *) CV_IDX;
+	bool store_predictions = store_pred;
+
+	gensvm_train_queue(q, cv_idx, store_predictions);
+}
+
+void set_queue(struct GenQueue *q, long n_tasks, struct GenTask **tasks)
+{
+	q->N = n_tasks;
+	q->tasks = tasks;
+}
+
+double get_task_duration(struct GenTask *t)
+{
+	return t->duration;
+}
+
+double get_task_performance(struct GenTask *t)
+{
+	return t->performance;
+}
+
+void copy_task_predictions(struct GenTask *t, char *predictions, long n_obs)
+{
+	long *pred = (long *) predictions;
+	long i;
+	for (i=0; i<n_obs; i++) {
+		pred[i] = t->predictions[i];
+	}
 }
