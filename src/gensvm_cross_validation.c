@@ -89,3 +89,49 @@ double gensvm_cross_validation(struct GenModel *model,
 
 	return total_perf;
 }
+
+void copy_predictions(long *predy, long *predictions, long *cv_idx, long fold, 
+		long N)
+{
+	long i, j = 0;
+	for (i=0; i<N; i++) {
+		if (cv_idx[i] == fold) {
+			predictions[i] = predy[j];
+			j++;
+		}
+	}
+}
+
+void gensvm_cross_validation_store(struct GenModel *model, 
+		struct GenData **train_folds, struct GenData **test_folds, 
+		long folds, long n_total, long *cv_idx, long *predictions)
+{
+	long f;
+	long *predy = NULL;
+
+	// make sure that gensvm_optimize() is silent.
+	FILE *fid = GENSVM_OUTPUT_FILE;
+	GENSVM_OUTPUT_FILE = NULL;
+
+	// run cross-validation
+	for (f=0; f<folds; f++) {
+		// reallocate model in case dimensions differ with data
+		gensvm_reallocate_model(model, train_folds[f]->n,
+				train_folds[f]->r);
+
+		// initialize object weights
+		gensvm_initialize_weights(train_folds[f], model);
+
+		// train the model (surpressing output)
+		gensvm_optimize(model, train_folds[f]);
+
+		// calculate prediction performance on test set
+		predy = Calloc(long, test_folds[f]->n);
+		gensvm_predict_labels(test_folds[f], model, predy);
+		copy_predictions(predy, predictions, cv_idx, f, n_total);
+		free(predy);
+	}
+
+	// reset the output stream
+	GENSVM_OUTPUT_FILE = fid;
+}

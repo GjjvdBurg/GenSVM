@@ -39,10 +39,15 @@ struct GenTask *gensvm_init_task(void)
 {
 	struct GenTask *t = Malloc(struct GenTask, 1);
 
+	// for training
+	t->ID = -1;
+	t->folds = 10;
+	t->train_data = NULL;
+	t->test_data = NULL;
+
+	// for the model
 	t->kerneltype = K_LINEAR;
 	t->weight_idx = 1;
-	t->folds = 10;
-	t->ID = -1;
 	t->p = 1.0;
 	t->kappa = 0.0;
 	t->lambda = 1.0;
@@ -50,10 +55,12 @@ struct GenTask *gensvm_init_task(void)
 	t->gamma = 1.0;
 	t->coef = 0.0;
 	t->degree = 2.0;
-	t->train_data = NULL;
-	t->test_data = NULL;
-	t->performance = 0.0;
 	t->max_iter = 1000000000;
+
+	// results
+	t->performance = -1.0;
+	t->duration = -1.0;
+	t->predictions = NULL;
 
 	return t;
 }
@@ -70,6 +77,9 @@ struct GenTask *gensvm_init_task(void)
  */
 void gensvm_free_task(struct GenTask *t)
 {
+	if (t->predictions != NULL) {
+		free(t->predictions);
+	}
 	free(t);
 	t = NULL;
 }

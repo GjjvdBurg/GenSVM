@@ -37,5 +37,8 @@
 double gensvm_cross_validation(struct GenModel *model,
 		struct GenData **train_folds, struct GenData **test_folds,
 		long folds, long n_total);
+void gensvm_cross_validation_store(struct GenModel *model, 
+		struct GenData **train_folds, struct GenData **test_folds, 
+		long folds, long n_total, long *cv_idx, long *predictions);
 
 #endif

@@ -37,30 +37,39 @@
 /**
  * @brief A structure for a single task in the queue.
  *
- * @param folds 	number of folds in cross validation
  * @param ID 		numeric id of the task in the queue
+ * @param folds 	number of folds in cross validation
+ * @param train_data 	pointer to the training data
+ * @param test_data 	pointer to the test data (if any)
+ *
+ * @param kerneltype 	parameter for the GenModel
  * @param weight_idx 	parameter for the GenModel
  * @param p 		parameter for the GenModel
  * @param kappa 	parameter for the GenModel
  * @param lambda 	parameter for the GenModel
  * @param epsilon 	parameter for the GenModel
- * @param kerneltype 	parameter for the GenModel
  * @param gamma 	parameter for the GenModel
  * @param coef 		parameter for the GenModel
  * @param degree 	parameter for the GenModel
- * @param train_data 	pointer to the training data
- * @param test_data 	pointer to the test data (if any)
- * @param performance 	performance after cross validation
+ *
+ * @param performance 	accuracy on training set during cross validation
+ * @param duration 	training time in seconds
+ * @param predictions 	array of predictions on the training set
+ *
  */
 struct GenTask {
+	long ID;
+	///< numeric id of the task in the queue
+	long folds;
+	///< number of folds in cross validation
+	struct GenData *train_data;
+	///< pointer to the training data
+	struct GenData *test_data;
+	///< pointer to the test data (if any)
 	KernelType kerneltype;
 	///< kerneltype parameter for the GenModel
 	int weight_idx;
 	///< weight_idx parameter for the GenModel
-	long folds;
-	///< number of folds in cross validation
-	long ID;
-	///< numeric id of the task in the queue
 	double p;
 	///< p parameter for the GenModel
 	double kappa;
@@ -77,12 +86,12 @@ struct GenTask {
 	///< degree parameter for the GenModel
 	long max_iter;
 	///< maximum number of iterations of the algorithm
-	struct GenData *train_data;
-	///< pointer to the training data
-	struct GenData *test_data;
-	///< pointer to the test data (if any)
 	double performance;
 	///< performance after cross validation
+	double duration;
+	///< training time in seconds
+	long *predictions;
+	///< array of CV predictions on the training data
 };
 
 struct GenTask *gensvm_init_task(void);
