@@ -392,7 +392,7 @@ void gensvm_gridsearch_progress(struct GenTask *task, long N, double perf,
 			task->kerneltype == K_RBF)
 		sprintf(buffer + strlen(buffer), "g = %3.3f\t", task->gamma);
 	sprintf(buffer + strlen(buffer), "eps = %g\tw = %i\tk = %2.2f\t"
-			"l = %f\tp = %2.2f\t", task->epsilon,
+			"l = %g\tp = %2.2f\t", task->epsilon,
 			task->weight_idx, task->kappa, task->lambda, task->p);
 	note(buffer);
 	if (show_perf)
