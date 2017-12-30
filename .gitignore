@@ -13,3 +13,5 @@ gensvm_grid
 cover/*
 tests/bin/*
 doc/html/
+tests/data/test_progress_string.txt
+tests/data/test_write_model.txt
