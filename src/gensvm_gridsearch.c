@@ -311,6 +311,7 @@ void gensvm_train_queue(struct GenQueue *q, long *cv_idx,
 				test_folds[f], cv_idx, f);
 	}
 
+	note("Starting grid search ...\n");
 	Timer(main_s);
 	while (task) {
 		gensvm_task_to_model(task, model);
