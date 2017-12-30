@@ -361,7 +361,7 @@ void gensvm_get_update(struct GenModel *model, struct GenData *data,
 	// semi-definite for some reason (perhaps due to rounding errors).
 	// This step shouldn't be necessary but is included for safety.
 	if (status != 0) {
-		err("[GenSVM Warning]: Received nonzero status from "
+		gensvm_error("[GenSVM Warning]: Received nonzero status from "
 				"dposv: %i\n", status);
 		int *IPIV = Malloc(int, m+1);
 		double *WORK = Malloc(double, 1);
@@ -373,7 +373,7 @@ void gensvm_get_update(struct GenModel *model, struct GenData *data,
 		status = dsysv('L', m+1, K-1, work->ZAZ, m+1, IPIV, work->ZBc,
 				m+1, WORK, LWORK);
 		if (status != 0)
-			err("[GenSVM Warning]: Received nonzero "
+			gensvm_error("[GenSVM Warning]: Received nonzero "
 					"status from dsysv: %i\n", status);
 		free(WORK);
 		WORK = NULL;

@@ -81,7 +81,7 @@ void note(const char *fmt,...)
  * @param[in] 	fmt 	string format
  * @param[in] 	... 	variable argument list for the string format
  */
-void err(const char *fmt, ...)
+void gensvm_error(const char *fmt, ...)
 {
 	char buf[BUFSIZ];
 	va_list ap;

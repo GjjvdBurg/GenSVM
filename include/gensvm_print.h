@@ -35,6 +35,6 @@
 
 // function declarations
 void note(const char *fmt,...);
-void err(const char *fmt,...);
+void gensvm_error(const char *fmt,...);
 
 #endif

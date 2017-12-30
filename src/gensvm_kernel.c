@@ -180,7 +180,7 @@ void gensvm_kernel_compute(struct GenModel *model, struct GenData *data,
 						model->coef);
 			else {
 				// LCOV_EXCL_START
-				err("[GenSVM Error]: Unknown kernel type in "
+				gensvm_error("[GenSVM Error]: Unknown kernel type in "
 						"gensvm_make_kernel\n");
 				exit(EXIT_FAILURE);
 				// LCOV_EXCL_STOP
@@ -245,7 +245,7 @@ long gensvm_kernel_eigendecomp(double *K, long n, double cutoff, double **P_ret,
 
 	if (status != 0) {
 		// LCOV_EXCL_START
-		err("[GenSVM Error]: Nonzero exit status from dsyevx.\n");
+		gensvm_error("[GenSVM Error]: Nonzero exit status from dsyevx.\n");
 		exit(EXIT_FAILURE);
 		// LCOV_EXCL_STOP
 	}
@@ -335,7 +335,7 @@ double *gensvm_kernel_cross(struct GenModel *model, struct GenData *data_train,
 						model->gamma, model->coef);
 			else {
 				// LCOV_EXCL_START
-				err("[GenSVM Error]: Unknown kernel type in "
+				gensvm_error("[GenSVM Error]: Unknown kernel type in "
 						"gensvm_make_crosskernel\n");
 				exit(EXIT_FAILURE);
 				// LCOV_EXCL_STOP

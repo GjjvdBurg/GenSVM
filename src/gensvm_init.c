@@ -170,7 +170,7 @@ void gensvm_initialize_weights(struct GenData *data, struct GenModel *model)
 						groups[data->y[i]-1]*K));
 	} else {
 		// LCOV_EXCL_START
-		err("[GenSVM Error]: Unknown weight specification.\n");
+		gensvm_error("[GenSVM Error]: Unknown weight specification.\n");
 		exit(EXIT_FAILURE);
 		// LCOV_EXCL_STOP
 	}
