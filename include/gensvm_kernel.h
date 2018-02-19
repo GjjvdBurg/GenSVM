@@ -51,11 +51,14 @@ void gensvm_kernel_trainfactor(struct GenData *data, double *P, double *Sigma,
 		long r);
 void gensvm_kernel_testfactor(struct GenData *testdata,
 	       	struct GenData *traindata, double *K2);
-double gensvm_kernel_dot_rbf(double *x1, double *x2, long n, double gamma);
-double gensvm_kernel_dot_poly(double *x1, double *x2, long n, double gamma, 
-		double coef, double degree);
-double gensvm_kernel_dot_sigmoid(double *x1, double *x2, long n, double gamma, 
-		double coef);
+
+double gensvm_kernel_dot_rbf(double *x, double *y, long n, long incx, 
+		long incy, double gamma);
+double gensvm_kernel_dot_poly(double *x, double *y, long n, long incx, 
+		long incy, double gamma, double coef, double degree);
+double gensvm_kernel_dot_sigmoid(double *x, double *y, long n, long incx, 
+		long incy, double gamma, double coef);
+
 int dsyevx(char JOBZ, char RANGE, char UPLO, int N, double *A, int LDA,
 	       	double VL, double VU, int IL, int IU, double ABSTOL,
 		int *M, double *W, double *Z, int LDZ, double *WORK, int LWORK,

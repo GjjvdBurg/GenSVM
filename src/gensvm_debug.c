@@ -47,7 +47,7 @@ void gensvm_print_matrix(double *M, long rows, long cols)
 		for (j=0; j<cols; j++) {
 			if (j > 0)
 				note(" ");
-			note("%+6.6f", matrix_get(M, cols, i, j));
+			note("%+6.6f", matrix_get(M, rows, cols, i, j));
 		}
 		note("\n");
 	}
@@ -65,10 +65,11 @@ void gensvm_print_matrix(double *M, long rows, long cols)
  */
 void gensvm_print_sparse(struct GenSparse *A)
 {
-	long i;
+	long i, ix_len;
 
 	// print matrix dimensions
 	note("Sparse Matrix:\n");
+	note("\ttype = %s\n", ((A->type == CSR) ? "CSR" : "CSC"));
 	note("\tnnz = %li, rows = %li, cols = %li\n", A->nnz, A->n_row,
 			A->n_col);
 
@@ -80,19 +81,20 @@ void gensvm_print_sparse(struct GenSparse *A)
 	}
 	note(" ]\n");
 
-	// print row indices
-	note("\tIA = [ ");
-	for (i=0; i<A->n_row+1; i++) {
+	// print cumulative lengths
+	note("\tIX = [ ");
+	ix_len = (A->type == CSR) ? A->n_row + 1 : A->n_col + 1;
+	for (i=0; i<ix_len; i++) {
 		if (i != 0) note(", ");
-		note("%i", A->ia[i]);
+		note("%i", A->ix[i]);
 	}
 	note(" ]\n");
 
-	// print column indices
-	note("\tJA = [ ");
+	// print indices
+	note("\tJX = [ ");
 	for (i=0; i<A->nnz; i++) {
 		if (i != 0) note(", ");
-		note("%i", A->ja[i]);
+		note("%i", A->jx[i]);
 	}
 	note(" ]\n");
 }

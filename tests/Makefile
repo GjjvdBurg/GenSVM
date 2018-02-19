@@ -3,6 +3,15 @@ CFLAGS=-Wall -Wno-unused-result -Wsign-compare -g -rdynamic -DNDEBUG $(OPTFLAGS)
 INCLUDE=-I../include/ -I./include
 LIB=-L../lib
 
+#############################################
+#    COLUMN-MAJOR ORDER MUST BE SET HERE    #
+#  (should be the same as for the library)  #
+#############################################
+COLUMN_MAJOR=false
+ifeq ($(COLUMN_MAJOR), true)
+	CFLAGS += -DCOLUMN_MAJOR_ORDER
+endif
+
 ifdef NOATLAS
 override LDFLAGS+=-lm -lcblas -llapack -lgensvm
 else

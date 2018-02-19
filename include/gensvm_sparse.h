@@ -36,23 +36,30 @@
 // type declarations
 
 /**
- * @brief A structure to represent a sparse matrix in CSR format
+ * @brief A structure to represent a sparse matrix in CSR or CSC format
  *
  * @details
- * This structure holds a sparse matrix in the classic CSR format. Refer to
+ * This structure holds a sparse matrix in the CSR or CSC format. Refer to
  * <a href="https://en.wikipedia.org/wiki/Sparse_matrix">Wikipedia</a> for 
- * more details. The total storage requirement for this format is 
- * 2*nnz+n_row+1, so it only makes sense to use this format if the number of 
- * nonzeros is smaller than @f$(n_{row}(n_{col} - 1) - 1)/2@f$.
+ * more details. The total storage requirement for this structure is:
+ *  - CSR: 2*nnz+n_row+1
+ *  - CSC: 2*nnz+n_col+1
+ * So it only makes sense to use this format if the number of nonzeros is 
+ * smaller than
+ *  - CSR: @f$(n_{row}(n_{col} - 1) - 1)/2@f$.
+ *  - CSC: @f$(n_{col}(n_{row} - 1) - 1)/2@f$.
  *
  * @param nnz 		number of nonzero elements
  * @param n_row 	rows of the matrix
  * @param n_col 	columns of the matrix
  * @param values 	nonzero values (length nnz)
- * @param ia 		row indices (length n+1)
- * @param ja 		column indices (length nnz)
+ * @param ix 		cumulative lengths (CSR: n_row+1, CSC: n_col+1)
+ * @param jx 		column (CSR) or row (CSC) indices (length nnz)
  */
 struct GenSparse {
+	enum { CSR, CSC } type;
+	///< type of sparse matrix
+
 	long nnz;
 	///< number of nonzero elements
 	long n_row;
@@ -61,19 +68,34 @@ struct GenSparse {
 	///< number of columns of the original matrix
 
 	double *values;
-	///< actual nonzero values, should be of length nnz
-	long *ia;
-	///< cumulative row lengths, should be of length n_row+1
-	long *ja;
-	///< column indices, should be of length nnz
+	///< array of matrix values, should be of length nnz
+	long *ix;
+	///< CSR: array of cumulative row lengths, length n_row + 1
+	///< CSC: array of cumulative column lengths, length n_col + 1
+	long *jx;
+	///< CSR: array of colum indices, length nnz
+	///< CSC: array of row indices, length nnz
 };
 
 struct GenSparse *gensvm_init_sparse(void);
+
 void gensvm_free_sparse(struct GenSparse *sp);
 long gensvm_count_nnz(double *A, long rows, long cols);
+
 bool gensvm_nnz_comparison(long nnz, long rows, long cols);
+bool gensvm_nnz_comparison_csr(long nnz, long rows, long cols);
+bool gensvm_nnz_comparison_csc(long nnz, long rows, long cols);
+
 bool gensvm_could_sparse(double *A, long rows, long cols);
+bool gensvm_could_sparse_csr(double *A, long rows, long cols);
+bool gensvm_could_sparse_csc(double *A, long rows, long cols);
+
 struct GenSparse *gensvm_dense_to_sparse(double *A, long rows, long cols);
+struct GenSparse *gensvm_dense_to_sparse_csr(double *A, long rows, long cols);
+struct GenSparse *gensvm_dense_to_sparse_csc(double *A, long rows, long cols);
+
 double *gensvm_sparse_to_dense(struct GenSparse *A);
+
+struct GenSparse *gensvm_sparse_csr_to_csc(struct GenSparse *spA);
 
 #endif

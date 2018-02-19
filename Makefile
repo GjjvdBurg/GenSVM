@@ -9,6 +9,15 @@ DOCDIR=doc
 DOXYFILE=$(DOCDIR)/Doxyfile
 LCOV=lcov
 GENHTML=genhtml
+EXECS=gensvm gensvm_grid
+
+#############################################
+#     COLUMN-MAJOR ORDER MUST BE SET HERE   #
+#############################################
+COLUMN_MAJOR=false
+ifeq ($(COLUMN_MAJOR), true)
+	CFLAGS += -DCOLUMN_MAJOR_ORDER
+endif
 
 # Should be a cleaner way to do this if we rename the exec sources
 SRC=$(wildcard src/*.c)

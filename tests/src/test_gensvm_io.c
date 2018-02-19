@@ -42,35 +42,35 @@ char *test_gensvm_read_data()
 	mu_assert(data->K == 4, "Incorrect value for K");
 
 	// check if all data is read correctly.
-	mu_assert(matrix_get(data->Z, data->m+1, 0, 1) == 0.7065937536993949,
+	mu_assert(matrix_get(data->Z, data->n, data->m+1, 0, 1) == 0.7065937536993949,
 			"Incorrect Z value at 0, 1");
-	mu_assert(matrix_get(data->Z, data->m+1, 0, 2) == 0.7016517970438980,
+	mu_assert(matrix_get(data->Z, data->n, data->m+1, 0, 2) == 0.7016517970438980,
 			"Incorrect Z value at 0, 2");
-	mu_assert(matrix_get(data->Z, data->m+1, 0, 3) == 0.1548611397288129,
+	mu_assert(matrix_get(data->Z, data->n, data->m+1, 0, 3) == 0.1548611397288129,
 			"Incorrect Z value at 0, 3");
-	mu_assert(matrix_get(data->Z, data->m+1, 1, 1) == 0.4604987687863951,
+	mu_assert(matrix_get(data->Z, data->n, data->m+1, 1, 1) == 0.4604987687863951,
 			"Incorrect Z value at 1, 1");
-	mu_assert(matrix_get(data->Z, data->m+1, 1, 2) == 0.6374142980176117,
+	mu_assert(matrix_get(data->Z, data->n, data->m+1, 1, 2) == 0.6374142980176117,
 			"Incorrect Z value at 1, 2");
-	mu_assert(matrix_get(data->Z, data->m+1, 1, 3) == 0.0370930278245423,
+	mu_assert(matrix_get(data->Z, data->n, data->m+1, 1, 3) == 0.0370930278245423,
 			"Incorrect Z value at 1, 3");
-	mu_assert(matrix_get(data->Z, data->m+1, 2, 1) == 0.3798777132278375,
+	mu_assert(matrix_get(data->Z, data->n, data->m+1, 2, 1) == 0.3798777132278375,
 			"Incorrect Z value at 2, 1");
-	mu_assert(matrix_get(data->Z, data->m+1, 2, 2) == 0.5745070018747664,
+	mu_assert(matrix_get(data->Z, data->n, data->m+1, 2, 2) == 0.5745070018747664,
 			"Incorrect Z value at 2, 2");
-	mu_assert(matrix_get(data->Z, data->m+1, 2, 3) == 0.2570906697837264,
+	mu_assert(matrix_get(data->Z, data->n, data->m+1, 2, 3) == 0.2570906697837264,
 			"Incorrect Z value at 2, 3");
-	mu_assert(matrix_get(data->Z, data->m+1, 3, 1) == 0.2789376050039792,
+	mu_assert(matrix_get(data->Z, data->n, data->m+1, 3, 1) == 0.2789376050039792,
 			"Incorrect Z value at 3, 1");
-	mu_assert(matrix_get(data->Z, data->m+1, 3, 2) == 0.4853242744610165,
+	mu_assert(matrix_get(data->Z, data->n, data->m+1, 3, 2) == 0.4853242744610165,
 			"Incorrect Z value at 3, 2");
-	mu_assert(matrix_get(data->Z, data->m+1, 3, 3) == 0.1894010436762711,
+	mu_assert(matrix_get(data->Z, data->n, data->m+1, 3, 3) == 0.1894010436762711,
 			"Incorrect Z value at 3, 3");
-	mu_assert(matrix_get(data->Z, data->m+1, 4, 1) == 0.7630904372339489,
+	mu_assert(matrix_get(data->Z, data->n, data->m+1, 4, 1) == 0.7630904372339489,
 			"Incorrect Z value at 4, 1");
-	mu_assert(matrix_get(data->Z, data->m+1, 4, 2) == 0.1341546320318005,
+	mu_assert(matrix_get(data->Z, data->n, data->m+1, 4, 2) == 0.1341546320318005,
 			"Incorrect Z value at 4, 2");
-	mu_assert(matrix_get(data->Z, data->m+1, 4, 3) == 0.6827430912944857,
+	mu_assert(matrix_get(data->Z, data->n, data->m+1, 4, 3) == 0.6827430912944857,
 			"Incorrect Z value at 4, 3");
 	// check if RAW = Z
 	mu_assert(data->Z == data->RAW, "Z pointer doesn't equal RAW pointer");
@@ -83,15 +83,15 @@ char *test_gensvm_read_data()
 	mu_assert(data->y[4] == 3, "Incorrect label read at 4");
 
 	// check if the column of ones is added
-	mu_assert(matrix_get(data->Z, data->m+1, 0, 0) == 1,
+	mu_assert(matrix_get(data->Z, data->n, data->m+1, 0, 0) == 1,
 			"Incorrect Z value at 0, 0");
-	mu_assert(matrix_get(data->Z, data->m+1, 1, 0) == 1,
+	mu_assert(matrix_get(data->Z, data->n, data->m+1, 1, 0) == 1,
 			"Incorrect Z value at 1, 0");
-	mu_assert(matrix_get(data->Z, data->m+1, 2, 0) == 1,
+	mu_assert(matrix_get(data->Z, data->n, data->m+1, 2, 0) == 1,
 			"Incorrect Z value at 2, 0");
-	mu_assert(matrix_get(data->Z, data->m+1, 3, 0) == 1,
+	mu_assert(matrix_get(data->Z, data->n, data->m+1, 3, 0) == 1,
 			"Incorrect Z value at 3, 0");
-	mu_assert(matrix_get(data->Z, data->m+1, 4, 0) == 1,
+	mu_assert(matrix_get(data->Z, data->n, data->m+1, 4, 0) == 1,
 			"Incorrect Z value at 4, 0");
 
 	// end test code //
@@ -125,6 +125,7 @@ char *test_gensvm_read_data_sparse()
 	mu_assert(data->spZ->n_col == 4, "Incorrect n_col");
 
 	// check sparse values
+	#if MAJOR_ORDER == 'r'
 	mu_assert(data->spZ->values[0] == 1.0,
 			"Incorrect nonzero value at 0");
 	mu_assert(data->spZ->values[1] == 0.7016517970438980,
@@ -153,35 +154,80 @@ char *test_gensvm_read_data_sparse()
 			"Incorrect nonzero value at 12");
 	mu_assert(data->spZ->values[13] == 1.0,
 			"Incorrect nonzero value at 13");
+	#else
+	mu_assert(data->spZ->values[0] == 1.0, "Incorrect nonzero value at 0");
+	mu_assert(data->spZ->values[1] == 1.0, "Incorrect nonzero value at 1");
+	mu_assert(data->spZ->values[2] == 1.0, "Incorrect nonzero value at 2");
+	mu_assert(data->spZ->values[3] == 1.0, "Incorrect nonzero value at 3");
+	mu_assert(data->spZ->values[4] == 1.0, "Incorrect nonzero value at 4");
+	mu_assert(data->spZ->values[5] == 1.0, "Incorrect nonzero value at 5");
+	mu_assert(data->spZ->values[6] == 1.0, "Incorrect nonzero value at 6");
+	mu_assert(data->spZ->values[7] == 1.0, "Incorrect nonzero value at 7");
+	mu_assert(data->spZ->values[8] == 1.0, "Incorrect nonzero value at 8");
+	mu_assert(data->spZ->values[9] == 1.0, "Incorrect nonzero value at 9");
+	mu_assert(data->spZ->values[10] == 0.7630904372339489,
+			"Incorrect nonzero value at 10");
+	mu_assert(data->spZ->values[11] == 0.7016517970438980,
+			"Incorrect nonzero value at 11");
+	mu_assert(data->spZ->values[12] == 0.4853242744610165,
+			"Incorrect nonzero value at 12");
+	mu_assert(data->spZ->values[13] == 0.0370930278245423,
+			"Incorrect nonzero value at 13");
+	#endif
 
 	// check sparse row lengths
-	mu_assert(data->spZ->ia[0] == 0, "Incorrect ia value at 0");
-	mu_assert(data->spZ->ia[1] == 2, "Incorrect ia value at 1");
-	mu_assert(data->spZ->ia[2] == 4, "Incorrect ia value at 2");
-	mu_assert(data->spZ->ia[3] == 5, "Incorrect ia value at 3");
-	mu_assert(data->spZ->ia[4] == 7, "Incorrect ia value at 4");
-	mu_assert(data->spZ->ia[5] == 9, "Incorrect ia value at 5");
-	mu_assert(data->spZ->ia[6] == 10, "Incorrect ia value at 5");
-	mu_assert(data->spZ->ia[7] == 11, "Incorrect ia value at 5");
-	mu_assert(data->spZ->ia[8] == 12, "Incorrect ia value at 5");
-	mu_assert(data->spZ->ia[9] == 13, "Incorrect ia value at 5");
-	mu_assert(data->spZ->ia[10] == 14, "Incorrect ia value at 5");
+	#if MAJOR_ORDER == 'r'
+	mu_assert(data->spZ->ix[0] == 0, "Incorrect ix value at 0");
+	mu_assert(data->spZ->ix[1] == 2, "Incorrect ix value at 1");
+	mu_assert(data->spZ->ix[2] == 4, "Incorrect ix value at 2");
+	mu_assert(data->spZ->ix[3] == 5, "Incorrect ix value at 3");
+	mu_assert(data->spZ->ix[4] == 7, "Incorrect ix value at 4");
+	mu_assert(data->spZ->ix[5] == 9, "Incorrect ix value at 5");
+	mu_assert(data->spZ->ix[6] == 10, "Incorrect ix value at 5");
+	mu_assert(data->spZ->ix[7] == 11, "Incorrect ix value at 5");
+	mu_assert(data->spZ->ix[8] == 12, "Incorrect ix value at 5");
+	mu_assert(data->spZ->ix[9] == 13, "Incorrect ix value at 5");
+	mu_assert(data->spZ->ix[10] == 14, "Incorrect ix value at 5");
+	#else
+	mu_assert(data->spZ->ix[0] == 0, "Incorrect ix value at 0");
+	mu_assert(data->spZ->ix[1] == 10, "Incorrect ix value at 1");
+	mu_assert(data->spZ->ix[2] == 11, "Incorrect ix value at 2");
+	mu_assert(data->spZ->ix[3] == 13, "Incorrect ix value at 3");
+	mu_assert(data->spZ->ix[4] == 14, "Incorrect ix value at 4");
+	#endif
 
 	// check sparse column indices
-	mu_assert(data->spZ->ja[0] == 0, "Incorrect ja value at 0");
-	mu_assert(data->spZ->ja[1] == 2, "Incorrect ja value at 1");
-	mu_assert(data->spZ->ja[2] == 0, "Incorrect ja value at 2");
-	mu_assert(data->spZ->ja[3] == 3, "Incorrect ja value at 3");
-	mu_assert(data->spZ->ja[4] == 0, "Incorrect ja value at 4");
-	mu_assert(data->spZ->ja[5] == 0, "Incorrect ja value at 5");
-	mu_assert(data->spZ->ja[6] == 2, "Incorrect ja value at 6");
-	mu_assert(data->spZ->ja[7] == 0, "Incorrect ja value at 7");
-	mu_assert(data->spZ->ja[8] == 1, "Incorrect ja value at 8");
-	mu_assert(data->spZ->ja[9] == 0, "Incorrect ja value at 7");
-	mu_assert(data->spZ->ja[10] == 0, "Incorrect ja value at 7");
-	mu_assert(data->spZ->ja[11] == 0, "Incorrect ja value at 7");
-	mu_assert(data->spZ->ja[12] == 0, "Incorrect ja value at 7");
-	mu_assert(data->spZ->ja[13] == 0, "Incorrect ja value at 7");
+	#if MAJOR_ORDER == 'r'
+	mu_assert(data->spZ->jx[0] == 0, "Incorrect jx value at 0");
+	mu_assert(data->spZ->jx[1] == 2, "Incorrect jx value at 1");
+	mu_assert(data->spZ->jx[2] == 0, "Incorrect jx value at 2");
+	mu_assert(data->spZ->jx[3] == 3, "Incorrect jx value at 3");
+	mu_assert(data->spZ->jx[4] == 0, "Incorrect jx value at 4");
+	mu_assert(data->spZ->jx[5] == 0, "Incorrect jx value at 5");
+	mu_assert(data->spZ->jx[6] == 2, "Incorrect jx value at 6");
+	mu_assert(data->spZ->jx[7] == 0, "Incorrect jx value at 7");
+	mu_assert(data->spZ->jx[8] == 1, "Incorrect jx value at 8");
+	mu_assert(data->spZ->jx[9] == 0, "Incorrect jx value at 7");
+	mu_assert(data->spZ->jx[10] == 0, "Incorrect jx value at 7");
+	mu_assert(data->spZ->jx[11] == 0, "Incorrect jx value at 7");
+	mu_assert(data->spZ->jx[12] == 0, "Incorrect jx value at 7");
+	mu_assert(data->spZ->jx[13] == 0, "Incorrect jx value at 7");
+	#else
+	mu_assert(data->spZ->jx[0] == 0, "Incorrect jx value at 0");
+	mu_assert(data->spZ->jx[1] == 1, "Incorrect jx value at 1");
+	mu_assert(data->spZ->jx[2] == 2, "Incorrect jx value at 2");
+	mu_assert(data->spZ->jx[3] == 3, "Incorrect jx value at 3");
+	mu_assert(data->spZ->jx[4] == 4, "Incorrect jx value at 4");
+	mu_assert(data->spZ->jx[5] == 5, "Incorrect jx value at 5");
+	mu_assert(data->spZ->jx[6] == 6, "Incorrect jx value at 6");
+	mu_assert(data->spZ->jx[7] == 7, "Incorrect jx value at 7");
+	mu_assert(data->spZ->jx[8] == 8, "Incorrect jx value at 8");
+	mu_assert(data->spZ->jx[9] == 9, "Incorrect jx value at 7");
+	mu_assert(data->spZ->jx[10] == 4, "Incorrect jx value at 7");
+	mu_assert(data->spZ->jx[11] == 0, "Incorrect jx value at 7");
+	mu_assert(data->spZ->jx[12] == 3, "Incorrect jx value at 7");
+	mu_assert(data->spZ->jx[13] == 1, "Incorrect jx value at 7");
+	#endif
 
 	// check if labels read correctly
 	mu_assert(data->y[0] == 2, "Incorrect label read at 0");
@@ -211,35 +257,35 @@ char *test_gensvm_read_data_no_label()
 	mu_assert(data->K == 0, "Incorrect value for K");
 
 	// check if all data is read correctly.
-	mu_assert(matrix_get(data->Z, data->m+1, 0, 1) == 0.7065937536993949,
+	mu_assert(matrix_get(data->Z, data->n, data->m+1, 0, 1) == 0.7065937536993949,
 			"Incorrect Z value at 0, 1");
-	mu_assert(matrix_get(data->Z, data->m+1, 0, 2) == 0.7016517970438980,
+	mu_assert(matrix_get(data->Z, data->n, data->m+1, 0, 2) == 0.7016517970438980,
 			"Incorrect Z value at 0, 2");
-	mu_assert(matrix_get(data->Z, data->m+1, 0, 3) == 0.1548611397288129,
+	mu_assert(matrix_get(data->Z, data->n, data->m+1, 0, 3) == 0.1548611397288129,
 			"Incorrect Z value at 0, 3");
-	mu_assert(matrix_get(data->Z, data->m+1, 1, 1) == 0.4604987687863951,
+	mu_assert(matrix_get(data->Z, data->n, data->m+1, 1, 1) == 0.4604987687863951,
 			"Incorrect Z value at 1, 1");
-	mu_assert(matrix_get(data->Z, data->m+1, 1, 2) == 0.6374142980176117,
+	mu_assert(matrix_get(data->Z, data->n, data->m+1, 1, 2) == 0.6374142980176117,
 			"Incorrect Z value at 1, 2");
-	mu_assert(matrix_get(data->Z, data->m+1, 1, 3) == 0.0370930278245423,
+	mu_assert(matrix_get(data->Z, data->n, data->m+1, 1, 3) == 0.0370930278245423,
 			"Incorrect Z value at 1, 3");
-	mu_assert(matrix_get(data->Z, data->m+1, 2, 1) == 0.3798777132278375,
+	mu_assert(matrix_get(data->Z, data->n, data->m+1, 2, 1) == 0.3798777132278375,
 			"Incorrect Z value at 2, 1");
-	mu_assert(matrix_get(data->Z, data->m+1, 2, 2) == 0.5745070018747664,
+	mu_assert(matrix_get(data->Z, data->n, data->m+1, 2, 2) == 0.5745070018747664,
 			"Incorrect Z value at 2, 2");
-	mu_assert(matrix_get(data->Z, data->m+1, 2, 3) == 0.2570906697837264,
+	mu_assert(matrix_get(data->Z, data->n, data->m+1, 2, 3) == 0.2570906697837264,
 			"Incorrect Z value at 2, 3");
-	mu_assert(matrix_get(data->Z, data->m+1, 3, 1) == 0.2789376050039792,
+	mu_assert(matrix_get(data->Z, data->n, data->m+1, 3, 1) == 0.2789376050039792,
 			"Incorrect Z value at 3, 1");
-	mu_assert(matrix_get(data->Z, data->m+1, 3, 2) == 0.4853242744610165,
+	mu_assert(matrix_get(data->Z, data->n, data->m+1, 3, 2) == 0.4853242744610165,
 			"Incorrect Z value at 3, 2");
-	mu_assert(matrix_get(data->Z, data->m+1, 3, 3) == 0.1894010436762711,
+	mu_assert(matrix_get(data->Z, data->n, data->m+1, 3, 3) == 0.1894010436762711,
 			"Incorrect Z value at 3, 3");
-	mu_assert(matrix_get(data->Z, data->m+1, 4, 1) == 0.7630904372339489,
+	mu_assert(matrix_get(data->Z, data->n, data->m+1, 4, 1) == 0.7630904372339489,
 			"Incorrect Z value at 4, 1");
-	mu_assert(matrix_get(data->Z, data->m+1, 4, 2) == 0.1341546320318005,
+	mu_assert(matrix_get(data->Z, data->n, data->m+1, 4, 2) == 0.1341546320318005,
 			"Incorrect Z value at 4, 2");
-	mu_assert(matrix_get(data->Z, data->m+1, 4, 3) == 0.6827430912944857,
+	mu_assert(matrix_get(data->Z, data->n, data->m+1, 4, 3) == 0.6827430912944857,
 			"Incorrect Z value at 4, 3");
 	// check if RAW = Z
 	mu_assert(data->Z == data->RAW, "Z pointer doesn't equal RAW pointer");
@@ -248,15 +294,15 @@ char *test_gensvm_read_data_no_label()
 	mu_assert(data->y == NULL, "Outcome pointer is not NULL");
 
 	// check if the column of ones is added
-	mu_assert(matrix_get(data->Z, data->m+1, 0, 0) == 1,
+	mu_assert(matrix_get(data->Z, data->n, data->m+1, 0, 0) == 1,
 			"Incorrect Z value at 0, 0");
-	mu_assert(matrix_get(data->Z, data->m+1, 1, 0) == 1,
+	mu_assert(matrix_get(data->Z, data->n, data->m+1, 1, 0) == 1,
 			"Incorrect Z value at 1, 0");
-	mu_assert(matrix_get(data->Z, data->m+1, 2, 0) == 1,
+	mu_assert(matrix_get(data->Z, data->n, data->m+1, 2, 0) == 1,
 			"Incorrect Z value at 2, 0");
-	mu_assert(matrix_get(data->Z, data->m+1, 3, 0) == 1,
+	mu_assert(matrix_get(data->Z, data->n, data->m+1, 3, 0) == 1,
 			"Incorrect Z value at 3, 0");
-	mu_assert(matrix_get(data->Z, data->m+1, 4, 0) == 1,
+	mu_assert(matrix_get(data->Z, data->n, data->m+1, 4, 0) == 1,
 			"Incorrect Z value at 4, 0");
 
 	// end test code //
@@ -280,35 +326,35 @@ char *test_gensvm_read_data_libsvm()
 	mu_assert(data->K == 4, "Incorrect value for K");
 
 	// check if all data is read correctly.
-	mu_assert(matrix_get(data->Z, data->m+1, 0, 1) == 0.7065937536993949,
+	mu_assert(matrix_get(data->Z, data->n, data->m+1, 0, 1) == 0.7065937536993949,
 			"Incorrect Z value at 0, 1");
-	mu_assert(matrix_get(data->Z, data->m+1, 0, 2) == 0.7016517970438980,
+	mu_assert(matrix_get(data->Z, data->n, data->m+1, 0, 2) == 0.7016517970438980,
 			"Incorrect Z value at 0, 2");
-	mu_assert(matrix_get(data->Z, data->m+1, 0, 3) == 0.1548611397288129,
+	mu_assert(matrix_get(data->Z, data->n, data->m+1, 0, 3) == 0.1548611397288129,
 			"Incorrect Z value at 0, 3");
-	mu_assert(matrix_get(data->Z, data->m+1, 1, 1) == 0.4604987687863951,
+	mu_assert(matrix_get(data->Z, data->n, data->m+1, 1, 1) == 0.4604987687863951,
 			"Incorrect Z value at 1, 1");
-	mu_assert(matrix_get(data->Z, data->m+1, 1, 2) == 0.6374142980176117,
+	mu_assert(matrix_get(data->Z, data->n, data->m+1, 1, 2) == 0.6374142980176117,
 			"Incorrect Z value at 1, 2");
-	mu_assert(matrix_get(data->Z, data->m+1, 1, 3) == 0.0370930278245423,
+	mu_assert(matrix_get(data->Z, data->n, data->m+1, 1, 3) == 0.0370930278245423,
 			"Incorrect Z value at 1, 3");
-	mu_assert(matrix_get(data->Z, data->m+1, 2, 1) == 0.3798777132278375,
+	mu_assert(matrix_get(data->Z, data->n, data->m+1, 2, 1) == 0.3798777132278375,
 			"Incorrect Z value at 2, 1");
-	mu_assert(matrix_get(data->Z, data->m+1, 2, 2) == 0.5745070018747664,
+	mu_assert(matrix_get(data->Z, data->n, data->m+1, 2, 2) == 0.5745070018747664,
 			"Incorrect Z value at 2, 2");
-	mu_assert(matrix_get(data->Z, data->m+1, 2, 3) == 0.2570906697837264,
+	mu_assert(matrix_get(data->Z, data->n, data->m+1, 2, 3) == 0.2570906697837264,
 			"Incorrect Z value at 2, 3");
-	mu_assert(matrix_get(data->Z, data->m+1, 3, 1) == 0.2789376050039792,
+	mu_assert(matrix_get(data->Z, data->n, data->m+1, 3, 1) == 0.2789376050039792,
 			"Incorrect Z value at 3, 1");
-	mu_assert(matrix_get(data->Z, data->m+1, 3, 2) == 0.4853242744610165,
+	mu_assert(matrix_get(data->Z, data->n, data->m+1, 3, 2) == 0.4853242744610165,
 			"Incorrect Z value at 3, 2");
-	mu_assert(matrix_get(data->Z, data->m+1, 3, 3) == 0.1894010436762711,
+	mu_assert(matrix_get(data->Z, data->n, data->m+1, 3, 3) == 0.1894010436762711,
 			"Incorrect Z value at 3, 3");
-	mu_assert(matrix_get(data->Z, data->m+1, 4, 1) == 0.7630904372339489,
+	mu_assert(matrix_get(data->Z, data->n, data->m+1, 4, 1) == 0.7630904372339489,
 			"Incorrect Z value at 4, 1");
-	mu_assert(matrix_get(data->Z, data->m+1, 4, 2) == 0.1341546320318005,
+	mu_assert(matrix_get(data->Z, data->n, data->m+1, 4, 2) == 0.1341546320318005,
 			"Incorrect Z value at 4, 2");
-	mu_assert(matrix_get(data->Z, data->m+1, 4, 3) == 0.6827430912944857,
+	mu_assert(matrix_get(data->Z, data->n, data->m+1, 4, 3) == 0.6827430912944857,
 			"Incorrect Z value at 4, 3");
 	// check if RAW = Z
 	mu_assert(data->Z == data->RAW, "Z pointer doesn't equal RAW pointer");
@@ -321,15 +367,15 @@ char *test_gensvm_read_data_libsvm()
 	mu_assert(data->y[4] == 3, "Incorrect label read at 4");
 
 	// check if the column of ones is added
-	mu_assert(matrix_get(data->Z, data->m+1, 0, 0) == 1,
+	mu_assert(matrix_get(data->Z, data->n, data->m+1, 0, 0) == 1,
 			"Incorrect Z value at 0, 0");
-	mu_assert(matrix_get(data->Z, data->m+1, 1, 0) == 1,
+	mu_assert(matrix_get(data->Z, data->n, data->m+1, 1, 0) == 1,
 			"Incorrect Z value at 1, 0");
-	mu_assert(matrix_get(data->Z, data->m+1, 2, 0) == 1,
+	mu_assert(matrix_get(data->Z, data->n, data->m+1, 2, 0) == 1,
 			"Incorrect Z value at 2, 0");
-	mu_assert(matrix_get(data->Z, data->m+1, 3, 0) == 1,
+	mu_assert(matrix_get(data->Z, data->n, data->m+1, 3, 0) == 1,
 			"Incorrect Z value at 3, 0");
-	mu_assert(matrix_get(data->Z, data->m+1, 4, 0) == 1,
+	mu_assert(matrix_get(data->Z, data->n, data->m+1, 4, 0) == 1,
 			"Incorrect Z value at 4, 0");
 
 	// end test code //
@@ -354,35 +400,35 @@ char *test_gensvm_read_data_libsvm_0based()
 	mu_assert(data->K == 4, "Incorrect value for K");
 
 	// check if all data is read correctly.
-	mu_assert(matrix_get(data->Z, data->m+1, 0, 1) == 0.7065937536993949,
+	mu_assert(matrix_get(data->Z, data->n, data->m+1, 0, 1) == 0.7065937536993949,
 			"Incorrect Z value at 0, 1");
-	mu_assert(matrix_get(data->Z, data->m+1, 0, 2) == 0.7016517970438980,
+	mu_assert(matrix_get(data->Z, data->n, data->m+1, 0, 2) == 0.7016517970438980,
 			"Incorrect Z value at 0, 2");
-	mu_assert(matrix_get(data->Z, data->m+1, 0, 3) == 0.1548611397288129,
+	mu_assert(matrix_get(data->Z, data->n, data->m+1, 0, 3) == 0.1548611397288129,
 			"Incorrect Z value at 0, 3");
-	mu_assert(matrix_get(data->Z, data->m+1, 1, 1) == 0.4604987687863951,
+	mu_assert(matrix_get(data->Z, data->n, data->m+1, 1, 1) == 0.4604987687863951,
 			"Incorrect Z value at 1, 1");
-	mu_assert(matrix_get(data->Z, data->m+1, 1, 2) == 0.6374142980176117,
+	mu_assert(matrix_get(data->Z, data->n, data->m+1, 1, 2) == 0.6374142980176117,
 			"Incorrect Z value at 1, 2");
-	mu_assert(matrix_get(data->Z, data->m+1, 1, 3) == 0.0370930278245423,
+	mu_assert(matrix_get(data->Z, data->n, data->m+1, 1, 3) == 0.0370930278245423,
 			"Incorrect Z value at 1, 3");
-	mu_assert(matrix_get(data->Z, data->m+1, 2, 1) == 0.3798777132278375,
+	mu_assert(matrix_get(data->Z, data->n, data->m+1, 2, 1) == 0.3798777132278375,
 			"Incorrect Z value at 2, 1");
-	mu_assert(matrix_get(data->Z, data->m+1, 2, 2) == 0.5745070018747664,
+	mu_assert(matrix_get(data->Z, data->n, data->m+1, 2, 2) == 0.5745070018747664,
 			"Incorrect Z value at 2, 2");
-	mu_assert(matrix_get(data->Z, data->m+1, 2, 3) == 0.2570906697837264,
+	mu_assert(matrix_get(data->Z, data->n, data->m+1, 2, 3) == 0.2570906697837264,
 			"Incorrect Z value at 2, 3");
-	mu_assert(matrix_get(data->Z, data->m+1, 3, 1) == 0.2789376050039792,
+	mu_assert(matrix_get(data->Z, data->n, data->m+1, 3, 1) == 0.2789376050039792,
 			"Incorrect Z value at 3, 1");
-	mu_assert(matrix_get(data->Z, data->m+1, 3, 2) == 0.4853242744610165,
+	mu_assert(matrix_get(data->Z, data->n, data->m+1, 3, 2) == 0.4853242744610165,
 			"Incorrect Z value at 3, 2");
-	mu_assert(matrix_get(data->Z, data->m+1, 3, 3) == 0.1894010436762711,
+	mu_assert(matrix_get(data->Z, data->n, data->m+1, 3, 3) == 0.1894010436762711,
 			"Incorrect Z value at 3, 3");
-	mu_assert(matrix_get(data->Z, data->m+1, 4, 1) == 0.7630904372339489,
+	mu_assert(matrix_get(data->Z, data->n, data->m+1, 4, 1) == 0.7630904372339489,
 			"Incorrect Z value at 4, 1");
-	mu_assert(matrix_get(data->Z, data->m+1, 4, 2) == 0.1341546320318005,
+	mu_assert(matrix_get(data->Z, data->n, data->m+1, 4, 2) == 0.1341546320318005,
 			"Incorrect Z value at 4, 2");
-	mu_assert(matrix_get(data->Z, data->m+1, 4, 3) == 0.6827430912944857,
+	mu_assert(matrix_get(data->Z, data->n, data->m+1, 4, 3) == 0.6827430912944857,
 			"Incorrect Z value at 4, 3");
 	// check if RAW = Z
 	mu_assert(data->Z == data->RAW, "Z pointer doesn't equal RAW pointer");
@@ -395,15 +441,15 @@ char *test_gensvm_read_data_libsvm_0based()
 	mu_assert(data->y[4] == 3, "Incorrect label read at 4");
 
 	// check if the column of ones is added
-	mu_assert(matrix_get(data->Z, data->m+1, 0, 0) == 1,
+	mu_assert(matrix_get(data->Z, data->n, data->m+1, 0, 0) == 1,
 			"Incorrect Z value at 0, 0");
-	mu_assert(matrix_get(data->Z, data->m+1, 1, 0) == 1,
+	mu_assert(matrix_get(data->Z, data->n, data->m+1, 1, 0) == 1,
 			"Incorrect Z value at 1, 0");
-	mu_assert(matrix_get(data->Z, data->m+1, 2, 0) == 1,
+	mu_assert(matrix_get(data->Z, data->n, data->m+1, 2, 0) == 1,
 			"Incorrect Z value at 2, 0");
-	mu_assert(matrix_get(data->Z, data->m+1, 3, 0) == 1,
+	mu_assert(matrix_get(data->Z, data->n, data->m+1, 3, 0) == 1,
 			"Incorrect Z value at 3, 0");
-	mu_assert(matrix_get(data->Z, data->m+1, 4, 0) == 1,
+	mu_assert(matrix_get(data->Z, data->n, data->m+1, 4, 0) == 1,
 			"Incorrect Z value at 4, 0");
 
 	// end test code //
@@ -438,6 +484,7 @@ char *test_gensvm_read_data_libsvm_sparse()
 	mu_assert(data->spZ->n_col == 4, "Incorrect n_col");
 
 	// check sparse values
+	#if MAJOR_ORDER == 'r'
 	mu_assert(data->spZ->values[0] == 1.0,
 			"Incorrect nonzero value at 0");
 	mu_assert(data->spZ->values[1] == 0.7016517970438980,
@@ -466,35 +513,80 @@ char *test_gensvm_read_data_libsvm_sparse()
 			"Incorrect nonzero value at 12");
 	mu_assert(data->spZ->values[13] == 1.0,
 			"Incorrect nonzero value at 13");
+	#else
+	mu_assert(data->spZ->values[0] == 1.0, "Incorrect value at 0");
+	mu_assert(data->spZ->values[1] == 1.0, "Incorrect value at 1");
+	mu_assert(data->spZ->values[2] == 1.0, "Incorrect value at 2");
+	mu_assert(data->spZ->values[3] == 1.0, "Incorrect value at 3");
+	mu_assert(data->spZ->values[4] == 1.0, "Incorrect value at 4");
+	mu_assert(data->spZ->values[5] == 1.0, "Incorrect value at 5");
+	mu_assert(data->spZ->values[6] == 1.0, "Incorrect value at 6");
+	mu_assert(data->spZ->values[7] == 1.0, "Incorrect value at 7");
+	mu_assert(data->spZ->values[8] == 1.0, "Incorrect value at 8");
+	mu_assert(data->spZ->values[9] == 1.0, "Incorrect value at 9");
+	mu_assert(data->spZ->values[10] == 0.7630904372339489,
+			"Incorrect value at 10");
+	mu_assert(data->spZ->values[11] == 0.7016517970438980,
+			"Incorrect value at 11");
+	mu_assert(data->spZ->values[12] == 0.4853242744610165,
+			"Incorrect value at 12");
+	mu_assert(data->spZ->values[13] == 0.0370930278245423,
+			"Incorrect value at 13");
+	#endif
 
 	// check sparse row lengths
-	mu_assert(data->spZ->ia[0] == 0, "Incorrect ia value at 0");
-	mu_assert(data->spZ->ia[1] == 2, "Incorrect ia value at 1");
-	mu_assert(data->spZ->ia[2] == 4, "Incorrect ia value at 2");
-	mu_assert(data->spZ->ia[3] == 5, "Incorrect ia value at 3");
-	mu_assert(data->spZ->ia[4] == 7, "Incorrect ia value at 4");
-	mu_assert(data->spZ->ia[5] == 9, "Incorrect ia value at 5");
-	mu_assert(data->spZ->ia[6] == 10, "Incorrect ia value at 5");
-	mu_assert(data->spZ->ia[7] == 11, "Incorrect ia value at 5");
-	mu_assert(data->spZ->ia[8] == 12, "Incorrect ia value at 5");
-	mu_assert(data->spZ->ia[9] == 13, "Incorrect ia value at 5");
-	mu_assert(data->spZ->ia[10] == 14, "Incorrect ia value at 5");
+	#if MAJOR_ORDER == 'r'
+	mu_assert(data->spZ->ix[0] == 0, "Incorrect ix value at 0");
+	mu_assert(data->spZ->ix[1] == 2, "Incorrect ix value at 1");
+	mu_assert(data->spZ->ix[2] == 4, "Incorrect ix value at 2");
+	mu_assert(data->spZ->ix[3] == 5, "Incorrect ix value at 3");
+	mu_assert(data->spZ->ix[4] == 7, "Incorrect ix value at 4");
+	mu_assert(data->spZ->ix[5] == 9, "Incorrect ix value at 5");
+	mu_assert(data->spZ->ix[6] == 10, "Incorrect ix value at 5");
+	mu_assert(data->spZ->ix[7] == 11, "Incorrect ix value at 5");
+	mu_assert(data->spZ->ix[8] == 12, "Incorrect ix value at 5");
+	mu_assert(data->spZ->ix[9] == 13, "Incorrect ix value at 5");
+	mu_assert(data->spZ->ix[10] == 14, "Incorrect ix value at 5");
+	#else
+	mu_assert(data->spZ->ix[0] == 0, "Incorrect ix value at 0");
+	mu_assert(data->spZ->ix[1] == 10, "Incorrect ix value at 1");
+	mu_assert(data->spZ->ix[2] == 11, "Incorrect ix value at 2");
+	mu_assert(data->spZ->ix[3] == 13, "Incorrect ix value at 3");
+	mu_assert(data->spZ->ix[4] == 14, "Incorrect ix value at 4");
+	#endif
 
 	// check sparse column indices
-	mu_assert(data->spZ->ja[0] == 0, "Incorrect ja value at 0");
-	mu_assert(data->spZ->ja[1] == 2, "Incorrect ja value at 1");
-	mu_assert(data->spZ->ja[2] == 0, "Incorrect ja value at 2");
-	mu_assert(data->spZ->ja[3] == 3, "Incorrect ja value at 3");
-	mu_assert(data->spZ->ja[4] == 0, "Incorrect ja value at 4");
-	mu_assert(data->spZ->ja[5] == 0, "Incorrect ja value at 5");
-	mu_assert(data->spZ->ja[6] == 2, "Incorrect ja value at 6");
-	mu_assert(data->spZ->ja[7] == 0, "Incorrect ja value at 7");
-	mu_assert(data->spZ->ja[8] == 1, "Incorrect ja value at 8");
-	mu_assert(data->spZ->ja[9] == 0, "Incorrect ja value at 7");
-	mu_assert(data->spZ->ja[10] == 0, "Incorrect ja value at 7");
-	mu_assert(data->spZ->ja[11] == 0, "Incorrect ja value at 7");
-	mu_assert(data->spZ->ja[12] == 0, "Incorrect ja value at 7");
-	mu_assert(data->spZ->ja[13] == 0, "Incorrect ja value at 7");
+	#if MAJOR_ORDER == 'r'
+	mu_assert(data->spZ->jx[0] == 0, "Incorrect jx value at 0");
+	mu_assert(data->spZ->jx[1] == 2, "Incorrect jx value at 1");
+	mu_assert(data->spZ->jx[2] == 0, "Incorrect jx value at 2");
+	mu_assert(data->spZ->jx[3] == 3, "Incorrect jx value at 3");
+	mu_assert(data->spZ->jx[4] == 0, "Incorrect jx value at 4");
+	mu_assert(data->spZ->jx[5] == 0, "Incorrect jx value at 5");
+	mu_assert(data->spZ->jx[6] == 2, "Incorrect jx value at 6");
+	mu_assert(data->spZ->jx[7] == 0, "Incorrect jx value at 7");
+	mu_assert(data->spZ->jx[8] == 1, "Incorrect jx value at 8");
+	mu_assert(data->spZ->jx[9] == 0, "Incorrect jx value at 7");
+	mu_assert(data->spZ->jx[10] == 0, "Incorrect jx value at 7");
+	mu_assert(data->spZ->jx[11] == 0, "Incorrect jx value at 7");
+	mu_assert(data->spZ->jx[12] == 0, "Incorrect jx value at 7");
+	mu_assert(data->spZ->jx[13] == 0, "Incorrect jx value at 7");
+	#else
+	mu_assert(data->spZ->jx[0] == 0, "Incorrect jx value at 0");
+	mu_assert(data->spZ->jx[1] == 1, "Incorrect jx value at 1");
+	mu_assert(data->spZ->jx[2] == 2, "Incorrect jx value at 2");
+	mu_assert(data->spZ->jx[3] == 3, "Incorrect jx value at 3");
+	mu_assert(data->spZ->jx[4] == 4, "Incorrect jx value at 4");
+	mu_assert(data->spZ->jx[5] == 5, "Incorrect jx value at 5");
+	mu_assert(data->spZ->jx[6] == 6, "Incorrect jx value at 6");
+	mu_assert(data->spZ->jx[7] == 7, "Incorrect jx value at 7");
+	mu_assert(data->spZ->jx[8] == 8, "Incorrect jx value at 8");
+	mu_assert(data->spZ->jx[9] == 9, "Incorrect jx value at 7");
+	mu_assert(data->spZ->jx[10] == 4, "Incorrect jx value at 7");
+	mu_assert(data->spZ->jx[11] == 0, "Incorrect jx value at 7");
+	mu_assert(data->spZ->jx[12] == 3, "Incorrect jx value at 7");
+	mu_assert(data->spZ->jx[13] == 1, "Incorrect jx value at 7");
+	#endif
 
 	// check if labels read correctly
 	mu_assert(data->y[0] == 2, "Incorrect label read at 0");
@@ -525,35 +617,35 @@ char *test_gensvm_read_data_libsvm_no_label()
 	mu_assert(data->K == 0, "Incorrect value for K");
 
 	// check if all data is read correctly.
-	mu_assert(matrix_get(data->Z, data->m+1, 0, 1) == 0.7065937536993949,
+	mu_assert(matrix_get(data->Z, data->n, data->m+1, 0, 1) == 0.7065937536993949,
 			"Incorrect Z value at 0, 1");
-	mu_assert(matrix_get(data->Z, data->m+1, 0, 2) == 0.7016517970438980,
+	mu_assert(matrix_get(data->Z, data->n, data->m+1, 0, 2) == 0.7016517970438980,
 			"Incorrect Z value at 0, 2");
-	mu_assert(matrix_get(data->Z, data->m+1, 0, 3) == 0.1548611397288129,
+	mu_assert(matrix_get(data->Z, data->n, data->m+1, 0, 3) == 0.1548611397288129,
 			"Incorrect Z value at 0, 3");
-	mu_assert(matrix_get(data->Z, data->m+1, 1, 1) == 0.4604987687863951,
+	mu_assert(matrix_get(data->Z, data->n, data->m+1, 1, 1) == 0.4604987687863951,
 			"Incorrect Z value at 1, 1");
-	mu_assert(matrix_get(data->Z, data->m+1, 1, 2) == 0.6374142980176117,
+	mu_assert(matrix_get(data->Z, data->n, data->m+1, 1, 2) == 0.6374142980176117,
 			"Incorrect Z value at 1, 2");
-	mu_assert(matrix_get(data->Z, data->m+1, 1, 3) == 0.0370930278245423,
+	mu_assert(matrix_get(data->Z, data->n, data->m+1, 1, 3) == 0.0370930278245423,
 			"Incorrect Z value at 1, 3");
-	mu_assert(matrix_get(data->Z, data->m+1, 2, 1) == 0.3798777132278375,
+	mu_assert(matrix_get(data->Z, data->n, data->m+1, 2, 1) == 0.3798777132278375,
 			"Incorrect Z value at 2, 1");
-	mu_assert(matrix_get(data->Z, data->m+1, 2, 2) == 0.5745070018747664,
+	mu_assert(matrix_get(data->Z, data->n, data->m+1, 2, 2) == 0.5745070018747664,
 			"Incorrect Z value at 2, 2");
-	mu_assert(matrix_get(data->Z, data->m+1, 2, 3) == 0.2570906697837264,
+	mu_assert(matrix_get(data->Z, data->n, data->m+1, 2, 3) == 0.2570906697837264,
 			"Incorrect Z value at 2, 3");
-	mu_assert(matrix_get(data->Z, data->m+1, 3, 1) == 0.2789376050039792,
+	mu_assert(matrix_get(data->Z, data->n, data->m+1, 3, 1) == 0.2789376050039792,
 			"Incorrect Z value at 3, 1");
-	mu_assert(matrix_get(data->Z, data->m+1, 3, 2) == 0.4853242744610165,
+	mu_assert(matrix_get(data->Z, data->n, data->m+1, 3, 2) == 0.4853242744610165,
 			"Incorrect Z value at 3, 2");
-	mu_assert(matrix_get(data->Z, data->m+1, 3, 3) == 0.1894010436762711,
+	mu_assert(matrix_get(data->Z, data->n, data->m+1, 3, 3) == 0.1894010436762711,
 			"Incorrect Z value at 3, 3");
-	mu_assert(matrix_get(data->Z, data->m+1, 4, 1) == 0.7630904372339489,
+	mu_assert(matrix_get(data->Z, data->n, data->m+1, 4, 1) == 0.7630904372339489,
 			"Incorrect Z value at 4, 1");
-	mu_assert(matrix_get(data->Z, data->m+1, 4, 2) == 0.1341546320318005,
+	mu_assert(matrix_get(data->Z, data->n, data->m+1, 4, 2) == 0.1341546320318005,
 			"Incorrect Z value at 4, 2");
-	mu_assert(matrix_get(data->Z, data->m+1, 4, 3) == 0.6827430912944857,
+	mu_assert(matrix_get(data->Z, data->n, data->m+1, 4, 3) == 0.6827430912944857,
 			"Incorrect Z value at 4, 3");
 	// check if RAW = Z
 	mu_assert(data->Z == data->RAW, "Z pointer doesn't equal RAW pointer");
@@ -562,15 +654,15 @@ char *test_gensvm_read_data_libsvm_no_label()
 	mu_assert(data->y == NULL, "Outcome pointer is not NULL");
 
 	// check if the column of ones is added
-	mu_assert(matrix_get(data->Z, data->m+1, 0, 0) == 1,
+	mu_assert(matrix_get(data->Z, data->n, data->m+1, 0, 0) == 1,
 			"Incorrect Z value at 0, 0");
-	mu_assert(matrix_get(data->Z, data->m+1, 1, 0) == 1,
+	mu_assert(matrix_get(data->Z, data->n, data->m+1, 1, 0) == 1,
 			"Incorrect Z value at 1, 0");
-	mu_assert(matrix_get(data->Z, data->m+1, 2, 0) == 1,
+	mu_assert(matrix_get(data->Z, data->n, data->m+1, 2, 0) == 1,
 			"Incorrect Z value at 2, 0");
-	mu_assert(matrix_get(data->Z, data->m+1, 3, 0) == 1,
+	mu_assert(matrix_get(data->Z, data->n, data->m+1, 3, 0) == 1,
 			"Incorrect Z value at 3, 0");
-	mu_assert(matrix_get(data->Z, data->m+1, 4, 0) == 1,
+	mu_assert(matrix_get(data->Z, data->n, data->m+1, 4, 0) == 1,
 			"Incorrect Z value at 4, 0");
 
 	// end test code //
@@ -603,17 +695,17 @@ char *test_gensvm_read_model()
 	mu_assert(model->m == 2, "Incorrect read for model->m");
 	mu_assert(model->K == 3, "Incorrect read for model->K");
 
-	mu_assert(matrix_get(model->V, model->K-1, 0, 0) == 0.1234,
+	mu_assert(matrix_get(model->V, model->m+1, model->K-1, 0, 0) == 0.1234,
 			"Incorrect model->V element at 0, 0");
-	mu_assert(matrix_get(model->V, model->K-1, 0, 1) == -0.4321,
+	mu_assert(matrix_get(model->V, model->m+1, model->K-1, 0, 1) == -0.4321,
 			"Incorrect model->V element at 0, 1");
-	mu_assert(matrix_get(model->V, model->K-1, 1, 0) == -0.5678,
+	mu_assert(matrix_get(model->V, model->m+1, model->K-1, 1, 0) == -0.5678,
 			"Incorrect model->V element at 1, 0");
-	mu_assert(matrix_get(model->V, model->K-1, 1, 1) == 0.9876,
+	mu_assert(matrix_get(model->V, model->m+1, model->K-1, 1, 1) == 0.9876,
 			"Incorrect model->V element at 1, 1");
-	mu_assert(matrix_get(model->V, model->K-1, 2, 0) == 0.9012,
+	mu_assert(matrix_get(model->V, model->m+1, model->K-1, 2, 0) == 0.9012,
 			"Incorrect model->V element at 2, 0");
-	mu_assert(matrix_get(model->V, model->K-1, 2, 1) == -0.5555,
+	mu_assert(matrix_get(model->V, model->m+1, model->K-1, 2, 1) == -0.5555,
 			"Incorrect model->V element at 2, 1");
 
 	// end test code //
@@ -638,12 +730,12 @@ char *test_gensvm_write_model()
 	model->K = 3;
 
 	model->V = Calloc(double, (model->m+1)*(model->K-1));
-	matrix_set(model->V, model->K-1, 0, 0, 0.4989893785603748);
-	matrix_set(model->V, model->K-1, 0, 1, 0.0599082796573645);
-	matrix_set(model->V, model->K-1, 1, 0, 0.7918204761759593);
-	matrix_set(model->V, model->K-1, 1, 1, 0.6456613497110559);
-	matrix_set(model->V, model->K-1, 2, 0, 0.9711956316284261);
-	matrix_set(model->V, model->K-1, 2, 1, 0.5010714686310176);
+	matrix_set(model->V, model->m+1, model->K-1, 0, 0, 0.4989893785603748);
+	matrix_set(model->V, model->m+1, model->K-1, 0, 1, 0.0599082796573645);
+	matrix_set(model->V, model->m+1, model->K-1, 1, 0, 0.7918204761759593);
+	matrix_set(model->V, model->m+1, model->K-1, 1, 1, 0.6456613497110559);
+	matrix_set(model->V, model->m+1, model->K-1, 2, 0, 0.9711956316284261);
+	matrix_set(model->V, model->m+1, model->K-1, 2, 1, 0.5010714686310176);
 
 	// start test code //
 	gensvm_write_model(model, "./data/test_write_model.txt");
@@ -755,27 +847,27 @@ char *test_gensvm_write_predictions()
 
 	data->Z = Calloc(double, data->n * (data->m+1));
 
-	matrix_set(data->Z, data->m+1, 0, 0, 1.0);
-	matrix_set(data->Z, data->m+1, 1, 0, 1.0);
-	matrix_set(data->Z, data->m+1, 2, 0, 1.0);
-	matrix_set(data->Z, data->m+1, 3, 0, 1.0);
-	matrix_set(data->Z, data->m+1, 4, 0, 1.0);
+	matrix_set(data->Z, data->n, data->m+1, 0, 0, 1.0);
+	matrix_set(data->Z, data->n, data->m+1, 1, 0, 1.0);
+	matrix_set(data->Z, data->n, data->m+1, 2, 0, 1.0);
+	matrix_set(data->Z, data->n, data->m+1, 3, 0, 1.0);
+	matrix_set(data->Z, data->n, data->m+1, 4, 0, 1.0);
 
-	matrix_set(data->Z, data->m+1, 0, 1, 0.7065937536993949);
-	matrix_set(data->Z, data->m+1, 0, 2, 0.7016517970438980);
-	matrix_set(data->Z, data->m+1, 0, 3, 0.1548611397288129);
-	matrix_set(data->Z, data->m+1, 1, 1, 0.4604987687863951);
-	matrix_set(data->Z, data->m+1, 1, 2, 0.6374142980176117);
-	matrix_set(data->Z, data->m+1, 1, 3, 0.0370930278245423);
-	matrix_set(data->Z, data->m+1, 2, 1, 0.3798777132278375);
-	matrix_set(data->Z, data->m+1, 2, 2, 0.5745070018747664);
-	matrix_set(data->Z, data->m+1, 2, 3, 0.2570906697837264);
-	matrix_set(data->Z, data->m+1, 3, 1, 0.2789376050039792);
-	matrix_set(data->Z, data->m+1, 3, 2, 0.4853242744610165);
-	matrix_set(data->Z, data->m+1, 3, 3, 0.1894010436762711);
-	matrix_set(data->Z, data->m+1, 4, 1, 0.7630904372339489);
-	matrix_set(data->Z, data->m+1, 4, 2, 0.1341546320318005);
-	matrix_set(data->Z, data->m+1, 4, 3, 0.6827430912944857);
+	matrix_set(data->Z, data->n, data->m+1, 0, 1, 0.7065937536993949);
+	matrix_set(data->Z, data->n, data->m+1, 0, 2, 0.7016517970438980);
+	matrix_set(data->Z, data->n, data->m+1, 0, 3, 0.1548611397288129);
+	matrix_set(data->Z, data->n, data->m+1, 1, 1, 0.4604987687863951);
+	matrix_set(data->Z, data->n, data->m+1, 1, 2, 0.6374142980176117);
+	matrix_set(data->Z, data->n, data->m+1, 1, 3, 0.0370930278245423);
+	matrix_set(data->Z, data->n, data->m+1, 2, 1, 0.3798777132278375);
+	matrix_set(data->Z, data->n, data->m+1, 2, 2, 0.5745070018747664);
+	matrix_set(data->Z, data->n, data->m+1, 2, 3, 0.2570906697837264);
+	matrix_set(data->Z, data->n, data->m+1, 3, 1, 0.2789376050039792);
+	matrix_set(data->Z, data->n, data->m+1, 3, 2, 0.4853242744610165);
+	matrix_set(data->Z, data->n, data->m+1, 3, 3, 0.1894010436762711);
+	matrix_set(data->Z, data->n, data->m+1, 4, 1, 0.7630904372339489);
+	matrix_set(data->Z, data->n, data->m+1, 4, 2, 0.1341546320318005);
+	matrix_set(data->Z, data->n, data->m+1, 4, 3, 0.6827430912944857);
 
 	predy[0] = 3;
 	predy[1] = 2;

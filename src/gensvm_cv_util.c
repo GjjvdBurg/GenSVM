@@ -86,33 +86,33 @@ void gensvm_make_cv_split(long N, long folds, long *cv_idx)
  * @brief Wrapper around sparse/dense versions of this function
  *
  * @details
- * This function tests if the data in the full_data structure is stored in a
+ * This function tests if the data in the full structure is stored in a
  * dense matrix format or not, and calls gensvm_get_tt_split_dense() or
  * gensvm_get_tt_split_sparse() accordingly.
  *
  * @sa
  * gensvm_get_tt_split_dense(), gensvm_get_tt_split_sparse()
  *
- * @param[in] 		full_data 	a GenData structure for the entire
+ * @param[in] 		full 		a GenData structure for the entire
  * 					dataset
- * @param[in,out] 	train_data 	an initialized GenData structure which
+ * @param[in,out] 	train 		an initialized GenData structure which
  * 					on exit contains the training dataset
- * @param[in,out] 	test_data 	an initialized GenData structure which
+ * @param[in,out] 	test 		an initialized GenData structure which
  * 					on exit contains the test dataset
  * @param[in] 		cv_idx 		a vector of cv partitions created by
  * 					gensvm_make_cv_split()
  * @param[in] 		fold_idx 	index of the fold which becomes the
  * 					test dataset
  */
-void gensvm_get_tt_split(struct GenData *full_data,
-		struct GenData *train_data, struct GenData *test_data,
+void gensvm_get_tt_split(struct GenData *full,
+		struct GenData *train, struct GenData *test,
 		long *cv_idx, long fold_idx)
 {
-	if (full_data->Z == NULL)
-		gensvm_get_tt_split_sparse(full_data, train_data, test_data,
+	if (full->Z == NULL)
+		gensvm_get_tt_split_sparse(full, train, test,
 				cv_idx, fold_idx);
 	else
-		gensvm_get_tt_split_dense(full_data, train_data, test_data,
+		gensvm_get_tt_split_dense(full, train, test,
 				cv_idx, fold_idx);
 }
 
@@ -128,26 +128,26 @@ void gensvm_get_tt_split(struct GenData *full_data,
  * @sa
  * gensvm_get_tt_split_sparse(), gensvm_get_tt_split()
  *
- * @param[in] 		full_data 	a GenData structure for the entire
+ * @param[in] 		full 		a GenData structure for the entire
  * 					dataset
- * @param[in,out] 	train_data 	an initialized GenData structure which
+ * @param[in,out] 	train 		an initialized GenData structure which
  * 					on exit contains the training dataset
- * @param[in,out] 	test_data 	an initialized GenData structure which
+ * @param[in,out] 	test 		an initialized GenData structure which
  * 					on exit contains the test dataset
  * @param[in] 		cv_idx 		a vector of cv partitions created by
  * 					gensvm_make_cv_split()
  * @param[in] 		fold_idx 	index of the fold which becomes the
  * 					test dataset
  */
-void gensvm_get_tt_split_dense(struct GenData *full_data,
-		struct GenData *train_data, struct GenData *test_data,
+void gensvm_get_tt_split_dense(struct GenData *full,
+		struct GenData *train, struct GenData *test,
 		long *cv_idx, long fold_idx)
 {
 	long i, j, k, l, test_n, train_n;
 
-	long n = full_data->n;
-	long m = full_data->m;
-	long K = full_data->K;
+	long n = full->n;
+	long m = full->m;
+	long K = full->K;
 
 	double value;
 
@@ -157,43 +157,45 @@ void gensvm_get_tt_split_dense(struct GenData *full_data,
 			test_n++;
 	train_n = n - test_n;
 
-	test_data->n = test_n;
-	train_data->n = train_n;
+	test->n = test_n;
+	train->n = train_n;
 
-	train_data->K = K;
-	test_data->K = K;
+	train->K = K;
+	test->K = K;
 
-	train_data->m = m;
-	test_data->m = m;
+	train->m = m;
+	test->m = m;
 
-	train_data->y = Calloc(long, train_n);
-	test_data->y = Calloc(long, test_n);
+	train->y = Calloc(long, train_n);
+	test->y = Calloc(long, test_n);
 
-	train_data->RAW = Calloc(double, train_n*(m+1));
-	test_data->RAW = Calloc(double, test_n*(m+1));
+	train->RAW = Calloc(double, train_n*(m+1));
+	test->RAW = Calloc(double, test_n*(m+1));
 
 	k = 0;
 	l = 0;
 	for (i=0; i<n; i++) {
 		if (cv_idx[i] == fold_idx) {
-			test_data->y[k] = full_data->y[i];
+			test->y[k] = full->y[i];
 			for (j=0; j<m+1; j++) {
-				value = matrix_get(full_data->RAW, m+1, i, j);
-				matrix_set(test_data->RAW, m+1, k, j, value);
+				value = matrix_get(full->RAW, n, m+1, i, j);
+				matrix_set(test->RAW, test_n, m+1, k, j, 
+						value);
 			}
 			k++;
 		} else {
-			train_data->y[l] = full_data->y[i];
+			train->y[l] = full->y[i];
 			for (j=0; j<m+1; j++) {
-				value = matrix_get(full_data->RAW, m+1, i, j);
-				matrix_set(train_data->RAW, m+1, l, j, value);
+				value = matrix_get(full->RAW, n, m+1, i, j);
+				matrix_set(train->RAW, train_n, m+1, l, j, 
+						value);
 			}
 			l++;
 		}
 	}
 
-	train_data->Z = train_data->RAW;
-	test_data->Z = test_data->RAW;
+	train->Z = train->RAW;
+	test->Z = test->RAW;
 }
 
 
@@ -209,115 +211,171 @@ void gensvm_get_tt_split_dense(struct GenData *full_data,
  * @sa
  * gensvm_get_tt_split_dense(), gensvm_get_tt_split()
  *
- * @param[in] 		full_data 	a GenData structure for the entire
+ * @param[in] 		full 		a GenData structure for the entire
  * 					dataset
- * @param[in,out] 	train_data 	an initialized GenData structure which
+ * @param[in,out] 	train 		an initialized GenData structure which
  * 					on exit contains the training dataset
- * @param[in,out] 	test_data 	an initialized GenData structure which
+ * @param[in,out] 	test 		an initialized GenData structure which
  * 					on exit contains the test dataset
  * @param[in] 		cv_idx 		a vector of cv partitions created by
  * 					gensvm_make_cv_split()
  * @param[in] 		fold_idx 	index of the fold which becomes the
  * 					test dataset
  */
-void gensvm_get_tt_split_sparse(struct GenData *full_data,
-		struct GenData *train_data, struct GenData *test_data,
+void gensvm_get_tt_split_sparse(struct GenData *full,
+		struct GenData *train, struct GenData *test,
 		long *cv_idx, long fold_idx)
 {
-	long i, j, test_n, train_n, train_nnz, test_nnz, row_nnz, jj,
-	     jj_start, jj_end,
-	     tr_nnz_idx = 0,
-	     tr_row_idx = 0,
-	     te_nnz_idx = 0,
-	     te_row_idx = 0;
+	long a, b, i, j, k, a_end, b_start, b_end, jx_elem, test_n, train_n, 
+	     train_nnz, test_nnz, row_nnz, tr_nnz_idx, tr_row_idx, te_nnz_idx,
+	     te_row_idx, tr_col_cnt, te_col_cnt;
 
 	double value;
+	enum {CSR, CSC} sp_type = full->spZ->type;
 
 	// determine number of instances in test and train
 	test_n = 0;
-	for (i=0; i<full_data->n; i++)
+	for (i=0; i<full->n; i++)
 		if (cv_idx[i] == fold_idx)
 			test_n++;
-	train_n = full_data->n - test_n;
+	train_n = full->n - test_n;
 
 	// set n, m, K variables
-	train_data->n = train_n;
-	train_data->m = full_data->m;
-	train_data->K = full_data->K;
-	test_data->n = test_n;
-	test_data->m = full_data->m;
-	test_data->K = full_data->K;
+	train->n = train_n;
+	train->m = full->m;
+	train->K = full->K;
+	test->n = test_n;
+	test->m = full->m;
+	test->K = full->K;
 
 	// allocate outcome
-	train_data->y = Calloc(long, train_n);
-	test_data->y = Calloc(long, test_n);
+	train->y = Calloc(long, train_n);
+	test->y = Calloc(long, test_n);
 
 	// compute train nnz and test nnz
 	train_nnz = 0;
 	test_nnz = 0;
-	for (i=0; i<full_data->n; i++) {
-		row_nnz = full_data->spZ->ia[i+1] - full_data->spZ->ia[i];
-		if (cv_idx[i] == fold_idx) {
-			test_nnz += row_nnz;
-		} else {
-			train_nnz += row_nnz;
+
+	if (sp_type == CSR) {
+		for (i=0; i<full->n; i++) {
+			row_nnz = full->spZ->ix[i+1] - full->spZ->ix[i];
+			if (cv_idx[i] == fold_idx) {
+				test_nnz += row_nnz;
+			} else {
+				train_nnz += row_nnz;
+			}
+		}
+	} else {
+		for (k=0; k<full->spZ->nnz; k++) {
+			i = full->spZ->jx[k];
+			if (cv_idx[i] == fold_idx) {
+				test_nnz++;
+			} else {
+				train_nnz++;
+			}
 		}
 	}
 
 	// allocate the train GenSparse
-	train_data->spZ = gensvm_init_sparse();
-	test_data->spZ = gensvm_init_sparse();
+	train->spZ = gensvm_init_sparse();
+	test->spZ = gensvm_init_sparse();
+
+	// set the type the same as for the full dataset
+	train->spZ->type = sp_type;
+	test->spZ->type = sp_type;
 
 	// set GenSparse variables for train
-	train_data->spZ->nnz = train_nnz;
-	train_data->spZ->n_row = train_n;
-	train_data->spZ->n_col = full_data->m+1;
-	train_data->spZ->values = Calloc(double, train_nnz);
-	train_data->spZ->ia = Calloc(long, train_n+1);
-	train_data->spZ->ja = Calloc(long, train_nnz);
+	train->spZ->nnz = train_nnz;
+	train->spZ->n_row = train_n;
+	train->spZ->n_col = full->spZ->n_col;
+	train->spZ->values = Calloc(double, train_nnz);
+	train->spZ->jx = Calloc(long, train_nnz);
+	if (sp_type == CSR) {
+		train->spZ->ix = Calloc(long, train_n+1);
+	} else {
+		train->spZ->ix = Calloc(long, train->spZ->n_col + 1);
+	}
 
 	// set GenSparse variables for test
-	test_data->spZ->nnz = test_nnz;
-	test_data->spZ->n_row = test_n;
-	test_data->spZ->n_col = full_data->m+1;
-	test_data->spZ->values = Calloc(double, test_nnz);
-	test_data->spZ->ia = Calloc(long, test_n+1);
-	test_data->spZ->ja = Calloc(long, test_nnz);
+	test->spZ->nnz = test_nnz;
+	test->spZ->n_row = test_n;
+	test->spZ->n_col = full->spZ->n_col;
+	test->spZ->values = Calloc(double, test_nnz);
+	test->spZ->jx = Calloc(long, test_nnz);
+	if (sp_type == CSR) {
+		test->spZ->ix = Calloc(long, test_n+1);
+	} else {
+		test->spZ->ix = Calloc(long, test->spZ->n_col + 1);
+	}
+
+	// copy over the labels
+	j = 0;
+	k = 0;
+	for (i=0; i<full->n; i++) {
+		if (cv_idx[i] == fold_idx)
+			test->y[j++] = full->y[i];
+		else
+			train->y[k++] = full->y[i];
+	}
 
 	tr_nnz_idx = 0;
 	tr_row_idx = 0;
+	tr_col_cnt = 0;
 	te_nnz_idx = 0;
 	te_row_idx = 0;
+	te_col_cnt = 0;
 
-	test_data->spZ->ia[0] = 0;
-	train_data->spZ->ia[0] = 0;
-	for (i=0; i<full_data->n; i++) {
-		jj_start = full_data->spZ->ia[i];
-		jj_end = full_data->spZ->ia[i+1];
+	test->spZ->ix[0] = 0;
+	train->spZ->ix[0] = 0;
 
-		for (jj=jj_start; jj<jj_end; jj++) {
-			j = full_data->spZ->ja[jj];
-			value = full_data->spZ->values[jj];
+	a_end = (sp_type == CSR) ? full->spZ->n_row : 
+		full->spZ->n_col;
+
+	for (a=0; a<a_end; a++) {
+		if (sp_type == CSC) {
+			tr_col_cnt = 0;
+			te_col_cnt = 0;
+			tr_row_idx = 0;
+			te_row_idx = 0;
+		}
+
+		b_start = full->spZ->ix[a];
+		b_end = full->spZ->ix[a+1];
+
+		for (b=b_start; b<b_end; b++) {
+			value = full->spZ->values[b];
+			i = (sp_type == CSR) ? a : full->spZ->jx[b];
 
 			if (cv_idx[i] == fold_idx) {
-				test_data->spZ->values[te_nnz_idx] = value;
-				test_data->spZ->ja[te_nnz_idx] = j;
+				jx_elem = (sp_type == CSR) ? full->spZ->jx[b] : te_row_idx;
+				test->spZ->values[te_nnz_idx] = value;
+				test->spZ->jx[te_nnz_idx] = jx_elem;
 				te_nnz_idx++;
+				te_col_cnt++;
+				if (sp_type == CSC)
+					te_row_idx++;
 			} else {
-				train_data->spZ->values[tr_nnz_idx] = value;
-				train_data->spZ->ja[tr_nnz_idx] = j;
+				jx_elem = (sp_type == CSR) ? full->spZ->jx[b] : tr_row_idx;
+				train->spZ->values[tr_nnz_idx] = value;
+				train->spZ->jx[tr_nnz_idx] = jx_elem;
 				tr_nnz_idx++;
+				tr_col_cnt++;
+				if (sp_type == CSC)
+					tr_row_idx++;
 			}
 		}
 
-		if (cv_idx[i] == fold_idx) {
-			test_data->y[te_row_idx] = full_data->y[i];
-			test_data->spZ->ia[te_row_idx+1] = te_nnz_idx;
-			te_row_idx++;
+		if (sp_type == CSR) {
+			if (cv_idx[a] == fold_idx) {
+				test->spZ->ix[te_row_idx+1] = te_nnz_idx;
+				te_row_idx++;
+			} else {
+				train->spZ->ix[tr_row_idx+1] = tr_nnz_idx;
+				tr_row_idx++;
+			}
 		} else {
-			train_data->y[tr_row_idx] = full_data->y[i];
-			train_data->spZ->ia[tr_row_idx+1] = tr_nnz_idx;
-			tr_row_idx++;
+			test->spZ->ix[a+1] = test->spZ->ix[a] + te_col_cnt;
+			train->spZ->ix[a+1] = train->spZ->ix[a] + tr_col_cnt;
 		}
 	}
 }

@@ -266,6 +266,14 @@ struct GenWork *gensvm_init_work(struct GenModel *model)
 	work->ZV = Calloc(double, n*(K-1));
 	work->beta = Calloc(double, K-1);
 
+	#if MAJOR_ORDER == 'r'
+	work->A = NULL;
+	work->B = NULL;
+	#else
+	work->A = Calloc(double, n);
+	work->B = Calloc(double, n*(K-1));
+	#endif
+
 	return work;
 }
 
@@ -288,6 +296,8 @@ void gensvm_free_work(struct GenWork *work)
 	free(work->tmpZAZ);
 	free(work->ZV);
 	free(work->beta);
+	free(work->A);
+	free(work->B);
 	free(work);
 	work = NULL;
 }
@@ -317,4 +327,9 @@ void gensvm_reset_work(struct GenWork *work)
 	Memset(work->tmpZAZ, double, (m+1)*(m+1)),
 	Memset(work->ZV, double, n*(K-1));
 	Memset(work->beta, double, K-1);
+
+	if (work->A != NULL)
+		Memset(work->A, double, n);
+	if (work->B != NULL)
+		Memset(work->B, double, n*(K-1));
 }

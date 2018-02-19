@@ -48,13 +48,13 @@ void gensvm_simplex(struct GenModel *model)
 	for (i=0; i<K; i++) {
 		for (j=0; j<K-1; j++) {
 			if (i <= j) {
-				matrix_set(model->U, K-1, i, j,
+				matrix_set(model->U, K, K-1, i, j,
 					       	-1.0/sqrt(2.0*(j+1)*(j+2)));
 			} else if (i == j+1) {
-				matrix_set(model->U, K-1, i, j,
+				matrix_set(model->U, K, K-1, i, j,
 					       	sqrt((j+1)/(2.0*(j+2))));
 			} else {
-				matrix_set(model->U, K-1, i, j, 0.0);
+				matrix_set(model->U, K, K-1, i, j, 0.0);
 			}
 		}
 	}
@@ -89,9 +89,10 @@ void gensvm_simplex_diff(struct GenModel *model)
 	for (i=0; i<K; i++) {
 		for (j=0; j<K; j++) {
 			for (l=0; l<K-1; l++) {
-				value = matrix_get(model->U, K-1, i, l);
-				value -= matrix_get(model->U, K-1, j, l);
-				matrix_set(model->UU, K-1, i*K+j, l, value);
+				value = matrix_get(model->U, K, K-1, i, l);
+				value -= matrix_get(model->U, K, K-1, j, l);
+				matrix_set(model->UU, K*K, K-1, i*K+j, l, 
+						value);
 			}
 		}
 	}

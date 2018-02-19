@@ -55,21 +55,21 @@ char *test_gensvm_calculate_omega()
 	model->p = 1.213;
 	gensvm_allocate_model(model);
 
-	matrix_set(model->H, model->K, 0, 0, 0.8465725800087526);
-	matrix_set(model->H, model->K, 0, 1, 1.2876921677680249);
-	matrix_set(model->H, model->K, 0, 2, 1.0338561593991831);
-	matrix_set(model->H, model->K, 1, 0, 1.1891038526621391);
-	matrix_set(model->H, model->K, 1, 1, 0.4034192031226095);
-	matrix_set(model->H, model->K, 1, 2, 1.5298894170910078);
-	matrix_set(model->H, model->K, 2, 0, 1.3505111116922732);
-	matrix_set(model->H, model->K, 2, 1, 1.4336863304586636);
-	matrix_set(model->H, model->K, 2, 2, 1.7847533480330757);
-	matrix_set(model->H, model->K, 3, 0, 1.7712504341475415);
-	matrix_set(model->H, model->K, 3, 1, 1.6905146737773038);
-	matrix_set(model->H, model->K, 3, 2, 0.8189336598535132);
-	matrix_set(model->H, model->K, 4, 0, 0.6164203008844277);
-	matrix_set(model->H, model->K, 4, 1, 0.2456444285093894);
-	matrix_set(model->H, model->K, 4, 2, 0.8184193969741095);
+	matrix_set(model->H, model->n, model->K, 0, 0, 0.8465725800087526);
+	matrix_set(model->H, model->n, model->K, 0, 1, 1.2876921677680249);
+	matrix_set(model->H, model->n, model->K, 0, 2, 1.0338561593991831);
+	matrix_set(model->H, model->n, model->K, 1, 0, 1.1891038526621391);
+	matrix_set(model->H, model->n, model->K, 1, 1, 0.4034192031226095);
+	matrix_set(model->H, model->n, model->K, 1, 2, 1.5298894170910078);
+	matrix_set(model->H, model->n, model->K, 2, 0, 1.3505111116922732);
+	matrix_set(model->H, model->n, model->K, 2, 1, 1.4336863304586636);
+	matrix_set(model->H, model->n, model->K, 2, 2, 1.7847533480330757);
+	matrix_set(model->H, model->n, model->K, 3, 0, 1.7712504341475415);
+	matrix_set(model->H, model->n, model->K, 3, 1, 1.6905146737773038);
+	matrix_set(model->H, model->n, model->K, 3, 2, 0.8189336598535132);
+	matrix_set(model->H, model->n, model->K, 4, 0, 0.6164203008844277);
+	matrix_set(model->H, model->n, model->K, 4, 1, 0.2456444285093894);
+	matrix_set(model->H, model->n, model->K, 4, 2, 0.8184193969741095);
 
 	// start test code //
 	mu_assert(fabs(gensvm_calculate_omega(model, data, 0) -
@@ -122,21 +122,21 @@ char *test_gensvm_majorize_is_simple()
 	model->p = 1.213;
 	gensvm_allocate_model(model);
 
-	matrix_set(model->H, model->K, 0, 0, 0.8465725800087526);
-	matrix_set(model->H, model->K, 0, 1, 1.2876921677680249);
-	matrix_set(model->H, model->K, 0, 2, 1.0338561593991831);
-	matrix_set(model->H, model->K, 1, 0, 1.1891038526621391);
-	matrix_set(model->H, model->K, 1, 1, 0.4034192031226095);
-	matrix_set(model->H, model->K, 1, 2, 0.0);
-	matrix_set(model->H, model->K, 2, 0, 0.5);
-	matrix_set(model->H, model->K, 2, 1, 0.0);
-	matrix_set(model->H, model->K, 2, 2, 1.1);
-	matrix_set(model->H, model->K, 3, 0, 0.0);
-	matrix_set(model->H, model->K, 3, 1, 0.0);
-	matrix_set(model->H, model->K, 3, 2, 0.8189336598535132);
-	matrix_set(model->H, model->K, 4, 0, 0.6164203008844277);
-	matrix_set(model->H, model->K, 4, 1, 0.2456444285093894);
-	matrix_set(model->H, model->K, 4, 2, 0.8184193969741095);
+	matrix_set(model->H, model->n, model->K, 0, 0, 0.8465725800087526);
+	matrix_set(model->H, model->n, model->K, 0, 1, 1.2876921677680249);
+	matrix_set(model->H, model->n, model->K, 0, 2, 1.0338561593991831);
+	matrix_set(model->H, model->n, model->K, 1, 0, 1.1891038526621391);
+	matrix_set(model->H, model->n, model->K, 1, 1, 0.4034192031226095);
+	matrix_set(model->H, model->n, model->K, 1, 2, 0.0);
+	matrix_set(model->H, model->n, model->K, 2, 0, 0.5);
+	matrix_set(model->H, model->n, model->K, 2, 1, 0.0);
+	matrix_set(model->H, model->n, model->K, 2, 2, 1.1);
+	matrix_set(model->H, model->n, model->K, 3, 0, 0.0);
+	matrix_set(model->H, model->n, model->K, 3, 1, 0.0);
+	matrix_set(model->H, model->n, model->K, 3, 2, 0.8189336598535132);
+	matrix_set(model->H, model->n, model->K, 4, 0, 0.6164203008844277);
+	matrix_set(model->H, model->n, model->K, 4, 1, 0.2456444285093894);
+	matrix_set(model->H, model->n, model->K, 4, 2, 0.8184193969741095);
 
 	// start test code //
 	mu_assert(gensvm_majorize_is_simple(model, data, 0) == false,
@@ -176,18 +176,18 @@ char *test_gensvm_calculate_ab_non_simple()
 
 	// tests with p = 2
 	model->p = 2.0;
-	matrix_set(model->Q, K, 0, 0, -1.0);
+	matrix_set(model->Q, n, K, 0, 0, -1.0);
 	gensvm_calculate_ab_non_simple(model, 0, 0, &a, &b_aq);
 	mu_assert(fabs(a - 1.5) < 1e-14, "Incorrect value for a (1)");
 	mu_assert(fabs(b_aq - 1.25) < 1e-14, "Incorrect value for b (1)");
 
-	matrix_set(model->Q, K, 0, 0, 0.5);
+	matrix_set(model->Q, n, K, 0, 0, 0.5);
 	gensvm_calculate_ab_non_simple(model, 0, 0, &a, &b_aq);
 	mu_assert(fabs(a - 1.5) < 1e-14, "Incorrect value for a (2)");
 	mu_assert(fabs(b_aq - 0.0277777777777778) < 1e-14,
 			"Incorrect value for b (2)");
 
-	matrix_set(model->Q, K, 0, 0, 2.0);
+	matrix_set(model->Q, n, K, 0, 0, 2.0);
 	gensvm_calculate_ab_non_simple(model, 0, 0, &a, &b_aq);
 	mu_assert(fabs(a - 1.5) < 1e-14, "Incorrect value for a (3)");
 	mu_assert(fabs(b_aq - 0.0) < 1e-14, "Incorrect value for b (3)");
@@ -200,28 +200,28 @@ char *test_gensvm_calculate_ab_non_simple()
 	// 		   q in (-kappa, 1]
 	// 		   q > 1
 	model->p = 1.5;
-	matrix_set(model->Q, K, 0, 0, -3.0);
+	matrix_set(model->Q, n, K, 0, 0, -3.0);
 	gensvm_calculate_ab_non_simple(model, 0, 0, &a, &b_aq);
 	mu_assert(fabs(a - 0.312018860376691) < 1e-14,
 			"Incorrect value for a (4)");
 	mu_assert(fabs(b_aq - 1.35208172829900) < 1e-14,
 			"Incorrect value for b (4)");
 
-	matrix_set(model->Q, K, 0, 0, -1.0);
+	matrix_set(model->Q, n, K, 0, 0, -1.0);
 	gensvm_calculate_ab_non_simple(model, 0, 0, &a, &b_aq);
 	mu_assert(fabs(a - 0.866025403784439) < 1e-14,
 			"Incorrect value for a (5)");
 	mu_assert(fabs(b_aq - 0.838525491562421) < 1e-14,
 			"Incorrect value for b (5)");
 
-	matrix_set(model->Q, K, 0, 0, 0.5);
+	matrix_set(model->Q, n, K, 0, 0, 0.5);
 	gensvm_calculate_ab_non_simple(model, 0, 0, &a, &b_aq);
 	mu_assert(fabs(a - 0.866025403784439) < 1e-14,
 			"Incorrect value for a (6)");
 	mu_assert(fabs(b_aq - 0.0721687836487032) < 1e-14,
 			"Incorrect value for b (6)");
 
-	matrix_set(model->Q, K, 0, 0, 2.0);
+	matrix_set(model->Q, n, K, 0, 0, 2.0);
 	gensvm_calculate_ab_non_simple(model, 0, 0, &a, &b_aq);
 	mu_assert(fabs(a - 0.245495126515491) < 1e-14,
 			"Incorrect value for a (7)");
@@ -251,21 +251,21 @@ char *test_gensvm_calculate_ab_simple()
 	// start test code //
 	double a, b_aq;
 
-	matrix_set(model->Q, K, 0, 0, -1.5);
+	matrix_set(model->Q, n, K, 0, 0, -1.5);
 	gensvm_calculate_ab_simple(model, 0, 0, &a, &b_aq);
 	mu_assert(fabs(a - 0.142857142857143) < 1e-14,
 			"Incorrect value for a (1)");
 	mu_assert(fabs(b_aq - 0.5) < 1e-14,
 			"Incorrect value for b (1)");
 
-	matrix_set(model->Q, K, 0, 0, 0.75);
+	matrix_set(model->Q, n, K, 0, 0, 0.75);
 	gensvm_calculate_ab_simple(model, 0, 0, &a, &b_aq);
 	mu_assert(fabs(a - 0.333333333333333) < 1e-14,
 			"Incorrect value for a (2)");
 	mu_assert(fabs(b_aq - 0.0833333333333333) < 1e-14,
 			"Incorrect value for b (2)");
 
-	matrix_set(model->Q, K, 0, 0, 2.0);
+	matrix_set(model->Q, n, K, 0, 0, 2.0);
 	gensvm_calculate_ab_simple(model, 0, 0, &a, &b_aq);
 	mu_assert(fabs(a - 0.142857142857143) < 1e-14,
 			"Incorrect value for a (3)");
@@ -307,38 +307,38 @@ char *test_gensvm_get_update()
 	data->y[7] = 2;
 
 	data->Z = Calloc(double, n*(m+1));
-	matrix_set(data->Z, data->m+1, 0, 0, 1.0000000000000000);
-	matrix_set(data->Z, data->m+1, 0, 1, 0.6437306339619082);
-	matrix_set(data->Z, data->m+1, 0, 2, -0.3276778319121999);
-	matrix_set(data->Z, data->m+1, 0, 3, 0.1564053473463392);
-	matrix_set(data->Z, data->m+1, 1, 0, 1.0000000000000000);
-	matrix_set(data->Z, data->m+1, 1, 1, -0.8683091763200105);
-	matrix_set(data->Z, data->m+1, 1, 2, -0.6910830836015162);
-	matrix_set(data->Z, data->m+1, 1, 3, -0.9675430665130734);
-	matrix_set(data->Z, data->m+1, 2, 0, 1.0000000000000000);
-	matrix_set(data->Z, data->m+1, 2, 1, -0.5024888699077029);
-	matrix_set(data->Z, data->m+1, 2, 2, -0.9649738292750712);
-	matrix_set(data->Z, data->m+1, 2, 3, 0.0776560791351473);
-	matrix_set(data->Z, data->m+1, 3, 0, 1.0000000000000000);
-	matrix_set(data->Z, data->m+1, 3, 1, 0.8206429991392579);
-	matrix_set(data->Z, data->m+1, 3, 2, -0.7255681388968501);
-	matrix_set(data->Z, data->m+1, 3, 3, -0.9475952272877165);
-	matrix_set(data->Z, data->m+1, 4, 0, 1.0000000000000000);
-	matrix_set(data->Z, data->m+1, 4, 1, 0.3426050950418613);
-	matrix_set(data->Z, data->m+1, 4, 2, -0.5340602451864306);
-	matrix_set(data->Z, data->m+1, 4, 3, -0.7159704241662815);
-	matrix_set(data->Z, data->m+1, 5, 0, 1.0000000000000000);
-	matrix_set(data->Z, data->m+1, 5, 1, -0.3077314049206620);
-	matrix_set(data->Z, data->m+1, 5, 2, 0.1141288036288195);
-	matrix_set(data->Z, data->m+1, 5, 3, -0.7060114827535847);
-	matrix_set(data->Z, data->m+1, 6, 0, 1.0000000000000000);
-	matrix_set(data->Z, data->m+1, 6, 1, 0.6301294373610109);
-	matrix_set(data->Z, data->m+1, 6, 2, -0.9983027363627769);
-	matrix_set(data->Z, data->m+1, 6, 3, -0.9365684178444004);
-	matrix_set(data->Z, data->m+1, 7, 0, 1.0000000000000000);
-	matrix_set(data->Z, data->m+1, 7, 1, -0.0665379368401439);
-	matrix_set(data->Z, data->m+1, 7, 2, -0.1781385556871763);
-	matrix_set(data->Z, data->m+1, 7, 3, -0.7292593770500276);
+	matrix_set(data->Z, data->n, data->m+1, 0, 0, 1.0000000000000000);
+	matrix_set(data->Z, data->n, data->m+1, 0, 1, 0.6437306339619082);
+	matrix_set(data->Z, data->n, data->m+1, 0, 2, -0.3276778319121999);
+	matrix_set(data->Z, data->n, data->m+1, 0, 3, 0.1564053473463392);
+	matrix_set(data->Z, data->n, data->m+1, 1, 0, 1.0000000000000000);
+	matrix_set(data->Z, data->n, data->m+1, 1, 1, -0.8683091763200105);
+	matrix_set(data->Z, data->n, data->m+1, 1, 2, -0.6910830836015162);
+	matrix_set(data->Z, data->n, data->m+1, 1, 3, -0.9675430665130734);
+	matrix_set(data->Z, data->n, data->m+1, 2, 0, 1.0000000000000000);
+	matrix_set(data->Z, data->n, data->m+1, 2, 1, -0.5024888699077029);
+	matrix_set(data->Z, data->n, data->m+1, 2, 2, -0.9649738292750712);
+	matrix_set(data->Z, data->n, data->m+1, 2, 3, 0.0776560791351473);
+	matrix_set(data->Z, data->n, data->m+1, 3, 0, 1.0000000000000000);
+	matrix_set(data->Z, data->n, data->m+1, 3, 1, 0.8206429991392579);
+	matrix_set(data->Z, data->n, data->m+1, 3, 2, -0.7255681388968501);
+	matrix_set(data->Z, data->n, data->m+1, 3, 3, -0.9475952272877165);
+	matrix_set(data->Z, data->n, data->m+1, 4, 0, 1.0000000000000000);
+	matrix_set(data->Z, data->n, data->m+1, 4, 1, 0.3426050950418613);
+	matrix_set(data->Z, data->n, data->m+1, 4, 2, -0.5340602451864306);
+	matrix_set(data->Z, data->n, data->m+1, 4, 3, -0.7159704241662815);
+	matrix_set(data->Z, data->n, data->m+1, 5, 0, 1.0000000000000000);
+	matrix_set(data->Z, data->n, data->m+1, 5, 1, -0.3077314049206620);
+	matrix_set(data->Z, data->n, data->m+1, 5, 2, 0.1141288036288195);
+	matrix_set(data->Z, data->n, data->m+1, 5, 3, -0.7060114827535847);
+	matrix_set(data->Z, data->n, data->m+1, 6, 0, 1.0000000000000000);
+	matrix_set(data->Z, data->n, data->m+1, 6, 1, 0.6301294373610109);
+	matrix_set(data->Z, data->n, data->m+1, 6, 2, -0.9983027363627769);
+	matrix_set(data->Z, data->n, data->m+1, 6, 3, -0.9365684178444004);
+	matrix_set(data->Z, data->n, data->m+1, 7, 0, 1.0000000000000000);
+	matrix_set(data->Z, data->n, data->m+1, 7, 1, -0.0665379368401439);
+	matrix_set(data->Z, data->n, data->m+1, 7, 2, -0.1781385556871763);
+	matrix_set(data->Z, data->n, data->m+1, 7, 3, -0.7292593770500276);
 
 	// initialize model
 	model->p = 1.1;
@@ -353,14 +353,14 @@ char *test_gensvm_get_update()
 	gensvm_simplex_diff(model);
 
 	// initialize V
-	matrix_set(model->V, model->K-1, 0, 0, -0.7593642121025029);
-	matrix_set(model->V, model->K-1, 0, 1, -0.5497320698504756);
-	matrix_set(model->V, model->K-1, 1, 0, 0.2982680646268177);
-	matrix_set(model->V, model->K-1, 1, 1, -0.2491408622891925);
-	matrix_set(model->V, model->K-1, 2, 0, -0.3118572761092807);
-	matrix_set(model->V, model->K-1, 2, 1, 0.5461219445756100);
-	matrix_set(model->V, model->K-1, 3, 0, -0.3198994238626641);
-	matrix_set(model->V, model->K-1, 3, 1, 0.7134997072555367);
+	matrix_set(model->V, model->m+1, model->K-1, 0, 0, -0.7593642121025029);
+	matrix_set(model->V, model->m+1, model->K-1, 0, 1, -0.5497320698504756);
+	matrix_set(model->V, model->m+1, model->K-1, 1, 0, 0.2982680646268177);
+	matrix_set(model->V, model->m+1, model->K-1, 1, 1, -0.2491408622891925);
+	matrix_set(model->V, model->m+1, model->K-1, 2, 0, -0.3118572761092807);
+	matrix_set(model->V, model->m+1, model->K-1, 2, 1, 0.5461219445756100);
+	matrix_set(model->V, model->m+1, model->K-1, 3, 0, -0.3198994238626641);
+	matrix_set(model->V, model->m+1, model->K-1, 3, 1, 0.7134997072555367);
 
 	// start test code //
 
@@ -372,28 +372,28 @@ char *test_gensvm_get_update()
 	gensvm_get_update(model, data, work);
 
 	// test values
-	mu_assert(fabs(matrix_get(model->V, model->K-1, 0, 0) -
+	mu_assert(fabs(matrix_get(model->V, model->m+1, model->K-1, 0, 0) -
 				-0.1323791019594062) < 1e-14,
 			"Incorrect value of model->V at 0, 0");
-	mu_assert(fabs(matrix_get(model->V, model->K-1, 0, 1) -
+	mu_assert(fabs(matrix_get(model->V, model->m+1, model->K-1, 0, 1) -
 				-0.3598407983154332) < 1e-14,
 			"Incorrect value of model->V at 0, 1");
-	mu_assert(fabs(matrix_get(model->V, model->K-1, 1, 0) -
+	mu_assert(fabs(matrix_get(model->V, model->m+1, model->K-1, 1, 0) -
 				0.3532993103400935) < 1e-14,
 			"Incorrect value of model->V at 1, 0");
-	mu_assert(fabs(matrix_get(model->V, model->K-1, 1, 1) -
+	mu_assert(fabs(matrix_get(model->V, model->m+1, model->K-1, 1, 1) -
 				-0.4094572388475382) < 1e-14,
 			"Incorrect value of model->V at 1, 1");
-	mu_assert(fabs(matrix_get(model->V, model->K-1, 2, 0) -
+	mu_assert(fabs(matrix_get(model->V, model->m+1, model->K-1, 2, 0) -
 				0.1313169839871234) < 1e-14,
 			"Incorrect value of model->V at 2, 0");
-	mu_assert(fabs(matrix_get(model->V, model->K-1, 2, 1) -
+	mu_assert(fabs(matrix_get(model->V, model->m+1, model->K-1, 2, 1) -
 				0.2423439972728328) < 1e-14,
 			"Incorrect value of model->V at 2, 1");
-	mu_assert(fabs(matrix_get(model->V, model->K-1, 3, 0) -
+	mu_assert(fabs(matrix_get(model->V, model->m+1, model->K-1, 3, 0) -
 				0.0458431025455224) < 1e-14,
 			"Incorrect value of model->V at 3, 0");
-	mu_assert(fabs(matrix_get(model->V, model->K-1, 3, 1) -
+	mu_assert(fabs(matrix_get(model->V, model->m+1, model->K-1, 3, 1) -
 				0.4390030236354089) < 1e-14,
 			"Incorrect value of model->V at 3, 1");
 	// end test code //
@@ -434,38 +434,38 @@ char *test_gensvm_get_update_sparse()
 	data->y[7] = 2;
 
 	data->Z = Calloc(double, n*(m+1));
-	matrix_set(data->Z, data->m+1, 0, 0, 1.0000000000000000);
-	matrix_set(data->Z, data->m+1, 0, 1, 0.6437306339619082);
-	matrix_set(data->Z, data->m+1, 0, 2, -0.3276778319121999);
-	matrix_set(data->Z, data->m+1, 0, 3, 0.1564053473463392);
-	matrix_set(data->Z, data->m+1, 1, 0, 1.0000000000000000);
-	matrix_set(data->Z, data->m+1, 1, 1, -0.8683091763200105);
-	matrix_set(data->Z, data->m+1, 1, 2, -0.6910830836015162);
-	matrix_set(data->Z, data->m+1, 1, 3, -0.9675430665130734);
-	matrix_set(data->Z, data->m+1, 2, 0, 1.0000000000000000);
-	matrix_set(data->Z, data->m+1, 2, 1, -0.5024888699077029);
-	matrix_set(data->Z, data->m+1, 2, 2, -0.9649738292750712);
-	matrix_set(data->Z, data->m+1, 2, 3, 0.0776560791351473);
-	matrix_set(data->Z, data->m+1, 3, 0, 1.0000000000000000);
-	matrix_set(data->Z, data->m+1, 3, 1, 0.8206429991392579);
-	matrix_set(data->Z, data->m+1, 3, 2, -0.7255681388968501);
-	matrix_set(data->Z, data->m+1, 3, 3, -0.9475952272877165);
-	matrix_set(data->Z, data->m+1, 4, 0, 1.0000000000000000);
-	matrix_set(data->Z, data->m+1, 4, 1, 0.3426050950418613);
-	matrix_set(data->Z, data->m+1, 4, 2, -0.5340602451864306);
-	matrix_set(data->Z, data->m+1, 4, 3, -0.7159704241662815);
-	matrix_set(data->Z, data->m+1, 5, 0, 1.0000000000000000);
-	matrix_set(data->Z, data->m+1, 5, 1, -0.3077314049206620);
-	matrix_set(data->Z, data->m+1, 5, 2, 0.1141288036288195);
-	matrix_set(data->Z, data->m+1, 5, 3, -0.7060114827535847);
-	matrix_set(data->Z, data->m+1, 6, 0, 1.0000000000000000);
-	matrix_set(data->Z, data->m+1, 6, 1, 0.6301294373610109);
-	matrix_set(data->Z, data->m+1, 6, 2, -0.9983027363627769);
-	matrix_set(data->Z, data->m+1, 6, 3, -0.9365684178444004);
-	matrix_set(data->Z, data->m+1, 7, 0, 1.0000000000000000);
-	matrix_set(data->Z, data->m+1, 7, 1, -0.0665379368401439);
-	matrix_set(data->Z, data->m+1, 7, 2, -0.1781385556871763);
-	matrix_set(data->Z, data->m+1, 7, 3, -0.7292593770500276);
+	matrix_set(data->Z, data->n, data->m+1, 0, 0, 1.0000000000000000);
+	matrix_set(data->Z, data->n, data->m+1, 0, 1, 0.6437306339619082);
+	matrix_set(data->Z, data->n, data->m+1, 0, 2, -0.3276778319121999);
+	matrix_set(data->Z, data->n, data->m+1, 0, 3, 0.1564053473463392);
+	matrix_set(data->Z, data->n, data->m+1, 1, 0, 1.0000000000000000);
+	matrix_set(data->Z, data->n, data->m+1, 1, 1, -0.8683091763200105);
+	matrix_set(data->Z, data->n, data->m+1, 1, 2, -0.6910830836015162);
+	matrix_set(data->Z, data->n, data->m+1, 1, 3, -0.9675430665130734);
+	matrix_set(data->Z, data->n, data->m+1, 2, 0, 1.0000000000000000);
+	matrix_set(data->Z, data->n, data->m+1, 2, 1, -0.5024888699077029);
+	matrix_set(data->Z, data->n, data->m+1, 2, 2, -0.9649738292750712);
+	matrix_set(data->Z, data->n, data->m+1, 2, 3, 0.0776560791351473);
+	matrix_set(data->Z, data->n, data->m+1, 3, 0, 1.0000000000000000);
+	matrix_set(data->Z, data->n, data->m+1, 3, 1, 0.8206429991392579);
+	matrix_set(data->Z, data->n, data->m+1, 3, 2, -0.7255681388968501);
+	matrix_set(data->Z, data->n, data->m+1, 3, 3, -0.9475952272877165);
+	matrix_set(data->Z, data->n, data->m+1, 4, 0, 1.0000000000000000);
+	matrix_set(data->Z, data->n, data->m+1, 4, 1, 0.3426050950418613);
+	matrix_set(data->Z, data->n, data->m+1, 4, 2, -0.5340602451864306);
+	matrix_set(data->Z, data->n, data->m+1, 4, 3, -0.7159704241662815);
+	matrix_set(data->Z, data->n, data->m+1, 5, 0, 1.0000000000000000);
+	matrix_set(data->Z, data->n, data->m+1, 5, 1, -0.3077314049206620);
+	matrix_set(data->Z, data->n, data->m+1, 5, 2, 0.1141288036288195);
+	matrix_set(data->Z, data->n, data->m+1, 5, 3, -0.7060114827535847);
+	matrix_set(data->Z, data->n, data->m+1, 6, 0, 1.0000000000000000);
+	matrix_set(data->Z, data->n, data->m+1, 6, 1, 0.6301294373610109);
+	matrix_set(data->Z, data->n, data->m+1, 6, 2, -0.9983027363627769);
+	matrix_set(data->Z, data->n, data->m+1, 6, 3, -0.9365684178444004);
+	matrix_set(data->Z, data->n, data->m+1, 7, 0, 1.0000000000000000);
+	matrix_set(data->Z, data->n, data->m+1, 7, 1, -0.0665379368401439);
+	matrix_set(data->Z, data->n, data->m+1, 7, 2, -0.1781385556871763);
+	matrix_set(data->Z, data->n, data->m+1, 7, 3, -0.7292593770500276);
 
 	// convert Z to a sparse matrix to test the sparse functions
 	data->spZ = gensvm_dense_to_sparse(data->Z, data->n, data->m+1);
@@ -487,14 +487,14 @@ char *test_gensvm_get_update_sparse()
 	gensvm_simplex_diff(model);
 
 	// initialize V
-	matrix_set(model->V, model->K-1, 0, 0, -0.7593642121025029);
-	matrix_set(model->V, model->K-1, 0, 1, -0.5497320698504756);
-	matrix_set(model->V, model->K-1, 1, 0, 0.2982680646268177);
-	matrix_set(model->V, model->K-1, 1, 1, -0.2491408622891925);
-	matrix_set(model->V, model->K-1, 2, 0, -0.3118572761092807);
-	matrix_set(model->V, model->K-1, 2, 1, 0.5461219445756100);
-	matrix_set(model->V, model->K-1, 3, 0, -0.3198994238626641);
-	matrix_set(model->V, model->K-1, 3, 1, 0.7134997072555367);
+	matrix_set(model->V, model->m+1, model->K-1, 0, 0, -0.7593642121025029);
+	matrix_set(model->V, model->m+1, model->K-1, 0, 1, -0.5497320698504756);
+	matrix_set(model->V, model->m+1, model->K-1, 1, 0, 0.2982680646268177);
+	matrix_set(model->V, model->m+1, model->K-1, 1, 1, -0.2491408622891925);
+	matrix_set(model->V, model->m+1, model->K-1, 2, 0, -0.3118572761092807);
+	matrix_set(model->V, model->m+1, model->K-1, 2, 1, 0.5461219445756100);
+	matrix_set(model->V, model->m+1, model->K-1, 3, 0, -0.3198994238626641);
+	matrix_set(model->V, model->m+1, model->K-1, 3, 1, 0.7134997072555367);
 
 	// start test code //
 
@@ -506,28 +506,28 @@ char *test_gensvm_get_update_sparse()
 	gensvm_get_update(model, data, work);
 
 	// test values
-	mu_assert(fabs(matrix_get(model->V, model->K-1, 0, 0) -
+	mu_assert(fabs(matrix_get(model->V, model->m+1, model->K-1, 0, 0) -
 				-0.1323791019594062) < 1e-14,
 			"Incorrect value of model->V at 0, 0");
-	mu_assert(fabs(matrix_get(model->V, model->K-1, 0, 1) -
+	mu_assert(fabs(matrix_get(model->V, model->m+1, model->K-1, 0, 1) -
 				-0.3598407983154332) < 1e-14,
 			"Incorrect value of model->V at 0, 1");
-	mu_assert(fabs(matrix_get(model->V, model->K-1, 1, 0) -
+	mu_assert(fabs(matrix_get(model->V, model->m+1, model->K-1, 1, 0) -
 				0.3532993103400935) < 1e-14,
 			"Incorrect value of model->V at 1, 0");
-	mu_assert(fabs(matrix_get(model->V, model->K-1, 1, 1) -
+	mu_assert(fabs(matrix_get(model->V, model->m+1, model->K-1, 1, 1) -
 				-0.4094572388475382) < 1e-14,
 			"Incorrect value of model->V at 1, 1");
-	mu_assert(fabs(matrix_get(model->V, model->K-1, 2, 0) -
+	mu_assert(fabs(matrix_get(model->V, model->m+1, model->K-1, 2, 0) -
 				0.1313169839871234) < 1e-14,
 			"Incorrect value of model->V at 2, 0");
-	mu_assert(fabs(matrix_get(model->V, model->K-1, 2, 1) -
+	mu_assert(fabs(matrix_get(model->V, model->m+1, model->K-1, 2, 1) -
 				0.2423439972728328) < 1e-14,
 			"Incorrect value of model->V at 2, 1");
-	mu_assert(fabs(matrix_get(model->V, model->K-1, 3, 0) -
+	mu_assert(fabs(matrix_get(model->V, model->m+1, model->K-1, 3, 0) -
 				0.0458431025455224) < 1e-14,
 			"Incorrect value of model->V at 3, 0");
-	mu_assert(fabs(matrix_get(model->V, model->K-1, 3, 1) -
+	mu_assert(fabs(matrix_get(model->V, model->m+1, model->K-1, 3, 1) -
 				0.4390030236354089) < 1e-14,
 			"Incorrect value of model->V at 3, 1");
 	// end test code //
@@ -551,27 +551,27 @@ char *test_dposv()
 
 	// We're only storing the upper triangular part of the symmetric
 	// matrix A.
-	matrix_set(A, n, 0, 0, 6.2522023496540386);
-	matrix_set(A, n, 0, 1, 1.2760969977888754);
-	matrix_set(A, n, 0, 2, 1.1267774552193974);
-	matrix_set(A, n, 0, 3, 0.8384267227932789);
-	matrix_set(A, n, 0, 4, 0.9588857509656767);
-	matrix_set(A, n, 0, 5, 0.7965747978871199);
-	matrix_set(A, n, 1, 1, 6.7539376310748924);
-	matrix_set(A, n, 1, 2, 0.5908599276261999);
-	matrix_set(A, n, 1, 3, 0.9987368128192129);
-	matrix_set(A, n, 1, 4, 1.1142949385131484);
-	matrix_set(A, n, 1, 5, 1.4150107613377123);
-	matrix_set(A, n, 2, 2, 7.3361678639533139);
-	matrix_set(A, n, 2, 3, 1.5596679563906113);
-	matrix_set(A, n, 2, 4, 0.8162441257417704);
-	matrix_set(A, n, 2, 5, 0.8701893160678078);
-	matrix_set(A, n, 3, 3, 6.8330423955320834);
-	matrix_set(A, n, 3, 4, 1.6081779105091201);
-	matrix_set(A, n, 3, 5, 1.0498769837396527);
-	matrix_set(A, n, 4, 4, 7.6810607313742949);
-	matrix_set(A, n, 4, 5, 1.1352511350739003);
-	matrix_set(A, n, 5, 5, 7.0573435553104567);
+	matrix_set(A, n, n, 0, 0, 6.2522023496540386);
+	matrix_set(A, n, n, 0, 1, 1.2760969977888754);
+	matrix_set(A, n, n, 0, 2, 1.1267774552193974);
+	matrix_set(A, n, n, 0, 3, 0.8384267227932789);
+	matrix_set(A, n, n, 0, 4, 0.9588857509656767);
+	matrix_set(A, n, n, 0, 5, 0.7965747978871199);
+	matrix_set(A, n, n, 1, 1, 6.7539376310748924);
+	matrix_set(A, n, n, 1, 2, 0.5908599276261999);
+	matrix_set(A, n, n, 1, 3, 0.9987368128192129);
+	matrix_set(A, n, n, 1, 4, 1.1142949385131484);
+	matrix_set(A, n, n, 1, 5, 1.4150107613377123);
+	matrix_set(A, n, n, 2, 2, 7.3361678639533139);
+	matrix_set(A, n, n, 2, 3, 1.5596679563906113);
+	matrix_set(A, n, n, 2, 4, 0.8162441257417704);
+	matrix_set(A, n, n, 2, 5, 0.8701893160678078);
+	matrix_set(A, n, n, 3, 3, 6.8330423955320834);
+	matrix_set(A, n, n, 3, 4, 1.6081779105091201);
+	matrix_set(A, n, n, 3, 5, 1.0498769837396527);
+	matrix_set(A, n, n, 4, 4, 7.6810607313742949);
+	matrix_set(A, n, n, 4, 5, 1.1352511350739003);
+	matrix_set(A, n, n, 5, 5, 7.0573435553104567);
 
 	// this is the matrix B (n x m), stored in COLUMN-MAJOR ORDER
 	B[0] = 0.5759809004700531;
@@ -608,7 +608,11 @@ char *test_dposv()
 	// note the 'L' here denotes the lower triangular part of A. Above we
 	// stored the upper triangular part of A in row-major order, so that's
 	// the lower triangular part in column-major order, which Lapack uses.
+	#if MAJOR_ORDER == 'r'
 	int status = dposv('L', n, m, A, n, B, n);
+	#else
+	int status = dposv('U', n, m, A, n, B, n);
+	#endif
 	mu_assert(status == 0, "dposv didn't return status success");
 
 	// Since B now contains the solution in Column-Major order, we have to
@@ -693,27 +697,27 @@ char *test_dsysv()
 	double *B = Calloc(double, n*m);
 
 	// only store the upper triangular part of A
-	matrix_set(A, n, 0, 0, 0.4543421836368821);
-	matrix_set(A, n, 0, 1, 0.8708338836669620);
-	matrix_set(A, n, 0, 2, 1.3638340495356920);
-	matrix_set(A, n, 0, 3, 0.8361050302144852);
-	matrix_set(A, n, 0, 4, 1.3203463886997013);
-	matrix_set(A, n, 0, 5, 0.3915472119381547);
-	matrix_set(A, n, 1, 1, 1.4781728513484600);
-	matrix_set(A, n, 1, 2, 1.7275151336935415);
-	matrix_set(A, n, 1, 3, 1.1817139356024176);
-	matrix_set(A, n, 1, 4, 0.7436086782250922);
-	matrix_set(A, n, 1, 5, 0.1101758222549450);
-	matrix_set(A, n, 2, 2, 1.9363682709237851);
-	matrix_set(A, n, 2, 3, 1.1255164391384127);
-	matrix_set(A, n, 2, 4, 1.0935575148560115);
-	matrix_set(A, n, 2, 5, 1.4678279983625921);
-	matrix_set(A, n, 3, 3, 1.7500757162326757);
-	matrix_set(A, n, 3, 4, 1.5490921663229316);
-	matrix_set(A, n, 3, 5, 1.0305675837706338);
-	matrix_set(A, n, 4, 4, 0.4015851628106807);
-	matrix_set(A, n, 4, 5, 1.2487496402900566);
-	matrix_set(A, n, 5, 5, 0.7245473723012897);
+	matrix_set(A, n, n, 0, 0, 0.4543421836368821);
+	matrix_set(A, n, n, 0, 1, 0.8708338836669620);
+	matrix_set(A, n, n, 0, 2, 1.3638340495356920);
+	matrix_set(A, n, n, 0, 3, 0.8361050302144852);
+	matrix_set(A, n, n, 0, 4, 1.3203463886997013);
+	matrix_set(A, n, n, 0, 5, 0.3915472119381547);
+	matrix_set(A, n, n, 1, 1, 1.4781728513484600);
+	matrix_set(A, n, n, 1, 2, 1.7275151336935415);
+	matrix_set(A, n, n, 1, 3, 1.1817139356024176);
+	matrix_set(A, n, n, 1, 4, 0.7436086782250922);
+	matrix_set(A, n, n, 1, 5, 0.1101758222549450);
+	matrix_set(A, n, n, 2, 2, 1.9363682709237851);
+	matrix_set(A, n, n, 2, 3, 1.1255164391384127);
+	matrix_set(A, n, n, 2, 4, 1.0935575148560115);
+	matrix_set(A, n, n, 2, 5, 1.4678279983625921);
+	matrix_set(A, n, n, 3, 3, 1.7500757162326757);
+	matrix_set(A, n, n, 3, 4, 1.5490921663229316);
+	matrix_set(A, n, n, 3, 5, 1.0305675837706338);
+	matrix_set(A, n, n, 4, 4, 0.4015851628106807);
+	matrix_set(A, n, n, 4, 5, 1.2487496402900566);
+	matrix_set(A, n, n, 5, 5, 0.7245473723012897);
 
 	// Store B in column-major order!
 	B[0] = 0.6037912122210694;
@@ -756,12 +760,20 @@ char *test_dsysv()
 	int status;
 
 	// first we determine the necessary size of the WORK array
+	#if MAJOR_ORDER == 'r'
 	status = dsysv('L', n, m, A, n, IPIV, B, n, WORK, -1);
+	#else
+	status = dsysv('U', n, m, A, n, IPIV, B, n, WORK, -1);
+	#endif
 	mu_assert(status == 0, "dsysv workspace query failed");
 
 	int LWORK = WORK[0];
 	WORK = Realloc(WORK, double, LWORK);
+	#if MAJOR_ORDER == 'r'
 	status = dsysv('L', n, m, A, n, IPIV, B, n, WORK, LWORK);
+	#else
+	status = dsysv('U', n, m, A, n, IPIV, B, n, WORK, LWORK);
+	#endif
 	mu_assert(status == 0, "dsysv didn't return status success");
 
 	// Since B now contains the solution in Column-Major order, we have to

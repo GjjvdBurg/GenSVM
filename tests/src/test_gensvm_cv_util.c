@@ -130,26 +130,26 @@ char *test_get_tt_split_dense()
 	full->y[9] = 1;
 
 	full->RAW = Calloc(double, full->n * (full->m+1));
-	matrix_set(full->RAW, full->m+1, 0, 1, 1.0);
-	matrix_set(full->RAW, full->m+1, 0, 2, 1.0);
-	matrix_set(full->RAW, full->m+1, 1, 1, 2.0);
-	matrix_set(full->RAW, full->m+1, 1, 2, 2.0);
-	matrix_set(full->RAW, full->m+1, 2, 1, 3.0);
-	matrix_set(full->RAW, full->m+1, 2, 2, 3.0);
-	matrix_set(full->RAW, full->m+1, 3, 1, 4.0);
-	matrix_set(full->RAW, full->m+1, 3, 2, 4.0);
-	matrix_set(full->RAW, full->m+1, 4, 1, 5.0);
-	matrix_set(full->RAW, full->m+1, 4, 2, 5.0);
-	matrix_set(full->RAW, full->m+1, 5, 1, 6.0);
-	matrix_set(full->RAW, full->m+1, 5, 2, 6.0);
-	matrix_set(full->RAW, full->m+1, 6, 1, 7.0);
-	matrix_set(full->RAW, full->m+1, 6, 2, 7.0);
-	matrix_set(full->RAW, full->m+1, 7, 1, 8.0);
-	matrix_set(full->RAW, full->m+1, 7, 2, 8.0);
-	matrix_set(full->RAW, full->m+1, 8, 1, 9.0);
-	matrix_set(full->RAW, full->m+1, 8, 2, 9.0);
-	matrix_set(full->RAW, full->m+1, 9, 1, 10.0);
-	matrix_set(full->RAW, full->m+1, 9, 2, 10.0);
+	matrix_set(full->RAW, full->n, full->m+1, 0, 1, 1.0);
+	matrix_set(full->RAW, full->n, full->m+1, 0, 2, 1.0);
+	matrix_set(full->RAW, full->n, full->m+1, 1, 1, 2.0);
+	matrix_set(full->RAW, full->n, full->m+1, 1, 2, 2.0);
+	matrix_set(full->RAW, full->n, full->m+1, 2, 1, 3.0);
+	matrix_set(full->RAW, full->n, full->m+1, 2, 2, 3.0);
+	matrix_set(full->RAW, full->n, full->m+1, 3, 1, 4.0);
+	matrix_set(full->RAW, full->n, full->m+1, 3, 2, 4.0);
+	matrix_set(full->RAW, full->n, full->m+1, 4, 1, 5.0);
+	matrix_set(full->RAW, full->n, full->m+1, 4, 2, 5.0);
+	matrix_set(full->RAW, full->n, full->m+1, 5, 1, 6.0);
+	matrix_set(full->RAW, full->n, full->m+1, 5, 2, 6.0);
+	matrix_set(full->RAW, full->n, full->m+1, 6, 1, 7.0);
+	matrix_set(full->RAW, full->n, full->m+1, 6, 2, 7.0);
+	matrix_set(full->RAW, full->n, full->m+1, 7, 1, 8.0);
+	matrix_set(full->RAW, full->n, full->m+1, 7, 2, 8.0);
+	matrix_set(full->RAW, full->n, full->m+1, 8, 1, 9.0);
+	matrix_set(full->RAW, full->n, full->m+1, 8, 2, 9.0);
+	matrix_set(full->RAW, full->n, full->m+1, 9, 1, 10.0);
+	matrix_set(full->RAW, full->n, full->m+1, 9, 2, 10.0);
 	full->Z = full->RAW;
 
 	long *cv_idx = Calloc(long, full->n);
@@ -191,66 +191,66 @@ char *test_get_tt_split_dense()
 	mu_assert(test->y[0] == 2, "test y incorrect.");
 	mu_assert(test->y[1] == 1, "test y incorrect.");
 
-	mu_assert(matrix_get(train->RAW, train->m+1, 0, 0) == 0.0,
+	mu_assert(matrix_get(train->RAW, train->n, train->m+1, 0, 0) == 0.0,
 			"train RAW 0, 0 incorrect.");
-	mu_assert(matrix_get(train->RAW, train->m+1, 0, 1) == 1.0,
+	mu_assert(matrix_get(train->RAW, train->n, train->m+1, 0, 1) == 1.0,
 			"train RAW 0, 1 incorrect.");
-	mu_assert(matrix_get(train->RAW, train->m+1, 0, 2) == 1.0,
+	mu_assert(matrix_get(train->RAW, train->n, train->m+1, 0, 2) == 1.0,
 			"train RAW 0, 2 incorrect.");
-	mu_assert(matrix_get(train->RAW, train->m+1, 1, 0) == 0.0,
+	mu_assert(matrix_get(train->RAW, train->n, train->m+1, 1, 0) == 0.0,
 			"train RAW 1, 0 incorrect.");
-	mu_assert(matrix_get(train->RAW, train->m+1, 1, 1) == 3.0,
+	mu_assert(matrix_get(train->RAW, train->n, train->m+1, 1, 1) == 3.0,
 			"train RAW 1, 1 incorrect.");
-	mu_assert(matrix_get(train->RAW, train->m+1, 1, 2) == 3.0,
+	mu_assert(matrix_get(train->RAW, train->n, train->m+1, 1, 2) == 3.0,
 			"train RAW 1, 2 incorrect.");
-	mu_assert(matrix_get(train->RAW, train->m+1, 2, 0) == 0.0,
+	mu_assert(matrix_get(train->RAW, train->n, train->m+1, 2, 0) == 0.0,
 			"train RAW 2, 0 incorrect.");
-	mu_assert(matrix_get(train->RAW, train->m+1, 2, 1) == 5.0,
+	mu_assert(matrix_get(train->RAW, train->n, train->m+1, 2, 1) == 5.0,
 			"train RAW 2, 1 incorrect.");
-	mu_assert(matrix_get(train->RAW, train->m+1, 2, 2) == 5.0,
+	mu_assert(matrix_get(train->RAW, train->n, train->m+1, 2, 2) == 5.0,
 			"train RAW 2, 2 incorrect.");
-	mu_assert(matrix_get(train->RAW, train->m+1, 3, 0) == 0.0,
+	mu_assert(matrix_get(train->RAW, train->n, train->m+1, 3, 0) == 0.0,
 			"train RAW 3, 0 incorrect.");
-	mu_assert(matrix_get(train->RAW, train->m+1, 3, 1) == 6.0,
+	mu_assert(matrix_get(train->RAW, train->n, train->m+1, 3, 1) == 6.0,
 			"train RAW 3, 1 incorrect.");
-	mu_assert(matrix_get(train->RAW, train->m+1, 3, 2) == 6.0,
+	mu_assert(matrix_get(train->RAW, train->n, train->m+1, 3, 2) == 6.0,
 			"train RAW 3, 2 incorrect.");
-	mu_assert(matrix_get(train->RAW, train->m+1, 4, 0) == 0.0,
+	mu_assert(matrix_get(train->RAW, train->n, train->m+1, 4, 0) == 0.0,
 			"train RAW 4, 0 incorrect.");
-	mu_assert(matrix_get(train->RAW, train->m+1, 4, 1) == 7.0,
+	mu_assert(matrix_get(train->RAW, train->n, train->m+1, 4, 1) == 7.0,
 			"train RAW 4, 1 incorrect.");
-	mu_assert(matrix_get(train->RAW, train->m+1, 4, 2) == 7.0,
+	mu_assert(matrix_get(train->RAW, train->n, train->m+1, 4, 2) == 7.0,
 			"train RAW 4, 2 incorrect.");
-	mu_assert(matrix_get(train->RAW, train->m+1, 5, 0) == 0.0,
+	mu_assert(matrix_get(train->RAW, train->n, train->m+1, 5, 0) == 0.0,
 			"train RAW 5, 0 incorrect.");
-	mu_assert(matrix_get(train->RAW, train->m+1, 5, 1) == 8.0,
+	mu_assert(matrix_get(train->RAW, train->n, train->m+1, 5, 1) == 8.0,
 			"train RAW 5, 1 incorrect.");
-	mu_assert(matrix_get(train->RAW, train->m+1, 5, 2) == 8.0,
+	mu_assert(matrix_get(train->RAW, train->n, train->m+1, 5, 2) == 8.0,
 			"train RAW 5, 2 incorrect.");
-	mu_assert(matrix_get(train->RAW, train->m+1, 6, 0) == 0.0,
+	mu_assert(matrix_get(train->RAW, train->n, train->m+1, 6, 0) == 0.0,
 			"train RAW 6, 0 incorrect.");
-	mu_assert(matrix_get(train->RAW, train->m+1, 6, 1) == 9.0,
+	mu_assert(matrix_get(train->RAW, train->n, train->m+1, 6, 1) == 9.0,
 			"train RAW 6, 1 incorrect.");
-	mu_assert(matrix_get(train->RAW, train->m+1, 6, 2) == 9.0,
+	mu_assert(matrix_get(train->RAW, train->n, train->m+1, 6, 2) == 9.0,
 			"train RAW 6, 2 incorrect.");
-	mu_assert(matrix_get(train->RAW, train->m+1, 7, 0) == 0.0,
+	mu_assert(matrix_get(train->RAW, train->n, train->m+1, 7, 0) == 0.0,
 			"train RAW 7, 0 incorrect.");
-	mu_assert(matrix_get(train->RAW, train->m+1, 7, 1) == 10.0,
+	mu_assert(matrix_get(train->RAW, train->n, train->m+1, 7, 1) == 10.0,
 			"train RAW 7, 1 incorrect.");
-	mu_assert(matrix_get(train->RAW, train->m+1, 7, 2) == 10.0,
+	mu_assert(matrix_get(train->RAW, train->n, train->m+1, 7, 2) == 10.0,
 			"train RAW 7, 2 incorrect.");
 
-	mu_assert(matrix_get(test->RAW, train->m+1, 0, 0) == 0.0,
+	mu_assert(matrix_get(test->RAW, test->n, train->m+1, 0, 0) == 0.0,
 			"test RAW 0, 0 incorrect.");
-	mu_assert(matrix_get(test->RAW, train->m+1, 0, 1) == 2.0,
+	mu_assert(matrix_get(test->RAW, test->n, train->m+1, 0, 1) == 2.0,
 			"test RAW 0, 1 incorrect.");
-	mu_assert(matrix_get(test->RAW, train->m+1, 0, 2) == 2.0,
+	mu_assert(matrix_get(test->RAW, test->n, train->m+1, 0, 2) == 2.0,
 			"test RAW 0, 2 incorrect.");
-	mu_assert(matrix_get(test->RAW, train->m+1, 1, 0) == 0.0,
+	mu_assert(matrix_get(test->RAW, test->n, train->m+1, 1, 0) == 0.0,
 			"test RAW 1, 0 incorrect.");
-	mu_assert(matrix_get(test->RAW, train->m+1, 1, 1) == 4.0,
+	mu_assert(matrix_get(test->RAW, test->n, train->m+1, 1, 1) == 4.0,
 			"test RAW 1, 1 incorrect.");
-	mu_assert(matrix_get(test->RAW, train->m+1, 1, 2) == 4.0,
+	mu_assert(matrix_get(test->RAW, test->n, train->m+1, 1, 2) == 4.0,
 			"test RAW 1, 2 incorrect.");
 
 	// end test code //
@@ -283,26 +283,26 @@ char *test_get_tt_split_sparse()
 	full->y[9] = 1;
 
 	full->RAW = Calloc(double, full->n * (full->m+1));
-	matrix_set(full->RAW, full->m+1, 0, 1, 1.0);
-	matrix_set(full->RAW, full->m+1, 0, 2, 1.0);
-	matrix_set(full->RAW, full->m+1, 1, 1, 2.0);
-	matrix_set(full->RAW, full->m+1, 1, 2, 2.0);
-	matrix_set(full->RAW, full->m+1, 2, 1, 3.0);
-	matrix_set(full->RAW, full->m+1, 2, 2, 3.0);
-	matrix_set(full->RAW, full->m+1, 3, 1, 4.0);
-	matrix_set(full->RAW, full->m+1, 3, 2, 4.0);
-	matrix_set(full->RAW, full->m+1, 4, 1, 5.0);
-	matrix_set(full->RAW, full->m+1, 4, 2, 5.0);
-	matrix_set(full->RAW, full->m+1, 5, 1, 6.0);
-	matrix_set(full->RAW, full->m+1, 5, 2, 6.0);
-	matrix_set(full->RAW, full->m+1, 6, 1, 7.0);
-	matrix_set(full->RAW, full->m+1, 6, 2, 7.0);
-	matrix_set(full->RAW, full->m+1, 7, 1, 8.0);
-	matrix_set(full->RAW, full->m+1, 7, 2, 8.0);
-	matrix_set(full->RAW, full->m+1, 8, 1, 9.0);
-	matrix_set(full->RAW, full->m+1, 8, 2, 9.0);
-	matrix_set(full->RAW, full->m+1, 9, 1, 10.0);
-	matrix_set(full->RAW, full->m+1, 9, 2, 10.0);
+	matrix_set(full->RAW, full->n, full->m+1, 0, 1, 1.0);
+	matrix_set(full->RAW, full->n, full->m+1, 0, 2, 1.0);
+	matrix_set(full->RAW, full->n, full->m+1, 1, 1, 2.0);
+	matrix_set(full->RAW, full->n, full->m+1, 1, 2, 2.0);
+	matrix_set(full->RAW, full->n, full->m+1, 2, 1, 3.0);
+	matrix_set(full->RAW, full->n, full->m+1, 2, 2, 3.0);
+	matrix_set(full->RAW, full->n, full->m+1, 3, 1, 4.0);
+	matrix_set(full->RAW, full->n, full->m+1, 3, 2, 4.0);
+	matrix_set(full->RAW, full->n, full->m+1, 4, 1, 5.0);
+	matrix_set(full->RAW, full->n, full->m+1, 4, 2, 5.0);
+	matrix_set(full->RAW, full->n, full->m+1, 5, 1, 6.0);
+	matrix_set(full->RAW, full->n, full->m+1, 5, 2, 6.0);
+	matrix_set(full->RAW, full->n, full->m+1, 6, 1, 7.0);
+	matrix_set(full->RAW, full->n, full->m+1, 6, 2, 7.0);
+	matrix_set(full->RAW, full->n, full->m+1, 7, 1, 8.0);
+	matrix_set(full->RAW, full->n, full->m+1, 7, 2, 8.0);
+	matrix_set(full->RAW, full->n, full->m+1, 8, 1, 9.0);
+	matrix_set(full->RAW, full->n, full->m+1, 8, 2, 9.0);
+	matrix_set(full->RAW, full->n, full->m+1, 9, 1, 10.0);
+	matrix_set(full->RAW, full->n, full->m+1, 9, 2, 10.0);
 	full->Z = full->RAW;
 
 	// convert Z to a sparse matrix to test the sparse functions
@@ -355,6 +355,7 @@ char *test_get_tt_split_sparse()
 	mu_assert(train->spZ->n_row == 8, "train n_row incorrect");
 	mu_assert(train->spZ->n_col == 3, "train n_col incorrect");
 
+	#if MAJOR_ORDER == 'r'
 	mu_assert(train->spZ->values[0] == 1.0, "Wrong train value at 0");
 	mu_assert(train->spZ->values[1] == 1.0, "Wrong train value at 1");
 	mu_assert(train->spZ->values[2] == 3.0, "Wrong train value at 2");
@@ -371,52 +372,117 @@ char *test_get_tt_split_sparse()
 	mu_assert(train->spZ->values[13] == 9.0, "Wrong train value at 13");
 	mu_assert(train->spZ->values[14] == 10.0, "Wrong train value at 14");
 	mu_assert(train->spZ->values[15] == 10.0, "Wrong train value at 15");
+	#else
+	mu_assert(train->spZ->values[0] == 1.0, "Wrong train value at 0");
+	mu_assert(train->spZ->values[1] == 3.0, "Wrong train value at 1");
+	mu_assert(train->spZ->values[2] == 5.0, "Wrong train value at 2");
+	mu_assert(train->spZ->values[3] == 6.0, "Wrong train value at 3");
+	mu_assert(train->spZ->values[4] == 7.0, "Wrong train value at 4");
+	mu_assert(train->spZ->values[5] == 8.0, "Wrong train value at 5");
+	mu_assert(train->spZ->values[6] == 9.0, "Wrong train value at 6");
+	mu_assert(train->spZ->values[7] == 10.0, "Wrong train value at 7");
+	mu_assert(train->spZ->values[8] == 1.0, "Wrong train value at 8");
+	mu_assert(train->spZ->values[9] == 3.0, "Wrong train value at 9");
+	mu_assert(train->spZ->values[10] == 5.0, "Wrong train value at 10");
+	mu_assert(train->spZ->values[11] == 6.0, "Wrong train value at 11");
+	mu_assert(train->spZ->values[12] == 7.0, "Wrong train value at 12");
+	mu_assert(train->spZ->values[13] == 8.0, "Wrong train value at 13");
+	mu_assert(train->spZ->values[14] == 9.0, "Wrong train value at 14");
+	mu_assert(train->spZ->values[15] == 10.0, "Wrong train value at 15");
+	#endif
 
-	mu_assert(train->spZ->ia[0] == 0, "Wrong train ia at 0");
-	mu_assert(train->spZ->ia[1] == 2, "Wrong train ia at 1");
-	mu_assert(train->spZ->ia[2] == 4, "Wrong train ia at 2");
-	mu_assert(train->spZ->ia[3] == 6, "Wrong train ia at 3");
-	mu_assert(train->spZ->ia[4] == 8, "Wrong train ia at 4");
-	mu_assert(train->spZ->ia[5] == 10, "Wrong train ia at 5");
-	mu_assert(train->spZ->ia[6] == 12, "Wrong train ia at 6");
-	mu_assert(train->spZ->ia[7] == 14, "Wrong train ia at 7");
-	mu_assert(train->spZ->ia[8] == 16, "Wrong train ia at 8");
+	#if MAJOR_ORDER == 'r'
+	mu_assert(train->spZ->ix[0] == 0, "Wrong train ix at 0");
+	mu_assert(train->spZ->ix[1] == 2, "Wrong train ix at 1");
+	mu_assert(train->spZ->ix[2] == 4, "Wrong train ix at 2");
+	mu_assert(train->spZ->ix[3] == 6, "Wrong train ix at 3");
+	mu_assert(train->spZ->ix[4] == 8, "Wrong train ix at 4");
+	mu_assert(train->spZ->ix[5] == 10, "Wrong train ix at 5");
+	mu_assert(train->spZ->ix[6] == 12, "Wrong train ix at 6");
+	mu_assert(train->spZ->ix[7] == 14, "Wrong train ix at 7");
+	mu_assert(train->spZ->ix[8] == 16, "Wrong train ix at 8");
+	#else
+	mu_assert(train->spZ->ix[0] == 0, "Wrong train ix at 0");
+	mu_assert(train->spZ->ix[1] == 0, "Wrong train ix at 1");
+	mu_assert(train->spZ->ix[2] == 8, "Wrong train ix at 2");
+	mu_assert(train->spZ->ix[3] == 16, "Wrong train ix at 3");
+	#endif
 
-	mu_assert(train->spZ->ja[0] == 1, "Wrong train ja at 0");
-	mu_assert(train->spZ->ja[1] == 2, "Wrong train ja at 1");
-	mu_assert(train->spZ->ja[2] == 1, "Wrong train ja at 2");
-	mu_assert(train->spZ->ja[3] == 2, "Wrong train ja at 3");
-	mu_assert(train->spZ->ja[4] == 1, "Wrong train ja at 4");
-	mu_assert(train->spZ->ja[5] == 2, "Wrong train ja at 5");
-	mu_assert(train->spZ->ja[6] == 1, "Wrong train ja at 6");
-	mu_assert(train->spZ->ja[7] == 2, "Wrong train ja at 7");
-	mu_assert(train->spZ->ja[8] == 1, "Wrong train ja at 8");
-	mu_assert(train->spZ->ja[9] == 2, "Wrong train ja at 9");
-	mu_assert(train->spZ->ja[10] == 1, "Wrong train ja at 10");
-	mu_assert(train->spZ->ja[11] == 2, "Wrong train ja at 11");
-	mu_assert(train->spZ->ja[12] == 1, "Wrong train ja at 12");
-	mu_assert(train->spZ->ja[13] == 2, "Wrong train ja at 13");
-	mu_assert(train->spZ->ja[14] == 1, "Wrong train ja at 14");
-	mu_assert(train->spZ->ja[15] == 2, "Wrong train ja at 15");
+	#if MAJOR_ORDER == 'r'
+	mu_assert(train->spZ->jx[0] == 1, "Wrong train jx at 0");
+	mu_assert(train->spZ->jx[1] == 2, "Wrong train jx at 1");
+	mu_assert(train->spZ->jx[2] == 1, "Wrong train jx at 2");
+	mu_assert(train->spZ->jx[3] == 2, "Wrong train jx at 3");
+	mu_assert(train->spZ->jx[4] == 1, "Wrong train jx at 4");
+	mu_assert(train->spZ->jx[5] == 2, "Wrong train jx at 5");
+	mu_assert(train->spZ->jx[6] == 1, "Wrong train jx at 6");
+	mu_assert(train->spZ->jx[7] == 2, "Wrong train jx at 7");
+	mu_assert(train->spZ->jx[8] == 1, "Wrong train jx at 8");
+	mu_assert(train->spZ->jx[9] == 2, "Wrong train jx at 9");
+	mu_assert(train->spZ->jx[10] == 1, "Wrong train jx at 10");
+	mu_assert(train->spZ->jx[11] == 2, "Wrong train jx at 11");
+	mu_assert(train->spZ->jx[12] == 1, "Wrong train jx at 12");
+	mu_assert(train->spZ->jx[13] == 2, "Wrong train jx at 13");
+	mu_assert(train->spZ->jx[14] == 1, "Wrong train jx at 14");
+	mu_assert(train->spZ->jx[15] == 2, "Wrong train jx at 15");
+	#else
+	mu_assert(train->spZ->jx[0] == 0, "Wrong train jx at 0");
+	mu_assert(train->spZ->jx[1] == 1, "Wrong train jx at 1");
+	mu_assert(train->spZ->jx[2] == 2, "Wrong train jx at 2");
+	mu_assert(train->spZ->jx[3] == 3, "Wrong train jx at 3");
+	mu_assert(train->spZ->jx[4] == 4, "Wrong train jx at 4");
+	mu_assert(train->spZ->jx[5] == 5, "Wrong train jx at 5");
+	mu_assert(train->spZ->jx[6] == 6, "Wrong train jx at 6");
+	mu_assert(train->spZ->jx[7] == 7, "Wrong train jx at 7");
+	mu_assert(train->spZ->jx[8] == 0, "Wrong train jx at 8");
+	mu_assert(train->spZ->jx[9] == 1, "Wrong train jx at 9");
+	mu_assert(train->spZ->jx[10] == 2, "Wrong train jx at 10");
+	mu_assert(train->spZ->jx[11] == 3, "Wrong train jx at 11");
+	mu_assert(train->spZ->jx[12] == 4, "Wrong train jx at 12");
+	mu_assert(train->spZ->jx[13] == 5, "Wrong train jx at 13");
+	mu_assert(train->spZ->jx[14] == 6, "Wrong train jx at 14");
+	mu_assert(train->spZ->jx[15] == 7, "Wrong train jx at 15");
+	#endif
 
 	// check the test GenSparse struct
 	mu_assert(test->spZ->nnz == 4, "test nnz incorrect");
 	mu_assert(test->spZ->n_row == 2, "test n_row incorrect");
 	mu_assert(test->spZ->n_col == 3, "test n_col incorrect");
 
+	#if MAJOR_ORDER == 'r'
 	mu_assert(test->spZ->values[0] == 2.0, "Wrong test value at 0");
 	mu_assert(test->spZ->values[1] == 2.0, "Wrong test value at 1");
 	mu_assert(test->spZ->values[2] == 4.0, "Wrong test value at 2");
 	mu_assert(test->spZ->values[3] == 4.0, "Wrong test value at 3");
+	#else
+	mu_assert(test->spZ->values[0] == 2.0, "Wrong test value at 0");
+	mu_assert(test->spZ->values[1] == 4.0, "Wrong test value at 1");
+	mu_assert(test->spZ->values[2] == 2.0, "Wrong test value at 2");
+	mu_assert(test->spZ->values[3] == 4.0, "Wrong test value at 3");
+	#endif
 
-	mu_assert(test->spZ->ia[0] == 0, "Wrong test ia at 0");
-	mu_assert(test->spZ->ia[1] == 2, "Wrong test ia at 1");
-	mu_assert(test->spZ->ia[2] == 4, "Wrong test ia at 2");
+	#if MAJOR_ORDER == 'r'
+	mu_assert(test->spZ->ix[0] == 0, "Wrong test ix at 0");
+	mu_assert(test->spZ->ix[1] == 2, "Wrong test ix at 1");
+	mu_assert(test->spZ->ix[2] == 4, "Wrong test ix at 2");
+	#else
+	mu_assert(test->spZ->ix[0] == 0, "Wrong test ix at 0");
+	mu_assert(test->spZ->ix[1] == 0, "Wrong test ix at 1");
+	mu_assert(test->spZ->ix[2] == 2, "Wrong test ix at 2");
+	mu_assert(test->spZ->ix[3] == 4, "Wrong test ix at 3");
+	#endif
 
-	mu_assert(test->spZ->ja[0] == 1, "Wrong test ja at 0");
-	mu_assert(test->spZ->ja[1] == 2, "Wrong test ja at 1");
-	mu_assert(test->spZ->ja[2] == 1, "Wrong test ja at 2");
-	mu_assert(test->spZ->ja[3] == 2, "Wrong test ja at 3");
+	#if MAJOR_ORDER == 'r'
+	mu_assert(test->spZ->jx[0] == 1, "Wrong test jx at 0");
+	mu_assert(test->spZ->jx[1] == 2, "Wrong test jx at 1");
+	mu_assert(test->spZ->jx[2] == 1, "Wrong test jx at 2");
+	mu_assert(test->spZ->jx[3] == 2, "Wrong test jx at 3");
+	#else
+	mu_assert(test->spZ->jx[0] == 0, "Wrong test jx at 0");
+	mu_assert(test->spZ->jx[1] == 1, "Wrong test jx at 1");
+	mu_assert(test->spZ->jx[2] == 0, "Wrong test jx at 2");
+	mu_assert(test->spZ->jx[3] == 1, "Wrong test jx at 3");
+	#endif
 
 	// end test code //
 	gensvm_free_data(full);

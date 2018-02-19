@@ -171,7 +171,7 @@ double gensvm_get_loss(struct GenModel *model, struct GenData *data,
 		for (j=0; j<K; j++) {
 			if (j == (data->y[i]-1))
 				continue;
-			value = matrix_get(model->H, K, i, j);
+			value = matrix_get(model->H, n, K, i, j);
 			value = pow(value, model->p);
 			rowvalue += value;
 		}
@@ -182,9 +182,11 @@ double gensvm_get_loss(struct GenModel *model, struct GenData *data,
 	loss /= ((double) n);
 
 	value = 0;
+
 	for (i=1; i<m+1; i++) {
 		for (j=0; j<K-1; j++) {
-			value += pow(matrix_get(model->V, K-1, i, j), 2.0);
+			rowvalue = matrix_get(model->V, m+1, K-1, i, j);
+			value += pow(rowvalue, 2.0);
 		}
 	}
 	loss += model->lambda * value;
@@ -213,9 +215,9 @@ void gensvm_step_doubling(struct GenModel *model)
 
 	for (i=0; i<m+1; i++) {
 		for (j=0; j<K-1; j++) {
-			matrix_mul(model->V, K-1, i, j, 2.0);
-			value = - matrix_get(model->Vbar, K-1, i, j);
-			matrix_add(model->V, K-1, i, j, value);
+			matrix_mul(model->V, m+1, K-1, i, j, 2.0);
+			value = - matrix_get(model->Vbar, m+1, K-1, i, j);
+			matrix_add(model->V, m+1, K-1, i, j, value);
 		}
 	}
 }
@@ -246,7 +248,7 @@ void gensvm_calculate_huber(struct GenModel *model)
 
 	for (i=0; i<model->n; i++) {
 		for (j=0; j<model->K; j++) {
-			q = matrix_get(model->Q, model->K, i, j);
+			q = matrix_get(model->Q, model->n, model->K, i, j);
 			value = 0.0;
 			if (q <= -model->kappa) {
 				value = 1.0 - q - (model->kappa+1.0)/2.0;
@@ -254,7 +256,7 @@ void gensvm_calculate_huber(struct GenModel *model)
 				value = 1.0/(2.0*model->kappa+2.0)*pow(1.0 - q,
 					       	2.0);
 			}
-			matrix_set(model->H, model->K, i, j, value);
+			matrix_set(model->H, model->n, model->K, i, j, value);
 		}
 	}
 }
@@ -289,10 +291,14 @@ void gensvm_calculate_errors(struct GenModel *model, struct GenData *data,
 		for (j=0; j<K; j++) {
 			if (j == (data->y[i]-1))
 				continue;
-			uu_row = &model->UU[((data->y[i]-1)*K+j)*(K-1)];
+			uu_row = &matrix_get(model->UU, K*K, K-1, 
+					(data->y[i]-1)*K+j, 0);
+			#if MAJOR_ORDER == 'r'
 			q = cblas_ddot(K-1, &ZV[i*(K-1)], 1, uu_row, 1);
-			matrix_set(model->Q, K, i, j, q);
+			#else
+			q = cblas_ddot(K-1, &ZV[i], n, uu_row, K*K);
+			#endif
+			matrix_set(model->Q, n, K, i, j, q);
 		}
 	}
 }
-

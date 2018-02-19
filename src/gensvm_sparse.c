@@ -43,8 +43,8 @@ struct GenSparse *gensvm_init_sparse(void)
 	sp->n_col = 0;
 
 	sp->values = NULL;
-	sp->ia = NULL;
-	sp->ja = NULL;
+	sp->ix = NULL;
+	sp->jx = NULL;
 
 	return sp;
 }
@@ -62,8 +62,8 @@ struct GenSparse *gensvm_init_sparse(void)
 void gensvm_free_sparse(struct GenSparse *sp)
 {
 	free(sp->values);
-	free(sp->ia);
-	free(sp->ja);
+	free(sp->ix);
+	free(sp->jx);
 	free(sp);
 	sp = NULL;
 }
@@ -104,7 +104,21 @@ long gensvm_count_nnz(double *A, long rows, long cols)
  */
 bool gensvm_nnz_comparison(long nnz, long rows, long cols)
 {
+	#if MAJOR_ORDER == 'r'
+	return gensvm_nnz_comparison_csr(nnz, rows, cols);
+	#else
+	return gensvm_nnz_comparison_csc(nnz, rows, cols);
+	#endif
+}
+
+bool gensvm_nnz_comparison_csr(long nnz, long rows, long cols)
+{
 	return (nnz < (rows*(cols-1.0)-1.0)/2.0);
+}
+
+bool gensvm_nnz_comparison_csc(long nnz, long rows, long cols)
+{
+	return (nnz < (cols*(rows-1.0)-1.0)/2.0);
 }
 
 /**
@@ -126,10 +140,26 @@ bool gensvm_nnz_comparison(long nnz, long rows, long cols)
  *
  * @return  		whether or not sparsity is worth it
  */
+
 bool gensvm_could_sparse(double *A, long rows, long cols)
 {
+	#if MAJOR_ORDER == 'r'
+	return gensvm_could_sparse_csr(A, rows, cols);
+	#else
+	return gensvm_could_sparse_csc(A, rows, cols);
+	#endif
+}
+
+bool gensvm_could_sparse_csr(double *A, long rows, long cols)
+{
 	long nnz = gensvm_count_nnz(A, rows, cols);
-	return gensvm_nnz_comparison(nnz, rows, cols);
+	return gensvm_nnz_comparison_csr(nnz, rows, cols);
+}
+
+bool gensvm_could_sparse_csc(double *A, long rows, long cols)
+{
+	long nnz = gensvm_count_nnz(A, rows, cols);
+	return gensvm_nnz_comparison_csc(nnz, rows, cols);
 }
 
 /**
@@ -149,6 +179,15 @@ bool gensvm_could_sparse(double *A, long rows, long cols)
  */
 struct GenSparse *gensvm_dense_to_sparse(double *A, long rows, long cols)
 {
+	#if MAJOR_ORDER == 'r'
+	return gensvm_dense_to_sparse_csr(A, rows, cols);
+	#else
+	return gensvm_dense_to_sparse_csc(A, rows, cols);
+	#endif
+}
+
+struct GenSparse *gensvm_dense_to_sparse_csr(double *A, long rows, long cols)
+{
 	double value;
 	long row_cnt;
 	long i, j, cnt, nnz = 0;
@@ -157,28 +196,67 @@ struct GenSparse *gensvm_dense_to_sparse(double *A, long rows, long cols)
 	nnz = gensvm_count_nnz(A, rows, cols);
 
 	spA = gensvm_init_sparse();
+	spA->type = CSR;
 
 	spA->nnz = nnz;
 	spA->n_row = rows;
 	spA->n_col = cols;
 	spA->values = Calloc(double, nnz);
-	spA->ia = Calloc(long, rows+1);
-	spA->ja = Calloc(long, nnz);
+	spA->ix = Calloc(long, rows+1);
+	spA->jx = Calloc(long, nnz);
 
 	cnt = 0;
-	spA->ia[0] = 0;
+	spA->ix[0] = 0;
 	for (i=0; i<rows; i++) {
 		row_cnt = 0;
 		for (j=0; j<cols; j++) {
-			value = matrix_get(A, cols, i, j);
+			value = matrix_get(A, rows, cols, i, j);
 			if (value != 0) {
 				row_cnt++;
 				spA->values[cnt] = value;
-				spA->ja[cnt] = j;
+				spA->jx[cnt] = j;
 				cnt++;
 			}
 		}
-		spA->ia[i+1] = spA->ia[i] + row_cnt;
+		spA->ix[i+1] = spA->ix[i] + row_cnt;
+	}
+
+	return spA;
+}
+
+struct GenSparse *gensvm_dense_to_sparse_csc(double *A, long rows, long cols)
+{
+	double value;
+	long col_cnt;
+	long i, j, cnt, nnz = 0;
+	struct GenSparse *spA = NULL;
+
+	nnz = gensvm_count_nnz(A, rows, cols);
+
+	spA = gensvm_init_sparse();
+
+	spA->type = CSC;
+	spA->nnz = nnz;
+	spA->n_row = rows;
+	spA->n_col = cols;
+	spA->values = Calloc(double, nnz);
+	spA->ix = Calloc(long, cols+1);
+	spA->jx = Calloc(long, nnz);
+
+	cnt = 0;
+	spA->ix[0] = 0;
+	for (j=0; j<cols; j++) {
+		col_cnt = 0;
+		for (i=0; i<rows; i++) {
+			value = matrix_get(A, rows, cols, i, j);
+			if (value != 0) {
+				col_cnt++;
+				spA->values[cnt] = value;
+				spA->jx[cnt] = i;
+				cnt++;
+			}
+		}
+		spA->ix[j+1] = spA->ix[j] + col_cnt;
 	}
 
 	return spA;
@@ -188,26 +266,94 @@ struct GenSparse *gensvm_dense_to_sparse(double *A, long rows, long cols)
  * @brief Convert a GenSparse structure to a dense matrix
  *
  * @details
- * This function converts a GenSparse structure back to a normal dense matrix
- * in RowMajor order. Note that the allocated memory must be freed by the
- * caller.
+ * This function converts a GenSparse structure back to a normal dense matrix.  
+ * Note that the allocated memory must be freed by the caller.
  *
- * @param[in] 	A 	a GenSparse structure
+ * @param[in] 	spA 	a GenSparse structure
  *
  * @return 		a dense matrix
+ *
  */
-double *gensvm_sparse_to_dense(struct GenSparse *A)
+double *gensvm_sparse_to_dense(struct GenSparse *spA)
 {
 	double value;
-	long i, j, jj;
-	double *B = Calloc(double, (A->n_row)*(A->n_col));
-	for (i=0; i<A->n_row; i++) {
-		for (jj=A->ia[i]; jj<A->ia[i+1]; jj++) {
-			j = A->ja[jj];
-			value = A->values[jj];
-			matrix_set(B, A->n_col, i, j, value);
+	long i, j, a, b;
+	double *B = Calloc(double, (spA->n_row)*(spA->n_col));
+
+	long end = (spA->type == CSR) ? spA->n_row : spA->n_col;
+
+	for (a=0; a<end; a++) {
+		for (b=spA->ix[a]; b<spA->ix[a+1]; b++) {
+			if (spA->type == CSR) {
+				i = a;
+				j = spA->jx[b];
+			} else {
+				i = spA->jx[b];
+				j = a;
+			}
+			value = spA->values[b];
+			matrix_set(B, spA->n_row, spA->n_col, i, j, value);
 		}
 	}
 
 	return B;
+}
+
+/**
+ * @brief Convert a CSR sparse matrix to a CSC sparse matrix
+ *
+ * @param[in] 	spA 	CSR sparse matrix to convert
+ *
+ * @return  		CSC sparse matrix
+ *
+ */
+struct GenSparse *gensvm_sparse_csr_to_csc(struct GenSparse *spA)
+{
+	long a, b, i, j, idx;
+	double val;
+
+	struct GenSparse *spB = gensvm_init_sparse();
+
+	spB->type = CSC;
+	spB->nnz = spA->nnz;
+	spB->n_row = spA->n_row;
+	spB->n_col = spA->n_col;
+	spB->values = Calloc(double, spB->nnz);
+	spB->ix = Calloc(double, spB->n_col+1);
+	spB->jx = Calloc(double, spB->nnz);
+
+	spB->ix[0] = 0;
+
+	for (a=0; a<spA->n_row; a++) {
+		for (b=spA->ix[a]; b<spA->ix[a+1]; b++) {
+			i = a;
+			j = spA->jx[b];
+
+			spB->ix[j+1]++;
+		}
+	}
+	for (j=0; j<spB->n_col; j++) {
+		spB->ix[j+1] += spB->ix[j];
+	}
+
+	long *col_cnt = Calloc(long, spB->n_col);
+
+	for (a=0; a<spA->n_row; a++) {
+		for (b=spA->ix[a]; b<spA->ix[a+1]; b++) {
+			i = a;
+			j = spA->jx[b];
+			val = spA->values[b];
+
+			idx = spB->ix[j] + col_cnt[j];
+
+			spB->values[idx] = val;
+			spB->jx[idx] = i;
+
+			col_cnt[j]++;
+		}
+	}
+
+	free(col_cnt);
+
+	return spB;
 }

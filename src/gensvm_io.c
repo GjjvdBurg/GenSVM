@@ -71,7 +71,7 @@ void gensvm_read_data(struct GenData *dataset, char *data_file)
 	// Read first line of data
 	for (j=1; j<m+1; j++) {
 		nr += fscanf(fid, "%lf", &value);
-		matrix_set(dataset->RAW, m+1, 0, j, value);
+		matrix_set(dataset->RAW, n, m+1, 0, j, value);
 	}
 
 	if (fgets(buf, GENSVM_MAX_LINE_LENGTH, fid) == NULL) {
@@ -95,7 +95,7 @@ void gensvm_read_data(struct GenData *dataset, char *data_file)
 	for (i=1; i<n; i++) {
 		for (j=1; j<m+1; j++) {
 			nr += fscanf(fid, "%lf", &value);
-			matrix_set(dataset->RAW, m+1, i, j, value);
+			matrix_set(dataset->RAW, n, m+1, i, j, value);
 		}
 		if (dataset->y != NULL) {
 			nr += fscanf(fid, "%lf", &value);
@@ -115,7 +115,7 @@ void gensvm_read_data(struct GenData *dataset, char *data_file)
 
 	// Set the column of ones
 	for (i=0; i<n; i++)
-		matrix_set(dataset->RAW, m+1, i, 0, 1.0);
+		matrix_set(dataset->RAW, n, m+1, i, 0, 1.0);
 
 	dataset->n = n;
 	dataset->m = m;
@@ -276,13 +276,19 @@ void gensvm_read_data_libsvm(struct GenData *data, char *data_file)
 	do_sparse = gensvm_nnz_comparison(nnz, n, m+1);
 	if (do_sparse) {
 		data->spZ = gensvm_init_sparse();
+		data->spZ->type = CSR;
 		data->spZ->nnz = nnz;
 		data->spZ->n_row = n;
 		data->spZ->n_col = m+1;
 		data->spZ->values = Calloc(double, nnz);
-		data->spZ->ia = Calloc(long, n+1);
-		data->spZ->ja = Calloc(long, nnz);
-		data->spZ->ia[0] = 0;
+
+		if (data->spZ->type == CSR) {
+			data->spZ->ix = Calloc(long, data->spZ->n_row+1);
+		} else {
+			data->spZ->ix = Calloc(long, data->spZ->n_col+1);
+		}
+		data->spZ->jx = Calloc(long, nnz);
+		data->spZ->ix[0] = 0;
 	} else {
 		data->RAW = Calloc(double, n*(m+1));
 		data->Z = data->RAW;
@@ -322,14 +328,15 @@ void gensvm_read_data_libsvm(struct GenData *data, char *data_file)
 		}
 
 		row_cnt = 0;
-		// set the first element in the row to 1
+		// set the first element in the row to 1 (this is the column 
+		// of ones in the Z matrix for GenSVM)
 		if (do_sparse) {
 			data->spZ->values[cnt] = 1.0;
-			data->spZ->ja[cnt] = 0;
-			cnt++;
+			data->spZ->jx[cnt] = 0;
 			row_cnt++;
+			cnt++;
 		} else {
-			matrix_set(data->RAW, m+1, i, 0, 1.0);
+			matrix_set(data->RAW, n, m+1, i, 0, 1.0);
 		}
 
 		// read the rest of the line
@@ -360,11 +367,11 @@ void gensvm_read_data_libsvm(struct GenData *data, char *data_file)
 
 			if (do_sparse) {
 				data->spZ->values[cnt] = value;
-				data->spZ->ja[cnt] = index + zero_based;
-				cnt++;
+				data->spZ->jx[cnt] = index + zero_based;
 				row_cnt++;
+				cnt++;
 			} else {
-				matrix_set(data->RAW, m+1, i, 
+				matrix_set(data->RAW, n, m+1, i, 
 						index + zero_based, value);
 			}
 
@@ -375,7 +382,7 @@ void gensvm_read_data_libsvm(struct GenData *data, char *data_file)
 		}
 
 		if (do_sparse) {
-			data->spZ->ia[i+1] = data->spZ->ia[i] + row_cnt;
+			data->spZ->ix[i+1] = data->spZ->ix[i] + row_cnt;
 		}
 
 		// free the big parts
@@ -384,6 +391,15 @@ void gensvm_read_data_libsvm(struct GenData *data, char *data_file)
 		}
 		free(big_parts);
 	}
+
+	#if MAJOR_ORDER == 'c'
+	if (do_sparse) {
+		struct GenSparse *tmp_sparse = gensvm_sparse_csr_to_csc(
+				data->spZ);
+		gensvm_free_sparse(data->spZ);
+		data->spZ = tmp_sparse;
+	}
+	#endif
 
 	fclose(fid);
 
@@ -465,7 +481,8 @@ void gensvm_read_model(struct GenModel *model, char *model_filename)
 	for (i=0; i<model->m+1; i++) {
 		for (j=0; j<model->K-1; j++) {
 			nr += fscanf(fid, "%lf ", &value);
-			matrix_set(model->V, model->K-1, i, j, value);
+			matrix_set(model->V, model->m+1, model->K-1, i, j, 
+					value);
 		}
 	}
 	if (nr != (model->m+1)*(model->K-1)) {
@@ -529,8 +546,8 @@ void gensvm_write_model(struct GenModel *model, char *output_filename)
 		for (j=0; j<model->K-1; j++) {
 			if (j > 0)
 				fprintf(fid, " ");
-			fprintf(fid, "%+15.16f", matrix_get(model->V,
-						model->K-1, i, j));
+			fprintf(fid, "%+15.16f", matrix_get(model->V, 
+						model->m+1, model->K-1, i, j));
 		}
 		fprintf(fid, "\n");
 	}
@@ -573,8 +590,8 @@ void gensvm_write_predictions(struct GenData *data, long *predy,
 
 	for (i=0; i<data->n; i++) {
 		for (j=0; j<data->m; j++)
-			fprintf(fid, "%.16f ", matrix_get(data->Z, data->m+1, i,
-						j+1));
+			fprintf(fid, "%.16f ", matrix_get(data->Z, data->n, 
+						data->m+1, i, j+1));
 		fprintf(fid, "%li\n", predy[i]);
 	}
 

@@ -48,30 +48,30 @@ char *test_init_null_dense()
 	data->K = K;
 	data->RAW = Calloc(double, n*(m+1));
 	for (i=0; i<n; i++) {
-		matrix_set(data->RAW, m+1, i, 0, 1.0);
-		matrix_set(data->RAW, m+1, i, 1, i);
-		matrix_set(data->RAW, m+1, i, 2, -i);
+		matrix_set(data->RAW, data->n, m+1, i, 0, 1.0);
+		matrix_set(data->RAW, data->n, m+1, i, 1, i);
+		matrix_set(data->RAW, data->n, m+1, i, 2, -i);
 	}
 	data->Z = data->RAW;
 
 	gensvm_init_V(NULL, model, data);
 
 	// first row all ones
-	value = matrix_get(model->V, K-1, 0, 0);
+	value = matrix_get(model->V, m+1, K-1, 0, 0);
 	mu_assert(value == 1.0, "Incorrect value at 0, 0");
-	value = matrix_get(model->V, K-1, 0, 1);
+	value = matrix_get(model->V, m+1, K-1, 0, 1);
 	mu_assert(value == 1.0, "Incorrect value at 0, 1");
 
 	// second row between -1 and 0.25
-	value = matrix_get(model->V, K-1, 1, 0);
+	value = matrix_get(model->V, m+1, K-1, 1, 0);
 	mu_assert(value >= -1.0 && value <= 0.25, "Incorrect value at 1, 0");
-	value = matrix_get(model->V, K-1, 1, 1);
+	value = matrix_get(model->V, m+1, K-1, 1, 1);
 	mu_assert(value >= -1.0 && value <= 0.25, "Incorrect value at 1, 1");
 
 	// third row between -0.25 and 1
-	value = matrix_get(model->V, K-1, 2, 0);
+	value = matrix_get(model->V, m+1, K-1, 2, 0);
 	mu_assert(value >= -0.25 && value <= 1.0, "Incorrect value at 2, 0");
-	value = matrix_get(model->V, K-1, 2, 1);
+	value = matrix_get(model->V, m+1, K-1, 2, 1);
 	mu_assert(value >= -0.25 && value <= 1.0, "Incorrect value at 2, 1");
 
 	// end test code
@@ -103,9 +103,9 @@ char *test_init_null_sparse()
 	data->K = K;
 	data->RAW = Calloc(double, n*(m+1));
 	for (i=0; i<n; i++) {
-		matrix_set(data->RAW, m+1, i, 0, 1.0);
-		matrix_set(data->RAW, m+1, i, 1, i);
-		matrix_set(data->RAW, m+1, i, 2, -i);
+		matrix_set(data->RAW, n, m+1, i, 0, 1.0);
+		matrix_set(data->RAW, n, m+1, i, 1, i);
+		matrix_set(data->RAW, n, m+1, i, 2, -i);
 	}
 
 	data->Z = data->RAW;
@@ -117,21 +117,21 @@ char *test_init_null_sparse()
 	gensvm_init_V(NULL, model, data);
 
 	// first row all ones
-	value = matrix_get(model->V, K-1, 0, 0);
+	value = matrix_get(model->V, m+1, K-1, 0, 0);
 	mu_assert(value == 1.0, "Incorrect value at 0, 0");
-	value = matrix_get(model->V, K-1, 0, 1);
+	value = matrix_get(model->V, m+1, K-1, 0, 1);
 	mu_assert(value == 1.0, "Incorrect value at 0, 1");
 
 	// second row between -1 and 0.25
-	value = matrix_get(model->V, K-1, 1, 0);
+	value = matrix_get(model->V, m+1, K-1, 1, 0);
 	mu_assert(value >= -1.0 && value <= 0.25, "Incorrect value at 1, 0");
-	value = matrix_get(model->V, K-1, 1, 1);
+	value = matrix_get(model->V, m+1, K-1, 1, 1);
 	mu_assert(value >= -1.0 && value <= 0.25, "Incorrect value at 1, 1");
 
 	// third row between -0.25 and 1
-	value = matrix_get(model->V, K-1, 2, 0);
+	value = matrix_get(model->V, m+1, K-1, 2, 0);
 	mu_assert(value >= -0.25 && value <= 1.0, "Incorrect value at 2, 0");
-	value = matrix_get(model->V, K-1, 2, 1);
+	value = matrix_get(model->V, m+1, K-1, 2, 1);
 	mu_assert(value >= -0.25 && value <= 1.0, "Incorrect value at 2, 1");
 
 	// end test code
@@ -164,37 +164,37 @@ char *test_init_seed()
 	gensvm_allocate_model(seed);
 
 	// start test code
-	matrix_set(seed->V, seed->K-1, 0, 0, 123.0);
-	matrix_set(seed->V, seed->K-1, 1, 1, 321.0);
-	matrix_set(seed->V, seed->K-1, 2, 0, 111.0);
-	matrix_set(seed->V, seed->K-1, 5, 0, 222.0);
-	matrix_set(seed->V, seed->K-1, 3, 1, 333.0);
+	matrix_set(seed->V, seed->m+1, seed->K-1, 0, 0, 123.0);
+	matrix_set(seed->V, seed->m+1, seed->K-1, 1, 1, 321.0);
+	matrix_set(seed->V, seed->m+1, seed->K-1, 2, 0, 111.0);
+	matrix_set(seed->V, seed->m+1, seed->K-1, 5, 0, 222.0);
+	matrix_set(seed->V, seed->m+1, seed->K-1, 3, 1, 333.0);
 
 	gensvm_init_V(seed, model, data);
 
-	mu_assert(matrix_get(model->V, model->K-1, 0, 0) == 123.0,
+	mu_assert(matrix_get(model->V, model->m+1, model->K-1, 0, 0) == 123.0,
 			"Incorrect V value at 0, 0");
-	mu_assert(matrix_get(model->V, model->K-1, 0, 1) == 0.0,
+	mu_assert(matrix_get(model->V, model->m+1, model->K-1, 0, 1) == 0.0,
 			"Incorrect V value at 0, 1");
-	mu_assert(matrix_get(model->V, model->K-1, 1, 0) == 0.0,
+	mu_assert(matrix_get(model->V, model->m+1, model->K-1, 1, 0) == 0.0,
 			"Incorrect V value at 1, 0");
-	mu_assert(matrix_get(model->V, model->K-1, 1, 1) == 321.0,
+	mu_assert(matrix_get(model->V, model->m+1, model->K-1, 1, 1) == 321.0,
 			"Incorrect V value at 1, 1");
-	mu_assert(matrix_get(model->V, model->K-1, 2, 0) == 111.0,
+	mu_assert(matrix_get(model->V, model->m+1, model->K-1, 2, 0) == 111.0,
 			"Incorrect V value at 2, 0");
-	mu_assert(matrix_get(model->V, model->K-1, 2, 1) == 0.0,
+	mu_assert(matrix_get(model->V, model->m+1, model->K-1, 2, 1) == 0.0,
 			"Incorrect V value at 2, 1");
-	mu_assert(matrix_get(model->V, model->K-1, 3, 0) == 0.0,
+	mu_assert(matrix_get(model->V, model->m+1, model->K-1, 3, 0) == 0.0,
 			"Incorrect V value at 3, 0");
-	mu_assert(matrix_get(model->V, model->K-1, 3, 1) == 333.0,
+	mu_assert(matrix_get(model->V, model->m+1, model->K-1, 3, 1) == 333.0,
 			"Incorrect V value at 3, 1");
-	mu_assert(matrix_get(model->V, model->K-1, 4, 0) == 0.0,
+	mu_assert(matrix_get(model->V, model->m+1, model->K-1, 4, 0) == 0.0,
 			"Incorrect V value at 4, 0");
-	mu_assert(matrix_get(model->V, model->K-1, 4, 1) == 0.0,
+	mu_assert(matrix_get(model->V, model->m+1, model->K-1, 4, 1) == 0.0,
 			"Incorrect V value at 4, 1");
-	mu_assert(matrix_get(model->V, model->K-1, 5, 0) == 222.0,
+	mu_assert(matrix_get(model->V, model->m+1, model->K-1, 5, 0) == 222.0,
 			"Incorrect V value at 5, 0");
-	mu_assert(matrix_get(model->V, model->K-1, 5, 1) == 0.0,
+	mu_assert(matrix_get(model->V, model->m+1, model->K-1, 5, 1) == 0.0,
 			"Incorrect V value at 5, 1");
 	// end test code
 

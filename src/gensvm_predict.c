@@ -73,8 +73,8 @@ void gensvm_predict_labels(struct GenData *testdata, struct GenModel *model,
 		min_dist = INFINITY;
 		for (j=0; j<K; j++) {
 			for (k=0; k<K-1; k++) {
-				S[k] = matrix_get(ZV, K-1, i, k) -
-					matrix_get(model->U, K-1, j, k);
+				S[k] = matrix_get(ZV, n, K-1, i, k) -
+					matrix_get(model->U, K, K-1, j, k);
 			}
 			norm = cblas_dnrm2(K-1, S, 1);
 			if (norm < min_dist) {
