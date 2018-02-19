@@ -40,29 +40,29 @@ char *test_sv()
 	// than 1
 
 	// this is an sv
-	matrix_set(model->Q, model->K, 0, 0, 1.1);
-	matrix_set(model->Q, model->K, 0, 1, 0.0);
-	matrix_set(model->Q, model->K, 0, 2, 1.0);
+	matrix_set(model->Q, model->n, model->K, 0, 0, 1.1);
+	matrix_set(model->Q, model->n, model->K, 0, 1, 0.0);
+	matrix_set(model->Q, model->n, model->K, 0, 2, 1.0);
 
 	// this is an sv
-	matrix_set(model->Q, model->K, 1, 0, 0.5);
-	matrix_set(model->Q, model->K, 1, 1, 0.5);
-	matrix_set(model->Q, model->K, 1, 2, 0.5);
+	matrix_set(model->Q, model->n, model->K, 1, 0, 0.5);
+	matrix_set(model->Q, model->n, model->K, 1, 1, 0.5);
+	matrix_set(model->Q, model->n, model->K, 1, 2, 0.5);
 
 	// this is an sv
-	matrix_set(model->Q, model->K, 2, 0, -0.5);
-	matrix_set(model->Q, model->K, 2, 1, 0.5);
-	matrix_set(model->Q, model->K, 2, 2, -0.5);
+	matrix_set(model->Q, model->n, model->K, 2, 0, -0.5);
+	matrix_set(model->Q, model->n, model->K, 2, 1, 0.5);
+	matrix_set(model->Q, model->n, model->K, 2, 2, -0.5);
 
 	// this is not an sv
-	matrix_set(model->Q, model->K, 3, 0, 1.5);
-	matrix_set(model->Q, model->K, 3, 1, 1.5);
-	matrix_set(model->Q, model->K, 3, 2, 0.5);
+	matrix_set(model->Q, model->n, model->K, 3, 0, 1.5);
+	matrix_set(model->Q, model->n, model->K, 3, 1, 1.5);
+	matrix_set(model->Q, model->n, model->K, 3, 2, 0.5);
 
 	// this is not an sv
-	matrix_set(model->Q, model->K, 4, 0, 2.0);
-	matrix_set(model->Q, model->K, 4, 1, 2.0);
-	matrix_set(model->Q, model->K, 4, 2, 2.0);
+	matrix_set(model->Q, model->n, model->K, 4, 0, 2.0);
+	matrix_set(model->Q, model->n, model->K, 4, 1, 2.0);
+	matrix_set(model->Q, model->n, model->K, 4, 2, 2.0);
 
 	mu_assert(gensvm_num_sv(model) == 3, "number of svs incorrect");
 

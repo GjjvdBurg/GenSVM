@@ -157,27 +157,40 @@ void gensvm_kernel_postprocess(struct GenModel *model,
 void gensvm_kernel_compute(struct GenModel *model, struct GenData *data,
 		double *K)
 {
-	long i, j;
+	long i, j, incx, incy;
 	long n = data->n;
 	double value;
 	double *x1 = NULL,
 	       *x2 = NULL;
 
+	#if MAJOR_ORDER == 'r'
+	incx = 1;
+	incy = 1;
+	#else
+	incx = n;
+	incy = n;
+	#endif
+
 	for (i=0; i<n; i++) {
 		for (j=i; j<n; j++) {
+			#if MAJOR_ORDER == 'r'
 			x1 = &data->RAW[i*(data->m+1)+1];
 			x2 = &data->RAW[j*(data->m+1)+1];
+			#else
+			x1 = &data->RAW[i+n];
+			x2 = &data->RAW[j+n];
+			#endif
 			if (model->kerneltype == K_POLY)
 				value = gensvm_kernel_dot_poly(x1, x2, data->m,
-						model->gamma, model->coef, 
-						model->degree);
+						incx, incy, model->gamma, 
+						model->coef, model->degree);
 			else if (model->kerneltype == K_RBF)
 				value = gensvm_kernel_dot_rbf(x1, x2, data->m,
-						model-> gamma);
+						incx, incy, model-> gamma);
 			else if (model->kerneltype == K_SIGMOID)
 				value = gensvm_kernel_dot_sigmoid(x1, x2, 
-						data->m, model->gamma, 
-						model->coef);
+						data->m, incx, incy, 
+						model->gamma, model->coef);
 			else {
 				// LCOV_EXCL_START
 				err("[GenSVM Error]: Unknown kernel type in "
@@ -185,8 +198,8 @@ void gensvm_kernel_compute(struct GenModel *model, struct GenData *data,
 				exit(EXIT_FAILURE);
 				// LCOV_EXCL_STOP
 			}
-			matrix_set(K, n, i, j, value);
-			matrix_set(K, n, j, i, value);
+			matrix_set(K, n, n, i, j, value);
+			matrix_set(K, n, n, j, i, value);
 		}
 	}
 }
@@ -275,11 +288,19 @@ long gensvm_kernel_eigendecomp(double *K, long n, double cutoff, double **P_ret,
 	// revert P to row-major order and copy only the the columns
 	// corresponding to the selected eigenvalues
 	P = Calloc(double, n*num_eigen);
+	#if MAJOR_ORDER == 'r'
 	for (j=n-1; j>n-1-num_eigen; j--) {
 		for (i=0; i<n; i++) {
 			P[i*num_eigen + (n-1)-j] = tempP[i + j*n];
 		}
 	}
+	#else
+	for (j=n-1; j>n-1-num_eigen; j--) {
+		for (i=0; i<n; i++) {
+			P[i + (n - 1 - j)*n] = tempP[i + j*n];
+		}
+	}
+	#endif
 
 	free(tempSigma);
 	free(tempP);
@@ -314,7 +335,7 @@ long gensvm_kernel_eigendecomp(double *K, long n, double cutoff, double **P_ret,
 double *gensvm_kernel_cross(struct GenModel *model, struct GenData *data_train,
 		struct GenData *data_test)
 {
-	long i, j;
+	long i, j, incx, incy;
 	long n_train = data_train->n;
 	long n_test = data_test->n;
 	long m = data_test->m;
@@ -322,20 +343,34 @@ double *gensvm_kernel_cross(struct GenModel *model, struct GenData *data_train,
 	       *x2 = NULL,
 	       *K2 = Calloc(double, n_test * n_train);
 
+	#if MAJOR_ORDER == 'r'
+	incx = 1;
+	incy = 1;
+	#else
+	incx = n_test;
+	incy = n_train;
+	#endif
+
 	for (i=0; i<n_test; i++) {
 		for (j=0; j<n_train; j++) {
+			#if MAJOR_ORDER == 'r'
 			x1 = &data_test->RAW[i*(m+1)+1];
 			x2 = &data_train->RAW[j*(m+1)+1];
+			#else
+			x1 = &data_test->RAW[i+n_test];
+			x2 = &data_train->RAW[j+n_train];
+			#endif
 			if (model->kerneltype == K_POLY)
 				value = gensvm_kernel_dot_poly(x1, x2, m, 
-						model->gamma, model->coef, 
-						model->degree);
+						incx, incy, model->gamma, 
+						model->coef, model->degree);
 			else if (model->kerneltype == K_RBF)
-				value = gensvm_kernel_dot_rbf(x1, x2, m, 
-						model->gamma);
+				value = gensvm_kernel_dot_rbf(x1, x2, m,
+						incx, incy, model->gamma);
 			else if (model->kerneltype == K_SIGMOID)
 				value = gensvm_kernel_dot_sigmoid(x1, x2, m,
-						model->gamma, model->coef);
+						incx, incy, model->gamma, 
+						model->coef);
 			else {
 				// LCOV_EXCL_START
 				err("[GenSVM Error]: Unknown kernel type in "
@@ -343,7 +378,7 @@ double *gensvm_kernel_cross(struct GenModel *model, struct GenData *data_train,
 				exit(EXIT_FAILURE);
 				// LCOV_EXCL_STOP
 			}
-			matrix_set(K2, n_train, i, j, value);
+			matrix_set(K2, n_test, n_train, i, j, value);
 		}
 	}
 	return K2;
@@ -377,11 +412,11 @@ void gensvm_kernel_trainfactor(struct GenData *data, double *P, double *Sigma,
 	// Write data->Z = [1 M] = [1 P*Sigma]
 	for (i=0; i<n; i++) {
 		for (j=0; j<r; j++) {
-			value = matrix_get(P, r, i, j);
-			value *= matrix_get(Sigma, 1, j, 0);
-			matrix_set(data->Z, r+1, i, j+1, value);
+			value = matrix_get(P, n, r, i, j);
+			value *= matrix_get(Sigma, r, 1, j, 0);
+			matrix_set(data->Z, n, r+1, i, j+1, value);
 		}
-		matrix_set(data->Z, r+1, i, 0, 1.0);
+		matrix_set(data->Z, n, r+1, i, 0, 1.0);
 	}
 
 	// Set data->r to r so data knows the width of Z
@@ -424,30 +459,35 @@ void gensvm_kernel_testfactor(struct GenData *testdata,
 	// of 1's.
 	for (i=0; i<n1; i++) {
 		for (j=0; j<r; j++) {
-			value = matrix_get(traindata->Z, r+1, i, j+1);
-			matrix_set(M, r, i, j, value);
+			value = matrix_get(traindata->Z, n1, r+1, i, j+1);
+			matrix_set(M, n1, r, i, j, value);
 		}
 	}
 
 	// Multiply K2 with M and store in N
+	#if MAJOR_ORDER == 'r'
 	cblas_dgemm(CblasRowMajor, CblasNoTrans, CblasNoTrans, n2, r, n1, 1.0,
 			K2, n1, M, r, 0.0, N, r);
+	#else
+	cblas_dgemm(CblasColMajor, CblasNoTrans, CblasNoTrans, n2, r, n1, 1.0,
+			K2, n2, M, n1, 0.0, N, n2);
+	#endif
 
 	// Multiply N with Sigma^{-2}
 	for (j=0; j<r; j++) {
-		value = pow(matrix_get(traindata->Sigma, 1, j, 0), -2.0);
+		value = pow(matrix_get(traindata->Sigma, r, 1, j, 0), -2.0);
 		for (i=0; i<n2; i++)
-			matrix_mul(N, r, i, j, value);
+			matrix_mul(N, n2, r, i, j, value);
 	}
 
 	// write N to Z with a column of ones
 	testdata->Z = Calloc(double, n2*(r+1));
 	for (i=0; i<n2; i++) {
 		for (j=0; j<r; j++) {
-			matrix_set(testdata->Z, r+1, i, j+1,
-					matrix_get(N, r, i, j));
+			matrix_set(testdata->Z, n2, r+1, i, j+1,
+					matrix_get(N, n2, r, i, j));
 		}
-		matrix_set(testdata->Z, r+1, i, 0, 1.0);
+		matrix_set(testdata->Z, n2, r+1, i, 0, 1.0);
 	}
 	// Set r to testdata
 	testdata->r = r;
@@ -472,13 +512,26 @@ void gensvm_kernel_testfactor(struct GenData *testdata,
  * @param[in] 	gamma 		gamma parameter of the kernel
  * @returns  			kernel evaluation
  */
-double gensvm_kernel_dot_rbf(double *x1, double *x2, long n, double gamma)
+double gensvm_kernel_dot_rbf(double *x, double *y, long n, 
+		long incx, long incy, double gamma)
 {
-	long i;
+	long i, ix, iy;
 	double value = 0.0;
 
-	for (i=0; i<n; i++)
-		value += (x1[i] - x2[i]) * (x1[i] - x2[i]);
+	if (incx == 1 && incy == 1) {
+		for (i=0; i<n; i++) {
+			value += (x[i] - y[i]) * (x[i] - y[i]);
+		}
+	} else {
+		ix = 0;
+		iy = 0;
+		for (i=0; i<n; i++) {
+			value += (x[ix] - y[iy]) * (x[ix] - y[iy]);
+			ix += incx;
+			iy += incy;
+		}
+	}
+
 	value *= -gamma;
 	return exp(value);
 }
@@ -503,10 +556,10 @@ double gensvm_kernel_dot_rbf(double *x1, double *x2, long n, double gamma)
  * @param[in] 	degree 		degree parameter of the kernel
  * @returns 			kernel evaluation
  */
-double gensvm_kernel_dot_poly(double *x1, double *x2, long n, double gamma,
-		double coef, double degree)
+double gensvm_kernel_dot_poly(double *x, double *y, long n, long incx, 
+		long incy, double gamma, double coef, double degree)
 {
-	double value = cblas_ddot(n, x1, 1, x2, 1);
+	double value = cblas_ddot(n, x, incx, y, incy);
 	value *= gamma;
 	value += coef;
 	return pow(value, degree);
@@ -530,10 +583,10 @@ double gensvm_kernel_dot_poly(double *x1, double *x2, long n, double gamma,
  * @param[in] 	coef 		coef parameter of the kernel
  * @returns 			kernel evaluation
  */
-double gensvm_kernel_dot_sigmoid(double *x1, double *x2, long n, double gamma,
-		double coef)
+double gensvm_kernel_dot_sigmoid(double *x, double *y, long n, long incx, 
+		long incy, double gamma, double coef)
 {
-	double value = cblas_ddot(n, x1, 1, x2, 1);
+	double value = cblas_ddot(n, x, incx, y, incy);
 	value *= gamma;
 	value += coef;
 	return tanh(value);

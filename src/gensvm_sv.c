@@ -51,7 +51,7 @@ long gensvm_num_sv(struct GenModel *model)
 	for (i=0; i<model->n; i++) {
 		num_correct = 0;
 		for (j=0; j<model->K; j++) {
-			value = matrix_get(model->Q, model->K, i, j);
+			value = matrix_get(model->Q, model->n, model->K, i, j);
 			num_correct += (value > 1);
 		}
 		num_sv += (num_correct < model->K - 1);

@@ -100,25 +100,39 @@ typedef enum {
 
 // ####################### Matrix Utility Functions ####################### //
 
-/**
- * Macro for setting a matrix element (RowMajor order)
- */
-#define matrix_set(M, cols, i, j, val) M[(i)*(cols)+j] = val
+// define the matrix storage order. This can (and should in some cases) be 
+// overwritten by a compile-time variable. Accepted values are 'r' for 
+// RowMajor order and 'c' for ColMajor order.
+
+#ifdef COLUMN_MAJOR_ORDER
+  #define MAJOR_ORDER 'c'
+#else
+  #define MAJOR_ORDER 'r'
+#endif
 
 /**
- * Macro for getting a matrix element (RowMajor order)
+ * Macro for setting a matrix element
  */
-#define matrix_get(M, cols, i, j) M[(i)*(cols)+j]
+#define matrix_set(M, rows, cols, i, j, val) \
+	M[(MAJOR_ORDER == 'r') ? ((i)*(cols) + j) : (i + (rows)*(j))] = val
 
 /**
- * Macro for adding to a matrix element (RowMajor order)
+ * Macro for getting a matrix element
  */
-#define matrix_add(M, cols, i, j, val) M[(i)*(cols)+j] += val
+#define matrix_get(M, rows, cols, i, j) \
+	M[(MAJOR_ORDER == 'r') ? ((i)*(cols) + j) : (i + (rows)*(j))]
 
 /**
- * Macro for multiplying a matrix element (RowMajor order)
+ * Macro for adding to a matrix element
  */
-#define matrix_mul(M, cols, i, j, val) M[(i)*(cols)+j] *= val
+#define matrix_add(M, rows, cols, i, j, val) \
+	M[(MAJOR_ORDER == 'r') ? ((i)*(cols) + j) : (i + (rows)*(j))] += val
+
+/**
+ * Macro for multiplying a matrix element
+ */
+#define matrix_mul(M, rows, cols, i, j, val) \
+	M[(MAJOR_ORDER == 'r') ? ((i)*(cols) + j) : (i + (rows)*(j))] *= val
 
 // ######################### Other Macros ################################# //
 

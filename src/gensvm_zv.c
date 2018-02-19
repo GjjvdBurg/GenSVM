@@ -63,6 +63,12 @@ void gensvm_calculate_ZV(struct GenModel *model, struct GenData *data,
  * This is a simple sparse-dense matrix multiplication, which uses 
  * cblas_daxpy() for each nonzero element of Z, to compute Z*V.
  *
+ * Note that this implementation works both for CSR and CSC sparse matrices.  
+ * The process is very similar, so we only have to decide the axis we get from 
+ * the big loop and which axis we get from the sparse matrix. Before we do the 
+ * daxpy call, we make explicit what the row index (i) and the column index 
+ * (j) is for the computation.
+ *
  * @param[in] 	model 	a GenModel instance holding the model
  * @param[in] 	data 	a GenData instance with the data
  * @param[out]	ZV 	a pre-allocated matrix of appropriate dimensions
@@ -70,26 +76,36 @@ void gensvm_calculate_ZV(struct GenModel *model, struct GenData *data,
 void gensvm_calculate_ZV_sparse(struct GenModel *model,
 		struct GenData *data, double *ZV)
 {
-	long i, j, jj, jj_start, jj_end, K,
-	    n_row = data->spZ->n_row;
+	long i, j, a, b, b_start, b_end, K = model->K,
+	    n_row = data->spZ->n_row,
+	    n_col = data->spZ->n_col;
 	double z_ij;
 
 	K = model->K;
 
-	long *Zia = data->spZ->ia;
-	long *Zja = data->spZ->ja;
-	double *vals = data->spZ->values;
+	long *Zi = data->spZ->ix;
+	long *Zj = data->spZ->jx;
 
-	for (i=0; i<n_row; i++) {
-		jj_start = Zia[i];
-		jj_end = Zia[i+1];
+	long a_end = (data->spZ->type == CSR) ? n_row : n_col;
 
-		for (jj=jj_start; jj<jj_end; jj++) {
-			j = Zja[jj];
-			z_ij = vals[jj];
+	for (a=0; a<a_end; a++) {
+		b_start = Zi[a];
+		b_end = Zi[a+1];
 
-			cblas_daxpy(K-1, z_ij, &model->V[j*(K-1)], 1,
-					&ZV[i*(K-1)], 1);
+		for (b=b_start; b<b_end; b++) {
+			z_ij = data->spZ->values[b];
+			if (data->spZ->type == CSR) {
+				i = a;
+				j = Zj[b];
+				cblas_daxpy(K-1, z_ij, &model->V[j*(K-1)], 1,
+						&ZV[i*(K-1)], 1);
+			} else {
+				i = Zj[b];
+				j = a;
+				cblas_daxpy(K-1, z_ij, &model->V[j], 
+						model->m+1, &ZV[i], model->n);
+			}
+
 		}
 	}
 }
@@ -113,6 +129,13 @@ void gensvm_calculate_ZV_dense(struct GenModel *model,
 	long m = model->m;
 	long K = model->K;
 
+	#if MAJOR_ORDER == 'r'
 	cblas_dgemm(CblasRowMajor, CblasNoTrans, CblasNoTrans, n, K-1, m+1,
 			1.0, data->Z, m+1, model->V, K-1, 0, ZV, K-1);
+	#else
+	cblas_dgemm(CblasColMajor, CblasNoTrans, CblasNoTrans, n, K-1, m+1, 
+			1.0, data->Z, n, model->V, m+1, 0, ZV, n);
+	//cblas_dgemm(CblasColMajor, CblasNoTrans, CblasNoTrans, n, K-1, m+1, 
+	//1.0, data->Z, n, model->V, m+1, 0, ZV, n);
+	#endif
 }

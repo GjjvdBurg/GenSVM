@@ -35,8 +35,8 @@ char *test_init_free_sparse()
 	mu_assert(sp->n_row == 0, "n not initialized correctly");
 	mu_assert(sp->n_col == 0, "m not initialized correctly");
 	mu_assert(sp->values == NULL, "values not initialized correctly");
-	mu_assert(sp->ia == NULL, "ia not initialized correctly");
-	mu_assert(sp->ja == NULL, "ja not initialized correctly");
+	mu_assert(sp->ix == NULL, "ix not initialized correctly");
+	mu_assert(sp->jx == NULL, "jx not initialized correctly");
 
 	gensvm_free_sparse(sp);
 
@@ -59,20 +59,38 @@ char *test_count_nnz()
 	return NULL;
 }
 
-char *test_gensvm_could_sparse()
+char *test_gensvm_could_sparse_csr()
 {
 	double *A = Calloc(double, 5*2);
 	A[0] = 1.0;
 
-	mu_assert(gensvm_could_sparse(A, 5, 2) == true, 
+	mu_assert(gensvm_could_sparse_csr(A, 5, 2) == true, 
 			"Incorrect could sparse (1)");
 	A[1] = -1.0;
-	mu_assert(gensvm_could_sparse(A, 5, 2) == false, 
+	mu_assert(gensvm_could_sparse_csr(A, 5, 2) == false, 
 			"Incorrect could sparse (2)");
 
 	free(A);
 	return NULL;
 }
+
+char *test_gensvm_could_sparse_csc()
+{
+	double *A = Calloc(double, 5*2);
+	A[0] = 1.0;
+
+	mu_assert(gensvm_could_sparse_csc(A, 5, 2) == true, 
+			"Incorrect could sparse (1)");
+	A[1] = -1.0;
+	A[2] = 2.0;
+	A[3] = 5.0;
+	mu_assert(gensvm_could_sparse_csc(A, 5, 2) == false, 
+			"Incorrect could sparse (2)");
+
+	free(A);
+	return NULL;
+}
+
 
 char *test_dense_to_sparse()
 {
@@ -92,16 +110,16 @@ char *test_dense_to_sparse()
 	mu_assert(sp->values[2] == 3.0, "Incorrect value at 2");
 	mu_assert(sp->values[3] == 6.0, "Incorrect value at 3");
 
-	mu_assert(sp->ia[0] == 0, "Incorrect ia at 0");
-	mu_assert(sp->ia[1] == 0, "Incorrect ia at 1");
-	mu_assert(sp->ia[2] == 2, "Incorrect ia at 2");
-	mu_assert(sp->ia[3] == 3, "Incorrect ia at 3");
-	mu_assert(sp->ia[4] == 4, "Incorrect ia at 4");
+	mu_assert(sp->ix[0] == 0, "Incorrect ia at 0");
+	mu_assert(sp->ix[1] == 0, "Incorrect ia at 1");
+	mu_assert(sp->ix[2] == 2, "Incorrect ia at 2");
+	mu_assert(sp->ix[3] == 3, "Incorrect ia at 3");
+	mu_assert(sp->ix[4] == 4, "Incorrect ia at 4");
 
-	mu_assert(sp->ja[0] == 0, "Incorrect ja at 0");
-	mu_assert(sp->ja[1] == 1, "Incorrect ja at 1");
-	mu_assert(sp->ja[2] == 2, "Incorrect ja at 2");
-	mu_assert(sp->ja[3] == 1, "Incorrect ja at 3");
+	mu_assert(sp->jx[0] == 0, "Incorrect ja at 0");
+	mu_assert(sp->jx[1] == 1, "Incorrect ja at 1");
+	mu_assert(sp->jx[2] == 2, "Incorrect ja at 2");
+	mu_assert(sp->jx[3] == 1, "Incorrect ja at 3");
 
 	gensvm_free_sparse(sp);
 	free(A);
@@ -137,7 +155,8 @@ char *all_tests()
 
 	mu_run_test(test_init_free_sparse);
 	mu_run_test(test_count_nnz);
-	mu_run_test(test_gensvm_could_sparse);
+	mu_run_test(test_gensvm_could_sparse_csr);
+	mu_run_test(test_gensvm_could_sparse_csc);
 	mu_run_test(test_dense_to_sparse);
 	mu_run_test(test_sparse_to_dense);
 

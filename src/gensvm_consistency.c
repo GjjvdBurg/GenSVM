@@ -193,7 +193,7 @@ int gensvm_consistency_repeats(struct GenQueue *q, long repeats,
 					task->folds, task->train_data->n);
 			Timer(loop_e);
 			time[i] += gensvm_elapsed_time(&loop_s, &loop_e);
-			matrix_set(perf, repeats, i, r, p);
+			matrix_set(perf, N, repeats, i, r, p);
 			mean[i] += p/((double) repeats);
 			note("%3.3f\t", p);
 			// this is done because if we reuse the V it's not a
@@ -210,8 +210,8 @@ int gensvm_consistency_repeats(struct GenQueue *q, long repeats,
 			test_folds = NULL;
 		}
 		for (r=0; r<repeats; r++) {
-			std[i] += pow(matrix_get(perf, repeats, i, r) - mean[i],
-					2.0);
+			std[i] += pow(matrix_get(perf, N, repeats, i, r) 
+					- mean[i], 2.0);
 		}
 		if (r > 1) {
 			std[i] /= ((double) repeats) - 1.0;

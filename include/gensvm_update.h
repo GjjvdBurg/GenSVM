@@ -47,6 +47,10 @@ void gensvm_get_ZAZ_ZB_dense(struct GenModel *model, struct GenData *data,
 		struct GenWork *work);
 void gensvm_get_ZAZ_ZB_sparse(struct GenModel *model, struct GenData *data,
 		struct GenWork *work);
+void gensvm_get_ZAZ_ZB_sparse_csr(struct GenModel *model, struct GenData *data,
+		struct GenWork *work);
+void gensvm_get_ZAZ_ZB_sparse_csc(struct GenModel *model, struct GenData *data,
+		struct GenWork *work);
 void gensvm_get_ZAZ_ZB(struct GenModel *model, struct GenData *data, 
 		struct GenWork *work);
 int dposv(char UPLO, int N, int NRHS, double *A, int LDA, double *B,

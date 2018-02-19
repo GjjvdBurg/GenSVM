@@ -172,6 +172,12 @@ struct GenWork {
 	///< n x (K-1) working matrix for the Z * V calculation
 	double *beta;
 	///< K-1 working vector for a row of the B matrix
+
+	double *A;
+	///< n working vector for the alpha_i values. For CSC sparse only
+	double *B;
+	///< n x (K-1) working matrix for the beta_i vectors. For CSC sparse
+	///< only
 };
 
 // function declarations

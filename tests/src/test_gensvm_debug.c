@@ -36,12 +36,12 @@ char *test_print_matrix()
 	GENSVM_OUTPUT_FILE = fopen(filename, "w");
 
 	double *mat = Calloc(double, 3*2);
-	matrix_set(mat, 2, 0, 0, -0.241053050258449);
-	matrix_set(mat, 2, 0, 1, -0.599809408260836);
-	matrix_set(mat, 2, 1, 0,  0.893318163305108);
-	matrix_set(mat, 2, 1, 1, -0.344057630469285);
-	matrix_set(mat, 2, 2, 0,  0.933948479216127);
-	matrix_set(mat, 2, 2, 1, -0.474352026604967);
+	matrix_set(mat, 3, 2, 0, 0, -0.241053050258449);
+	matrix_set(mat, 3, 2, 0, 1, -0.599809408260836);
+	matrix_set(mat, 3, 2, 1, 0,  0.893318163305108);
+	matrix_set(mat, 3, 2, 1, 1, -0.344057630469285);
+	matrix_set(mat, 3, 2, 2, 0,  0.933948479216127);
+	matrix_set(mat, 3, 2, 2, 1, -0.474352026604967);
 
 	// start test code //
 	gensvm_print_matrix(mat, 3, 2);
@@ -93,21 +93,30 @@ char *test_print_sparse()
 			"Line doesn't contain expected content (0).");
 
 	fgets(buffer, GENSVM_MAX_LINE_LENGTH, fid);
-	mu_assert(strcmp(buffer, "\tnnz = 4, rows = 4, cols = 4\n") == 0,
+	#if MAJOR_ORDER == 'r'
+	mu_assert(strcmp(buffer, "\ttype = CSR\n") == 0,
 			"Line doesn't contain expected content (1).");
+	#else
+	mu_assert(strcmp(buffer, "\ttype = CSC\n") == 0,
+			"Line doesn't contain expected content (1).");
+	#endif
+
+	fgets(buffer, GENSVM_MAX_LINE_LENGTH, fid);
+	mu_assert(strcmp(buffer, "\tnnz = 4, rows = 4, cols = 4\n") == 0,
+			"Line doesn't contain expected content (2).");
 
 	fgets(buffer, GENSVM_MAX_LINE_LENGTH, fid);
 	mu_assert(strcmp(buffer, "\tvalues = [ 5.000000, 8.000000, "
 				"3.000000, 6.000000 ]\n") == 0,
-			"Line doesn't contain expected content (2).");
-
-	fgets(buffer, GENSVM_MAX_LINE_LENGTH, fid);
-	mu_assert(strcmp(buffer, "\tIA = [ 0, 0, 2, 3, 4 ]\n") == 0,
 			"Line doesn't contain expected content (3).");
 
 	fgets(buffer, GENSVM_MAX_LINE_LENGTH, fid);
-	mu_assert(strcmp(buffer, "\tJA = [ 0, 1, 2, 1 ]\n") == 0,
+	mu_assert(strcmp(buffer, "\tIX = [ 0, 0, 2, 3, 4 ]\n") == 0,
 			"Line doesn't contain expected content (4).");
+
+	fgets(buffer, GENSVM_MAX_LINE_LENGTH, fid);
+	mu_assert(strcmp(buffer, "\tJX = [ 0, 1, 2, 1 ]\n") == 0,
+			"Line doesn't contain expected content (5).");
 
 	fclose(fid);
 	// end test code //
