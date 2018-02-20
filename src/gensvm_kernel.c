@@ -242,19 +242,37 @@ long gensvm_kernel_eigendecomp(double *K, long n, double cutoff, double **P_ret,
 	IFAIL = Malloc(int, n);
 
 	// highest precision eigenvalues, may reduce for speed
+	#ifdef GENSVM_R_PACKAGE
+	const char cmach = 'S';
+	abstol = 2.0 * F77_CALL(dlamch)(&cmach);
+	#else
 	abstol = 2.0*dlamch('S');
+	#endif
 
 	// first perform a workspace query to determine optimal size of the
 	// WORK array.
 	WORK = Malloc(double, 1);
+	#ifdef GENSVM_R_PACKAGE
+	int in = n,
+	    minus_one = -1;
+	F77_CALL(dsyevx)("v", "a", "u", &in, K, &in, 0, 0, 0, 0, &abstol, &M,
+			tempSigma, tempP, &in, WORK, &minus_one, IWORK, IFAIL, &status);
+	#else
 	status = dsyevx('V', 'A', 'U', n, K, n, 0, 0, 0, 0, abstol, &M,
 			tempSigma, tempP, n, WORK, -1, IWORK, IFAIL);
+	#endif
 	LWORK = WORK[0];
 
 	// allocate the requested memory for the eigendecomposition
 	WORK = (double *)realloc(WORK, LWORK*sizeof(double));
+	#ifdef GENSVM_R_PACKAGE
+	F77_CALL(dsyevx)("v", "a", "u", &in, K, &in, 0, 0, 0, 0, &abstol, &M, 
+			tempSigma, tempP, &in, WORK, &LWORK, IWORK, IFAIL, 
+			&status);
+	#else
 	status = dsyevx('V', 'A', 'U', n, K, n, 0, 0, 0, 0, abstol, &M,
 			tempSigma, tempP, n, WORK, LWORK, IWORK, IFAIL);
+	#endif
 
 	if (status != 0) {
 		// LCOV_EXCL_START
@@ -465,12 +483,22 @@ void gensvm_kernel_testfactor(struct GenData *testdata,
 	}
 
 	// Multiply K2 with M and store in N
+	#ifdef GENSVM_R_PACKAGE
+	int in1 = n1,
+	    in2 = n2,
+	    ir = r;
+	double one = 1.0,
+	       zero = 0.0;
+	F77_CALL(dgemm)("n", "n", &in2, &ir, &in1, &one, K2, &in2, M, &in1, 
+			&zero, N, &in2);
+	#else
 	#if MAJOR_ORDER == 'r'
 	cblas_dgemm(CblasRowMajor, CblasNoTrans, CblasNoTrans, n2, r, n1, 1.0,
 			K2, n1, M, r, 0.0, N, r);
 	#else
 	cblas_dgemm(CblasColMajor, CblasNoTrans, CblasNoTrans, n2, r, n1, 1.0,
 			K2, n2, M, n1, 0.0, N, n2);
+	#endif
 	#endif
 
 	// Multiply N with Sigma^{-2}
@@ -559,7 +587,14 @@ double gensvm_kernel_dot_rbf(double *x, double *y, long n,
 double gensvm_kernel_dot_poly(double *x, double *y, long n, long incx, 
 		long incy, double gamma, double coef, double degree)
 {
+	#ifdef GENSVM_R_PACKAGE
+	int in = n,
+	    iincx = incx,
+	    iincy = incy;
+	double value = F77_CALL(ddot)(&in, x, &iincx, y, &iincy);
+	#else
 	double value = cblas_ddot(n, x, incx, y, incy);
+	#endif
 	value *= gamma;
 	value += coef;
 	return pow(value, degree);
@@ -586,11 +621,23 @@ double gensvm_kernel_dot_poly(double *x, double *y, long n, long incx,
 double gensvm_kernel_dot_sigmoid(double *x, double *y, long n, long incx, 
 		long incy, double gamma, double coef)
 {
+	#ifdef GENSVM_R_PACKAGE
+	int in = n,
+	    iincx = incx,
+	    iincy = incy;
+	double value = F77_CALL(ddot)(&in, x, &iincx, y, &iincy);
+	#else
 	double value = cblas_ddot(n, x, incx, y, incy);
+	#endif
 	value *= gamma;
 	value += coef;
 	return tanh(value);
 }
+
+#ifdef GENSVM_R_PACKAGE
+// If we are compiling for the R package, these wrapper definitions conflict 
+// with the R packaged Lapack routines.
+#else
 
 /**
  * @brief Compute the eigenvalues and optionally the eigenvectors of a
@@ -633,3 +680,5 @@ double dlamch(char CMACH)
 	extern double dlamch_(char *CMACH);
 	return dlamch_(&CMACH);
 }
+
+#endif

@@ -285,6 +285,12 @@ void gensvm_calculate_errors(struct GenModel *model, struct GenData *data,
 	long n = model->n;
 	long K = model->K;
 
+	#ifdef GENSVM_R_PACKAGE
+	int iKm = K-1,
+	    in = n,
+	    iKK = K*K;
+	#endif
+
 	gensvm_calculate_ZV(model, data, ZV);
 
 	for (i=0; i<n; i++) {
@@ -293,10 +299,14 @@ void gensvm_calculate_errors(struct GenModel *model, struct GenData *data,
 				continue;
 			uu_row = &matrix_get(model->UU, K*K, K-1, 
 					(data->y[i]-1)*K+j, 0);
+			#ifdef GENSVM_R_PACKAGE
+			q = F77_CALL(ddot)(&iKm, &ZV[i], &in, uu_row, &iKK);
+			#else
 			#if MAJOR_ORDER == 'r'
 			q = cblas_ddot(K-1, &ZV[i*(K-1)], 1, uu_row, 1);
 			#else
 			q = cblas_ddot(K-1, &ZV[i], n, uu_row, K*K);
+			#endif
 			#endif
 			matrix_set(model->Q, n, K, i, j, q);
 		}

@@ -66,6 +66,11 @@ void gensvm_predict_labels(struct GenData *testdata, struct GenModel *model,
 	// Generate the simplex space vectors
 	gensvm_calculate_ZV(model, testdata, ZV);
 
+	#ifdef GENSVM_R_PACKAGE
+	int iKm = K-1,
+	    ione = 1;
+	#endif
+
 	// Calculate the distance to each of the vertices of the simplex.
 	// The closest vertex defines the class label
 	for (i=0; i<n; i++) {
@@ -76,7 +81,11 @@ void gensvm_predict_labels(struct GenData *testdata, struct GenModel *model,
 				S[k] = matrix_get(ZV, n, K-1, i, k) -
 					matrix_get(model->U, K, K-1, j, k);
 			}
+			#ifdef GENSVM_R_PACKAGE
+			F77_CALL(dnrm2)(&iKm, S, &ione);
+			#else
 			norm = cblas_dnrm2(K-1, S, 1);
+			#endif
 			if (norm < min_dist) {
 				label = j+1;
 				min_dist = norm;

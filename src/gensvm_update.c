@@ -257,10 +257,17 @@ double gensvm_get_alpha_beta(struct GenModel *model, struct GenData *data,
 		b_aq *= model->rho[i] * omega * in;
 		uu_row = &matrix_get(model->UU, K*K, K-1, 
 				(data->y[i]-1)*K+j, 0);
+		#ifdef GENSVM_R_PACKAGE
+		int iKm = K-1,
+		    iKK = K*K,
+		    ione = 1;
+		F77_CALL(daxpy)(&iKm, &b_aq, uu_row, &iKK, beta, &ione);
+		#else
 		#if MAJOR_ORDER == 'r'
 		cblas_daxpy(K-1, b_aq, uu_row, 1, beta, 1);
 		#else
 		cblas_daxpy(K-1, b_aq, uu_row, K*K, beta, 1);
+		#endif
 		#endif
 
 		// increment Avalue
@@ -334,6 +341,12 @@ void gensvm_get_update(struct GenModel *model, struct GenData *data,
 	long m = model->m;
 	long K = model->K;
 
+	#ifdef GENSVM_R_PACKAGE
+	int imp = m+1,
+	    iKm = K-1;
+	double one = 1.0;
+	#endif
+
 	// compute the ZAZ and ZB matrices
 	gensvm_get_ZAZ_ZB(model, data, work);
 
@@ -341,6 +354,10 @@ void gensvm_get_update(struct GenModel *model, struct GenData *data,
 	// dsymm performs ZB := 1.0 * (ZAZ) * Vbar + 1.0 * ZB
 	// the right-hand side is thus stored in ZB after this call
 
+	#ifdef GENSVM_R_PACKAGE
+	F77_CALL(dsymm)("l", "u", &imp, &iKm, &one, work->ZAZ, &imp, model->V, 
+			&imp, &one, work->ZB, &imp);
+	#else
 	#if MAJOR_ORDER == 'r'
 	// Note: LDB and LDC are second dimensions of the matrices due to
 	// Row-Major order
@@ -349,6 +366,7 @@ void gensvm_get_update(struct GenModel *model, struct GenData *data,
 	#else
 	cblas_dsymm(CblasColMajor, CblasLeft, CblasUpper, m+1, K-1, 1.0,
 			work->ZAZ, m+1, model->V, m+1, 1.0, work->ZB, m+1);
+	#endif
 	#endif
 
 	// Calculate left-hand side of system we want to solve
@@ -366,6 +384,10 @@ void gensvm_get_update(struct GenModel *model, struct GenData *data,
 	#endif
 
 	// Solve the system using dposv.
+	#ifdef GENSVM_R_PACKAGE
+	F77_CALL(dposv)("u", &imp, &iKm, work->ZAZ, &imp, work->ZB, &imp, 
+			&status);
+	#else
 	#if MAJOR_ORDER == 'r'
 	// Note that above the upper triangular part has always been used in 
 	// row-major order for ZAZ. This corresponds to the lower triangular 
@@ -373,6 +395,7 @@ void gensvm_get_update(struct GenModel *model, struct GenData *data,
 	status = dposv('L', m+1, K-1, work->ZAZ, m+1, work->ZBc, m+1);
 	#else
 	status = dposv('U', m+1, K-1, work->ZAZ, m+1, work->ZB, m+1);
+	#endif
 	#endif
 
 	// Use dsysv as fallback, for when the ZAZ matrix is not positive
@@ -383,17 +406,27 @@ void gensvm_get_update(struct GenModel *model, struct GenData *data,
 				"dposv: %i\n", status);
 		int *IPIV = Malloc(int, m+1);
 		double *WORK = Malloc(double, 1);
+		#ifdef GENSVM_R_PACKAGE
+		int iminus_one = -1;
+		F77_CALL(dsysv)("u", &imp, &iKm, work->ZAZ, &imp, IPIV,
+				work->ZB, &imp, WORK, &iminus_one, &status);
+		#else
 		#if MAJOR_ORDER == 'r'
 		status = dsysv('L', m+1, K-1, work->ZAZ, m+1, IPIV, work->ZBc,
 				m+1, WORK, -1);
 		#else
 		status = dsysv('U', m+1, K-1, work->ZAZ, m+1, IPIV, work->ZB,
 				m+1, WORK, -1);
+		#endif
 		#endif
 
 		int LWORK = WORK[0];
 		WORK = Realloc(WORK, double, LWORK);
 
+		#ifdef GENSVM_R_PACKAGE
+		F77_CALL(dsysv)("u", &imp, &iKm, work->ZAZ, &imp, IPIV,
+				work->ZB, &imp, WORK, &LWORK, &status);
+		#else
 		#if MAJOR_ORDER == 'r'
 		status = dsysv('L', m+1, K-1, work->ZAZ, m+1, IPIV, work->ZBc,
 				m+1, WORK, LWORK);
@@ -401,6 +434,8 @@ void gensvm_get_update(struct GenModel *model, struct GenData *data,
 		status = dsysv('U', m+1, K-1, work->ZAZ, m+1, IPIV, work->ZB,
 				m+1, WORK, LWORK);
 		#endif
+		#endif
+
 		if (status != 0)
 			err("[GenSVM Warning]: Received nonzero "
 					"status from dsysv: %i\n", status);
@@ -457,6 +492,16 @@ void gensvm_get_ZAZ_ZB_dense(struct GenModel *model, struct GenData *data,
 	long m = model->m;
 	long K = model->K;
 
+	#ifdef GENSVM_R_PACKAGE
+	int im = m,
+	    in = n,
+	    imp = m+1,
+	    iKm = K-1,
+	    ione = 1;
+	double one = 1.0,
+	       zero = 0.0;
+	#endif
+
 	// generate Z'*A*Z and Z'*B by rank 1 operations
 	for (i=0; i<n; i++) {
 		alpha = gensvm_get_alpha_beta(model, data, i, work->beta);
@@ -468,6 +513,10 @@ void gensvm_get_ZAZ_ZB_dense(struct GenModel *model, struct GenData *data,
 		// copying the first element over.
 		sqalpha = sqrt(alpha);
 
+		#ifdef GENSVM_R_PACKAGE
+		F77_CALL(daxpy)(&im, &sqalpha, &data->Z[i+n], &in, 
+				&work->LZ[i+n], &in);
+		#else
 		#if MAJOR_ORDER == 'r'
 		work->LZ[i*(m+1)] = sqalpha;
 		cblas_daxpy(m, sqalpha, &data->Z[i*(m+1)+1], 1,
@@ -476,8 +525,13 @@ void gensvm_get_ZAZ_ZB_dense(struct GenModel *model, struct GenData *data,
 		work->LZ[i] = sqalpha;
 		cblas_daxpy(m, sqalpha, &data->Z[i+n], n, &work->LZ[i+n], n);
 		#endif
+		#endif
 
 		// rank 1 update of matrix Z'*B
+		#ifdef GENSVM_R_PACKAGE
+		F77_CALL(dger)(&imp, &iKm, &one, &data->Z[i], &in, work->beta,
+				&ione, work->ZB, &imp);
+		#else
 		#if MAJOR_ORDER == 'r'
 		// Note: LDA is the second dimension of ZB because of
 		// Row-Major order
@@ -487,17 +541,22 @@ void gensvm_get_ZAZ_ZB_dense(struct GenModel *model, struct GenData *data,
 		cblas_dger(CblasColMajor, m+1, K-1, 1, &data->Z[i], n,
 				work->beta, 1, work->ZB, m+1);
 		#endif
-
+		#endif
 	}
 
 	// calculate Z'*A*Z by symmetric multiplication of LZ with itself
 	// (ZAZ = (LZ)' * (LZ)
+	#ifdef GENSVM_R_PACKAGE
+	F77_CALL(dsyrk)("u", "t", &imp, &in, &one, work->LZ, &in, &zero, 
+			work->ZAZ, &imp);
+	#else
 	#if MAJOR_ORDER == 'r'
 	cblas_dsyrk(CblasRowMajor, CblasUpper, CblasTrans, m+1, n, 1.0,
 			work->LZ, m+1, 0.0, work->ZAZ, m+1);
 	#else
 	cblas_dsyrk(CblasColMajor, CblasUpper, CblasTrans, m+1, n, 1.0,
 			work->LZ, n, 0.0, work->ZAZ, m+1);
+	#endif
 	#endif
 }
 
@@ -573,8 +632,16 @@ void gensvm_get_ZAZ_ZB_sparse_csr(struct GenModel *model, struct GenData *data,
 			for (b=b_start; b<b_end; b++) {
 				j = Zj[b];
 				z_ij = vals[b];
+				#ifdef GENSVM_R_PACKAGE
+				int iKm = K-1,
+				    ione = 1;
+				F77_CALL(daxpy)(&iKm, &z_ij, work->beta,
+						&ione, &work->ZB[j*(K-1)],
+						&ione);
+				#else
 				cblas_daxpy(K-1, z_ij, work->beta, 1,
 						&work->ZB[j*(K-1)], 1);
+				#endif
 
 				z_ij *= alpha;
 				for (kk=b; kk<b_end; kk++) {
@@ -588,8 +655,10 @@ void gensvm_get_ZAZ_ZB_sparse_csr(struct GenModel *model, struct GenData *data,
 		// copy the intermediate results over to the actual ZAZ matrix
 		for (j=0; j<n_col; j++) {
 			for (k=j; k<n_col; k++) {
-				temp = matrix_get(work->tmpZAZ, n_col, n_col, j, k);
-				matrix_add(work->ZAZ, n_col, n_col, j, k, temp);
+				temp = matrix_get(work->tmpZAZ, n_col, n_col,
+						j, k);
+				matrix_add(work->ZAZ, n_col, n_col, j, k,
+						temp);
 			}
 		}
 	}
@@ -692,6 +761,11 @@ void gensvm_get_ZAZ_ZB(struct GenModel *model, struct GenData *data,
 		gensvm_get_ZAZ_ZB_dense(model, data, work);
 }
 
+#ifdef GENSVM_R_PACKAGE
+// If we are compiling for the R package, these wrapper definitions conflict 
+// with the R packaged Lapack routines.
+#else
+
 /**
  * @brief Solve AX = B where A is symmetric positive definite.
  *
@@ -776,3 +850,5 @@ int dsysv(char UPLO, int N, int NRHS, double *A, int LDA, int *IPIV,
 	dsysv_(&UPLO, &N, &NRHS, A, &LDA, IPIV, B, &LDB, WORK, &LWORK, &INFO);
 	return INFO;
 }
+
+#endif

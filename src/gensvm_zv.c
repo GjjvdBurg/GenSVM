@@ -80,6 +80,9 @@ void gensvm_calculate_ZV_sparse(struct GenModel *model,
 	    n_row = data->spZ->n_row,
 	    n_col = data->spZ->n_col;
 	double z_ij;
+	#ifdef GENSVM_R_PACKAGE
+	int dim, incx, incy;
+	#endif
 
 	K = model->K;
 
@@ -97,15 +100,31 @@ void gensvm_calculate_ZV_sparse(struct GenModel *model,
 			if (data->spZ->type == CSR) {
 				i = a;
 				j = Zj[b];
+				#ifdef GENSVM_R_PACKAGE
+				dim = K - 1;
+				incx = 1;
+				incy = 1;
+				F77_CALL(daxpy)(&dim, &z_ij, &model->V[j*(K-1)], &incx,
+						&ZV[i*(K-1)], &incy);
+				#else
 				cblas_daxpy(K-1, z_ij, &model->V[j*(K-1)], 1,
 						&ZV[i*(K-1)], 1);
+				#endif
 			} else {
 				i = Zj[b];
 				j = a;
+				#ifdef GENSVM_R_PACKAGE
+				dim = K - 1;
+				incx = model->m+1;
+				incy = model->n;
+				F77_CALL(daxpy)(&dim, &z_ij, &model->V[j], 
+						&incx, &ZV[i], &incy);
+				#else
 				cblas_daxpy(K-1, z_ij, &model->V[j], 
 						model->m+1, &ZV[i], model->n);
-			}
+				#endif
 
+			}
 		}
 	}
 }
@@ -129,13 +148,21 @@ void gensvm_calculate_ZV_dense(struct GenModel *model,
 	long m = model->m;
 	long K = model->K;
 
+	#ifdef GENSVM_R_PACKAGE
+	int in = n,
+	    iKm = K-1,
+	    imp = m+1;
+	double one = 1.0,
+	       zero = 0.0;
+	F77_CALL(dgemm)("n", "n", &in, &iKm, &imp, &one, data->Z, &in, model->V, &imp,
+			&zero, ZV, &in);
+	#else
 	#if MAJOR_ORDER == 'r'
 	cblas_dgemm(CblasRowMajor, CblasNoTrans, CblasNoTrans, n, K-1, m+1,
 			1.0, data->Z, m+1, model->V, K-1, 0, ZV, K-1);
 	#else
 	cblas_dgemm(CblasColMajor, CblasNoTrans, CblasNoTrans, n, K-1, m+1, 
 			1.0, data->Z, n, model->V, m+1, 0, ZV, n);
-	//cblas_dgemm(CblasColMajor, CblasNoTrans, CblasNoTrans, n, K-1, m+1, 
-	//1.0, data->Z, n, model->V, m+1, 0, ZV, n);
+	#endif
 	#endif
 }
