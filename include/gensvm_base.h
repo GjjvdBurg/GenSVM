@@ -118,9 +118,9 @@ struct GenModel {
 	///< augmented weight matrix from the previous iteration of the IM
 	///< algorithm
 	double *U;
-	///< simplex matrix
+	///< simplex matrix (K x (K-1))
 	double *UU;
-	///< simplex difference matrix
+	///< simplex difference matrix (K*K x (K-1))
 	double *Q;
 	///< error matrix
 	double *H;
