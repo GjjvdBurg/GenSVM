@@ -1,5 +1,5 @@
 Sparse Matrix:
-	type = CSR
+	type = CSC
 	nnz = 4, rows = 4, cols = 4
 	values = [ 5.000000, 8.000000, 3.000000, 6.000000 ]
 	IX = [ 0, 0, 2, 3, 4 ]
