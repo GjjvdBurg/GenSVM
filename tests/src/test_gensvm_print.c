@@ -64,21 +64,21 @@ char *test_note()
 	return NULL;
 }
 
-char *test_err()
+char *test_gensvm_error()
 {
 	FILE *fid = NULL;
 	GENSVM_ERROR_FILE = fopen("./data/test_err_print.txt", "w");
 
 	// start test code //
-	err("This is some text.\n");
-	err("This is %s with %.2f.\n", "formatted text", 1.231234);
+	gensvm_error("This is some text.\n");
+	gensvm_error("This is %s with %.2f.\n", "formatted text", 1.231234);
 
 	// close the output stream
 	fclose(GENSVM_ERROR_FILE);
 	GENSVM_ERROR_FILE = NULL;
 
-	err("This is some more text.\n");
-	err("This shouldn't appear in the output file.\n");
+	gensvm_error("This is some more text.\n");
+	gensvm_error("This shouldn't appear in the output file.\n");
 
 	char buffer[GENSVM_MAX_LINE_LENGTH];
 	fid = fopen("./data/test_err_print.txt", "r");
@@ -101,7 +101,7 @@ char *all_tests()
 {
 	mu_suite_start();
 	mu_run_test(test_note);
-	mu_run_test(test_err);
+	mu_run_test(test_gensvm_error);
 
 	return NULL;
 }

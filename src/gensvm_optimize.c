@@ -109,13 +109,13 @@ void gensvm_optimize(struct GenModel *model, struct GenData *data)
 
 	// print warnings if necessary
 	if (L > Lbar) {
-		err("[GenSVM Warning]: Negative step occurred in "
+		gensvm_error("[GenSVM Warning]: Negative step occurred in "
 				"majorization.\n");
 		model->status = 1;
 	}
 
 	if (it >= model->max_iter) {
-		err("[GenSVM Warning]: maximum number of iterations "
+		gensvm_error("[GenSVM Warning]: maximum number of iterations "
 				"reached.\n");
 		model->status = 2;
 	}

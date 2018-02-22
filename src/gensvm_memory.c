@@ -32,9 +32,9 @@
  * @details
  * This is a wrapper function around calloc from <stdlib.h>. It tries to
  * allocate the requested memory and checks if the memory was correctly
- * allocated. If not, an error is printed using err(), which describes the
- * file and linenumber and size failed to allocate. After this, the program
- * exits. See also the defines in gensvm_memory.h.
+ * allocated. If not, an error is printed using gensvm_error(), which
+ * describes the file and linenumber and size failed to allocate. After this,
+ * the program exits. See also the defines in gensvm_memory.h.
  *
  * @note
  * This function should not be used directly. Calloc() should be used.
@@ -66,9 +66,9 @@ void *mycalloc(const char *file, int line, unsigned long size,
  * @details
  * This is a wrapper function around malloc from <stdlib.h>. It tries to
  * allocate the requested memory and checks if the memory was correctly
- * allocated. If not, an error is printed using err(), which describes the
- * file and linenumber and size failed to allocate. After this, the program
- * exits. See also the defines in gensvm_memory.h.
+ * allocated. If not, an error is printed using gensvm_error(), which
+ * describes the file and linenumber and size failed to allocate. After this,
+ * the program exits. See also the defines in gensvm_memory.h.
  *
  * @note
  * This function should not be used directly. Malloc() should be used.
@@ -97,9 +97,9 @@ void *mymalloc(const char *file, int line, unsigned long size)
  * @details
  * This is a wrapper function around realloc from <stdlib.h>. It tries to
  * reallocate the requested memory and checks if the memory was correctly
- * reallocated. If not, an error is printed using err(), which describes the
- * file and linenumber and size failed to reallocate. After this, the program
- * exits. See also the defines in gensvm_memory.h.
+ * reallocated. If not, an error is printed using gensvm_error(), which
+ * describes the file and linenumber and size failed to reallocate. After
+ * this, the program exits. See also the defines in gensvm_memory.h.
  *
  * @note
  * This function should not be used directly. Realloc() should be used.

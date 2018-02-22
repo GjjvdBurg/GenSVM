@@ -196,7 +196,7 @@ char *get_line(FILE *fid, char *filename, char *buffer)
 {
 	char *retval = fgets(buffer, GENSVM_MAX_LINE_LENGTH, fid);
 	if (retval == NULL) {
-		err("[GenSVM Error]: Error reading from file %s\n", filename);
+		gensvm_error("[GenSVM Error]: Error reading from file %s\n", filename);
 	}
 	return retval;
 }
@@ -222,7 +222,7 @@ double get_fmt_double(FILE *fid, char *filename, const char *fmt)
 	get_line(fid, filename, buffer);
 	retval = sscanf(buffer, fmt, &value);
 	if (retval == 0)
-		err("[GenSVM Error]: No double read from file.\n");
+		gensvm_error("[GenSVM Error]: No double read from file.\n");
 	return value;
 }
 
@@ -243,7 +243,7 @@ long get_fmt_long(FILE *fid, char *filename, const char *fmt)
 	get_line(fid, filename, buffer);
 	retval = sscanf(buffer, fmt, &value);
 	if (retval == 0)
-		err("[GenSVM Error]: No long read from file.\n");
+		gensvm_error("[GenSVM Error]: No long read from file.\n");
 	return value;
 }
 
