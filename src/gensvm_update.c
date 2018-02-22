@@ -514,6 +514,7 @@ void gensvm_get_ZAZ_ZB_dense(struct GenModel *model, struct GenData *data,
 		sqalpha = sqrt(alpha);
 
 		#ifdef GENSVM_R_PACKAGE
+		work->LZ[i] = sqalpha;
 		F77_CALL(daxpy)(&im, &sqalpha, &data->Z[i+n], &in, 
 				&work->LZ[i+n], &in);
 		#else
