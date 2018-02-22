@@ -61,7 +61,7 @@ FILE *GENSVM_ERROR_FILE = NULL; 	///< The #GENSVM_ERROR_FILE specifies the
  * @param buf 	string to print
  *
  */
-static void gensvm_print_output_fpt(const char *buf)
+static void gensvm_print_output_fpt(const char *buf, ...)
 {
 	if (GENSVM_OUTPUT_FILE != NULL) {
 		fputs(buf, GENSVM_OUTPUT_FILE);
@@ -73,15 +73,16 @@ static void gensvm_print_output_fpt(const char *buf)
  * @brief Default print function that prints to the error FILE pointer
  *
  * @details
- * This function is the default print function used by the err() function and 
- * prints to the FILE pointer specified by GENSVM_ERROR_FILE. This is 
- * typically stderr, but can also be a file pointer to an opened log file. The 
- * reason this function exists is that it allows us to set a different print 
- * function entirely, such as the REprintf function in the R library.
+ * This function is the default print function used by the gensvm_error() 
+ * function and prints to the FILE pointer specified by GENSVM_ERROR_FILE.  
+ * This is typically stderr, but can also be a file pointer to an opened log 
+ * file. The reason this function exists is that it allows us to set a 
+ * different print function entirely, such as the REprintf function in the R 
+ * library.
  *
  * @param buf 	string to be printed
  */
-static void gensvm_print_error_fpt(const char *buf)
+static void gensvm_print_error_fpt(const char *buf, ...)
 {
 	if (GENSVM_ERROR_FILE != NULL) {
 		fputs(buf, GENSVM_ERROR_FILE);
@@ -89,10 +90,10 @@ static void gensvm_print_error_fpt(const char *buf)
 	}
 }
 
-static void (*gensvm_print_out) (const char *) = &gensvm_print_output_fpt;
-
-static void (*gensvm_print_err) (const char *) = &gensvm_print_error_fpt;
-
+// Set the global print functions to the builtin functions that use the 
+// GENSVM_OUTPUT_FILE and GENSVM_ERROR_FILE file pointers.
+void (*gensvm_print_out) (const char *, ...) = &gensvm_print_output_fpt;
+void (*gensvm_print_err) (const char *, ...) = &gensvm_print_error_fpt;
 
 /**
  * @brief Parse a formatted string and write to the output stream
