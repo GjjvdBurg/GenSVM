@@ -45,6 +45,12 @@
 struct GenData *gensvm_init_data(void)
 {
 	struct GenData *data = Malloc(struct GenData, 1);
+
+	data->K = -1;
+	data->n = -1;
+	data->m = -1;
+	data->r = -1;
+
 	data->Sigma = NULL;
 	data->y = NULL;
 	data->Z = NULL;
