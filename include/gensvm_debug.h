@@ -31,9 +31,11 @@
 #define GENSVM_DEBUG_H
 
 #include "gensvm_print.h"
-#include "gensvm_sparse.h"
+#include "gensvm_base.h"
 
 void gensvm_print_matrix(double *M, long rows, long cols);
 void gensvm_print_sparse(struct GenSparse *A);
+void gensvm_print_data(struct GenData *data);
+void gensvm_print_model(struct GenModel *model);
 
 #endif
