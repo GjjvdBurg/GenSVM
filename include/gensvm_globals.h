@@ -38,8 +38,16 @@
 
 #include "gensvm_memory.h"
 
-// all system libraries are included here
+#ifdef GENSVM_R_PACKAGE
+#define STRICT_R_HEADERS // avoid naming conflicts with Calloc
+#include <R.h>
+#include <R_ext/BLAS.h>
+#include <R_ext/Lapack.h>
+#else
 #include <cblas.h>
+#endif
+
+// all system libraries are included here
 #include <ctype.h>
 #include <errno.h>
 #include <limits.h>
