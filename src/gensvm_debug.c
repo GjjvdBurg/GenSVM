@@ -98,3 +98,109 @@ void gensvm_print_sparse(struct GenSparse *A)
 	}
 	note(" ]\n");
 }
+
+
+/**
+ * @brief Print a GenData structure
+ *
+ * @param[in] 	data 	GenData structure to print
+ *
+ */
+void gensvm_print_data(struct GenData *data)
+{
+	char kernel_names[4][8] = {"linear", "poly", "rbf", "sigmoid"};
+
+	note("GenData structure\n");
+	note("-----------------\n");
+	note("Address: %p\n", data);
+	note("\n");
+	note("n = %li\n", data->n);
+	note("m = %li\n", data->m);
+	note("K = %li\n", data->K);
+	note("r = %li\n", data->r);
+	note("Kernel parameters:\n");
+	note("\ttype = %s\n", kernel_names[data->kerneltype]);
+	note("\tgamma = %.16f\n", data->gamma);
+	note("\tcoef = %.16f\n", data->coef);
+	note("\tdegree = %.16f\n", data->degree);
+	note("\n");
+
+	note("y:\n");
+	int i;
+	for (i=0; i<data->n; i++)
+		note("%i ", data->y[i]);
+	note("\n");
+
+	if (data->Sigma != NULL) {
+		note("Sigma:\n");
+		gensvm_print_matrix(data->Sigma, 1, data->r);
+	}
+	if (data->Z == NULL && data->RAW == NULL) {
+		note("spZ:\n");
+		gensvm_print_sparse(data->spZ);
+	} else {
+		note("Z:\n");
+		gensvm_print_matrix(data->Z, data->n, data->r+1);
+		if (data->Z != data->RAW) {
+			note("\nRAW:\n");
+			gensvm_print_matrix(data->RAW, data->n, data->m+1);
+		}
+	}
+}
+
+/**
+ * @brief Print a GenModel structure
+ *
+ * @param[in] 	model 	GenModel structure to print
+ *
+ */
+void gensvm_print_model(struct GenModel *model)
+{
+	char kernel_names[4][8] = {"linear", "poly", "rbf", "sigmoid"};
+
+	note("GenModel structure\n");
+	note("------------------\n");
+	note("Address: %p\n", model);
+	note("Data file: %s\n", model->data_file);
+	note("\n");
+	note("n = %li\n", model->n);
+	note("m = %li\n", model->m);
+	note("K = %li\n", model->K);
+	note("weight_idx = %i\n", model->weight_idx);
+	note("epsilon = %g\n", model->epsilon);
+	note("p = %.16f\n", model->p);
+	note("kappa = %.16f\n", model->kappa);
+	note("lambda = %.16f\n", model->lambda);
+	note("max_iter = %li\n", model->max_iter);
+	note("seed = %li\n", model->seed);
+	note("Kernel parameters:\n");
+	note("\ttype = %s\n", kernel_names[model->kerneltype]);
+	note("\tgamma = %.16f\n", model->gamma);
+	note("\tcoef = %.16f\n", model->coef);
+	note("\tdegree = %.16f\n", model->degree);
+	note("\tkernel_eigen_cutoff = %.16f\n", model->kernel_eigen_cutoff);
+	note("Results:\n");
+	note("\ttraining_error = %.16f\n", model->training_error);
+	note("\telapsed_iter = %li\n", model->elapsed_iter);
+	note("\tstatus = %i\n", model->status);
+	note("\nV:\n");
+	gensvm_print_matrix(model->V, model->m+1, model->K-1);
+
+	note("\nVbar:\n");
+	gensvm_print_matrix(model->Vbar, model->m+1, model->K-1);
+
+	note("\nU:\n");
+	gensvm_print_matrix(model->U, model->K, model->K-1);
+
+	note("\nUU:\n");
+	gensvm_print_matrix(model->UU, model->K * model->K, model->K-1);
+
+	note("\nQ:\n");
+	gensvm_print_matrix(model->Q, model->n, model->K);
+
+	note("\nH:\n");
+	gensvm_print_matrix(model->H, model->n, model->K);
+
+	note("\nrho:\n");
+	gensvm_print_matrix(model->rho, 1, model->n);
+}
