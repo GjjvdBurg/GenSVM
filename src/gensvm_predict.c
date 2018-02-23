@@ -82,7 +82,7 @@ void gensvm_predict_labels(struct GenData *testdata, struct GenModel *model,
 					matrix_get(model->U, K, K-1, j, k);
 			}
 			#ifdef GENSVM_R_PACKAGE
-			F77_CALL(dnrm2)(&iKm, S, &ione);
+			norm = F77_CALL(dnrm2)(&iKm, S, &ione);
 			#else
 			norm = cblas_dnrm2(K-1, S, 1);
 			#endif
