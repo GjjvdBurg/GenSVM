@@ -126,10 +126,12 @@ void gensvm_print_data(struct GenData *data)
 	note("\n");
 
 	note("y:\n");
-	int i;
-	for (i=0; i<data->n; i++)
-		note("%i ", data->y[i]);
-	note("\n");
+	if (data->y != NULL) {
+		int i;
+		for (i=0; i<data->n; i++)
+			note("%i ", data->y[i]);
+		note("\n");
+	}
 
 	if (data->Sigma != NULL) {
 		note("Sigma:\n");
@@ -183,24 +185,32 @@ void gensvm_print_model(struct GenModel *model)
 	note("\ttraining_error = %.16f\n", model->training_error);
 	note("\telapsed_iter = %li\n", model->elapsed_iter);
 	note("\tstatus = %i\n", model->status);
+
 	note("\nV:\n");
-	gensvm_print_matrix(model->V, model->m+1, model->K-1);
+	if (model->V != NULL)
+		gensvm_print_matrix(model->V, model->m+1, model->K-1);
 
 	note("\nVbar:\n");
-	gensvm_print_matrix(model->Vbar, model->m+1, model->K-1);
+	if (model->Vbar != NULL)
+		gensvm_print_matrix(model->Vbar, model->m+1, model->K-1);
 
 	note("\nU:\n");
-	gensvm_print_matrix(model->U, model->K, model->K-1);
+	if (model->U != NULL)
+		gensvm_print_matrix(model->U, model->K, model->K-1);
 
 	note("\nUU:\n");
-	gensvm_print_matrix(model->UU, model->K * model->K, model->K-1);
+	if (model->UU != NULL)
+		gensvm_print_matrix(model->UU, model->K * model->K, model->K-1);
 
 	note("\nQ:\n");
-	gensvm_print_matrix(model->Q, model->n, model->K);
+	if (model->Q != NULL)
+		gensvm_print_matrix(model->Q, model->n, model->K);
 
 	note("\nH:\n");
-	gensvm_print_matrix(model->H, model->n, model->K);
+	if (model->H != NULL)
+		gensvm_print_matrix(model->H, model->n, model->K);
 
 	note("\nrho:\n");
-	gensvm_print_matrix(model->rho, 1, model->n);
+	if (model->rho != NULL)
+		gensvm_print_matrix(model->rho, 1, model->n);
 }
