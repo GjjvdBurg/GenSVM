@@ -131,6 +131,8 @@ struct GenModel {
 	///< loss function value after training has finished
 	long elapsed_iter;
 	///< number of elapsed iterations in training
+	double elapsed_time;
+	///< time in seconds elapsed for optimization
 	char *data_file;
 	///< filename of the data
 	KernelType kerneltype;
