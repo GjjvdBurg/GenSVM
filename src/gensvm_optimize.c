@@ -57,6 +57,7 @@ void gensvm_optimize(struct GenModel *model, struct GenData *data)
 {
 	long it = 0;
 	double L, Lbar;
+	struct timespec t_start, t_stop;
 
 	long n = model->n;
 	long m = model->m;
@@ -82,6 +83,7 @@ void gensvm_optimize(struct GenModel *model, struct GenData *data)
 	gensvm_simplex(model);
 	gensvm_simplex_diff(model);
 
+	Timer(t_start);
 	// get initial loss
 	L = gensvm_get_loss(model, data, work);
 	Lbar = L + 2.0*model->epsilon*L;
@@ -103,6 +105,8 @@ void gensvm_optimize(struct GenModel *model, struct GenData *data)
 			     "reldiff = %15.16f\n", it, L, Lbar, (Lbar - L)/L);
 		it++;
 	}
+
+	Timer(t_stop);
 
 	// status == 0 means training was successful
 	model->status = 0;
@@ -133,6 +137,10 @@ void gensvm_optimize(struct GenModel *model, struct GenData *data)
 
 	// store the iteration count in the model
 	model->elapsed_iter = it - 1;
+
+	// store the elapsed time in the model
+	model->elapsed_time = gensvm_elapsed_time(&t_start, &t_stop);
+	note("Training time: %f\n", model->elapsed_time);
 
 	// free the workspace
 	gensvm_free_work(work);
