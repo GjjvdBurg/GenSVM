@@ -32,6 +32,7 @@
 #include "gensvm_init.h"
 #include "gensvm_optimize.h"
 #include "gensvm_predict.h"
+#include "gensvm_timer.h"
 
 // function declarations
 double gensvm_cross_validation(struct GenModel *model,
@@ -39,6 +40,7 @@ double gensvm_cross_validation(struct GenModel *model,
 		long folds, long n_total);
 void gensvm_cross_validation_store(struct GenModel *model, 
 		struct GenData **train_folds, struct GenData **test_folds, 
-		long folds, long n_total, long *cv_idx, long *predictions);
+		long folds, long n_total, long *cv_idx, long *predictions, 
+		double *durations, int verbosity);
 
 #endif

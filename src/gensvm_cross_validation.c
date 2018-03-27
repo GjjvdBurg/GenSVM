@@ -104,17 +104,26 @@ void copy_predictions(long *predy, long *predictions, long *cv_idx, long fold,
 
 void gensvm_cross_validation_store(struct GenModel *model, 
 		struct GenData **train_folds, struct GenData **test_folds, 
-		long folds, long n_total, long *cv_idx, long *predictions)
+		long folds, long n_total, long *cv_idx, long *predictions, 
+		double *durations, int verbosity)
 {
+	FILE *fid = NULL;
 	long f;
 	long *predy = NULL;
 
+	struct timespec fold_s, fold_e;
+
+
 	// make sure that gensvm_optimize() is silent.
-	FILE *fid = GENSVM_OUTPUT_FILE;
-	GENSVM_OUTPUT_FILE = NULL;
+	if (verbosity <= 1) {
+		fid = GENSVM_OUTPUT_FILE;
+		GENSVM_OUTPUT_FILE = NULL;
+	}
 
 	// run cross-validation
 	for (f=0; f<folds; f++) {
+		Timer(fold_s);
+
 		// reallocate model in case dimensions differ with data
 		gensvm_reallocate_model(model, train_folds[f]->n,
 				train_folds[f]->r);
@@ -130,8 +139,13 @@ void gensvm_cross_validation_store(struct GenModel *model,
 		gensvm_predict_labels(test_folds[f], model, predy);
 		copy_predictions(predy, predictions, cv_idx, f, n_total);
 		free(predy);
-	}
+
+		Timer(fold_e);
+		durations[f] = gensvm_elapsed_time(&fold_s, &fold_e);
+
 
 	// reset the output stream
-	GENSVM_OUTPUT_FILE = fid;
+	if (verbosity <= 1) {
+		GENSVM_OUTPUT_FILE = fid;
+	}
 }
