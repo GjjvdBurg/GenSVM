@@ -457,7 +457,7 @@ void gensvm_kernel_testfactor(struct GenData *testdata,
 	long n1, n2, r, i, j;
 	double value,
 	       one = 1.0,
-	       zero = 0.0;
+	       zero = 0.0,
 	       *N = NULL,
 	       *M = NULL;
 
