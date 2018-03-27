@@ -225,8 +225,8 @@ bool gensvm_kernel_changed(struct GenTask *newtask, struct GenTask *oldtask)
  *
  * @details
  * When the kernel parameters change in a kernel grid search, the kernel
- * pre- and post-processing has to be done for the new kernel parameters. This 
- * is done here for each of the folds. Each of the training folds is 
+ * pre- and post-processing has to be done for the new kernel parameters. This
+ * is done here for each of the folds. Each of the training folds is
  * preprocessed, and each of the test folds is postprocessed.
  *
  * @param[in] 		folds 		number of cross validation folds
@@ -269,12 +269,23 @@ void gensvm_kernel_folds(long folds, struct GenModel *model,
  *
  * The performance found by cross validation is stored in the GenTask struct.
  *
- * @param[in,out] 	q 	GenQueue with GenTask instances to run
+ * @param[in,out] 	q 			GenQueue with GenTask
+ * 						instances to run
+ * @param[in] 		cv_idx 			cross validation index array
+ * 						(optional)
+ * @param[in] 		store_predictions 	whether or not to store the
+ * 						full array of cross validation
+ * 						predictions
+ * @param[in] 		verbose 		set the verbosity level.
+ *
+ * @return 	total training time
  */
-void gensvm_train_queue(struct GenQueue *q)
+double gensvm_train_queue(struct GenQueue *q, long *cv_idx,
+		bool store_predictions, int verbose)
 {
+	bool free_cv_idx = false;
 	long f, folds;
-	double perf, duration, current_max = 0;
+	double perf, total_time, current_max = -1;
 	struct GenTask *task = get_next_task(q);
 	struct GenTask *prevtask = NULL;
 	struct GenModel *model = gensvm_init_model();
@@ -288,11 +299,14 @@ void gensvm_train_queue(struct GenQueue *q)
 	gensvm_allocate_model(model);
 	gensvm_init_V(NULL, model, task->train_data);
 
-	long *cv_idx = Calloc(long, task->train_data->n);
-	gensvm_make_cv_split(task->train_data->n, task->folds, cv_idx);
+	if (cv_idx == NULL) {
+		cv_idx = Calloc(long, task->train_data->n);
+		gensvm_make_cv_split(task->train_data->n, folds, cv_idx);
+		free_cv_idx = true;
+	}
 
-	struct GenData **train_folds = Malloc(struct GenData *, task->folds);
-	struct GenData **test_folds = Malloc(struct GenData *, task->folds);
+	struct GenData **train_folds = Malloc(struct GenData *, folds);
+	struct GenData **test_folds = Malloc(struct GenData *, folds);
 	for (f=0; f<folds; f++) {
 		train_folds[f] = gensvm_init_data();
 		test_folds[f] = gensvm_init_data();
@@ -300,33 +314,53 @@ void gensvm_train_queue(struct GenQueue *q)
 				test_folds[f], cv_idx, f);
 	}
 
+	note("Starting grid search ...\n");
 	Timer(main_s);
 	while (task) {
 		gensvm_task_to_model(task, model);
 		if (gensvm_kernel_changed(task, prevtask)) {
-			gensvm_kernel_folds(task->folds, model, train_folds,
+			gensvm_kernel_folds(folds, model, train_folds,
 					test_folds);
 		}
 
-		Timer(loop_s);
-		perf = gensvm_cross_validation(model, train_folds, test_folds,
-				folds, task->train_data->n);
-		Timer(loop_e);
+		if (store_predictions) {
+			long *predictions = Calloc(long, task->train_data->n);
+			for (f=0; f<task->train_data->n; f++)
+				predictions[f] = -1;
+			double *durations = Calloc(double, folds);
+			for (f=0; f<folds; f++)
+				durations[f] = -1;
+			Timer(loop_s);
+			gensvm_cross_validation_store(model, train_folds,
+					test_folds, folds, task->train_data->n,
+					cv_idx, predictions, durations,
+					verbose);
+			Timer(loop_e);
+			task->predictions = predictions;
+			task->durations = durations;
+		}
+		else {
+			Timer(loop_s);
+			perf = gensvm_cross_validation(model, train_folds,
+					test_folds, folds,
+					task->train_data->n);
+			Timer(loop_e);
+			current_max = maximum(current_max, perf);
+			task->performance = perf;
+		}
 
-		current_max = maximum(current_max, perf);
-		duration = gensvm_elapsed_time(&loop_s, &loop_e);
+		task->duration = gensvm_elapsed_time(&loop_s, &loop_e);
 
-		gensvm_gridsearch_progress(task, q->N, perf, duration,
-				current_max);
+		gensvm_gridsearch_progress(task, q->N, task->performance,
+				task->duration, current_max, !store_predictions);
 
-		q->tasks[task->ID]->performance = perf;
 		prevtask = task;
 		task = get_next_task(q);
 	}
 	Timer(main_e);
 
-	note("\nTotal elapsed training time: %8.8f seconds\n",
-			gensvm_elapsed_time(&main_s, &main_e));
+	total_time = gensvm_elapsed_time(&main_s, &main_e);
+	note("\nTotal time: %8.8f seconds\n", total_time);
 
 	gensvm_free_model(model);
 	for (f=0; f<folds; f++) {
@@ -335,7 +369,10 @@ void gensvm_train_queue(struct GenQueue *q)
 	}
 	free(train_folds);
 	free(test_folds);
-	free(cv_idx);
+	if (free_cv_idx)
+		free(cv_idx);
+
+	return total_time;
 }
 
 /**
@@ -354,8 +391,8 @@ void gensvm_train_queue(struct GenQueue *q)
  * @param[in] 	current_max 	current best performance
  *
  */
-void gensvm_gridsearch_progress(struct GenTask *task, long N, double perf, 
-		double duration, double current_max)
+void gensvm_gridsearch_progress(struct GenTask *task, long N, double perf,
+		double duration, double current_max, bool show_perf)
 {
 	char buffer[GENSVM_MAX_LINE_LENGTH];
 	sprintf(buffer, "(%03li/%03li)\t", task->ID+1, N);
@@ -367,9 +404,12 @@ void gensvm_gridsearch_progress(struct GenTask *task, long N, double perf,
 			task->kerneltype == K_RBF)
 		sprintf(buffer + strlen(buffer), "g = %3.3f\t", task->gamma);
 	sprintf(buffer + strlen(buffer), "eps = %g\tw = %i\tk = %2.2f\t"
-			"l = %f\tp = %2.2f\t", task->epsilon,
+			"l = %11g\tp = %2.2f\t", task->epsilon,
 			task->weight_idx, task->kappa, task->lambda, task->p);
 	note(buffer);
-	note("\t%3.3f%% (%3.3fs)\t(best = %3.3f%%)\n", perf, duration, 
+	if (show_perf)
+		note("%3.3f%% (%3.3fs)\t(best = %3.3f%%)\n", perf, duration,
 			current_max);
+	else
+		note("(%3.3fs)\n", duration);
 }
