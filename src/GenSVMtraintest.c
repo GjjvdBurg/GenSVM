@@ -76,6 +76,7 @@ void exit_with_help(char **argv)
 	printf("-g gamma             : parameter for the rbf, polynomial or "
 			"sigmoid kernel\n");
 	printf("-h | -help           : print this help.\n");
+	printf("-i max_iter          : maximum number of iterations to do.\n");
 	printf("-k kappa             : set the value of kappa used in the "
 			"Huber hinge (kappa > -1.0)\n");
 	printf("-l lambda            : set the value of lambda "
@@ -301,6 +302,9 @@ void parse_command_line(int argc, char **argv, struct GenModel *model,
 				break;
 			case 'g':
 				model->gamma = atof(argv[i]);
+				break;
+			case 'i':
+				model->max_iter = atoi(argv[i]);
 				break;
 			case 'k':
 				model->kappa = atof(argv[i]);
