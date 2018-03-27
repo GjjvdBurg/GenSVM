@@ -38,6 +38,8 @@ void note(const char *fmt,...);
 void gensvm_error(const char *fmt,...);
 
 // declare the function pointers used in note and err
+void gensvm_print_output_fpt(const char *buf, ...);
+void gensvm_print_error_fpt(const char *buf, ...);
 extern void (*gensvm_print_out)(const char *, ...);
 extern void (*gensvm_print_err)(const char *, ...);
 
