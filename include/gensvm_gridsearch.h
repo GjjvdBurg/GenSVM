@@ -48,7 +48,7 @@ void gensvm_kernel_folds(long folds, struct GenModel *model,
 		struct GenData **train_folds, struct GenData **test_folds);
 void gensvm_gridsearch_progress(struct GenTask *task, long N, double perf,
 		double duration, double current_max, bool show_perf);
-void gensvm_train_queue(struct GenQueue *q, long *cv_idx, 
-		bool store_predictions);
+double gensvm_train_queue(struct GenQueue *q, long *cv_idx,
+		bool store_predictions, int verbosity);
 
 #endif

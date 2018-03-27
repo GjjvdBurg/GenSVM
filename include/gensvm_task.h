@@ -54,6 +54,7 @@
  *
  * @param performance 	accuracy on training set during cross validation
  * @param duration 	training time in seconds
+ * @param durations 	array of training time per fold in seconds
  * @param predictions 	array of predictions on the training set
  *
  */
@@ -90,6 +91,8 @@ struct GenTask {
 	///< performance after cross validation
 	double duration;
 	///< training time in seconds
+	double *durations;
+	///< array of training time per fold in seconds
 	long *predictions;
 	///< array of CV predictions on the training data
 };

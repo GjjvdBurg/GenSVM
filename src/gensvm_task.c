@@ -60,6 +60,7 @@ struct GenTask *gensvm_init_task(void)
 	// results
 	t->performance = -1.0;
 	t->duration = -1.0;
+	t->durations = NULL;
 	t->predictions = NULL;
 
 	return t;
@@ -77,9 +78,10 @@ struct GenTask *gensvm_init_task(void)
  */
 void gensvm_free_task(struct GenTask *t)
 {
-	if (t->predictions != NULL) {
+	if (t->predictions != NULL)
 		free(t->predictions);
-	}
+	if (t->durations != NULL)
+		free(t->durations);
 	free(t);
 	t = NULL;
 }

@@ -948,7 +948,7 @@ char *test_gridsearch_progress_linear()
 
 	fgets(buffer, GENSVM_MAX_LINE_LENGTH, fid);
 	const char *expected = ("(001/010)\teps = 1e-06\tw = 1\tk = 0.00\t"
-				"l = 1\tp = 1.00\t\t0.500% (0.123s)\t"
+				"l =           1\tp = 1.00\t0.500% (0.123s)\t"
 				"(best = 0.700%)\n");
 	mu_assert(strcmp(buffer, expected) == 0, "Incorrect progress string");
 
@@ -979,7 +979,7 @@ char *test_gridsearch_progress_rbf()
 
 	fgets(buffer, GENSVM_MAX_LINE_LENGTH, fid);
 	const char *expected = ("(001/010)\tg = 3.000\teps = 1e-06\tw = 1\t"
-			"k = 0.00\tl = 1\tp = 1.00\t\t0.500% (0.123s)\t"
+			"k = 0.00\tl =           1\tp = 1.00\t0.500% (0.123s)\t"
 			"(best = 0.700%)\n");
 	mu_assert(strcmp(buffer, expected) == 0, "Incorrect progress string");
 
@@ -1014,7 +1014,7 @@ char *test_gridsearch_progress_poly()
 	const char *expected = ("(001/010)\t"
 			"d = 2.00\tc = 1.00\tg = 3.000\t"
 			"eps = 1e-06\tw = 1\tk = 0.00\t"
-			"l = 1\tp = 1.00\t\t0.500% (0.123s)\t"
+			"l =           1\tp = 1.00\t0.500% (0.123s)\t"
 			"(best = 0.700%)\n");
 	mu_assert(strcmp(buffer, expected) == 0, "Incorrect progress string");
 
@@ -1048,7 +1048,7 @@ char *test_gridsearch_progress_sigmoid()
 	const char *expected = ("(001/010)\t"
 			"c = 1.00\tg = 3.000\t"
 			"eps = 1e-06\tw = 1\tk = 0.00\t"
-			"l = 1\tp = 1.00\t\t0.500% (0.123s)\t"
+			"l =           1\tp = 1.00\t0.500% (0.123s)\t"
 			"(best = 0.700%)\n");
 	mu_assert(strcmp(buffer, expected) == 0, "Incorrect progress string");
 

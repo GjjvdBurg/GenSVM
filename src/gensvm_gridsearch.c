@@ -225,8 +225,8 @@ bool gensvm_kernel_changed(struct GenTask *newtask, struct GenTask *oldtask)
  *
  * @details
  * When the kernel parameters change in a kernel grid search, the kernel
- * pre- and post-processing has to be done for the new kernel parameters. This 
- * is done here for each of the folds. Each of the training folds is 
+ * pre- and post-processing has to be done for the new kernel parameters. This
+ * is done here for each of the folds. Each of the training folds is
  * preprocessed, and each of the test folds is postprocessed.
  *
  * @param[in] 		folds 		number of cross validation folds
@@ -274,15 +274,18 @@ void gensvm_kernel_folds(long folds, struct GenModel *model,
  * @param[in] 		cv_idx 			cross validation index array
  * 						(optional)
  * @param[in] 		store_predictions 	whether or not to store the
- * 						full array of cross validation 
+ * 						full array of cross validation
  * 						predictions
+ * @param[in] 		verbose 		set the verbosity level.
+ *
+ * @return 	total training time
  */
-void gensvm_train_queue(struct GenQueue *q, long *cv_idx,
-	       	bool store_predictions)
+double gensvm_train_queue(struct GenQueue *q, long *cv_idx,
+		bool store_predictions, int verbose)
 {
 	bool free_cv_idx = false;
 	long f, folds;
-	double perf, current_max = -1;
+	double perf, total_time, current_max = -1;
 	struct GenTask *task = get_next_task(q);
 	struct GenTask *prevtask = NULL;
 	struct GenModel *model = gensvm_init_model();
@@ -322,17 +325,24 @@ void gensvm_train_queue(struct GenQueue *q, long *cv_idx,
 
 		if (store_predictions) {
 			long *predictions = Calloc(long, task->train_data->n);
+			for (f=0; f<task->train_data->n; f++)
+				predictions[f] = -1;
+			double *durations = Calloc(double, folds);
+			for (f=0; f<folds; f++)
+				durations[f] = -1;
 			Timer(loop_s);
 			gensvm_cross_validation_store(model, train_folds,
 					test_folds, folds, task->train_data->n,
-					cv_idx, predictions);
+					cv_idx, predictions, durations,
+					verbose);
 			Timer(loop_e);
 			task->predictions = predictions;
+			task->durations = durations;
 		}
 		else {
 			Timer(loop_s);
-			perf = gensvm_cross_validation(model, train_folds, 
-					test_folds, folds, 
+			perf = gensvm_cross_validation(model, train_folds,
+					test_folds, folds,
 					task->train_data->n);
 			Timer(loop_e);
 			current_max = maximum(current_max, perf);
@@ -341,7 +351,7 @@ void gensvm_train_queue(struct GenQueue *q, long *cv_idx,
 
 		task->duration = gensvm_elapsed_time(&loop_s, &loop_e);
 
-		gensvm_gridsearch_progress(task, q->N, task->performance, 
+		gensvm_gridsearch_progress(task, q->N, task->performance,
 				task->duration, current_max, !store_predictions);
 
 		prevtask = task;
@@ -349,8 +359,8 @@ void gensvm_train_queue(struct GenQueue *q, long *cv_idx,
 	}
 	Timer(main_e);
 
-	note("\nTotal elapsed training time: %8.8f seconds\n",
-			gensvm_elapsed_time(&main_s, &main_e));
+	total_time = gensvm_elapsed_time(&main_s, &main_e);
+	note("\nTotal time: %8.8f seconds\n", total_time);
 
 	gensvm_free_model(model);
 	for (f=0; f<folds; f++) {
@@ -361,6 +371,8 @@ void gensvm_train_queue(struct GenQueue *q, long *cv_idx,
 	free(test_folds);
 	if (free_cv_idx)
 		free(cv_idx);
+
+	return total_time;
 }
 
 /**
@@ -379,7 +391,7 @@ void gensvm_train_queue(struct GenQueue *q, long *cv_idx,
  * @param[in] 	current_max 	current best performance
  *
  */
-void gensvm_gridsearch_progress(struct GenTask *task, long N, double perf, 
+void gensvm_gridsearch_progress(struct GenTask *task, long N, double perf,
 		double duration, double current_max, bool show_perf)
 {
 	char buffer[GENSVM_MAX_LINE_LENGTH];
@@ -392,12 +404,12 @@ void gensvm_gridsearch_progress(struct GenTask *task, long N, double perf,
 			task->kerneltype == K_RBF)
 		sprintf(buffer + strlen(buffer), "g = %3.3f\t", task->gamma);
 	sprintf(buffer + strlen(buffer), "eps = %g\tw = %i\tk = %2.2f\t"
-			"l = %g\tp = %2.2f\t", task->epsilon,
+			"l = %11g\tp = %2.2f\t", task->epsilon,
 			task->weight_idx, task->kappa, task->lambda, task->p);
 	note(buffer);
 	if (show_perf)
-		note("\t%3.3f%% (%3.3fs)\t(best = %3.3f%%)\n", perf, duration, 
+		note("%3.3f%% (%3.3fs)\t(best = %3.3f%%)\n", perf, duration,
 			current_max);
 	else
-		note("\t (%3.3fs)\n", duration);
+		note("(%3.3fs)\n", duration);
 }
