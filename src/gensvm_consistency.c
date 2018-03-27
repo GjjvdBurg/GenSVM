@@ -124,8 +124,11 @@ struct GenQueue *gensvm_top_queue(struct GenQueue *q, double percentile)
  * 				configurations for consistency
  * @param[in] 	percentile 	percentile of performance to determine which
  * 				tasks to repeat
+ *
+ * @return 			ID of the best task
+ *
  */
-void gensvm_consistency_repeats(struct GenQueue *q, long repeats,
+int gensvm_consistency_repeats(struct GenQueue *q, long repeats,
 		double percentile)
 {
 	bool breakout;
@@ -229,11 +232,12 @@ void gensvm_consistency_repeats(struct GenQueue *q, long repeats,
 			"mean_perf\tstd_perf\ttime_perf\n");
 	p = 0.0;
 	breakout = false;
-	while (breakout == false) {
+	int best_id = -1;
+	while (!breakout) {
 		pi = gensvm_percentile(mean, N, (100.0-p));
 		pr = gensvm_percentile(std, N, p);
 		pt = gensvm_percentile(time, N, p);
-		for (i=0; i<N; i++)
+		for (i=0; i<N; i++) {
 			if ((pi - mean[i] < 0.0001) &&
 					(std[i] - pr < 0.0001) &&
 					(time[i] - pt < 0.0001)) {
@@ -251,7 +255,10 @@ void gensvm_consistency_repeats(struct GenQueue *q, long repeats,
 						std[i],
 						time[i]);
 				breakout = true;
+				if (best_id == -1)
+					best_id = nq->tasks[i]->ID;
 			}
+		}
 		p += 1.0;
 	}
 
@@ -263,6 +270,8 @@ void gensvm_consistency_repeats(struct GenQueue *q, long repeats,
 	free(std);
 	free(mean);
 	free(time);
+
+	return best_id;
 }
 
 /**

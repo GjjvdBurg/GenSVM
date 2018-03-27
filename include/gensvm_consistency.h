@@ -37,7 +37,7 @@
 // function declarations
 struct GenQueue *gensvm_top_queue(struct GenQueue *q, double percentile);
 int gensvm_dsort(const void *elem1, const void *elem2);
-void gensvm_consistency_repeats(struct GenQueue *q, long repeats,
+int gensvm_consistency_repeats(struct GenQueue *q, long repeats,
 		double percentile);
 double gensvm_percentile(double *values, long N, double p);
 
