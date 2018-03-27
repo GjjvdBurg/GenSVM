@@ -103,7 +103,7 @@ void gensvm_calculate_ZV_sparse(struct GenModel *model,
 				i = Zj[b];
 				j = a;
 				cblas_daxpy(K-1, z_ij, &model->V[j], 
-						model->m+1, &ZV[i], model->n);
+						model->m+1, &ZV[i], data->n);
 			}
 
 		}
