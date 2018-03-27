@@ -43,6 +43,7 @@
 #include <R.h>
 #include <R_ext/BLAS.h>
 #include <R_ext/Lapack.h>
+#include <R_ext/Utils.h>
 #else
 #include <cblas.h>
 #endif
@@ -154,6 +155,5 @@ typedef enum {
 #endif
 
 #define VERSION_STRING GENSVM_STRING(VERSION)
-
 
 #endif

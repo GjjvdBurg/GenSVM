@@ -34,6 +34,10 @@
 #include "gensvm_predict.h"
 #include "gensvm_timer.h"
 
+#ifdef GENSVM_R_PACKAGE
+#include "gensvm_r_utils.h"
+#endif
+
 // function declarations
 double gensvm_cross_validation(struct GenModel *model,
 		struct GenData **train_folds, struct GenData **test_folds,

@@ -37,6 +37,10 @@
 #include "gensvm_update.h"
 #include "gensvm_zv.h"
 
+#ifdef GENSVM_R_PACKAGE
+#include "gensvm_r_utils.h"
+#endif
+
 // function declarations
 void gensvm_optimize(struct GenModel *model, struct GenData *data);
 double gensvm_get_loss(struct GenModel *model, struct GenData *data, 

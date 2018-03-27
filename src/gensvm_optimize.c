@@ -58,6 +58,10 @@ void gensvm_optimize(struct GenModel *model, struct GenData *data)
 	long it = 0;
 	double L, Lbar;
 	struct timespec t_start, t_stop;
+	#ifdef GENSVM_R_PACKAGE
+	struct timespec t_ipt_start, t_ipt_stop;
+	gensvm_R_reset_interrupt_hdl();
+	#endif
 
 	long n = model->n;
 	long m = model->m;
@@ -84,6 +88,10 @@ void gensvm_optimize(struct GenModel *model, struct GenData *data)
 	gensvm_simplex_diff(model);
 
 	Timer(t_start);
+	#ifdef GENSVM_R_PACKAGE
+	Timer(t_ipt_start);
+	#endif
+
 	// get initial loss
 	L = gensvm_get_loss(model, data, work);
 	Lbar = L + 2.0*model->epsilon*L;
@@ -104,6 +112,19 @@ void gensvm_optimize(struct GenModel *model, struct GenData *data)
 			note("iter = %li, L = %15.16f, Lbar = %15.16f, "
 			     "reldiff = %15.16f\n", it, L, Lbar, (Lbar - L)/L);
 		it++;
+
+		#ifdef GENSVM_R_PACKAGE
+		// check if the user called interrupt from R (every 2 seconds)
+		Timer(t_ipt_stop);
+		if (gensvm_elapsed_time(&t_ipt_start, &t_ipt_stop) > 2) {
+			if (gensvm_R_pending_interrupt()) {
+				gensvm_error("[GenSVM Warning]: Received "
+						"user interrupt. Stopping.\n");
+				break;
+			}
+			Timer(t_ipt_start);
+		}
+		#endif
 	}
 
 	Timer(t_stop);
@@ -124,8 +145,13 @@ void gensvm_optimize(struct GenModel *model, struct GenData *data)
 		model->status = 2;
 	}
 
+	#ifdef GENSVM_R_PACKAGE
+	if (gensvm_R_pending_interrupt())
+		model->status = 3;
+	#endif
+
 	// print final iteration count and loss
-	note("Optimization finished, iter = %li, loss = %15.16f, "
+	note("\nOptimization finished, iter = %li, loss = %15.16f, "
 			"rel. diff. = %15.16f\n", it-1, L,
 			(Lbar - L)/L);
 

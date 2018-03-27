@@ -110,14 +110,22 @@ void gensvm_cross_validation_store(struct GenModel *model,
 	FILE *fid = NULL;
 	long f;
 	long *predy = NULL;
+	void (*tmpfunc) (const char *, ...) = NULL;
 
 	struct timespec fold_s, fold_e;
 
+	#ifdef GENSVM_R_PACKAGE
+	gensvm_R_reset_interrupt_hdl();
+	#endif
 
 	// make sure that gensvm_optimize() is silent.
 	if (verbosity <= 1) {
 		fid = GENSVM_OUTPUT_FILE;
 		GENSVM_OUTPUT_FILE = NULL;
+		#ifdef GENSVM_R_PACKAGE
+		tmpfunc = gensvm_print_out;
+		gensvm_print_out = gensvm_print_output_fpt;
+		#endif
 	}
 
 	// run cross-validation
@@ -143,9 +151,18 @@ void gensvm_cross_validation_store(struct GenModel *model,
 		Timer(fold_e);
 		durations[f] = gensvm_elapsed_time(&fold_s, &fold_e);
 
+		#ifdef GENSVM_R_PACKAGE
+		if (gensvm_R_pending_interrupt()) {
+			break;
+		}
+		#endif
+	}
 
 	// reset the output stream
 	if (verbosity <= 1) {
 		GENSVM_OUTPUT_FILE = fid;
+		#ifdef GENSVM_R_PACKAGE
+		gensvm_print_out = tmpfunc;
+		#endif
 	}
 }
