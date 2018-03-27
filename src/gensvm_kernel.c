@@ -451,9 +451,7 @@ void gensvm_kernel_trainfactor(struct GenData *data, double *P, double *Sigma,
 void gensvm_kernel_testfactor(struct GenData *testdata,
 		struct GenData *traindata, double *K2)
 {
-	int in1 = n1,
-	    in2 = n2,
-	    ir = r;
+	int in1, in2, ir;
 	long n1, n2, r, i, j;
 	double value,
 	       one = 1.0,
@@ -464,6 +462,10 @@ void gensvm_kernel_testfactor(struct GenData *testdata,
 	n1 = traindata->n;
 	n2 = testdata->n;
 	r = traindata->r;
+
+	in1 = n1;
+	in2 = n2;
+	ir = r;
 
 	N = Calloc(double, n2*r);
 	M = Calloc(double, n1*r);
