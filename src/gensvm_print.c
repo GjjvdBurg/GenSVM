@@ -61,7 +61,7 @@ FILE *GENSVM_ERROR_FILE = NULL; 	///< The #GENSVM_ERROR_FILE specifies the
  * @param buf 	string to print
  *
  */
-static void gensvm_print_output_fpt(const char *buf, ...)
+void gensvm_print_output_fpt(const char *buf, ...)
 {
 	if (GENSVM_OUTPUT_FILE != NULL) {
 		fputs(buf, GENSVM_OUTPUT_FILE);
@@ -82,7 +82,7 @@ static void gensvm_print_output_fpt(const char *buf, ...)
  *
  * @param buf 	string to be printed
  */
-static void gensvm_print_error_fpt(const char *buf, ...)
+void gensvm_print_error_fpt(const char *buf, ...)
 {
 	if (GENSVM_ERROR_FILE != NULL) {
 		fputs(buf, GENSVM_ERROR_FILE);
