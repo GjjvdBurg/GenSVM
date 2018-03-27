@@ -442,7 +442,7 @@ void read_grid_from_file(char *input_filename, struct GenGrid *grid)
 				fprintf(stderr, "Field \"gamma\" ignored, "
 						"linear kernel is used.\n");
 				grid->Ng = 0;
-				break;
+				continue;
 			}
 			grid->gammas = Calloc(double, nr);
 			for (i=0; i<nr; i++)
@@ -455,7 +455,7 @@ void read_grid_from_file(char *input_filename, struct GenGrid *grid)
 				fprintf(stderr, "Field \"coef\" ignored with "
 						"specified kernel.\n");
 				grid->Nc = 0;
-				break;
+				continue;
 			}
 			grid->coefs = Calloc(double, nr);
 			for (i=0; i<nr; i++)
@@ -467,7 +467,7 @@ void read_grid_from_file(char *input_filename, struct GenGrid *grid)
 				fprintf(stderr, "Field \"degree\" ignored "
 						"with specified kernel.\n");
 				grid->Nd = 0;
-				break;
+				continue;
 			}
 			grid->degrees = Calloc(double, nr);
 			for (i=0; i<nr; i++)
