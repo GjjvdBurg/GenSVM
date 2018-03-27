@@ -509,8 +509,7 @@ void gensvm_get_ZAZ_ZB_sparse(struct GenModel *model, struct GenData *data,
 void gensvm_get_ZAZ_ZB_sparse_csr(struct GenModel *model, struct GenData *data,
 		struct GenWork *work)
 {
-	int iKm = K-1,
-	    ione = 1;
+	int iKm, ione = 1;
 	long *Zi = NULL,
 	     *Zj = NULL;
 	long b, i, j, k, K, kk, b_start, b_end, blk, blk_start, blk_end,
@@ -522,6 +521,8 @@ void gensvm_get_ZAZ_ZB_sparse_csr(struct GenModel *model, struct GenData *data,
 	Zi = data->spZ->ix;
 	Zj = data->spZ->jx;
 	vals = data->spZ->values;
+
+	iKm = K - 1;
 
 	// calculate ZAZ using blocks of rows of Z. This helps avoiding 
 	// rounding errors, which increases precision, and in turn helps 

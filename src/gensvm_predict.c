@@ -48,8 +48,7 @@
 void gensvm_predict_labels(struct GenData *testdata, struct GenModel *model,
 		long *predy)
 {
-	int iKm = K-1,
-	    ione = 1;
+	int iKm, ione = 1;
 	long i, j, k, n, K, label;
 	double norm, min_dist,
 	       *S = NULL,
@@ -57,6 +56,8 @@ void gensvm_predict_labels(struct GenData *testdata, struct GenModel *model,
 
 	n = testdata->n;
 	K = model->K;
+
+	iKm = K - 1;
 
 	// allocate necessary memory
 	S = Calloc(double, K-1);
