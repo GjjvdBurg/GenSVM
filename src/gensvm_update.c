@@ -230,6 +230,9 @@ double gensvm_get_alpha_beta(struct GenModel *model, struct GenData *data,
 {
 	bool simple;
 	long j, K = model->K;
+	int iKm = K-1,
+	    iKK = K*K,
+	    ione = 1;
 	double omega, a, b_aq = 0.0,
 	       alpha = 0.0;
 	double *uu_row = NULL;
@@ -257,18 +260,7 @@ double gensvm_get_alpha_beta(struct GenModel *model, struct GenData *data,
 		b_aq *= model->rho[i] * omega * in;
 		uu_row = &matrix_get(model->UU, K*K, K-1, 
 				(data->y[i]-1)*K+j, 0);
-		#ifdef GENSVM_R_PACKAGE
-		int iKm = K-1,
-		    iKK = K*K,
-		    ione = 1;
 		F77_CALL(daxpy)(&iKm, &b_aq, uu_row, &iKK, beta, &ione);
-		#else
-		#if MAJOR_ORDER == 'r'
-		cblas_daxpy(K-1, b_aq, uu_row, 1, beta, 1);
-		#else
-		cblas_daxpy(K-1, b_aq, uu_row, K*K, beta, 1);
-		#endif
-		#endif
 
 		// increment Avalue
 		alpha += a;
@@ -341,11 +333,9 @@ void gensvm_get_update(struct GenModel *model, struct GenData *data,
 	long m = model->m;
 	long K = model->K;
 
-	#ifdef GENSVM_R_PACKAGE
 	int imp = m+1,
 	    iKm = K-1;
 	double one = 1.0;
-	#endif
 
 	// compute the ZAZ and ZB matrices
 	gensvm_get_ZAZ_ZB(model, data, work);
@@ -353,21 +343,8 @@ void gensvm_get_update(struct GenModel *model, struct GenData *data,
 	// Calculate right-hand side of system we want to solve
 	// dsymm performs ZB := 1.0 * (ZAZ) * Vbar + 1.0 * ZB
 	// the right-hand side is thus stored in ZB after this call
-
-	#ifdef GENSVM_R_PACKAGE
 	F77_CALL(dsymm)("l", "u", &imp, &iKm, &one, work->ZAZ, &imp, model->V, 
 			&imp, &one, work->ZB, &imp);
-	#else
-	#if MAJOR_ORDER == 'r'
-	// Note: LDB and LDC are second dimensions of the matrices due to
-	// Row-Major order
-	cblas_dsymm(CblasRowMajor, CblasLeft, CblasUpper, m+1, K-1, 1,
-			work->ZAZ, m+1, model->V, K-1, 1.0, work->ZB, K-1);
-	#else
-	cblas_dsymm(CblasColMajor, CblasLeft, CblasUpper, m+1, K-1, 1.0,
-			work->ZAZ, m+1, model->V, m+1, 1.0, work->ZB, m+1);
-	#endif
-	#endif
 
 	// Calculate left-hand side of system we want to solve
 	// Add lambda to all diagonal elements except the first one. Recall
@@ -384,19 +361,8 @@ void gensvm_get_update(struct GenModel *model, struct GenData *data,
 	#endif
 
 	// Solve the system using dposv.
-	#ifdef GENSVM_R_PACKAGE
 	F77_CALL(dposv)("u", &imp, &iKm, work->ZAZ, &imp, work->ZB, &imp, 
 			&status);
-	#else
-	#if MAJOR_ORDER == 'r'
-	// Note that above the upper triangular part has always been used in 
-	// row-major order for ZAZ. This corresponds to the lower triangular 
-	// part in column-major order.
-	status = dposv('L', m+1, K-1, work->ZAZ, m+1, work->ZBc, m+1);
-	#else
-	status = dposv('U', m+1, K-1, work->ZAZ, m+1, work->ZB, m+1);
-	#endif
-	#endif
 
 	// Use dsysv as fallback, for when the ZAZ matrix is not positive
 	// semi-definite for some reason (perhaps due to rounding errors).
@@ -406,35 +372,14 @@ void gensvm_get_update(struct GenModel *model, struct GenData *data,
 				"dposv: %i\n", status);
 		int *IPIV = Malloc(int, m+1);
 		double *WORK = Malloc(double, 1);
-		#ifdef GENSVM_R_PACKAGE
 		int iminus_one = -1;
 		F77_CALL(dsysv)("u", &imp, &iKm, work->ZAZ, &imp, IPIV,
 				work->ZB, &imp, WORK, &iminus_one, &status);
-		#else
-		#if MAJOR_ORDER == 'r'
-		status = dsysv('L', m+1, K-1, work->ZAZ, m+1, IPIV, work->ZBc,
-				m+1, WORK, -1);
-		#else
-		status = dsysv('U', m+1, K-1, work->ZAZ, m+1, IPIV, work->ZB,
-				m+1, WORK, -1);
-		#endif
-		#endif
 
 		int LWORK = WORK[0];
 		WORK = Realloc(WORK, double, LWORK);
-
-		#ifdef GENSVM_R_PACKAGE
 		F77_CALL(dsysv)("u", &imp, &iKm, work->ZAZ, &imp, IPIV,
 				work->ZB, &imp, WORK, &LWORK, &status);
-		#else
-		#if MAJOR_ORDER == 'r'
-		status = dsysv('L', m+1, K-1, work->ZAZ, m+1, IPIV, work->ZBc,
-				m+1, WORK, LWORK);
-		#else
-		status = dsysv('U', m+1, K-1, work->ZAZ, m+1, IPIV, work->ZB,
-				m+1, WORK, LWORK);
-		#endif
-		#endif
 
 		if (status != 0)
 			gensvm_error("[GenSVM Warning]: Received nonzero "
@@ -492,7 +437,7 @@ void gensvm_get_ZAZ_ZB_dense(struct GenModel *model, struct GenData *data,
 	long m = model->m;
 	long K = model->K;
 
-	#ifdef GENSVM_R_PACKAGE
+	// stuff for the Fortran calls
 	int im = m,
 	    in = n,
 	    imp = m+1,
@@ -500,7 +445,6 @@ void gensvm_get_ZAZ_ZB_dense(struct GenModel *model, struct GenData *data,
 	    ione = 1;
 	double one = 1.0,
 	       zero = 0.0;
-	#endif
 
 	// generate Z'*A*Z and Z'*B by rank 1 operations
 	for (i=0; i<n; i++) {
@@ -512,53 +456,19 @@ void gensvm_get_ZAZ_ZB_dense(struct GenModel *model, struct GenData *data,
 		// always 1, by only computing the product for m values and
 		// copying the first element over.
 		sqalpha = sqrt(alpha);
-
-		#ifdef GENSVM_R_PACKAGE
 		work->LZ[i] = sqalpha;
 		F77_CALL(daxpy)(&im, &sqalpha, &data->Z[i+n], &in, 
 				&work->LZ[i+n], &in);
-		#else
-		#if MAJOR_ORDER == 'r'
-		work->LZ[i*(m+1)] = sqalpha;
-		cblas_daxpy(m, sqalpha, &data->Z[i*(m+1)+1], 1,
-				&work->LZ[i*(m+1)+1], 1);
-		#else
-		work->LZ[i] = sqalpha;
-		cblas_daxpy(m, sqalpha, &data->Z[i+n], n, &work->LZ[i+n], n);
-		#endif
-		#endif
 
 		// rank 1 update of matrix Z'*B
-		#ifdef GENSVM_R_PACKAGE
 		F77_CALL(dger)(&imp, &iKm, &one, &data->Z[i], &in, work->beta,
 				&ione, work->ZB, &imp);
-		#else
-		#if MAJOR_ORDER == 'r'
-		// Note: LDA is the second dimension of ZB because of
-		// Row-Major order
-		cblas_dger(CblasRowMajor, m+1, K-1, 1, &data->Z[i*(m+1)], 1,
-				work->beta, 1, work->ZB, K-1);
-		#else
-		cblas_dger(CblasColMajor, m+1, K-1, 1, &data->Z[i], n,
-				work->beta, 1, work->ZB, m+1);
-		#endif
-		#endif
 	}
 
 	// calculate Z'*A*Z by symmetric multiplication of LZ with itself
 	// (ZAZ = (LZ)' * (LZ)
-	#ifdef GENSVM_R_PACKAGE
 	F77_CALL(dsyrk)("u", "t", &imp, &in, &one, work->LZ, &in, &zero, 
 			work->ZAZ, &imp);
-	#else
-	#if MAJOR_ORDER == 'r'
-	cblas_dsyrk(CblasRowMajor, CblasUpper, CblasTrans, m+1, n, 1.0,
-			work->LZ, m+1, 0.0, work->ZAZ, m+1);
-	#else
-	cblas_dsyrk(CblasColMajor, CblasUpper, CblasTrans, m+1, n, 1.0,
-			work->LZ, n, 0.0, work->ZAZ, m+1);
-	#endif
-	#endif
 }
 
 void gensvm_get_ZAZ_ZB_sparse(struct GenModel *model, struct GenData *data,
@@ -599,6 +509,8 @@ void gensvm_get_ZAZ_ZB_sparse(struct GenModel *model, struct GenData *data,
 void gensvm_get_ZAZ_ZB_sparse_csr(struct GenModel *model, struct GenData *data,
 		struct GenWork *work)
 {
+	int iKm = K-1,
+	    ione = 1;
 	long *Zi = NULL,
 	     *Zj = NULL;
 	long b, i, j, k, K, kk, b_start, b_end, blk, blk_start, blk_end,
@@ -633,16 +545,9 @@ void gensvm_get_ZAZ_ZB_sparse_csr(struct GenModel *model, struct GenData *data,
 			for (b=b_start; b<b_end; b++) {
 				j = Zj[b];
 				z_ij = vals[b];
-				#ifdef GENSVM_R_PACKAGE
-				int iKm = K-1,
-				    ione = 1;
 				F77_CALL(daxpy)(&iKm, &z_ij, work->beta,
 						&ione, &work->ZB[j*(K-1)],
 						&ione);
-				#else
-				cblas_daxpy(K-1, z_ij, work->beta, 1,
-						&work->ZB[j*(K-1)], 1);
-				#endif
 
 				z_ij *= alpha;
 				for (kk=b; kk<b_end; kk++) {
@@ -761,95 +666,3 @@ void gensvm_get_ZAZ_ZB(struct GenModel *model, struct GenData *data,
 	else
 		gensvm_get_ZAZ_ZB_dense(model, data, work);
 }
-
-#ifdef GENSVM_R_PACKAGE
-// If we are compiling for the R package, these wrapper definitions conflict 
-// with the R packaged Lapack routines.
-#else
-
-/**
- * @brief Solve AX = B where A is symmetric positive definite.
- *
- * @details
- * Solve a linear system of equations AX = B where A is symmetric positive
- * definite. This function is a wrapper for the external  LAPACK routine
- * dposv.
- *
- * @param[in] 		UPLO 	which triangle of A is stored
- * @param[in] 		N 	order of A
- * @param[in] 		NRHS 	number of columns of B
- * @param[in,out] 	A 	double precision array of size (LDA, N). On
- * 				exit contains the upper or lower factor of the
- * 				Cholesky factorization of A.
- * @param[in] 		LDA 	leading dimension of A
- * @param[in,out] 	B 	double precision array of size (LDB, NRHS). On
- * 				exit contains the N-by-NRHS solution matrix X.
- * @param[in] 		LDB 	the leading dimension of B
- * @returns 			info parameter which contains the status of the
- * 				computation:
- * 					- =0: 	success
- * 					- <0: 	if -i, the i-th argument had
- * 						an illegal value
- * 					- >0: 	if i, the leading minor of A
- * 						was not positive definite
- *
- * See the LAPACK documentation at:
- * http://www.netlib.org/lapack/explore-html/dc/de9/group__double_p_osolve.html
- */
-int dposv(char UPLO, int N, int NRHS, double *A, int LDA, double *B,
-		int LDB)
-{
-	extern void dposv_(char *UPLO, int *Np, int *NRHSp, double *A,
-			int *LDAp, double *B, int *LDBp, int *INFOp);
-	int INFO;
-	dposv_(&UPLO, &N, &NRHS, A, &LDA, B, &LDB, &INFO);
-	return INFO;
-}
-
-/**
- * @brief Solve a system of equations AX = B where A is symmetric.
- *
- * @details
- * Solve a linear system of equations AX = B where A is symmetric. This
- * function is a wrapper for the external LAPACK routine dsysv.
- *
- * @param[in] 		UPLO 	which triangle of A is stored
- * @param[in] 		N 	order of A
- * @param[in] 		NRHS 	number of columns of B
- * @param[in,out] 	A 	double precision array of size (LDA, N). On
- * 				exit contains the block diagonal matrix D and
- * 				the multipliers used to obtain the factor U or
- * 				L from the factorization A = U*D*U**T or
- * 				A = L*D*L**T.
- * @param[in] 		LDA 	leading dimension of A
- * @param[in] 		IPIV 	integer array containing the details of D
- * @param[in,out] 	B 	double precision array of size (LDB, NRHS). On
- * 				exit contains the N-by-NRHS matrix X
- * @param[in] 		LDB 	leading dimension of B
- * @param[out] 		WORK 	double precision array of size max(1,LWORK). On
- * 				exit, WORK(1) contains the optimal LWORK
- * @param[in] 		LWORK 	the length of WORK, can be used for determining
- * 				the optimal blocksize for dsystrf.
- * @returns 			info parameter which contains the status of the
- * 				computation:
- * 					- =0: 	success
- * 					- <0: 	if -i, the i-th argument had an
- * 						illegal value
- * 					- >0: 	if i, D(i, i) is exactly zero,
- * 						no solution can be computed.
- *
- * See the LAPACK documentation at:
- * http://www.netlib.org/lapack/explore-html/d6/d0e/group__double_s_ysolve.html
- */
-int dsysv(char UPLO, int N, int NRHS, double *A, int LDA, int *IPIV,
-		double *B, int LDB, double *WORK, int LWORK)
-{
-	extern void dsysv_(char *UPLO, int *Np, int *NRHSp, double *A,
-			int *LDAp, int *IPIV, double *B, int *LDBp,
-			double *WORK, int *LWORK, int *INFOp);
-	int INFO;
-	dsysv_(&UPLO, &N, &NRHS, A, &LDA, IPIV, B, &LDB, WORK, &LWORK, &INFO);
-	return INFO;
-}
-
-#endif

@@ -31,15 +31,12 @@
 #ifndef GENSVM_OPTIMIZE_H
 #define GENSVM_OPTIMIZE_H
 
-#include "gensvm_sv.h"
+#include "gensvm_r_utils.h"
 #include "gensvm_simplex.h"
+#include "gensvm_sv.h"
 #include "gensvm_timer.h"
 #include "gensvm_update.h"
 #include "gensvm_zv.h"
-
-#ifdef GENSVM_R_PACKAGE
-#include "gensvm_r_utils.h"
-#endif
 
 // function declarations
 void gensvm_optimize(struct GenModel *model, struct GenData *data);

@@ -15,18 +15,8 @@ endif
 ########################
 #    R PACKAGE FLAG    #
 ########################
-R_PACKAGE=true
-ifeq ($(R_PACKAGE), true)
-	CFLAGS += -DGENSVM_R_PACKAGE
-	INCLUDE += -I/usr/include/R/
-	override LDFLAGS += -llapack -lblas -lgfortran -lm -lquadmath -Llibgensvm -L/usr/lib64/R/lib -lR -lgensvm
-else
-ifdef NOATLAS
-override LDFLAGS+=-lm -lcblas -llapack -lgensvm
-else
-override LDFLAGS+=-lm -lcblas -llapack -latlas -lgensvm
-endif
-endif
+INCLUDE += -I/usr/include/R/
+override LDFLAGS += -llapack -lblas -lgfortran -lm -lquadmath -Llibgensvm -L/usr/lib64/R/lib -lR -lgensvm
 
 TEST_SRC=$(wildcard src/test_*.c)
 TESTS=$(patsubst src/%.c,bin/%,$(TEST_SRC))

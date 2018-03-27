@@ -886,15 +886,7 @@ char *test_dposv()
 
 	int status;
 
-	#ifdef GENSVM_R_PACKAGE
 	F77_CALL(dposv)("u", &n, &m, A, &n, B, &n, &status);
-	#else
-	#if MAJOR_ORDER == 'r'
-	status = dposv('L', n, m, A, n, B, n);
-	#else
-	status = dposv('U', n, m, A, n, B, n);
-	#endif
-	#endif
 	mu_assert(status == 0, "dposv didn't return status success");
 
 	// Since B now contains the solution in Column-Major order, we have to
@@ -1042,31 +1034,15 @@ char *test_dsysv()
 	int status;
 
 	// first we determine the necessary size of the WORK array
-	#ifdef GENSVM_R_PACKAGE
 	int minus_one = -1;
 	F77_CALL(dsysv)("u", &n, &m, A, &n, IPIV, B, &n, WORK, &minus_one,
 			&status);
-	#else
-	#if MAJOR_ORDER == 'r'
-	status = dsysv('L', n, m, A, n, IPIV, B, n, WORK, -1);
-	#else
-	status = dsysv('U', n, m, A, n, IPIV, B, n, WORK, -1);
-	#endif
-	#endif
 	mu_assert(status == 0, "dsysv workspace query failed");
 
 	int LWORK = WORK[0];
 	WORK = Realloc(WORK, double, LWORK);
-	#ifdef GENSVM_R_PACKAGE
 	F77_CALL(dsysv)("u", &n, &m, A, &n, IPIV, B, &n, WORK, &LWORK,
 			&status);
-	#else
-	#if MAJOR_ORDER == 'r'
-	status = dsysv('L', n, m, A, n, IPIV, B, n, WORK, LWORK);
-	#else
-	status = dsysv('U', n, m, A, n, IPIV, B, n, WORK, LWORK);
-	#endif
-	#endif
 	mu_assert(status == 0, "dsysv didn't return status success");
 
 	// Since B now contains the solution in Column-Major order, we have to

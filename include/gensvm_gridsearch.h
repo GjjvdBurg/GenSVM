@@ -39,10 +39,7 @@
 #include "gensvm_grid.h"
 #include "gensvm_queue.h"
 #include "gensvm_timer.h"
-
-#ifdef GENSVM_R_PACKAGE
 #include "gensvm_r_utils.h"
-#endif
 
 // function declarations
 void gensvm_fill_queue(struct GenGrid *grid, struct GenQueue *queue,

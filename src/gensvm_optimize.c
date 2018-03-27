@@ -58,10 +58,8 @@ void gensvm_optimize(struct GenModel *model, struct GenData *data)
 	long it = 0;
 	double L, Lbar;
 	struct timespec t_start, t_stop;
-	#ifdef GENSVM_R_PACKAGE
 	struct timespec t_ipt_start, t_ipt_stop;
 	gensvm_R_reset_interrupt_hdl();
-	#endif
 
 	long n = model->n;
 	long m = model->m;
@@ -88,9 +86,7 @@ void gensvm_optimize(struct GenModel *model, struct GenData *data)
 	gensvm_simplex_diff(model);
 
 	Timer(t_start);
-	#ifdef GENSVM_R_PACKAGE
 	Timer(t_ipt_start);
-	#endif
 
 	// get initial loss
 	L = gensvm_get_loss(model, data, work);
@@ -113,7 +109,6 @@ void gensvm_optimize(struct GenModel *model, struct GenData *data)
 			     "reldiff = %15.16f\n", it, L, Lbar, (Lbar - L)/L);
 		it++;
 
-		#ifdef GENSVM_R_PACKAGE
 		// check if the user called interrupt from R (every 2 seconds)
 		Timer(t_ipt_stop);
 		if (gensvm_elapsed_time(&t_ipt_start, &t_ipt_stop) > 2) {
@@ -124,7 +119,6 @@ void gensvm_optimize(struct GenModel *model, struct GenData *data)
 			}
 			Timer(t_ipt_start);
 		}
-		#endif
 	}
 
 	Timer(t_stop);
@@ -145,10 +139,8 @@ void gensvm_optimize(struct GenModel *model, struct GenData *data)
 		model->status = 2;
 	}
 
-	#ifdef GENSVM_R_PACKAGE
 	if (gensvm_R_pending_interrupt())
 		model->status = 3;
-	#endif
 
 	// print final iteration count and loss
 	note("\nOptimization finished, iter = %li, loss = %15.16f, "
@@ -319,11 +311,9 @@ void gensvm_calculate_errors(struct GenModel *model, struct GenData *data,
 	long n = model->n;
 	long K = model->K;
 
-	#ifdef GENSVM_R_PACKAGE
 	int iKm = K-1,
 	    in = n,
 	    iKK = K*K;
-	#endif
 
 	gensvm_calculate_ZV(model, data, ZV);
 
@@ -333,15 +323,7 @@ void gensvm_calculate_errors(struct GenModel *model, struct GenData *data,
 				continue;
 			uu_row = &matrix_get(model->UU, K*K, K-1, 
 					(data->y[i]-1)*K+j, 0);
-			#ifdef GENSVM_R_PACKAGE
 			q = F77_CALL(ddot)(&iKm, &ZV[i], &in, uu_row, &iKK);
-			#else
-			#if MAJOR_ORDER == 'r'
-			q = cblas_ddot(K-1, &ZV[i*(K-1)], 1, uu_row, 1);
-			#else
-			q = cblas_ddot(K-1, &ZV[i], n, uu_row, K*K);
-			#endif
-			#endif
 			matrix_set(model->Q, n, K, i, j, q);
 		}
 	}

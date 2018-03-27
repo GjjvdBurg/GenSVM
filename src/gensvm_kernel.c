@@ -228,7 +228,9 @@ void gensvm_kernel_compute(struct GenModel *model, struct GenData *data,
 long gensvm_kernel_eigendecomp(double *K, long n, double cutoff, double **P_ret,
 		double **Sigma_ret)
 {
-	int M, status, LWORK, *IWORK = NULL,
+	int M, status, LWORK, in = n,
+	    minus_one = -1,
+	    *IWORK = NULL,
 	    *IFAIL = NULL;
 	long i, j, num_eigen, cutoff_idx;
 	double max_eigen, abstol, *WORK = NULL,
@@ -242,37 +244,22 @@ long gensvm_kernel_eigendecomp(double *K, long n, double cutoff, double **P_ret,
 	IFAIL = Malloc(int, n);
 
 	// highest precision eigenvalues, may reduce for speed
-	#ifdef GENSVM_R_PACKAGE
 	const char cmach = 'S';
 	abstol = 2.0 * F77_CALL(dlamch)(&cmach);
-	#else
-	abstol = 2.0*dlamch('S');
-	#endif
 
 	// first perform a workspace query to determine optimal size of the
 	// WORK array.
 	WORK = Malloc(double, 1);
-	#ifdef GENSVM_R_PACKAGE
-	int in = n,
-	    minus_one = -1;
 	F77_CALL(dsyevx)("v", "a", "u", &in, K, &in, 0, 0, 0, 0, &abstol, &M,
-			tempSigma, tempP, &in, WORK, &minus_one, IWORK, IFAIL, &status);
-	#else
-	status = dsyevx('V', 'A', 'U', n, K, n, 0, 0, 0, 0, abstol, &M,
-			tempSigma, tempP, n, WORK, -1, IWORK, IFAIL);
-	#endif
+			tempSigma, tempP, &in, WORK, &minus_one, IWORK, IFAIL, 
+			&status);
 	LWORK = WORK[0];
 
 	// allocate the requested memory for the eigendecomposition
 	WORK = (double *)realloc(WORK, LWORK*sizeof(double));
-	#ifdef GENSVM_R_PACKAGE
 	F77_CALL(dsyevx)("v", "a", "u", &in, K, &in, 0, 0, 0, 0, &abstol, &M, 
 			tempSigma, tempP, &in, WORK, &LWORK, IWORK, IFAIL, 
 			&status);
-	#else
-	status = dsyevx('V', 'A', 'U', n, K, n, 0, 0, 0, 0, abstol, &M,
-			tempSigma, tempP, n, WORK, LWORK, IWORK, IFAIL);
-	#endif
 
 	if (status != 0) {
 		// LCOV_EXCL_START
@@ -462,8 +449,14 @@ void gensvm_kernel_trainfactor(struct GenData *data, double *P, double *Sigma,
 void gensvm_kernel_testfactor(struct GenData *testdata,
 		struct GenData *traindata, double *K2)
 {
+	int in1 = n1,
+	    in2 = n2,
+	    ir = r;
 	long n1, n2, r, i, j;
-	double value, *N = NULL,
+	double value,
+	       one = 1.0,
+	       zero = 0.0;
+	       *N = NULL,
 	       *M = NULL;
 
 	n1 = traindata->n;
@@ -483,23 +476,8 @@ void gensvm_kernel_testfactor(struct GenData *testdata,
 	}
 
 	// Multiply K2 with M and store in N
-	#ifdef GENSVM_R_PACKAGE
-	int in1 = n1,
-	    in2 = n2,
-	    ir = r;
-	double one = 1.0,
-	       zero = 0.0;
 	F77_CALL(dgemm)("n", "n", &in2, &ir, &in1, &one, K2, &in2, M, &in1, 
 			&zero, N, &in2);
-	#else
-	#if MAJOR_ORDER == 'r'
-	cblas_dgemm(CblasRowMajor, CblasNoTrans, CblasNoTrans, n2, r, n1, 1.0,
-			K2, n1, M, r, 0.0, N, r);
-	#else
-	cblas_dgemm(CblasColMajor, CblasNoTrans, CblasNoTrans, n2, r, n1, 1.0,
-			K2, n2, M, n1, 0.0, N, n2);
-	#endif
-	#endif
 
 	// Multiply N with Sigma^{-2}
 	for (j=0; j<r; j++) {
@@ -587,14 +565,10 @@ double gensvm_kernel_dot_rbf(double *x, double *y, long n,
 double gensvm_kernel_dot_poly(double *x, double *y, long n, long incx, 
 		long incy, double gamma, double coef, double degree)
 {
-	#ifdef GENSVM_R_PACKAGE
 	int in = n,
 	    iincx = incx,
 	    iincy = incy;
 	double value = F77_CALL(ddot)(&in, x, &iincx, y, &iincy);
-	#else
-	double value = cblas_ddot(n, x, incx, y, incy);
-	#endif
 	value *= gamma;
 	value += coef;
 	return pow(value, degree);
@@ -621,64 +595,11 @@ double gensvm_kernel_dot_poly(double *x, double *y, long n, long incx,
 double gensvm_kernel_dot_sigmoid(double *x, double *y, long n, long incx, 
 		long incy, double gamma, double coef)
 {
-	#ifdef GENSVM_R_PACKAGE
 	int in = n,
 	    iincx = incx,
 	    iincy = incy;
 	double value = F77_CALL(ddot)(&in, x, &iincx, y, &iincy);
-	#else
-	double value = cblas_ddot(n, x, incx, y, incy);
-	#endif
 	value *= gamma;
 	value += coef;
 	return tanh(value);
 }
-
-#ifdef GENSVM_R_PACKAGE
-// If we are compiling for the R package, these wrapper definitions conflict 
-// with the R packaged Lapack routines.
-#else
-
-/**
- * @brief Compute the eigenvalues and optionally the eigenvectors of a
- * symmetric matrix.
- *
- * @details
- * This is a wrapper function around the external LAPACK function.
- *
- * See the LAPACK documentation at:
- * http://www.netlib.org/lapack/explore-html/d2/d97/dsyevx_8f.html
- *
- */
-int dsyevx(char JOBZ, char RANGE, char UPLO, int N, double *A, int LDA,
-		double VL, double VU, int IL, int IU, double ABSTOL, int *M,
-		double *W, double *Z, int LDZ, double *WORK, int LWORK,
-		int *IWORK, int *IFAIL)
-{
-	extern void dsyevx_(char *JOBZ, char *RANGE, char *UPLO, int *Np,
-			double *A, int *LDAp, double *VLp, double *VUp,
-			int *ILp, int *IUp, double *ABSTOLp, int *M,
-			double *W, double *Z, int *LDZp, double *WORK,
-			int *LWORKp, int *IWORK, int *IFAIL, int *INFOp);
-	int INFO;
-	dsyevx_(&JOBZ, &RANGE, &UPLO, &N, A, &LDA, &VL, &VU, &IL, &IU, &ABSTOL,
-			M, W, Z, &LDZ, WORK, &LWORK, IWORK, IFAIL, &INFO);
-	return INFO;
-}
-
-/**
- * @brief Determine double precision machine parameters.
- *
- * @details
- * This is a wrapper function around the external LAPACK function.
- *
- * See the LAPACK documentation at:
- * http://www.netlib.org/lapack/explore-html/d5/dd4/dlamch_8f.html
- */
-double dlamch(char CMACH)
-{
-	extern double dlamch_(char *CMACH);
-	return dlamch_(&CMACH);
-}
-
-#endif

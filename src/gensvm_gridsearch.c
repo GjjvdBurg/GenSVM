@@ -293,9 +293,7 @@ double gensvm_train_queue(struct GenQueue *q, long *cv_idx,
 
 	folds = task->folds;
 
-	#ifdef GENSVM_R_PACKAGE
 	gensvm_R_reset_interrupt_hdl();
-	#endif
 
 	model->n = 0;
 	model->m = task->train_data->m;
@@ -361,11 +359,9 @@ double gensvm_train_queue(struct GenQueue *q, long *cv_idx,
 		prevtask = task;
 		task = get_next_task(q);
 
-		#ifdef GENSVM_R_PACKAGE
 		if (gensvm_R_pending_interrupt()) {
 			break;
 		}
-		#endif
 	}
 	Timer(main_e);
 
