@@ -58,14 +58,14 @@ void gensvm_train(struct GenModel *model, struct GenData *data,
 	real_seed = (model->seed == -1) ? time(NULL) : model->seed;
 	srand(real_seed);
 
-	// initialize the V matrix (potentially with a seed model)
-	gensvm_init_V(seed_model, model, data);
-
 	// preprocess kernel
 	gensvm_kernel_preprocess(model, data);
 
 	// reallocate model for kernels
 	gensvm_reallocate_model(model, data->n, data->r);
+
+	// initialize the V matrix (potentially with a seed model)
+	gensvm_init_V(seed_model, model, data);
 
 	// initialize weights
 	gensvm_initialize_weights(data, model);

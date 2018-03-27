@@ -48,6 +48,10 @@ char *test_gensvm_train_seed_linear()
 	data->Z = data->RAW;
 	data->y = Calloc(long, data->n);
 
+	seed->n = data->n;
+	seed->m = data->m;
+	seed->K = data->K;
+
 	matrix_set(data->Z, data->m+1, 0, 0, 1.0000000000000000);
 	matrix_set(data->Z, data->m+1, 0, 1, 0.8056271362589000);
 	matrix_set(data->Z, data->m+1, 0, 2, 0.4874175854113872);
@@ -261,14 +265,15 @@ char *test_gensvm_train_seed_kernel()
 	matrix_set(data->y, 1, 0, 8, 3);
 	matrix_set(data->y, 1, 0, 9, 4);
 
+
+	struct GenModel *seed = gensvm_init_model();
+	seed->V = Calloc(double, 7*3);
+	seed->m = 6;
+	seed->K = 4;
+
 	// start test code //
 
-	// because the kernel eigendecomposition isn't known in advance, 
-	// there's no way to seed the model when using kernels. We therefore 
-	// use seed == NULL here. Note that due to the Memset in 
-	// gensvm_reallocate_model(), V will be a matrix of zeros after 
-	// reallocation, so we compare with the V = 0 result from Octave.
-	gensvm_train(model, data, NULL);
+	gensvm_train(model, data, seed);
 
 	mu_assert(model->n == data->n, "Incorrect model n");
 	mu_assert(model->m == data->r, "Incorrect model m");
@@ -368,6 +373,7 @@ char *test_gensvm_train_seed_kernel()
 	// end test code //
 
 	gensvm_free_model(model);
+	gensvm_free_model(seed);
 	gensvm_free_data(data);
 
 	return NULL;
