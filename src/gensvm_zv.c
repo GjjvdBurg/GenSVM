@@ -116,12 +116,12 @@ void gensvm_calculate_ZV_sparse(struct GenModel *model,
 				#ifdef GENSVM_R_PACKAGE
 				dim = K - 1;
 				incx = model->m+1;
-				incy = model->n;
+				incy = data->n;
 				F77_CALL(daxpy)(&dim, &z_ij, &model->V[j], 
 						&incx, &ZV[i], &incy);
 				#else
 				cblas_daxpy(K-1, z_ij, &model->V[j], 
-						model->m+1, &ZV[i], model->n);
+						model->m+1, &ZV[i], data->n);
 				#endif
 
 			}
