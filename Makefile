@@ -1,4 +1,4 @@
-VERSION=0.2.0
+VERSION=0.2.1
 CC=gcc
 CFLAGS=-Wall -Wno-unused-result -Wsign-compare -Wstrict-prototypes \
        -DVERSION=$(VERSION) -g -O3

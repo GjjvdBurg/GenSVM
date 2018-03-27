@@ -1,5 +1,12 @@
 # Change Log
 
+## Version 0.2.1
+
+- Add support for prediction after grid search
+- Bugfix for reading nonlinear training files
+- Command line flag for maximum number of iterations in GenSVM
+- Add support for seeding with nonlinear GenSVM
+
 ## Version 0.2.0
 
 - Fix bug in nonlinear GenSVM, it should perform better now.
