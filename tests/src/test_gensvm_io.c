@@ -654,7 +654,7 @@ char *test_gensvm_write_model()
 	char buffer[GENSVM_MAX_LINE_LENGTH];
 
 	fgets(buffer, GENSVM_MAX_LINE_LENGTH, fid);
-	mu_assert(strcmp(buffer, "Output file for GenSVM (version 0.1.4)\n")
+	mu_assert(strcmp(buffer, "Output file for GenSVM (version 0.2.0)\n")
 			== 0, "Line doesn't contain expected content (0).\n");
 
 	// skip the time line

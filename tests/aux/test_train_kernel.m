@@ -1,21 +1,21 @@
 function [V] = test_train_kernel()
-  
+
   clear;
   more off;
   rand('state', 654321);
-  
+
   n = 10;
   m = 5;
   classes = 4;
   cutoff = 5e-3;
-  
+
   X = rand(n, m);
   Z = [ones(n, 1), X];
   set_matrix(Z, "data->Z", "data->m+1");
-  
+
   y = [2 1 3 2 3 2 4 1 3 4];
   set_matrix(y, "data->y", "1");
-  
+
   p = 1.2143;
   kappa = 0.90298;
   lambda = 0.00219038;
@@ -36,24 +36,24 @@ function [V] = test_train_kernel()
 
   eigenvalues = diag(Sigma);
   ratios = eigenvalues ./ eigenvalues(end, end);
- 
+
   realP = fliplr(P(:, ratios > cutoff));
-  realSigma = flipud(eigenvalues(ratios > cutoff));
-  
+  realSigma = sqrt(flipud(eigenvalues(ratios > cutoff)));
+
   assert_matrix(realSigma, "data->Sigma", "1");
-  
+
   r = sum(ratios > cutoff);
   fprintf("mu_assert(data->r == %i);\n", r);
-  
+
   M = realP * diag(realSigma);
   size(M)
-  
+
   assert_matrix(Z, "data->RAW", "data->m+1");
-  
-  seedV = zeros(size(M, 2) + 1, classes - 1);  
+
+  seedV = zeros(size(M, 2) + 1, classes - 1);
   [W, t] = msvmmaj(M, y, rho, p, kappa, lambda, epsilon, 'show', 0, seedV);
   V = [t'; W];
-  
+
   fprintf('\n');
   assert_matrix_abs(V, "model->V", "model->K-1");
 

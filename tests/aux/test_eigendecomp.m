@@ -23,7 +23,7 @@ ratios = eigenvalues ./ eigenvalues(end, end);
 cutoff = 1e-2;
 
 realP = fliplr(P(:, ratios > cutoff));
-realSigma = flipud(eigenvalues(ratios > cutoff));
+realSigma = sqrt(flipud(eigenvalues(ratios > cutoff)));
 
 r = sum(ratios > cutoff);
 

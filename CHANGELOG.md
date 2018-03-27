@@ -1,5 +1,9 @@
 # Change Log
 
+## Version 0.2.0
+
+- Fix bug in nonlinear GenSVM, it should perform better now.
+
 ## Version 0.1.4
 
 - Keep track of elapsed iterations during training
