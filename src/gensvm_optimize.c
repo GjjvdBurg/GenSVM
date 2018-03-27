@@ -59,6 +59,7 @@ void gensvm_optimize(struct GenModel *model, struct GenData *data)
 	double L, Lbar;
 	struct timespec t_start, t_stop;
 	struct timespec t_ipt_start, t_ipt_stop;
+
 	gensvm_R_reset_interrupt_hdl();
 
 	long n = model->n;
