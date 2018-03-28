@@ -634,8 +634,8 @@ void gensvm_time_string(char *buffer)
 
 	// convert time to local time and create a string
 	lclt = localtime(&current_time);
-	strftime(timestr, GENSVM_MAX_LINE_LENGTH, "%c", lclt);
-	if (timestr == NULL) {
+	size_t len = strftime(timestr, GENSVM_MAX_LINE_LENGTH, "%c", lclt);
+	if (len == 0) {
 		gensvm_error("[GenSVM Error]: Failed to convert time to string.\n");
 		return;
 	}
