@@ -145,7 +145,7 @@ void gensvm_optimize(struct GenModel *model, struct GenData *data)
 
 	// print final iteration count and loss
 	note("\nOptimization finished, iter = %li, loss = %15.16f, "
-			"rel. diff. = %15.16f\n", it-1, L,
+			"rel. diff. = %15.16f\n", it, L,
 			(Lbar - L)/L);
 
 	// compute and print the number of SVs in the model
@@ -155,7 +155,7 @@ void gensvm_optimize(struct GenModel *model, struct GenData *data)
 	model->training_error = (Lbar - L)/L;
 
 	// store the iteration count in the model
-	model->elapsed_iter = it - 1;
+	model->elapsed_iter = it;
 
 	// store the elapsed time in the model
 	model->elapsed_time = gensvm_elapsed_time(&t_start, &t_stop);
