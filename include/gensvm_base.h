@@ -91,7 +91,7 @@ struct GenData {
  */
 struct GenModel {
 	int weight_idx;
-	///< which weights to use (1 = unit, 2 = group)
+	///< which weights to use (0 = raw, 1 = unit, 2 = group)
 	long K;
 	///< number of classes in the dataset
 	long n;
