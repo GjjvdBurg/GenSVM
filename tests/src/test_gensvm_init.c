@@ -205,6 +205,33 @@ char *test_init_seed()
 	return NULL;
 }
 
+char *test_init_weights_0()
+{
+	int i;
+
+	struct GenModel *model = gensvm_init_model();
+	struct GenData *data = NULL;
+	model->n = 5;
+	model->m = 3;
+	model->K = 3;
+	model->weight_idx = 0;
+	gensvm_allocate_model(model);
+
+	for (i=0; i<model->n; i++)
+		model->rho[i] = i;
+
+	// start test code //
+	gensvm_initialize_weights(data, model);
+	for (i=0; i<model->n; i++)
+		mu_assert(model->rho[i] == i, "Incorrect weight in rho");
+	// end test code //
+
+	gensvm_free_model(model);
+	gensvm_free_data(data);
+
+	return NULL;
+}
+
 char *test_init_weights_1()
 {
 	struct GenModel *model = gensvm_init_model();
@@ -284,6 +311,7 @@ char *all_tests()
 	mu_run_test(test_init_null_dense);
 	mu_run_test(test_init_null_sparse);
 	mu_run_test(test_init_seed);
+	mu_run_test(test_init_weights_0);
 	mu_run_test(test_init_weights_1);
 	mu_run_test(test_init_weights_2);
 	mu_run_test(test_init_weights_wrong);

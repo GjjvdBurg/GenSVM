@@ -168,7 +168,16 @@ void gensvm_initialize_weights(struct GenData *data, struct GenModel *model)
 	long n = model->n;
 	long K = model->K;
 
-	if (model->weight_idx == 1) {
+	if (model->weight_idx == 0) {
+		if (model->rho == NULL) {
+			// LCOV_EXCL_START
+			gensvm_error("[GenSVM Error]: No raw weights but "
+					"weight_idx = 0\n");
+			exit(EXIT_FAILURE);
+			// LCOV_EXCL_STOP
+		}
+	}
+	else if (model->weight_idx == 1) {
 		for (i=0; i<n; i++)
 			model->rho[i] = 1.0;
 	}
@@ -181,7 +190,8 @@ void gensvm_initialize_weights(struct GenData *data, struct GenModel *model)
 						groups[data->y[i]-1]*K));
 	} else {
 		// LCOV_EXCL_START
-		gensvm_error("[GenSVM Error]: Unknown weight specification.\n");
+		gensvm_error("[GenSVM Error]: Unknown weight specification: "
+				"%i.\n", model->weight_idx);
 		exit(EXIT_FAILURE);
 		// LCOV_EXCL_STOP
 	}
