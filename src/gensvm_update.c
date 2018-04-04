@@ -475,8 +475,9 @@ void gensvm_get_ZAZ_ZB_sparse(struct GenModel *model, struct GenData *data,
 		struct GenWork *work)
 {
 	if (data->spZ->type == CSR)
-		return gensvm_get_ZAZ_ZB_sparse_csr(model, data, work);
-	return gensvm_get_ZAZ_ZB_sparse_csc(model, data, work);
+		gensvm_get_ZAZ_ZB_sparse_csr(model, data, work);
+	else
+		gensvm_get_ZAZ_ZB_sparse_csc(model, data, work);
 }
 
 
