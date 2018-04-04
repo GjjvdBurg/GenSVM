@@ -33,10 +33,18 @@
 // includes
 #include "gensvm_globals.h"
 
+// macro for the GenTimer type
+#ifdef ON_WINDOWS
+#define GenTime LARGE_INTEGER
+#else
+#define GenTime struct timeval
+#endif
+
 /// Timer macro for easily recording time
-#define Timer(spec) clock_gettime(CLOCK_MONOTONIC_RAW, &spec)
+#define Timer(spec) gensvm_set_time(&spec)
 
 // function declarations
-double gensvm_elapsed_time(struct timespec *start, struct timespec *stop);
+void gensvm_set_time(GenTime *t);
+double gensvm_elapsed_time(GenTime *start, GenTime *stop);
 
 #endif

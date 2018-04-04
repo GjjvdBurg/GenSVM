@@ -289,7 +289,7 @@ double gensvm_train_queue(struct GenQueue *q, long *cv_idx,
 	struct GenTask *task = get_next_task(q);
 	struct GenTask *prevtask = NULL;
 	struct GenModel *model = gensvm_init_model();
-	struct timespec main_s, main_e, loop_s, loop_e;
+	GenTime main_s, main_e, loop_s, loop_e;
 
 	folds = task->folds;
 

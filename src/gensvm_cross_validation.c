@@ -112,7 +112,7 @@ void gensvm_cross_validation_store(struct GenModel *model,
 	long *predy = NULL;
 	void (*tmpfunc) (const char *, ...) = NULL;
 
-	struct timespec fold_s, fold_e;
+	GenTime fold_s, fold_e;
 
 	gensvm_R_reset_interrupt_hdl();
 

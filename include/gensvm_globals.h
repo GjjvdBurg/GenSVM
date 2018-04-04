@@ -56,6 +56,13 @@
 #include <string.h>
 #include <time.h>
 
+#if defined(WIN32) || defined(_WIN32)
+#define ON_WINDOWS
+#include <windows.h>
+#else
+#include <sys/time.h>
+#endif
+
 // ########################### Type definitions ########################### //
 
 /**

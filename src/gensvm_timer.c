@@ -31,12 +31,33 @@
 #include "gensvm_timer.h"
 
 /**
+ * @brief Cross-platform time recording
+ *
+ * @details
+ * This function computes the current time on both Windows and Unix-like 
+ * platforms. On Windows the QueryPerformanceCounter() function is used and on 
+ * unix the gettimeofday() function.
+ *
+ * @param[out] 	t 	a GenTime type to record the time in
+ *
+ */
+void gensvm_set_time(GenTime *t)
+{
+	#ifdef ON_WINDOWS
+	if (!QueryPerformanceCounter(t))
+		FatalError("QueryPerformanceCounter failed.");
+	#else
+	gettimeofday(t, 0);
+	#endif
+}
+
+/**
  * @brief Calculate the time between two time recordings
  *
  * @details
- * This function should be used with time recordings done by clock_gettime() 
- * using CLOCK_MONOTONIC_RAW. For this, the Timer() macro has been defined in 
- * the header file. Example usage:
+ * This function should be used with time recordings done by 
+ * gensvm_set_time(). To do this easily the Timer() macro has been defined in 
+ * the header file.  Example usage:
  *
  * @code
  * struct timespec start, stop;
@@ -55,9 +76,18 @@
  * @param[in] 	stop 	end time
  * @returns 		time elapsed in seconds
  */
-double gensvm_elapsed_time(struct timespec *start, struct timespec *stop)
+double gensvm_elapsed_time(GenTime *start, GenTime *stop)
 {
-	double delta_s = stop->tv_sec - start->tv_sec;
-	double delta_ns = stop->tv_nsec - start->tv_nsec;
-	return delta_s + delta_ns * 1e-9;
+	#ifdef ON_WINDOWS
+	static LARGE_INTEGER freq;
+	if (!freq.QuadPart) {
+		if (!QueryPerformanceFrequency(&freq))
+			FatalError("QueryPerformanceFrequency failed.");
+	}
+	return (double)(stop->QuadPart - start->QuadPart) / freq.QuadPart;
+	#else
+	double diff_sec = stop->tv_sec - start->tv_sec;
+	double diff_usec = stop->tv_usec - start->tv_usec;
+	return diff_sec + diff_usec / 1000000.;
+	#endif
 }

@@ -29,7 +29,7 @@
 
 char *test_timer()
 {
-	struct timespec start, stop;
+	GenTime start, stop;
 	Timer(start);
 
 	stop.tv_sec = start.tv_sec + 1;

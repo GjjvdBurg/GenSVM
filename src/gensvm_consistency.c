@@ -143,7 +143,7 @@ int gensvm_consistency_repeats(struct GenQueue *q, long repeats,
 		       **test_folds = NULL;
 	struct GenModel *model = gensvm_init_model();
 	struct GenTask *task = NULL;
-	struct timespec loop_s, loop_e;
+	GenTime loop_s, loop_e;
 
 	nq = gensvm_top_queue(q, percentile);
 	N = nq->N;
