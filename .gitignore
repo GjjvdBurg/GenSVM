@@ -11,7 +11,7 @@ gensvm_grid
 *.gcno
 *.gcda
 cover/*
-tests/bin/*
+tests/bin/
 tests/data/test_write_model.txt
 tests/tests.log
 doc/html/
