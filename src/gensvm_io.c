@@ -54,11 +54,8 @@ void gensvm_read_data(struct GenData *dataset, char *data_file)
 	char buf[GENSVM_MAX_LINE_LENGTH];
 
 	if ((fid = fopen(data_file, "r")) == NULL) {
-		// LCOV_EXCL_START
-		gensvm_error("[GenSVM Error]: Datafile %s could not be opened.\n",
+		error("[GenSVM Error]: Datafile %s could not be opened.\n",
 				data_file);
-		exit(EXIT_FAILURE);
-		// LCOV_EXCL_STOP
 	}
 
 	// Read data dimensions
@@ -75,10 +72,7 @@ void gensvm_read_data(struct GenData *dataset, char *data_file)
 	}
 
 	if (fgets(buf, GENSVM_MAX_LINE_LENGTH, fid) == NULL) {
-		// LCOV_EXCL_START
-		gensvm_error("[GenSVM Error]: No label found on first line.\n");
-		exit(EXIT_FAILURE);
-		// LCOV_EXCL_STOP
+		error("[GenSVM Error]: No label found on first line.\n");
 	}
 
 	// Check if there is a label at the end of the line
@@ -106,11 +100,8 @@ void gensvm_read_data(struct GenData *dataset, char *data_file)
 	fclose(fid);
 
 	if (nr < n * m) {
-		// LCOV_EXCL_START
-		gensvm_error("[GenSVM Error]: not enough data found in %s\n",
+		error("[GenSVM Error]: not enough data found in %s\n",
 				data_file);
-		exit(EXIT_FAILURE);
-		// LCOV_EXCL_STOP
 	}
 
 	// Set the column of ones
@@ -141,8 +132,7 @@ void gensvm_read_data(struct GenData *dataset, char *data_file)
  */
 void exit_input_error(int line_num)
 {
-	gensvm_error("[GenSVM Error]: Wrong input format on line: %i\n", line_num);
-	exit(EXIT_FAILURE);
+	error("[GenSVM Error]: Wrong input format on line: %i\n", line_num);
 }
 
 /**
@@ -191,11 +181,8 @@ void gensvm_read_data_libsvm(struct GenData *data, char *data_file)
 
 	fid = fopen(data_file, "r");
 	if (fid == NULL) {
-		// LCOV_EXCL_START
-		gensvm_error("[GenSVM Error]: Datafile %s could not be opened.\n",
+		error("[GenSVM Error]: Datafile %s could not be opened.\n",
 				data_file);
-		exit(EXIT_FAILURE);
-		// LCOV_EXCL_STOP
 	}
 
 	// first count the number of elements
@@ -257,10 +244,9 @@ void gensvm_read_data_libsvm(struct GenData *data, char *data_file)
 
 	// check if we have enough labels
 	if (num_labels > 0 && num_labels != n) {
-		gensvm_error("[GenSVM Error]: There are some lines with missing "
+		error("[GenSVM Error]: There are some lines with missing "
 				"labels. Please fix this before "
 				"continuing.\n");
-		exit(EXIT_FAILURE);
 	}
 
 	// don't forget the column of ones
@@ -300,11 +286,8 @@ void gensvm_read_data_libsvm(struct GenData *data, char *data_file)
 	cnt = 0;
 	for (i=0; i<n; i++) {
 		if (fgets(buf, GENSVM_MAX_LINE_LENGTH, fid) == NULL) {
-			// LCOV_EXCL_START
-			gensvm_error("[GenSVM Error]: Error reading from data file %s\n",
+			error("[GenSVM Error]: Error reading from data file %s\n",
 					data_file);
-			exit(EXIT_FAILURE);
-			// LCOV_EXCL_STOP
 		}
 
 		// split the string in labels and/or index:value pairs
@@ -439,11 +422,8 @@ void gensvm_read_model(struct GenModel *model, char *model_filename)
 
 	fid = fopen(model_filename, "r");
 	if (fid == NULL) {
-		// LCOV_EXCL_START
-		gensvm_error("[GenSVM Error]: Couldn't open model file %s\n",
+		error("[GenSVM Error]: Couldn't open model file %s\n",
 				model_filename);
-		exit(EXIT_FAILURE);
-		// LCOV_EXCL_STOP
 	}
 	// skip the first four lines
 	for (i=0; i<4; i++)
@@ -463,11 +443,8 @@ void gensvm_read_model(struct GenModel *model, char *model_filename)
 
 	// read filename of data file
 	if (fgets(buffer, GENSVM_MAX_LINE_LENGTH, fid) == NULL) {
-		// LCOV_EXCL_START
-		gensvm_error("[GenSVM Error]: Error reading from model file %s\n",
+		error("[GenSVM Error]: Error reading from model file %s\n",
 				model_filename);
-		exit(EXIT_FAILURE);
-		// LCOV_EXCL_STOP
 	}
 	sscanf(buffer, "filename = %s\n", data_filename);
 	model->data_file = Calloc(char, GENSVM_MAX_LINE_LENGTH);
@@ -492,12 +469,9 @@ void gensvm_read_model(struct GenModel *model, char *model_filename)
 		}
 	}
 	if (nr != (model->m+1)*(model->K-1)) {
-		// LCOV_EXCL_START
-		gensvm_error("[GenSVM Error] Error reading from model file %s. "
+		error("[GenSVM Error] Error reading from model file %s. "
 				"Not enough elements of V found.\n",
 				model_filename);
-		exit(EXIT_FAILURE);
-		// LCOV_EXCL_STOP
 	}
 }
 
@@ -523,11 +497,8 @@ void gensvm_write_model(struct GenModel *model, char *output_filename)
 	// open output file
 	fid = fopen(output_filename, "w");
 	if (fid == NULL) {
-		// LCOV_EXCL_START
-		gensvm_error("[GenSVM Error]: Error opening output file %s\n",
+		error("[GenSVM Error]: Error opening output file %s\n",
 				output_filename);
-		exit(EXIT_FAILURE);
-		// LCOV_EXCL_STOP
 	}
 	gensvm_time_string(timestr);
 
@@ -584,11 +555,8 @@ void gensvm_write_predictions(struct GenData *data, long *predy,
 
 	fid = fopen(output_filename, "w");
 	if (fid == NULL) {
-		// LCOV_EXCL_START
-		gensvm_error("[GenSVM Error]: Error opening output file %s\n",
+		error("[GenSVM Error]: Error opening output file %s\n",
 				output_filename);
-		exit(EXIT_FAILURE);
-		// LCOV_EXCL_STOP
 	}
 
 	fprintf(fid, "%li\n", data->n);
@@ -626,18 +594,14 @@ void gensvm_time_string(char *buffer)
 	// get current time (in epoch)
 	current_time = time(NULL);
 	if (current_time == ((time_t)-1)) {
-		// LCOV_EXCL_START
-		gensvm_error("[GenSVM Error]: Failed to compute the current time.\n");
-		return;
-		// LCOV_EXCL_STOP
+		error("[GenSVM Error]: Failed to compute the current time.\n");
 	}
 
 	// convert time to local time and create a string
 	lclt = localtime(&current_time);
 	size_t len = strftime(timestr, GENSVM_MAX_LINE_LENGTH, "%c", lclt);
 	if (len == 0) {
-		gensvm_error("[GenSVM Error]: Failed to convert time to string.\n");
-		return;
+		error("[GenSVM Error]: Failed to convert time to string.\n");
 	}
 
 	// calculate the UTC offset including DST

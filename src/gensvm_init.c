@@ -167,11 +167,8 @@ void gensvm_initialize_weights(struct GenData *data, struct GenModel *model)
 
 	if (model->weight_idx == 0) {
 		if (model->rho == NULL) {
-			// LCOV_EXCL_START
-			gensvm_error("[GenSVM Error]: No raw weights but "
+			error("[GenSVM Error]: No raw weights but "
 					"weight_idx = 0\n");
-			exit(EXIT_FAILURE);
-			// LCOV_EXCL_STOP
 		}
 	}
 	else if (model->weight_idx == 1) {
@@ -186,11 +183,8 @@ void gensvm_initialize_weights(struct GenData *data, struct GenModel *model)
 			model->rho[i] = ((double) n)/((double) (
 						groups[data->y[i]-1]*K));
 	} else {
-		// LCOV_EXCL_START
-		gensvm_error("[GenSVM Error]: Unknown weight specification: "
+		error("[GenSVM Error]: Unknown weight specification: "
 				"%i.\n", model->weight_idx);
-		exit(EXIT_FAILURE);
-		// LCOV_EXCL_STOP
 	}
 	free(groups);
 }

@@ -192,11 +192,8 @@ void gensvm_kernel_compute(struct GenModel *model, struct GenData *data,
 						data->m, incx, incy, 
 						model->gamma, model->coef);
 			else {
-				// LCOV_EXCL_START
-				gensvm_error("[GenSVM Error]: Unknown kernel type in "
+				error("[GenSVM Error]: Unknown kernel type in "
 						"gensvm_make_kernel\n");
-				exit(EXIT_FAILURE);
-				// LCOV_EXCL_STOP
 			}
 			matrix_set(K, n, n, i, j, value);
 			matrix_set(K, n, n, j, i, value);
@@ -262,11 +259,8 @@ long gensvm_kernel_eigendecomp(double *K, long n, double cutoff, double **P_ret,
 			&status);
 
 	if (status != 0) {
-		// LCOV_EXCL_START
-		gensvm_error("[GenSVM Error]: Nonzero exit status from "
+		error("[GenSVM Error]: Nonzero exit status from "
 				"dsyevx.\n");
-		exit(EXIT_FAILURE);
-		// LCOV_EXCL_STOP
 	}
 
 	// Select the desired number of eigenvalues, depending on their size.
@@ -378,12 +372,9 @@ double *gensvm_kernel_cross(struct GenModel *model, struct GenData *data_train,
 						incx, incy, model->gamma, 
 						model->coef);
 			else {
-				// LCOV_EXCL_START
-				gensvm_error("[GenSVM Error]: Unknown kernel "
+				error("[GenSVM Error]: Unknown kernel "
 						"type in "
 						"gensvm_make_crosskernel\n");
-				exit(EXIT_FAILURE);
-				// LCOV_EXCL_STOP
 			}
 			matrix_set(K2, n_test, n_train, i, j, value);
 		}
