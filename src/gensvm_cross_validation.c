@@ -111,7 +111,7 @@ void gensvm_cross_validation_store(struct GenModel *model,
 	long f;
 	long *predy = NULL;
 
-	struct timespec fold_s, fold_e;
+	GenTime fold_s, fold_e;
 
 
 	// make sure that gensvm_optimize() is silent.
