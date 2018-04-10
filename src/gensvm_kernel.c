@@ -264,9 +264,12 @@ long gensvm_kernel_eigendecomp(double *K, long n, double cutoff, double **P_ret,
 
 	num_eigen = n - cutoff_idx;
 
+	// In the mathematical derivation (see paper), we state that the 
+	// diagonal matrix Sigma contains the square root of the eigenvalues 
+	// (i.e. the eigendecomposition is: K = P * Sigma^2 * P').
 	Sigma = Calloc(double, num_eigen);
 	for (i=0; i<num_eigen; i++) {
-		Sigma[i] = tempSigma[n-1 - i];
+		Sigma[i] = sqrt(tempSigma[n-1 - i]);
 	}
 
 	// revert P to row-major order and copy only the the columns
