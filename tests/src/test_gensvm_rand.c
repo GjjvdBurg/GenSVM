@@ -27,13 +27,16 @@
 #include "minunit.h"
 #include "gensvm_rand.h"
 
+// These tests will work when rand() comes from stdlib (glibc), other 
+// implementations may not give the same random numbers.
+
 char *test_rand_1()
 {
 	srand(123);
-	double a = rand();
+	int a = rand();
 
 	gensvm_srand(123);
-	double b = gensvm_rand();
+	int b = gensvm_rand();
 
 	mu_assert(a == b, "Random numbers unequal");
 
