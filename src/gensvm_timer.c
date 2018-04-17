@@ -91,3 +91,22 @@ double gensvm_elapsed_time(GenTime *start, GenTime *stop)
 	return diff_sec + diff_usec / 1000000.;
 	#endif
 }
+
+
+// https://stackoverflow.com/a/23159148
+/**
+ * @brief Cross-platform sleep function
+ *
+ * @param[in] 	seconds 	time to sleep in seconds. This can be a double
+ * 				but will be rounded to the nearest
+ * 				millisecond.
+ */
+void gensvm_sleep(double seconds)
+{
+	int milliseconds = 1000.0 * seconds;
+	#ifdef ON_WINDOWS
+	Sleep(milliseconds);
+	#else
+	usleep(1000 * milliseconds);
+	#endif
+}
