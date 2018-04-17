@@ -326,246 +326,263 @@ char *test_kernel_preprocess_kernel()
 	mu_assert(data->r == 7, "Incorrect data->r");
 
 	double eps = 1e-14;
+
+	mu_assert(fabs(matrix_get(data->Sigma, data->r, 1, 0, 0) - 2.7638223432435374) <
+			eps, "Incorrect data->Sigma at 0, 0");
+	mu_assert(fabs(matrix_get(data->Sigma, data->r, 1, 1, 0) - 0.8989108618424078) <
+			eps, "Incorrect data->Sigma at 1, 0");
+	mu_assert(fabs(matrix_get(data->Sigma, data->r, 1, 2, 0) - 0.8492992522024180) <
+			eps, "Incorrect data->Sigma at 2, 0");
+	mu_assert(fabs(matrix_get(data->Sigma, data->r, 1, 3, 0) - 0.6551312398422764) <
+			eps, "Incorrect data->Sigma at 3, 0");
+	mu_assert(fabs(matrix_get(data->Sigma, data->r, 1, 4, 0) - 0.4151267289513675) <
+			eps, "Incorrect data->Sigma at 4, 0");
+	mu_assert(fabs(matrix_get(data->Sigma, data->r, 1, 5, 0) - 0.3219015071458272) <
+			eps, "Incorrect data->Sigma at 5, 0");
+	mu_assert(fabs(matrix_get(data->Sigma, data->r, 1, 6, 0) - 0.2206142024294812) <
+			eps, "Incorrect data->Sigma at 6, 0");
+
 	mu_assert(fabs(fabs(matrix_get(data->Z, data->n, data->r+1, 0, 0)) -
 				fabs(1.0000000000000000)) < eps,
 			"Incorrect data->Z at 0, 0");
 	mu_assert(fabs(fabs(matrix_get(data->Z, data->n, data->r+1, 0, 1)) -
-				fabs(2.4632837902141640)) < eps,
+				fabs(0.8912598149573278)) < eps,
 			"Incorrect data->Z at 0, 1");
 	mu_assert(fabs(fabs(matrix_get(data->Z, data->n, data->r+1, 0, 2)) -
-				fabs(-0.3037489220604925)) < eps,
+				fabs(-0.3379077225053534)) < eps,
 			"Incorrect data->Z at 0, 2");
 	mu_assert(fabs(fabs(matrix_get(data->Z, data->n, data->r+1, 0, 3)) -
-				fabs(-0.0061287029147240)) < eps,
+				fabs(-0.0072161878146390)) < eps,
 			"Incorrect data->Z at 0, 3");
 	mu_assert(fabs(fabs(matrix_get(data->Z, data->n, data->r+1, 0, 4)) -
-				fabs(0.1822712619914593)) < eps,
+				fabs(0.2782209897902920)) < eps,
 			"Incorrect data->Z at 0, 4");
 	mu_assert(fabs(fabs(matrix_get(data->Z, data->n, data->r+1, 0, 5)) -
-				fabs(0.0252737053303148)) < eps,
+				fabs(0.0608819032061786)) < eps,
 			"Incorrect data->Z at 0, 5");
 	mu_assert(fabs(fabs(matrix_get(data->Z, data->n, data->r+1, 0, 6)) -
-				fabs(-0.0078753266252524)) < eps,
+				fabs(-0.0244650194249782)) < eps,
 			"Incorrect data->Z at 0, 6");
 	mu_assert(fabs(fabs(matrix_get(data->Z, data->n, data->r+1, 0, 7)) -
-				fabs(-0.0012800124996018)) < eps,
+				fabs(-0.0058020403287988)) < eps,
 			"Incorrect data->Z at 0, 7");
 	mu_assert(fabs(fabs(matrix_get(data->Z, data->n, data->r+1, 1, 0)) -
 				fabs(1.0000000000000000)) < eps,
 			"Incorrect data->Z at 1, 0");
 	mu_assert(fabs(fabs(matrix_get(data->Z, data->n, data->r+1, 1, 1)) -
-				fabs(2.2923640983040641)) < eps,
+				fabs(0.8294180354638190)) < eps,
 			"Incorrect data->Z at 1, 1");
 	mu_assert(fabs(fabs(matrix_get(data->Z, data->n, data->r+1, 1, 2)) -
-				fabs(-0.3048037728463330)) < eps,
+				fabs(-0.3390811990207864)) < eps,
 			"Incorrect data->Z at 1, 2");
 	mu_assert(fabs(fabs(matrix_get(data->Z, data->n, data->r+1, 1, 3)) -
-				fabs(-0.2586192720897897)) < eps,
+				fabs(-0.3045090071834334)) < eps,
 			"Incorrect data->Z at 1, 3");
 	mu_assert(fabs(fabs(matrix_get(data->Z, data->n, data->r+1, 1, 4)) -
-				fabs(0.1747912247100736)) < eps,
+				fabs(0.2668033732480146)) < eps,
 			"Incorrect data->Z at 1, 4");
 	mu_assert(fabs(fabs(matrix_get(data->Z, data->n, data->r+1, 1, 5)) -
-				fabs(-0.0623497873850738)) < eps,
+				fabs(-0.1501945864641692)) < eps,
 			"Incorrect data->Z at 1, 5");
 	mu_assert(fabs(fabs(matrix_get(data->Z, data->n, data->r+1, 1, 6)) -
-				fabs(-0.0199493291395259)) < eps,
+				fabs(-0.0619733946461100)) < eps,
 			"Incorrect data->Z at 1, 6");
 	mu_assert(fabs(fabs(matrix_get(data->Z, data->n, data->r+1, 1, 7)) -
-				fabs(0.0068540206892510)) < eps,
+				fabs(0.0310679032164383)) < eps,
 			"Incorrect data->Z at 1, 7");
 	mu_assert(fabs(fabs(matrix_get(data->Z, data->n, data->r+1, 2, 0)) -
 				fabs(1.0000000000000000)) < eps,
 			"Incorrect data->Z at 2, 0");
 	mu_assert(fabs(fabs(matrix_get(data->Z, data->n, data->r+1, 2, 1)) -
-				fabs(2.4167201742337761)) < eps,
+				fabs(0.8744122718819858)) < eps,
 			"Incorrect data->Z at 2, 1");
 	mu_assert(fabs(fabs(matrix_get(data->Z, data->n, data->r+1, 2, 2)) -
-				fabs(-0.1499385272847361)) < eps,
+				fabs(-0.1668002175181436)) < eps,
 			"Incorrect data->Z at 2, 2");
 	mu_assert(fabs(fabs(matrix_get(data->Z, data->n, data->r+1, 2, 3)) -
-				fabs(-0.1781619658696836)) < eps,
+				fabs(-0.2097752534311912)) < eps,
 			"Incorrect data->Z at 2, 3");
 	mu_assert(fabs(fabs(matrix_get(data->Z, data->n, data->r+1, 2, 4)) -
-				fabs(-0.2363293887681946)) < eps,
+				fabs(-0.3607359478462531)) < eps,
 			"Incorrect data->Z at 2, 4");
 	mu_assert(fabs(fabs(matrix_get(data->Z, data->n, data->r+1, 2, 5)) -
-				fabs(-0.0362117307160720)) < eps,
+				fabs(-0.0872305447725448)) < eps,
 			"Incorrect data->Z at 2, 5");
 	mu_assert(fabs(fabs(matrix_get(data->Z, data->n, data->r+1, 2, 6)) -
-				fabs(0.0366137533260933)) < eps,
+				fabs(0.1137420997209145)) < eps,
 			"Incorrect data->Z at 2, 6");
 	mu_assert(fabs(fabs(matrix_get(data->Z, data->n, data->r+1, 2, 7)) -
-				fabs(0.0227049982868101)) < eps,
+				fabs(0.1029172103916005)) < eps,
 			"Incorrect data->Z at 2, 7");
 	mu_assert(fabs(fabs(matrix_get(data->Z, data->n, data->r+1, 3, 0)) -
 				fabs(1.0000000000000000)) < eps,
 			"Incorrect data->Z at 3, 0");
 	mu_assert(fabs(fabs(matrix_get(data->Z, data->n, data->r+1, 3, 1)) -
-				fabs(2.3339314848494390)) < eps,
+				fabs(0.8444578540132961)) < eps,
 			"Incorrect data->Z at 3, 1");
 	mu_assert(fabs(fabs(matrix_get(data->Z, data->n, data->r+1, 3, 2)) -
-				fabs(0.4067278927345656)) < eps,
+				fabs(0.4524674358711562)) < eps,
 			"Incorrect data->Z at 3, 2");
 	mu_assert(fabs(fabs(matrix_get(data->Z, data->n, data->r+1, 3, 3)) -
-				fabs(0.0198947146890620)) < eps,
+				fabs(0.0234248583611390)) < eps,
 			"Incorrect data->Z at 3, 3");
 	mu_assert(fabs(fabs(matrix_get(data->Z, data->n, data->r+1, 3, 4)) -
-				fabs(0.1187106614859180)) < eps,
+				fabs(0.1812013445038858)) < eps,
 			"Incorrect data->Z at 3, 4");
 	mu_assert(fabs(fabs(matrix_get(data->Z, data->n, data->r+1, 3, 5)) -
-				fabs(0.0734848412140159)) < eps,
+				fabs(0.1770178504276099)) < eps,
 			"Incorrect data->Z at 3, 5");
 	mu_assert(fabs(fabs(matrix_get(data->Z, data->n, data->r+1, 3, 6)) -
-				fabs(-0.0166955533210990)) < eps,
+				fabs(-0.0518654089852882)) < eps,
 			"Incorrect data->Z at 3, 6");
 	mu_assert(fabs(fabs(matrix_get(data->Z, data->n, data->r+1, 3, 7)) -
-				fabs(0.0229112619510384)) < eps,
+				fabs(0.1038521622757349)) < eps,
 			"Incorrect data->Z at 3, 7");
 	mu_assert(fabs(fabs(matrix_get(data->Z, data->n, data->r+1, 4, 0)) -
 				fabs(1.0000000000000000)) < eps,
 			"Incorrect data->Z at 4, 0");
 	mu_assert(fabs(fabs(matrix_get(data->Z, data->n, data->r+1, 4, 1)) -
-				fabs(2.5061509421266424)) < eps,
+				fabs(0.9067699116960968)) < eps,
 			"Incorrect data->Z at 4, 1");
 	mu_assert(fabs(fabs(matrix_get(data->Z, data->n, data->r+1, 4, 2)) -
-				fabs(0.0574469229922174)) < eps,
+				fabs(0.0639072520210456)) < eps,
 			"Incorrect data->Z at 4, 2");
 	mu_assert(fabs(fabs(matrix_get(data->Z, data->n, data->r+1, 4, 3)) -
-				fabs(-0.2858649955147738)) < eps,
+				fabs(-0.3365892466918618)) < eps,
 			"Incorrect data->Z at 4, 3");
 	mu_assert(fabs(fabs(matrix_get(data->Z, data->n, data->r+1, 4, 4)) -
-				fabs(-0.0995031375002134)) < eps,
+				fabs(-0.1518827548571320)) < eps,
 			"Incorrect data->Z at 4, 4");
 	mu_assert(fabs(fabs(matrix_get(data->Z, data->n, data->r+1, 4, 5)) -
-				fabs(0.0223790101651578)) < eps,
+				fabs(0.0539088634973914)) < eps,
 			"Incorrect data->Z at 4, 5");
 	mu_assert(fabs(fabs(matrix_get(data->Z, data->n, data->r+1, 4, 6)) -
-				fabs(-0.0355571480867735)) < eps,
+				fabs(-0.1104597129788070)) < eps,
 			"Incorrect data->Z at 4, 6");
 	mu_assert(fabs(fabs(matrix_get(data->Z, data->n, data->r+1, 4, 7)) -
-				fabs(-0.0219026472149696)) < eps,
+				fabs(-0.0992803136596373)) < eps,
 			"Incorrect data->Z at 4, 7");
 	mu_assert(fabs(fabs(matrix_get(data->Z, data->n, data->r+1, 5, 0)) -
 				fabs(1.0000000000000000)) < eps,
 			"Incorrect data->Z at 5, 0");
 	mu_assert(fabs(fabs(matrix_get(data->Z, data->n, data->r+1, 5, 1)) -
-				fabs(2.4482858151168982)) < eps,
+				fabs(0.8858332812534048)) < eps,
 			"Incorrect data->Z at 5, 1");
 	mu_assert(fabs(fabs(matrix_get(data->Z, data->n, data->r+1, 5, 2)) -
-				fabs(-0.0670998214520230)) < eps,
+				fabs(-0.0746456899124524)) < eps,
 			"Incorrect data->Z at 5, 2");
 	mu_assert(fabs(fabs(matrix_get(data->Z, data->n, data->r+1, 5, 3)) -
-				fabs(0.3147064295566219)) < eps,
+				fabs(0.3705483417541217)) < eps,
 			"Incorrect data->Z at 5, 3");
 	mu_assert(fabs(fabs(matrix_get(data->Z, data->n, data->r+1, 5, 4)) -
-				fabs(0.1070535630418465)) < eps,
+				fabs(0.1634078128645188)) < eps,
 			"Incorrect data->Z at 5, 4");
 	mu_assert(fabs(fabs(matrix_get(data->Z, data->n, data->r+1, 5, 5)) -
-				fabs(-0.0052824396955993)) < eps,
+				fabs(-0.0127248845405431)) < eps,
 			"Incorrect data->Z at 5, 5");
 	mu_assert(fabs(fabs(matrix_get(data->Z, data->n, data->r+1, 5, 6)) -
-				fabs(0.0614363461130733)) < eps,
+				fabs(0.1908544842110400)) < eps,
 			"Incorrect data->Z at 5, 6");
 	mu_assert(fabs(fabs(matrix_get(data->Z, data->n, data->r+1, 5, 7)) -
-				fabs(-0.0075355247061472)) < eps,
+				fabs(-0.0341570244488496)) < eps,
 			"Incorrect data->Z at 5, 7");
 	mu_assert(fabs(fabs(matrix_get(data->Z, data->n, data->r+1, 6, 0)) -
 				fabs(1.0000000000000000)) < eps,
 			"Incorrect data->Z at 6, 0");
 	mu_assert(fabs(fabs(matrix_get(data->Z, data->n, data->r+1, 6, 1)) -
-				fabs(2.3638928644404329)) < eps,
+				fabs(0.8552984131629242)) < eps,
 			"Incorrect data->Z at 6, 1");
 	mu_assert(fabs(fabs(matrix_get(data->Z, data->n, data->r+1, 6, 2)) -
-				fabs(0.3482541374011597)) < eps,
+				fabs(0.3874178766595150)) < eps,
 			"Incorrect data->Z at 6, 2");
 	mu_assert(fabs(fabs(matrix_get(data->Z, data->n, data->r+1, 6, 3)) -
-				fabs(-0.2422541976251498)) < eps,
+				fabs(-0.2852400929318269)) < eps,
 			"Incorrect data->Z at 6, 3");
 	mu_assert(fabs(fabs(matrix_get(data->Z, data->n, data->r+1, 6, 4)) -
-				fabs(0.0251886519764033)) < eps,
+				fabs(0.0384482534865339)) < eps,
 			"Incorrect data->Z at 6, 4");
 	mu_assert(fabs(fabs(matrix_get(data->Z, data->n, data->r+1, 6, 5)) -
-				fabs(-0.0079397861684362)) < eps,
+				fabs(-0.0191261742853618)) < eps,
 			"Incorrect data->Z at 6, 5");
 	mu_assert(fabs(fabs(matrix_get(data->Z, data->n, data->r+1, 6, 6)) -
-				fabs(0.0424975213407462)) < eps,
+				fabs(0.1320202620905840)) < eps,
 			"Incorrect data->Z at 6, 6");
 	mu_assert(fabs(fabs(matrix_get(data->Z, data->n, data->r+1, 6, 7)) -
-				fabs(-0.0204279932276333)) < eps,
+				fabs(-0.0925960024453241)) < eps,
 			"Incorrect data->Z at 6, 7");
 	mu_assert(fabs(fabs(matrix_get(data->Z, data->n, data->r+1, 7, 0)) -
 				fabs(1.0000000000000000)) < eps,
 			"Incorrect data->Z at 7, 0");
 	mu_assert(fabs(fabs(matrix_get(data->Z, data->n, data->r+1, 7, 1)) -
-				fabs(2.3607306299135344)) < eps,
+				fabs(0.8541542605604135)) < eps,
 			"Incorrect data->Z at 7, 1");
 	mu_assert(fabs(fabs(matrix_get(data->Z, data->n, data->r+1, 7, 2)) -
-				fabs(-0.0220102589508912)) < eps,
+				fabs(-0.0244854744615944)) < eps,
 			"Incorrect data->Z at 7, 2");
 	mu_assert(fabs(fabs(matrix_get(data->Z, data->n, data->r+1, 7, 3)) -
-				fabs(0.3913398731540265)) < eps,
+				fabs(0.4607797217991149)) < eps,
 			"Incorrect data->Z at 7, 3");
 	mu_assert(fabs(fabs(matrix_get(data->Z, data->n, data->r+1, 7, 4)) -
-				fabs(-0.0941469673695446)) < eps,
+				fabs(-0.1437070340168947)) < eps,
 			"Incorrect data->Z at 7, 4");
 	mu_assert(fabs(fabs(matrix_get(data->Z, data->n, data->r+1, 7, 5)) -
-				fabs(-0.0477595489009114)) < eps,
+				fabs(-0.1150481180085769)) < eps,
 			"Incorrect data->Z at 7, 5");
 	mu_assert(fabs(fabs(matrix_get(data->Z, data->n, data->r+1, 7, 6)) -
-				fabs(-0.0367688438245860)) < eps,
+				fabs(-0.1142238946024231)) < eps,
 			"Incorrect data->Z at 7, 6");
 	mu_assert(fabs(fabs(matrix_get(data->Z, data->n, data->r+1, 7, 7)) -
-				fabs(-0.0133498576642393)) < eps,
+				fabs(-0.0605122313850435)) < eps,
 			"Incorrect data->Z at 7, 7");
 	mu_assert(fabs(fabs(matrix_get(data->Z, data->n, data->r+1, 8, 0)) -
 				fabs(1.0000000000000000)) < eps,
 			"Incorrect data->Z at 8, 0");
 	mu_assert(fabs(fabs(matrix_get(data->Z, data->n, data->r+1, 8, 1)) -
-				fabs(2.5023932475093376)) < eps,
+				fabs(0.9054103110595034)) < eps,
 			"Incorrect data->Z at 8, 1");
 	mu_assert(fabs(fabs(matrix_get(data->Z, data->n, data->r+1, 8, 2)) -
-				fabs(0.2929602950386334)) < eps,
+				fabs(0.3259058350214859)) < eps,
 			"Incorrect data->Z at 8, 2");
 	mu_assert(fabs(fabs(matrix_get(data->Z, data->n, data->r+1, 8, 3)) -
-				fabs(0.1371647327912284)) < eps,
+				fabs(0.1615034187720415)) < eps,
 			"Incorrect data->Z at 8, 3");
 	mu_assert(fabs(fabs(matrix_get(data->Z, data->n, data->r+1, 8, 4)) -
-				fabs(-0.0270505649533715)) < eps,
+				fabs(-0.0412902992687150)) < eps,
 			"Incorrect data->Z at 8, 4");
 	mu_assert(fabs(fabs(matrix_get(data->Z, data->n, data->r+1, 8, 5)) -
-				fabs(-0.0685258491091892)) < eps,
+				fabs(-0.1650721197410958)) < eps,
 			"Incorrect data->Z at 8, 5");
 	mu_assert(fabs(fabs(matrix_get(data->Z, data->n, data->r+1, 8, 6)) -
-				fabs(-0.0213385621647371)) < eps,
+				fabs(-0.0662891030052566)) < eps,
 			"Incorrect data->Z at 8, 6");
 	mu_assert(fabs(fabs(matrix_get(data->Z, data->n, data->r+1, 8, 7)) -
-				fabs(0.0121305554343051)) < eps,
+				fabs(0.0549853785509707)) < eps,
 			"Incorrect data->Z at 8, 7");
 	mu_assert(fabs(fabs(matrix_get(data->Z, data->n, data->r+1, 9, 0)) -
 				fabs(1.0000000000000000)) < eps,
 			"Incorrect data->Z at 9, 0");
 	mu_assert(fabs(fabs(matrix_get(data->Z, data->n, data->r+1, 9, 1)) -
-				fabs(2.4579608302226870)) < eps,
+				fabs(0.8893338735144964)) < eps,
 			"Incorrect data->Z at 9, 1");
 	mu_assert(fabs(fabs(matrix_get(data->Z, data->n, data->r+1, 9, 2)) -
-				fabs(-0.2538863526247282)) < eps,
+				fabs(-0.2824377403832496)) < eps,
 			"Incorrect data->Z at 9, 2");
 	mu_assert(fabs(fabs(matrix_get(data->Z, data->n, data->r+1, 9, 3)) -
-				fabs(0.0991005899665861)) < eps,
+				fabs(0.1166851256604740)) < eps,
 			"Incorrect data->Z at 9, 3");
 	mu_assert(fabs(fabs(matrix_get(data->Z, data->n, data->r+1, 9, 4)) -
-				fabs(-0.1374781282330359)) < eps,
+				fabs(-0.2098482256259584)) < eps,
 			"Incorrect data->Z at 9, 4");
 	mu_assert(fabs(fabs(matrix_get(data->Z, data->n, data->r+1, 9, 5)) -
-				fabs(0.1043628273525485)) < eps,
+				fabs(0.2513999221784036)) < eps,
 			"Incorrect data->Z at 9, 5");
 	mu_assert(fabs(fabs(matrix_get(data->Z, data->n, data->r+1, 9, 6)) -
-				fabs(-0.0024213407513349)) < eps,
+				fabs(-0.0075219925896089)) < eps,
 			"Incorrect data->Z at 9, 6");
 	mu_assert(fabs(fabs(matrix_get(data->Z, data->n, data->r+1, 9, 7)) -
-				fabs(0.0007673936590348)) < eps,
+				fabs(0.0034784417801946)) < eps,
 			"Incorrect data->Z at 9, 7");
+
 
 	mu_assert(fabs(matrix_get(data->RAW, data->n, data->m+1, 0, 0) -
 				1.0000000000000000) < eps,
