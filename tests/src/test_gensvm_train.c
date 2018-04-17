@@ -280,23 +280,24 @@ char *test_gensvm_train_seed_kernel()
 	mu_assert(model->K == data->K, "Incorrect model K");
 
 	double eps = 1e-13;
+
 	mu_assert(fabs(matrix_get(data->Sigma, data->m, 1, 0, 0) -
-				7.8302939172918506) < eps,
+				2.7982662341692670) < eps,
 			"Incorrect data->Sigma at 0, 0");
 	mu_assert(fabs(matrix_get(data->Sigma, data->m, 1, 1, 0) -
-				0.7947913383766066) < eps,
+				0.8915107056993801) < eps,
 			"Incorrect data->Sigma at 1, 0");
 	mu_assert(fabs(matrix_get(data->Sigma, data->m, 1, 2, 0) -
-				0.5288740088908547) < eps,
+				0.7272372438832145) < eps,
 			"Incorrect data->Sigma at 2, 0");
 	mu_assert(fabs(matrix_get(data->Sigma, data->m, 1, 3, 0) -
-				0.4537982052555444) < eps,
+				0.6736454596117636) < eps,
 			"Incorrect data->Sigma at 3, 0");
 	mu_assert(fabs(matrix_get(data->Sigma, data->m, 1, 4, 0) -
-				0.2226012271232192) < eps,
+				0.4718063449374322) < eps,
 			"Incorrect data->Sigma at 4, 0");
 	mu_assert(fabs(matrix_get(data->Sigma, data->m, 1, 5, 0) -
-				0.0743004417495061) < eps,
+				0.2725810737184557) < eps,
 			"Incorrect data->Sigma at 5, 0");
 
 	// we need a large eps here because there are numerical precision 
@@ -304,68 +305,69 @@ char *test_gensvm_train_seed_kernel()
 	// compare with absolute values because of variability in the 
 	// eigendecomposition.
 	eps = 1e-7;
+
 	mu_assert(fabs(fabs(matrix_get(model->V, model->m+1, model->K-1, 0, 0)) -
-				fabs(5.0555413160638665)) < eps,
+				fabs(1.3968329665264863)) < eps,
 			"Incorrect model->V at 0, 0");
 	mu_assert(fabs(fabs(matrix_get(model->V, model->m+1, model->K-1, 0, 1)) -
-				fabs(-2.2586632211763198)) < eps,
+				fabs(-0.4491223112772532)) < eps,
 			"Incorrect model->V at 0, 1");
 	mu_assert(fabs(fabs(matrix_get(model->V, model->m+1, model->K-1, 0, 2)) -
-				fabs(-4.5572671806963143)) < eps,
+				fabs(-1.2044427235549637)) < eps,
 			"Incorrect model->V at 0, 2");
 	mu_assert(fabs(fabs(matrix_get(model->V, model->m+1, model->K-1, 1, 0)) -
-				fabs(-1.9627432869558412)) < eps,
+				fabs(-1.2834234211019704)) < eps,
 			"Incorrect model->V at 1, 0");
 	mu_assert(fabs(fabs(matrix_get(model->V, model->m+1, model->K-1, 1, 1)) -
-				fabs(0.9934555242449399)) < eps,
+				fabs(0.6330939040375793)) < eps,
 			"Incorrect model->V at 1, 1");
 	mu_assert(fabs(fabs(matrix_get(model->V, model->m+1, model->K-1, 1, 2)) -
-				fabs(1.7855287218670219)) < eps,
+				fabs(1.2876548429115076)) < eps,
 			"Incorrect model->V at 1, 2");
 	mu_assert(fabs(fabs(matrix_get(model->V, model->m+1, model->K-1, 2, 0)) -
-				fabs(1.9393083227054353)) < eps,
+				fabs(2.0023377286211428)) < eps,
 			"Incorrect model->V at 2, 0");
 	mu_assert(fabs(fabs(matrix_get(model->V, model->m+1, model->K-1, 2, 1)) -
-				fabs(-1.1958487809502740)) < eps,
+				fabs(-1.5454495147993872)) < eps,
 			"Incorrect model->V at 2, 1");
 	mu_assert(fabs(fabs(matrix_get(model->V, model->m+1, model->K-1, 2, 2)) -
-				fabs(2.1140967864804359)) < eps,
+				fabs(1.8380262406111434)) < eps,
 			"Incorrect model->V at 2, 2");
 	mu_assert(fabs(fabs(matrix_get(model->V, model->m+1, model->K-1, 3, 0)) -
-				fabs(2.3909204618652535)) < eps,
+				fabs(1.8873525552961188)) < eps,
 			"Incorrect model->V at 3, 0");
 	mu_assert(fabs(fabs(matrix_get(model->V, model->m+1, model->K-1, 3, 1)) -
-				fabs(-0.2834554569573399)) < eps,
+				fabs(-0.5671111794102348)) < eps,
 			"Incorrect model->V at 3, 1");
 	mu_assert(fabs(fabs(matrix_get(model->V, model->m+1, model->K-1, 3, 2)) -
-				fabs(1.0926232371314393)) < eps,
+				fabs(1.3530484176263944)) < eps,
 			"Incorrect model->V at 3, 2");
 	mu_assert(fabs(fabs(matrix_get(model->V, model->m+1, model->K-1, 4, 0)) -
-				fabs(3.3374545494113272)) < eps,
+				fabs(2.9991675684385952)) < eps,
 			"Incorrect model->V at 4, 0");
 	mu_assert(fabs(fabs(matrix_get(model->V, model->m+1, model->K-1, 4, 1)) -
-				fabs(1.6699291195221897)) < eps,
+				fabs(1.6232323178615611)) < eps,
 			"Incorrect model->V at 4, 1");
 	mu_assert(fabs(fabs(matrix_get(model->V, model->m+1, model->K-1, 4, 2)) -
-				fabs(-1.4345249893609275)) < eps,
+				fabs(-1.0853101351516645)) < eps,
 			"Incorrect model->V at 4, 2");
 	mu_assert(fabs(fabs(matrix_get(model->V, model->m+1, model->K-1, 5, 0)) -
-				fabs(-0.0221825925355533)) < eps,
+				fabs(-0.2735156994082831)) < eps,
 			"Incorrect model->V at 5, 0");
 	mu_assert(fabs(fabs(matrix_get(model->V, model->m+1, model->K-1, 5, 1)) -
-				fabs(-0.1216077739550210)) < eps,
+				fabs(-0.2154874773946488)) < eps,
 			"Incorrect model->V at 5, 1");
 	mu_assert(fabs(fabs(matrix_get(model->V, model->m+1, model->K-1, 5, 2)) -
-				fabs(-0.7900947982642630)) < eps,
+				fabs(-0.9036193937904904)) < eps,
 			"Incorrect model->V at 5, 2");
 	mu_assert(fabs(fabs(matrix_get(model->V, model->m+1, model->K-1, 6, 0)) -
-				fabs(-0.0076471781062262)) < eps,
+				fabs(-0.1010202110238350)) < eps,
 			"Incorrect model->V at 6, 0");
 	mu_assert(fabs(fabs(matrix_get(model->V, model->m+1, model->K-1, 6, 1)) -
-				fabs(-0.8781872510019056)) < eps,
+				fabs(-1.7921615999242961)) < eps,
 			"Incorrect model->V at 6, 1");
 	mu_assert(fabs(fabs(matrix_get(model->V, model->m+1, model->K-1, 6, 2)) -
-				fabs(-0.2782284589344380)) < eps,
+				fabs(-0.6850178130530472)) < eps,
 			"Incorrect model->V at 6, 2");
 
 	// end test code //
