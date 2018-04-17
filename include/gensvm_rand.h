@@ -21,12 +21,24 @@
  along with GenSVM; if not, write to the Free Software
  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
- */
+*/
 
 #ifndef GENSVM_RAND_H
 #define GENSVM_RAND_H
 
 #include "gensvm_globals.h"
+
+// structs
+struct gensvm_random_data
+{
+	int32_t *fptr;		/* Front pointer.  */
+	int32_t *rptr;		/* Rear pointer.  */
+	int32_t *state;		/* Array of state values.  */
+	int rand_type;		/* Type of random number generator.  */
+	int rand_deg;		/* Degree of random number generator.  */
+	int rand_sep;		/* Distance between front and rear.  */
+	int32_t *end_ptr;	/* Pointer behind state table.  */
+};
 
 // forward declarations
 int gensvm_rand();

@@ -85,7 +85,7 @@ static int32_t randtbl[DEG_3 + 1] =
 	-205601318,
 };
 
-static struct random_data unsafe_state =
+static struct gensvm_random_data unsafe_state =
 {
 	.fptr = &randtbl[SEP_3 + 1],
 	.rptr = &randtbl[1],
@@ -98,10 +98,10 @@ static struct random_data unsafe_state =
 
 char *gensvm_rand_initstate(unsigned int seed, char *arg_state, size_t n);
 char *gensvm_rand_setstate(char *arg_state);
-int gensvm_rand_srandom_r (unsigned int seed, struct random_data *buf);
-int gensvm_rand_initstate_r (unsigned int seed, char *arg_state, size_t n, struct random_data *buf);
-int gensvm_rand_setstate_r (char *arg_state, struct random_data *buf);
-int gensvm_rand_random_r (struct random_data *buf, int32_t *result);
+int gensvm_rand_srandom_r (unsigned int seed, struct gensvm_random_data *buf);
+int gensvm_rand_initstate_r (unsigned int seed, char *arg_state, size_t n, struct gensvm_random_data *buf);
+int gensvm_rand_setstate_r (char *arg_state, struct gensvm_random_data *buf);
+int gensvm_rand_random_r (struct gensvm_random_data *buf, int32_t *result);
 long int gensvm_random();
 void gensvm_srandom(unsigned int x);
 
@@ -159,7 +159,7 @@ long int gensvm_random()
 	return retval;
 }
 
-int gensvm_rand_srandom_r (unsigned int seed, struct random_data *buf)
+int gensvm_rand_srandom_r (unsigned int seed, struct gensvm_random_data *buf)
 {
 	int type;
 	int32_t *state;
@@ -214,7 +214,7 @@ fail:
 	return -1;
 }
 
-int gensvm_rand_initstate_r (unsigned int seed, char *arg_state, size_t n, struct random_data *buf)
+int gensvm_rand_initstate_r (unsigned int seed, char *arg_state, size_t n, struct gensvm_random_data *buf)
 {
 	if (buf == NULL)
 		goto fail;
@@ -268,7 +268,7 @@ fail:
 }
 
 
-int gensvm_rand_setstate_r (char *arg_state, struct random_data *buf)
+int gensvm_rand_setstate_r (char *arg_state, struct gensvm_random_data *buf)
 {
 	int32_t *new_state = 1 + (int32_t *) arg_state;
 	int type;
@@ -312,7 +312,7 @@ fail:
 	return -1;
 }
 
-int gensvm_rand_random_r (struct random_data *buf, int32_t *result)
+int gensvm_rand_random_r (struct gensvm_random_data *buf, int32_t *result)
 {
 	int32_t *state;
 

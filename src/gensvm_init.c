@@ -33,7 +33,7 @@
 
 #include "gensvm_init.h"
 
-double inline rnd() { return ((double) gensvm_rand()) / ((double) RAND_MAX); };
+double inline rnd() { return ((double) gensvm_rand()) / ((double) RAND_MAX); }
 
 /**
  * @brief Seed the matrix V from an existing model or using rand
