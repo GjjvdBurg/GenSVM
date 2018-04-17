@@ -33,7 +33,7 @@
 
 #include "gensvm_init.h"
 
-double inline rnd() { return ((double) gensvm_rand()) / ((double) RAND_MAX); };
+double inline rnd() { return ((double) gensvm_rand()) / ((double) RAND_MAX); }
 
 double rnd(void)
 {
