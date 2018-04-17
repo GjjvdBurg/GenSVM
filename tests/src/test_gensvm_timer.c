@@ -32,11 +32,12 @@ char *test_timer()
 	GenTime start, stop;
 	Timer(start);
 
-	stop.tv_sec = start.tv_sec + 1;
-	stop.tv_nsec = start.tv_nsec;
+	gensvm_sleep(1.0);
 
-	mu_assert(gensvm_elapsed_time(&start, &stop) == 1.0,
-			"Incorrect time computed");
+	Timer(stop);
+
+	double elapsed = gensvm_elapsed_time(&start, &stop);
+	mu_assert(elapsed > 0.99 && elapsed < 1.01, "Incorrect timing or sleeping.");
 
 	return NULL;
 }

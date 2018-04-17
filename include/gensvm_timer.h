@@ -46,5 +46,6 @@
 // function declarations
 void gensvm_set_time(GenTime *t);
 double gensvm_elapsed_time(GenTime *start, GenTime *stop);
+void gensvm_sleep(double seconds);
 
 #endif

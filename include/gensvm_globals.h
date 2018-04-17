@@ -61,6 +61,7 @@
 #include <windows.h>
 #else
 #include <sys/time.h>
+#include <unistd.h>
 #endif
 
 // ########################### Type definitions ########################### //
