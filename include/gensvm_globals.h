@@ -51,6 +51,7 @@
 #include <string.h>
 #include <time.h>
 #include <stdint.h>
+#include <errno.h>
 
 #if defined(WIN32) || defined(_WIN32)
 #define ON_WINDOWS

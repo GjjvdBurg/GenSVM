@@ -32,7 +32,8 @@
  */
 
 #include "gensvm_init.h"
-#include "gensvm_print.h"
+
+double inline rnd() { return ((double) gensvm_rand()) / ((double) RAND_MAX); };
 
 double rnd(void)
 {
@@ -122,7 +123,8 @@ void gensvm_init_V(struct GenModel *from_model,
 			cmax = (fabs(col_max[j]) < 1e-10) ? 1 : col_max[j];
 			for (k=0; k<to_model->K-1; k++) {
 				value = 1.0/cmin + (1.0/cmax - 1.0/cmin)*rnd();
-				matrix_set(to_model->V, to_model->m+1, to_model->K-1, j, k, value);
+				matrix_set(to_model->V, to_model->m+1, 
+						to_model->K-1, j, k, value);
 			}
 		}
 		free(col_min);
