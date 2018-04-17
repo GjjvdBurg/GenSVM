@@ -1,15 +1,11 @@
 /**
- * @file gensvm_init.h
+ * @file test_gensvm_rand.c
  * @author G.J.J. van den Burg
- * @date 2016-05-01
- * @brief Header file for gensvm_init.c
- *
- * @details
- * Contains function declarations for the initialization functions for the
- * model weights and model V matrix.
+ * @date 2018-04-17
+ * @brief Unit tests for gensvm_rand.c functions
  *
  * @copyright
- Copyright 2016, G.J.J. van den Burg.
+ Copyright 2018, G.J.J. van den Burg.
 
  This file is part of GenSVM.
 
@@ -28,14 +24,42 @@
 
  */
 
-#ifndef GENSVM_INIT_H
-#define GENSVM_INIT_H
-
-#include "gensvm_base.h"
+#include "minunit.h"
 #include "gensvm_rand.h"
 
-void gensvm_init_V(struct GenModel *from_model, struct GenModel *to_model,
-		struct GenData *data);
-void gensvm_initialize_weights(struct GenData *data, struct GenModel *model);
+char *test_rand_1()
+{
+	srand(123);
+	double a = rand();
 
-#endif
+	gensvm_srand(123);
+	double b = gensvm_rand();
+
+	mu_assert(a == b, "Random numbers unequal");
+
+	return NULL;
+}
+
+char *test_rand_many()
+{
+	int i;
+
+	srand(87431);
+	gensvm_srand(87431);
+
+	for (i=0; i<1000; i++)
+		mu_assert(rand() == gensvm_rand(), "Random numbers unequal");
+
+	return NULL;
+}
+
+char *all_tests()
+{
+	mu_suite_start();
+	mu_run_test(test_rand_1);
+	mu_run_test(test_rand_many);
+
+	return NULL;
+}
+
+RUN_TESTS(all_tests);

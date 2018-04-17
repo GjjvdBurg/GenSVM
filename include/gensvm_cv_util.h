@@ -32,6 +32,7 @@
 #define GENSVM_CV_UTIL_H
 
 #include "gensvm_base.h"
+#include "gensvm_rand.h"
 
 void gensvm_make_cv_split(long N, long folds, long *cv_idx);
 void gensvm_get_tt_split(struct GenData *full_data, struct GenData *train_data,

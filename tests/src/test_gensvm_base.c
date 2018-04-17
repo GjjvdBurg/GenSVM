@@ -26,6 +26,7 @@
 
 #include "minunit.h"
 #include "gensvm_base.h"
+#include "gensvm_rand.h"
 
 char *test_init_free_model_1()
 {
@@ -122,7 +123,7 @@ void fill_with_noise(double *ptr, int elem)
 {
 	int i;
 	for (i=0; i<elem; i++) {
-		ptr[i] = ((double) rand())/((double) RAND_MAX);
+		ptr[i] = ((double) gensvm_rand())/((double) RAND_MAX);
 	}
 }
 

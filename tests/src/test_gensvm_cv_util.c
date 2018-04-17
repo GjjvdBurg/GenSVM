@@ -29,7 +29,7 @@
 
 char *test_make_cv_split_1()
 {
-	srand(0);
+	gensvm_srand(0);
 	int i, j;
 	long N = 10;
 	long folds = 4;
@@ -70,7 +70,7 @@ char *test_make_cv_split_1()
 
 char *test_make_cv_split_2()
 {
-	srand(0);
+	gensvm_srand(0);
 	int i, j;
 	long N = 101;
 	long folds = 7;

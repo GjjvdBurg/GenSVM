@@ -56,7 +56,7 @@ void gensvm_train(struct GenModel *model, struct GenData *data,
 
 	// set the random seed
 	real_seed = (model->seed == -1) ? time(NULL) : model->seed;
-	srand(real_seed);
+	gensvm_srand(real_seed);
 
 	// preprocess kernel
 	gensvm_kernel_preprocess(model, data);
