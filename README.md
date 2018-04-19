@@ -8,15 +8,20 @@ P.J.F. Groenen (*Journal of Machine Learning Research*, 2016).
 GitHub: 
 [https://github.com/GjjvdBurg/GenSVM](https://github.com/GjjvdBurg/GenSVM)
 
+GenSVM is also available in these languages:
+
+Language | URL
+:-------:|:-------:
+<a href="https://github.com/GjjvdBurg/PyGenSVM"><img src="https://www.python.org/static/community_logos/python-logo-master-v3-TM.png" height="75"/></a> | [https://github.com/GjjvdBurg/PyGenSVM](https://github.com/GjjvdBurg/PyGenSVM)
+<a href="https://github.com/GjjvdBurg/RGenSVM"><img src="https://www.r-project.org/Rlogo.png" height="75"/></a> | [https://github.com/GjjvdBurg/RGenSVM](https://github.com/GjjvdBurg/RGenSVM)
 
 Introduction
 ------------
 
-This is the C library for the GenSVM method, for the Python package click 
-[here](https://github.com/GjjvdBurg/PyGenSVM).  GenSVM is a general multiclass 
-support vector machine, which you can use for classification problems with 
-multiple classes. Training GenSVM in cross-validation or grid search setups 
-can be done efficiently due to the ability to use warm starts.  See the 
+GenSVM is a general multiclass support vector machine, which you can use for 
+classification problems with multiple classes. Training GenSVM in 
+cross-validation or grid search setups can be done efficiently due to the 
+ability to use warm starts.  See the 
 [paper](http://jmlr.org/papers/v17/14-526.html) for more information, and 
 Usage below for how to use GenSVM.
 
