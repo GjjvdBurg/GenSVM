@@ -33,7 +33,10 @@
 
 #include "gensvm_init.h"
 
-double inline rnd() { return ((double) gensvm_rand()) / 2147483647.0; }
+double rnd(void)
+{
+	return ((double) gensvm_rand()) / 2147483647.0;
+}
 
 /**
  * @brief Seed the matrix V from an existing model or using rand
