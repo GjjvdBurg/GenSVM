@@ -43,6 +43,32 @@ char *test_rand_1()
 	return NULL;
 }
 
+char *test_rand_2()
+{
+	srand(-2147483648);
+	int a = rand();
+
+	gensvm_srand(-2147483648);
+	int b = gensvm_rand();
+
+	mu_assert(a == b, "Random numbers unequal");
+
+	return NULL;
+}
+
+char *test_rand_3()
+{
+	srand(2147483647);
+	int a = rand();
+
+	gensvm_srand(2147483647);
+	int b = gensvm_rand();
+
+	mu_assert(a == b, "Random numbers unequal");
+
+	return NULL;
+}
+
 char *test_rand_many()
 {
 	int i;
@@ -60,6 +86,8 @@ char *all_tests()
 {
 	mu_suite_start();
 	mu_run_test(test_rand_1);
+	mu_run_test(test_rand_2);
+	mu_run_test(test_rand_3);
 	mu_run_test(test_rand_many);
 
 	return NULL;

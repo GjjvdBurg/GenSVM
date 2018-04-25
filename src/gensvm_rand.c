@@ -312,6 +312,34 @@ fail:
 	return -1;
 }
 
+// Stdlib's rand() relies on integer overflow in the expression:
+//
+//     val = *fptr += *rptr;
+//
+// R packages are checked using the undefined behavior sanitizer, which throws 
+// a runtime error when signed integer overflow occurs.
+//
+// Because we want to stay close to the stdlib implementation of rand(), we 
+// use this function to compute the sum of two integers that can overflow, 
+// without actually allowing it to overflow.
+int32_t overflow_add(int32_t a, int32_t b)
+{
+	int32_t p, q, res;
+	if (a > 0 && b > INT32_MAX - a) {
+		p = a - INT32_MAX;
+		p = overflow_add(p, b);
+		res = INT32_MIN + p - 1;
+	} else if (a < 0 && b < INT32_MIN - a) {
+		q = a + INT32_MAX;
+		q = overflow_add(q, b);
+		q = overflow_add(q, INT32_MAX);
+		res = overflow_add(q, 2);
+	} else {
+		res = a + b;
+	}
+	return res;
+}
+
 int gensvm_rand_random_r (struct gensvm_random_data *buf, int32_t *result)
 {
 	int32_t *state;
@@ -335,7 +363,10 @@ int gensvm_rand_random_r (struct gensvm_random_data *buf, int32_t *result)
 		int32_t *end_ptr = buf->end_ptr;
 		int32_t val;
 
-		val = *fptr += *rptr;
+		//val = *fptr += *rptr;
+		*fptr = overflow_add(*fptr, *rptr);
+		val = *fptr;
+
 		/* Chucking least random bit.  */
 		*result = (val >> 1) & 0x7fffffff;
 		++fptr;
