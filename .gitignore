@@ -16,3 +16,4 @@ tests/data/test_write_model.txt
 tests/tests.log
 doc/html/
 tests/test_optimize_segfault
+Makefile
