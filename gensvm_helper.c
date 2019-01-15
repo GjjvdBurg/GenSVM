@@ -75,10 +75,10 @@ struct GenData *_build_gensvm_data(double *X, int *y, int n, int m, int K)
 
 	for (i=0; i<n; i++) {
 		for (j=0; j<m; j++) {
-			value = matrix_get(X, m, i, j);
-			matrix_set(data->RAW, m+1, i, j+1, value);
+			value = matrix_get(X, n, m, i, j);
+			matrix_set(data->RAW, n, m+1, i, j+1, value);
 		}
-		matrix_set(data->RAW, m+1, i, 0, 1.0);
+		matrix_set(data->RAW, n, m+1, i, 0, 1.0);
 	}
 	data->Z = data->RAW;
 
@@ -264,9 +264,7 @@ void gensvm_predict_kernels(char *X_test, char *X_train, char *V, long V_row,
 	model->degree = degree;
 	model->kernel_eigen_cutoff = kernel_eigen_cutoff;
 
-
 	gensvm_allocate_model(model);
-	copy_V_to_model(Vd, model);
 
 	struct GenData *traindata = _build_gensvm_data(Xtrain, NULL, n_train,
 			m, K);
@@ -278,8 +276,8 @@ void gensvm_predict_kernels(char *X_test, char *X_train, char *V, long V_row,
 
 	for (i=0; i<model->m+1; i++) {
 		for (j=0; j<model->K; j++) {
-			value = matrix_get(V, V_col, i, j);
-			matrix_set(model->V, model->K-1, i, j, value);
+			value = matrix_get(Vd, V_row, V_col, i, j);
+			matrix_set(model->V, model->m+1, model->K-1, i, j, value);
 		}
 	}
 
