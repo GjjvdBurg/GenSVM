@@ -101,7 +101,7 @@ char *all_tests()
 {
 	mu_suite_start();
 	mu_run_test(test_note);
-	mu_run_test(test_err);
+	mu_run_test(test_gensvm_error);
 
 	return NULL;
 }
