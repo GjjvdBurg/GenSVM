@@ -32,6 +32,7 @@
 #define GENSVM_INIT_H
 
 #include "gensvm_base.h"
+#include "gensvm_rand.h"
 
 void gensvm_init_V(struct GenModel *from_model, struct GenModel *to_model,
 		struct GenData *data);
