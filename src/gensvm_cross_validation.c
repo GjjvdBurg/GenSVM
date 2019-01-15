@@ -110,6 +110,7 @@ void gensvm_cross_validation_store(struct GenModel *model,
 	FILE *fid = NULL;
 	long f;
 	long *predy = NULL;
+	void (*tmpfunc) (const char *, ...) = NULL;
 
 	GenTime fold_s, fold_e;
 
@@ -118,6 +119,8 @@ void gensvm_cross_validation_store(struct GenModel *model,
 	if (verbosity <= 1) {
 		fid = GENSVM_OUTPUT_FILE;
 		GENSVM_OUTPUT_FILE = NULL;
+		tmpfunc = gensvm_print_out;
+		gensvm_print_out = gensvm_print_output_fpt;
 	}
 
 	// run cross-validation
@@ -147,5 +150,6 @@ void gensvm_cross_validation_store(struct GenModel *model,
 	// reset the output stream
 	if (verbosity <= 1) {
 		GENSVM_OUTPUT_FILE = fid;
+		gensvm_print_out = tmpfunc;
 	}
 }
