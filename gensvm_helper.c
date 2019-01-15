@@ -60,6 +60,48 @@ void set_seed_model(struct GenModel *model, double p, double lambda,
 	}
 }
 
+struct GenData *_build_gensvm_data(double *X, int *y, int n, int m, int K)
+{
+	int i, j;
+	double value;
+
+	struct GenData *data = gensvm_init_data();
+	data->n = n;
+	data->m = m;
+	data->r = m;
+	data->K = K;
+
+	data->RAW = Calloc(double, n*(m+1));
+
+	for (i=0; i<n; i++) {
+		for (j=0; j<m; j++) {
+			value = matrix_get(X, m, i, j);
+			matrix_set(data->RAW, m+1, i, j+1, value);
+		}
+		matrix_set(data->RAW, m+1, i, 0, 1.0);
+	}
+	data->Z = data->RAW;
+
+	// convert to sparse matrix if possible
+	if (gensvm_could_sparse(data->Z, n, m+1)) {
+		note("Converting to sparse ... ");
+		data->spZ = gensvm_dense_to_sparse(data->Z, n, m+1);
+		note("done.\n");
+		free(data->RAW);
+		data->RAW = NULL;
+		data->Z = NULL;
+	}
+
+	if (y == NULL) {
+		data->y = NULL;
+	} else {
+		data->y = Malloc(long, n);
+		for (i=0; i<n; i++)
+			data->y[i] = y[i];
+	}
+
+	return data;
+}
 
 void copy_X(struct GenData *data, double *Xd)
 {
@@ -179,25 +221,18 @@ void set_verbosity(int verbosity_flag)
 void gensvm_predict(char *X, char *V, long n_test, long m, long K, 
 		char *predictions)
 {
-	struct GenModel *model = gensvm_init_model();
-	struct GenData *data = gensvm_init_data();
 	double *Xd = (double *) X;
 	double *Vd = (double *) V;
 	long *pred = (long *) predictions;
 
-	data->n = n_test;
-	data->m = m;
-	data->r = m;
-	data->K = K;
-
-	copy_X(data, Xd);
-
+	struct GenModel *model = gensvm_init_model();
 	model->n = 1;
 	model->m = m;
 	model->K = K;
-
 	gensvm_allocate_model(model);
 	copy_V_to_model(Vd, model);
+
+	struct GenData *data = _build_gensvm_data(Xd, NULL, n_test, m, K);
 
 	gensvm_predict_labels(data, model, pred);
 
