@@ -34,6 +34,7 @@ char *test_note()
 {
 	FILE *fid = NULL;
 	GENSVM_OUTPUT_FILE = fopen("./data/test_note_print.txt", "w");
+	mu_assert(GENSVM_OUTPUT_FILE != NULL, "output file couldn't be opened");
 
 	// start test code //
 	note("This is some text.\n");
@@ -48,6 +49,7 @@ char *test_note()
 
 	char buffer[GENSVM_MAX_LINE_LENGTH];
 	fid = fopen("./data/test_note_print.txt", "r");
+	mu_assert(fid != NULL, "output file couldn't be opened for reading");
 
 	fgets(buffer, GENSVM_MAX_LINE_LENGTH, fid);
 	mu_assert(strcmp(buffer, "This is some text.\n") == 0,
@@ -68,6 +70,7 @@ char *test_gensvm_error()
 {
 	FILE *fid = NULL;
 	GENSVM_ERROR_FILE = fopen("./data/test_err_print.txt", "w");
+	mu_assert(GENSVM_ERROR_FILE != NULL, "error file couldn't be opened");
 
 	// start test code //
 	gensvm_error("This is some text.\n");
@@ -82,6 +85,7 @@ char *test_gensvm_error()
 
 	char buffer[GENSVM_MAX_LINE_LENGTH];
 	fid = fopen("./data/test_err_print.txt", "r");
+	mu_assert(fid != NULL, "error file couldn't be opened for reading.");
 
 	fgets(buffer, GENSVM_MAX_LINE_LENGTH, fid);
 	mu_assert(strcmp(buffer, "This is some text.\n") == 0,
