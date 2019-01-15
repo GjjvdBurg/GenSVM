@@ -8,14 +8,20 @@ P.J.F. Groenen (*Journal of Machine Learning Research*, 2016).
 GitHub: 
 [https://github.com/GjjvdBurg/GenSVM](https://github.com/GjjvdBurg/GenSVM)
 
+GenSVM is also available in these languages:
+
+Language | URL
+:-------:|:-------:
+<a href="https://github.com/GjjvdBurg/PyGenSVM"><img src="https://www.python.org/static/community_logos/python-logo-master-v3-TM.png" height="75"/></a> | [https://github.com/GjjvdBurg/PyGenSVM](https://github.com/GjjvdBurg/PyGenSVM)
+<a href="https://github.com/GjjvdBurg/RGenSVM"><img src="https://www.r-project.org/Rlogo.png" height="75"/></a> | [https://github.com/GjjvdBurg/RGenSVM](https://github.com/GjjvdBurg/RGenSVM)
 
 Introduction
 ------------
 
-This is the C library for the GenSVM method. GenSVM is a general multiclass 
-support vector machine, which you can use for classification problems with 
-multiple classes. Training GenSVM in cross-validation or grid search setups 
-can be done efficiently due to the ability to use warm starts. See the 
+GenSVM is a general multiclass support vector machine, which you can use for 
+classification problems with multiple classes. Training GenSVM in 
+cross-validation or grid search setups can be done efficiently due to the 
+ability to use warm starts.  See the 
 [paper](http://jmlr.org/papers/v17/14-526.html) for more information, and 
 Usage below for how to use GenSVM.
 
@@ -31,11 +37,11 @@ also many unit tests, which you can use to further understand how the library
 works. For the latest version of the library you can view the [test coverage 
 report](https://gjjvdburg.github.io/GenSVM/cover) online.
 
-This is the C library for GenSVM which contains two executables for using the 
-method. Python and R packages for GenSVM are planned. If you are interested in 
-these, please express your interest for the Python package 
-[here](https://github.com/GjjvdBurg/GenSVM/issues/1) and for the R package 
-[here](https://github.com/GjjvdBurg/GenSVM/issues/2).
+This is the C library for GenSVM that contains two executables for using the 
+method. A Python package for GenSVM is available 
+[here](https://github.com/GjjvdBurg/PyGenSVM). An R package for GenSVM is 
+planned.  If you are interested in this, please express your interest for the 
+R package [here](https://github.com/GjjvdBurg/GenSVM/issues/2).
 
 Usage
 -----
@@ -110,7 +116,7 @@ Reference
 
 If you use GenSVM in any of your projects, please cite the GenSVM paper 
 available at 
-[http://jmlr.org/papers/v17/14-526.html](http://jmlr.org/papers/v17/14-526.html).  
+[http://jmlr.org/papers/v17/14-526.html](http://jmlr.org/papers/v17/14-526.html). 
 You can use the following BibTeX code:
 
     @article{JMLR:v17:14-526,

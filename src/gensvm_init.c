@@ -67,22 +67,21 @@ void gensvm_init_V(struct GenModel *from_model,
 	double *col_min = NULL,
 	       *col_max = NULL;
 
-	long n = data->n;
-	long m = data->m;
-	long K = data->K;
-
-	if (from_model == NULL) {
-		col_min = Calloc(double, m+1);
-		col_max = Calloc(double, m+1);
-		for (j=0; j<m+1; j++) {
+	// if no model is supplied, or the dimensions of the supplied model 
+	// don't match, then we use random initialization.
+	if (from_model == NULL || from_model->m != to_model->m || 
+			from_model->K != to_model->K) {
+		col_min = Calloc(double, to_model->m+1);
+		col_max = Calloc(double, to_model->m+1);
+		for (j=0; j<to_model->m+1; j++) {
 			col_min[j] = 1.0e100;
 			col_max[j] = -1.0e100;
 		}
 
 		if (data->Z == NULL) {
 			// sparse matrix
-			long *visit_count = Calloc(long, m+1);
-			for (i=0; i<n; i++) {
+			long *visit_count = Calloc(long, to_model->m+1);
+			for (i=0; i<data->spZ->n_row; i++) {
 				jj_start = data->spZ->ia[i];
 				jj_end = data->spZ->ia[i+1];
 				for (jj=jj_start; jj<jj_end; jj++) {
@@ -95,8 +94,8 @@ void gensvm_init_V(struct GenModel *from_model,
 				}
 			}
 			// correction in case the minimum or maximum is 0
-			for (j=0; j<m+1; j++) {
-				if (visit_count[j] < n) {
+			for (j=0; j<to_model->m+1; j++) {
+				if (visit_count[j] < data->spZ->n_row) {
 					col_min[j] = minimum(col_min[j], 0.0);
 					col_max[j] = maximum(col_max[j], 0.0);
 				}
@@ -104,29 +103,30 @@ void gensvm_init_V(struct GenModel *from_model,
 			free(visit_count);
 		} else {
 			// dense matrix
-			for (i=0; i<n; i++) {
-				for (j=0; j<m+1; j++) {
-					value = matrix_get(data->Z, m+1, i, j);
+			for (i=0; i<to_model->n; i++) {
+				for (j=0; j<to_model->m+1; j++) {
+					value = matrix_get(data->Z, 
+							to_model->m+1, i, j);
 					col_min[j] = minimum(col_min[j], value);
 					col_max[j] = maximum(col_max[j], value);
 				}
 			}
 		}
-		for (j=0; j<m+1; j++) {
+		for (j=0; j<to_model->m+1; j++) {
 			cmin = (fabs(col_min[j]) < 1e-10) ? -1 : col_min[j];
 			cmax = (fabs(col_max[j]) < 1e-10) ? 1 : col_max[j];
-			for (k=0; k<K-1; k++) {
+			for (k=0; k<to_model->K-1; k++) {
 				value = 1.0/cmin + (1.0/cmax - 1.0/cmin)*rnd();
-				matrix_set(to_model->V, K-1, j, k, value);
+				matrix_set(to_model->V, to_model->K-1, j, k, value);
 			}
 		}
 		free(col_min);
 		free(col_max);
 	} else {
-		for (i=0; i<m+1; i++) {
-			for (j=0; j<K-1; j++) {
-				value = matrix_get(from_model->V, K-1, i, j);
-				matrix_set(to_model->V, K-1, i, j, value);
+		for (i=0; i<to_model->m+1; i++) {
+			for (j=0; j<to_model->K-1; j++) {
+				value = matrix_get(from_model->V, from_model->K-1, i, j);
+				matrix_set(to_model->V, to_model->K-1, i, j, value);
 			}
 		}
 	}
