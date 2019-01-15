@@ -102,7 +102,7 @@ int gensvm_rand_srandom_r (unsigned int seed, struct gensvm_random_data *buf);
 int gensvm_rand_initstate_r (unsigned int seed, char *arg_state, size_t n, struct gensvm_random_data *buf);
 int gensvm_rand_setstate_r (char *arg_state, struct gensvm_random_data *buf);
 int gensvm_rand_random_r (struct gensvm_random_data *buf, int32_t *result);
-long int gensvm_random();
+long int gensvm_random(void);
 void gensvm_srandom(unsigned int x);
 
 /** @brief Replacement for builtin rand()
