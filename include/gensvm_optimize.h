@@ -31,6 +31,7 @@
 #ifndef GENSVM_OPTIMIZE_H
 #define GENSVM_OPTIMIZE_H
 
+#include "gensvm_py_utils.h"
 #include "gensvm_sv.h"
 #include "gensvm_simplex.h"
 #include "gensvm_timer.h"

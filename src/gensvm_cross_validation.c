@@ -114,6 +114,7 @@ void gensvm_cross_validation_store(struct GenModel *model,
 
 	GenTime fold_s, fold_e;
 
+	gensvm_py_reset_interrupt_hdl();
 
 	// make sure that gensvm_optimize() is silent.
 	if (verbosity <= 1) {
@@ -145,6 +146,10 @@ void gensvm_cross_validation_store(struct GenModel *model,
 
 		Timer(fold_e);
 		durations[f] = gensvm_elapsed_time(&fold_s, &fold_e);
+
+		if (gensvm_py_pending_interrupt()) {
+			break;
+		}
 	}
 
 	// reset the output stream

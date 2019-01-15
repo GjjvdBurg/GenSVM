@@ -59,6 +59,8 @@ void gensvm_optimize(struct GenModel *model, struct GenData *data)
 	double L, Lbar;
 	GenTime t_start, t_stop, t_ipt_start, t_ipt_stop;
 
+	gensvm_py_reset_interrupt_hdl();
+
 	long n = model->n;
 	long m = model->m;
 	long K = model->K;
@@ -84,6 +86,8 @@ void gensvm_optimize(struct GenModel *model, struct GenData *data)
 	gensvm_simplex_diff(model);
 
 	Timer(t_start);
+	Timer(t_ipt_start);
+
 	// get initial loss
 	L = gensvm_get_loss(model, data, work);
 	Lbar = L + 2.0*model->epsilon*L;
@@ -104,6 +108,17 @@ void gensvm_optimize(struct GenModel *model, struct GenData *data)
 			note("iter = %li, L = %15.16f, Lbar = %15.16f, "
 			     "reldiff = %15.16f\n", it, L, Lbar, (Lbar - L)/L);
 		it++;
+
+
+		Timer(t_ipt_stop);
+		if (gensvm_elapsed_time(&t_ipt_start, &t_ipt_stop) > 2) {
+			if (gensvm_py_pending_interrupt()) {
+				gensvm_error("[GenSVM Warning]: Received "
+						"user interrupt. Stopping.\n");
+				break;
+			}
+			Timer(t_ipt_start);
+		}
 	}
 
 	Timer(t_stop);
@@ -123,6 +138,9 @@ void gensvm_optimize(struct GenModel *model, struct GenData *data)
 				"reached.\n");
 		model->status = 2;
 	}
+
+	if (gensvm_py_pending_interrupt())
+		model->status = 3;
 
 	// print final iteration count and loss
 	note("\nOptimization finished, iter = %li, loss = %15.16f, "

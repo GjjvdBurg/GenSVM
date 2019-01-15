@@ -293,6 +293,8 @@ double gensvm_train_queue(struct GenQueue *q, long *cv_idx,
 
 	folds = task->folds;
 
+	gensvm_py_reset_interrupt_hdl();
+
 	model->n = 0;
 	model->m = task->train_data->m;
 	model->K = task->train_data->K;
@@ -356,6 +358,9 @@ double gensvm_train_queue(struct GenQueue *q, long *cv_idx,
 
 		prevtask = task;
 		task = get_next_task(q);
+
+		if (gensvm_py_pending_interrupt())
+			break;
 	}
 	Timer(main_e);
 
