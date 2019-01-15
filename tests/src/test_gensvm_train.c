@@ -101,6 +101,9 @@ char *test_gensvm_train_seed_linear()
 	matrix_set(data->y, data->n, 1, 9, 0, 4);
 
 	seed->V = Calloc(double, (data->m+1)*(data->K-1));
+	seed->m = data->m;
+	seed->K = data->K;
+
 	matrix_set(seed->V, data->m+1, data->K-1, 0, 0, 0.8233234072519983);
 	matrix_set(seed->V, data->m+1, data->K-1, 0, 1, 0.7701104553132680);
 	matrix_set(seed->V, data->m+1, data->K-1, 0, 2, 0.1102697774064020);
@@ -261,8 +264,9 @@ char *test_gensvm_train_seed_kernel()
 	matrix_set(data->y, data->n, 1, 8, 0, 3);
 	matrix_set(data->y, data->n, 1, 9, 0, 4);
 
-
 	struct GenModel *seed = gensvm_init_model();
+
+	// values obtained from eigendecomposition
 	seed->V = Calloc(double, 7*3);
 	seed->m = 6;
 	seed->K = 4;
