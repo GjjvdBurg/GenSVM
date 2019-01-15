@@ -142,7 +142,7 @@ void gensvm_cross_validation_store(struct GenModel *model,
 
 		Timer(fold_e);
 		durations[f] = gensvm_elapsed_time(&fold_s, &fold_e);
-
+	}
 
 	// reset the output stream
 	if (verbosity <= 1) {
