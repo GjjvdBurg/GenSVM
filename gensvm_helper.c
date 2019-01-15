@@ -240,6 +240,58 @@ void gensvm_predict(char *X, char *V, long n_test, long m, long K,
 	gensvm_free_data(data);
 }
 
+void gensvm_predict_kernels(char *X_test, char *X_train, char *V, long V_row, 
+		long V_col, long n_train, long n_test, long m, long K, 
+		int kernel_idx, double gamma, double coef, double degree,
+		double kernel_eigen_cutoff, char *predictions)
+{
+	long i, j;
+	double value;
+
+	struct GenModel *model = gensvm_init_model();
+
+	double *Xtrain = (double *) X_train;
+	double *Xtest = (double *) X_test;
+	double *Vd = (double *) V;
+	long *pred = (long *) predictions;
+
+	model->n = n_train;
+	model->m = V_row - 1;
+	model->K = V_col + 1;
+	model->kerneltype = kernel_idx;
+	model->gamma = gamma;
+	model->coef = coef;
+	model->degree = degree;
+	model->kernel_eigen_cutoff = kernel_eigen_cutoff;
+
+
+	gensvm_allocate_model(model);
+	copy_V_to_model(Vd, model);
+
+	struct GenData *traindata = _build_gensvm_data(Xtrain, NULL, n_train,
+			m, K);
+	struct GenData *testdata = _build_gensvm_data(Xtest, NULL, n_test, m,
+			K);
+
+	gensvm_kernel_preprocess(model, traindata);
+	gensvm_reallocate_model(model, traindata->n, traindata->r);
+
+	for (i=0; i<model->m+1; i++) {
+		for (j=0; j<model->K; j++) {
+			value = matrix_get(V, V_col, i, j);
+			matrix_set(model->V, model->K-1, i, j, value);
+		}
+	}
+
+	gensvm_kernel_postprocess(model, traindata, testdata);
+
+	gensvm_predict_labels(testdata, model, pred);
+
+	gensvm_free_data(traindata);
+	gensvm_free_data(testdata);
+	gensvm_free_model(model);
+}
+
 void set_task(struct GenTask *t, int ID, struct GenData *data, int folds, 
 		double p, double lambda, double kappa, double epsilon, 
 		double weight_idx, int kernel_index, double degree, 
