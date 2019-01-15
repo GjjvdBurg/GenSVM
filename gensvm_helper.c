@@ -205,11 +205,17 @@ void free_data(struct GenData *data)
 	free(data->Sigma);
 }
 
-void set_verbosity(int verbosity_flag)
+void set_verbosity(int verbosity)
 {
 	extern FILE *GENSVM_OUTPUT_FILE;
 	extern FILE *GENSVM_ERROR_FILE;
-	if (verbosity_flag) {
+	extern void (*gensvm_print_out)(const char *, ...);
+	extern void (*gensvm_print_err)(const char *, ...);
+
+	gensvm_print_out = gensvm_print_output_fpt;
+	gensvm_print_err = gensvm_print_error_fpt;
+
+	if (verbosity) {
 		GENSVM_OUTPUT_FILE = stdout;
 		GENSVM_ERROR_FILE = stderr;
 	} else {
@@ -311,12 +317,12 @@ void set_task(struct GenTask *t, int ID, struct GenData *data, int folds,
 }
 
 void gensvm_train_q_helper(struct GenQueue *q, char *CV_IDX, 
-		int store_pred)
+		int store_pred, int verbosity)
 {
 	long *cv_idx = (long *) CV_IDX;
 	bool store_predictions = store_pred;
 
-	gensvm_train_queue(q, cv_idx, store_predictions);
+	gensvm_train_queue(q, cv_idx, store_predictions, verbosity);
 }
 
 void set_queue(struct GenQueue *q, long n_tasks, struct GenTask **tasks)
