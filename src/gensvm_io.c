@@ -301,7 +301,7 @@ void gensvm_read_data_libsvm(struct GenData *data, char *data_file)
 	for (i=0; i<n; i++) {
 		if (fgets(buf, GENSVM_MAX_LINE_LENGTH, fid) == NULL) {
 			// LCOV_EXCL_START
-			err("[GenSVM Error]: Error reading from data file %s\n",
+			gensvm_error("[GenSVM Error]: Error reading from data file %s\n",
 					data_file);
 			exit(EXIT_FAILURE);
 			// LCOV_EXCL_STOP
