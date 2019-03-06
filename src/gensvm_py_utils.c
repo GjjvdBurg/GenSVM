@@ -22,25 +22,22 @@
 
  */
 
-#define STRICT_R_HEADERS
-
-// from: https://stackoverflow.com/q/40563522
-
 #include "gensvm_py_utils.h"
 
-bool __py_requested_interrupt = false;
+// Based on: https://stackoverflow.com/a/4217052/1154005
 
-void gensvm_py_reset_interrupt_hdl(void)
-{
-	__py_requested_interrupt = false;
+static volatile int keepRunning = 1;
+
+void intHandler(int dummy) {
+	keepRunning = 0;
+}
+
+void gensvm_py_reset_interrupt_hdl(void) {
+	signal(SIGINT, intHandler);
+	keepRunning = 1;
 }
 
 bool gensvm_py_pending_interrupt(void)
 {
-	if (__py_requested_interrupt)
-		return true;
-
-	PyObject* pyerr = PyErr_Occurred();
-	__py_requested_interrupt = (pyerr != NULL);
-	return __py_requested_interrupt;
+	return keepRunning == 0;
 }

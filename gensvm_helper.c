@@ -344,8 +344,16 @@ double get_task_performance(struct GenTask *t)
 void copy_task_predictions(struct GenTask *t, char *predictions, long n_obs)
 {
 	long *pred = (long *) predictions;
-	long i;
-	for (i=0; i<n_obs; i++) {
-		pred[i] = t->predictions[i];
+	long i, val;
+	if (t->predictions == NULL) { // interrupt occured
+		for (i=0; i<n_obs; i++)
+			pred[i] = -1;
+	} else {
+		for (i=0; i<n_obs; i++) {
+			val = t->predictions[i];
+			pred[i] = val;
+		}
+	}
+}
 	}
 }

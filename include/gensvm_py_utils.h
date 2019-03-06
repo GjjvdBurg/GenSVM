@@ -26,7 +26,6 @@
 #ifndef GENSVM_PY_UTILS_H
 #define GENSVM_PY_UTILS_H
 
-#include "Python.h"
 #include "gensvm_globals.h"
 
 void gensvm_py_reset_interrupt_hdl(void);
