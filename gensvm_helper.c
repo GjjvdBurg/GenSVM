@@ -355,5 +355,18 @@ void copy_task_predictions(struct GenTask *t, char *predictions, long n_obs)
 		}
 	}
 }
+
+void copy_task_durations(struct GenTask *t, char *durations, int n_folds)
+{
+	double val, *dur = (double *)durations;
+	int i;
+	if (t->durations == NULL) { // interrupt occured
+		for (i=0; i<n_folds; i++)
+			dur[i] = NPY_NAN;
+	} else {
+		for (i=0; i<n_folds; i++) {
+			val = t->durations[i];
+			dur[i] = (val < 0) ? NPY_NAN : val;
+		}
 	}
 }

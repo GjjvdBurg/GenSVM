@@ -109,7 +109,6 @@ void gensvm_optimize(struct GenModel *model, struct GenData *data)
 			     "reldiff = %15.16f\n", it, L, Lbar, (Lbar - L)/L);
 		it++;
 
-
 		Timer(t_ipt_stop);
 		if (gensvm_elapsed_time(&t_ipt_start, &t_ipt_stop) > 2) {
 			if (gensvm_py_pending_interrupt()) {
