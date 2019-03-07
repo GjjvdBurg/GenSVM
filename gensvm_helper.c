@@ -60,6 +60,17 @@ void set_seed_model(struct GenModel *model, double p, double lambda,
 	}
 }
 
+void set_raw_weights(struct GenModel *model, char *raw_weights, int n_obs)
+{
+	double *weights = (double *)raw_weights;
+	if (model->rho != NULL)
+		free(model->rho);
+	model->rho = Calloc(double, n_obs);
+	int i;
+	for (i=0; i<n_obs; i++)
+		model->rho[i] = weights[i];
+}
+
 struct GenData *_build_gensvm_data(double *X, int *y, int n, int m, int K)
 {
 	int i, j;
