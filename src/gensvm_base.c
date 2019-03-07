@@ -164,7 +164,8 @@ void gensvm_allocate_model(struct GenModel *model)
 	model->UU = Calloc(double, K*K*(K-1));
 	model->Q = Calloc(double, n*K);
 	model->H = Calloc(double, n*K);
-	model->rho = Calloc(double, n);
+	if (model->rho == NULL)
+		model->rho = Calloc(double, n);
 }
 
 /**
