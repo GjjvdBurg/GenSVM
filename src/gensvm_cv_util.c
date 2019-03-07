@@ -64,7 +64,7 @@ void gensvm_make_cv_split(long N, long folds, long *cv_idx)
 	j = 0;
 	for (i=0; i<small_fold_size*folds; i++)
 		while (1) {
-			idx = gensvm_rand()%N;
+			idx = gensvm_rand() % N;
 			if (cv_idx[idx] == 0) {
 				cv_idx[idx] = j;
 				j++;

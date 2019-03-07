@@ -359,9 +359,8 @@ double gensvm_train_queue(struct GenQueue *q, long *cv_idx,
 		prevtask = task;
 		task = get_next_task(q);
 
-		if (gensvm_R_pending_interrupt()) {
+		if (gensvm_R_pending_interrupt())
 			break;
-		}
 	}
 	Timer(main_e);
 

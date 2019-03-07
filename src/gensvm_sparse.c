@@ -140,7 +140,6 @@ bool gensvm_nnz_comparison_csc(long nnz, long rows, long cols)
  *
  * @return  		whether or not sparsity is worth it
  */
-
 bool gensvm_could_sparse(double *A, long rows, long cols)
 {
 	#if MAJOR_ORDER == 'r'
