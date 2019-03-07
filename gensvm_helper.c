@@ -200,7 +200,7 @@ long get_K(struct GenModel *model)
 	return model->K;
 }
 
-// we don't free y, or data itself, because those were allocated by Python. 
+// we don't free y, because that was allocated by Python. 
 void free_data(struct GenData *data)
 {
 	if (data == NULL)
@@ -214,6 +214,7 @@ void free_data(struct GenData *data)
 		free(data->RAW);
 	}
 	free(data->Sigma);
+	free(data);
 }
 
 void set_verbosity(int verbosity)
