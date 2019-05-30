@@ -35,5 +35,6 @@
 
 // function declarations
 long gensvm_num_sv(struct GenModel *model);
+void gensvm_svs(struct GenModel *model, int *support_vectors);
 
 #endif

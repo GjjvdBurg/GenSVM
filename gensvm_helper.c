@@ -4,6 +4,7 @@
 #include "include/gensvm_predict.h"
 #include "include/gensvm_task.h"
 #include "include/gensvm_gridsearch.h"
+#include "include/gensvm_sv.h"
 
 void set_model(struct GenModel *model, double p, double lambda, 
 		double kappa, double epsilon, int weight_idx, int kernel_index,
@@ -168,6 +169,12 @@ void copy_V(void *data, struct GenModel *model)
 void copy_V_to_model(void *data, struct GenModel *model)
 {
 	memcpy(model->V, data, (model->m+1)*(model->K-1)*sizeof(double));
+}
+
+void get_SVs(struct GenModel *model, void *data)
+{
+	int *SVs = (int *) data;
+	gensvm_svs(model, SVs);
 }
 
 long get_iter_count(struct GenModel *model)

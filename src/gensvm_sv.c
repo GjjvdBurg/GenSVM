@@ -59,3 +59,24 @@ long gensvm_num_sv(struct GenModel *model)
 
 	return num_sv;
 }
+
+/** @brief Get the support vectors from the model
+ *
+ * @details
+ * Return a vector where the support vectors are marked.
+ *
+ * @param[in] 	model 		GenModel with solution and up-to-date Q matrix
+ * @param[out] 	support_vectors index vector with support vectors marked by 1.
+ *
+ */
+void gensvm_svs(struct GenModel *model, int *support_vectors)
+{
+	long i, j, n;
+	for (i=0; i<model->n; i++) {
+		n = 0;
+		for (j=0; j<model->K; j++) {
+			n += matrix_get(model->Q, model->n, model->K, i, j) > 1;
+		}
+		support_vectors[i] = (n < model->K - 1);
+	}
+}

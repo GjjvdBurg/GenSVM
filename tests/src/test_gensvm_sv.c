@@ -27,7 +27,7 @@
 #include "minunit.h"
 #include "gensvm_sv.h"
 
-char *test_sv()
+char *test_num_sv()
 {
 	struct GenModel *model = gensvm_init_model();
 
@@ -70,10 +70,61 @@ char *test_sv()
 	return NULL;
 }
 
+char *test_svs()
+{
+	struct GenModel *model = gensvm_init_model();
+
+	model->n = 5;
+	model->m = 3;
+	model->K = 3;
+	gensvm_allocate_model(model);
+
+	// for a support vector we need less than 2 elements per row larger 
+	// than 1
+
+	// this is an sv
+	matrix_set(model->Q, model->n, model->K, 0, 0, 1.1);
+	matrix_set(model->Q, model->n, model->K, 0, 1, 0.0);
+	matrix_set(model->Q, model->n, model->K, 0, 2, 1.0);
+
+	// this is an sv
+	matrix_set(model->Q, model->n, model->K, 1, 0, 0.5);
+	matrix_set(model->Q, model->n, model->K, 1, 1, 0.5);
+	matrix_set(model->Q, model->n, model->K, 1, 2, 0.5);
+
+	// this is an sv
+	matrix_set(model->Q, model->n, model->K, 2, 0, -0.5);
+	matrix_set(model->Q, model->n, model->K, 2, 1, 0.5);
+	matrix_set(model->Q, model->n, model->K, 2, 2, -0.5);
+
+	// this is not an sv
+	matrix_set(model->Q, model->n, model->K, 3, 0, 1.5);
+	matrix_set(model->Q, model->n, model->K, 3, 1, 1.5);
+	matrix_set(model->Q, model->n, model->K, 3, 2, 0.5);
+
+	// this is not an sv
+	matrix_set(model->Q, model->n, model->K, 4, 0, 2.0);
+	matrix_set(model->Q, model->n, model->K, 4, 1, 2.0);
+	matrix_set(model->Q, model->n, model->K, 4, 2, 2.0);
+
+	int *SVs = Calloc(int, model->n);
+	gensvm_svs(model, SVs);
+
+	mu_assert(SVs[0] == 1, "SV index 0 incorrect");
+	mu_assert(SVs[1] == 1, "SV index 1 incorrect");
+	mu_assert(SVs[2] == 1, "SV index 2 incorrect");
+	mu_assert(SVs[3] == 0, "SV index 3 incorrect");
+	mu_assert(SVs[4] == 0, "SV index 4 incorrect");
+
+	gensvm_free_model(model);
+	return NULL;
+}
+
 char *all_tests()
 {
 	mu_suite_start();
-	mu_run_test(test_sv);
+	mu_run_test(test_num_sv);
+	mu_run_test(test_svs);
 
 	return NULL;
 }
