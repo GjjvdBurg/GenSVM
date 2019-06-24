@@ -173,7 +173,7 @@ void gensvm_kernel_compute(struct GenModel *model, struct GenData *data,
 						model->degree);
 			else if (model->kerneltype == K_RBF)
 				value = gensvm_kernel_dot_rbf(x1, x2, data->m,
-						model-> gamma);
+						model->gamma);
 			else if (model->kerneltype == K_SIGMOID)
 				value = gensvm_kernel_dot_sigmoid(x1, x2, 
 						data->m, model->gamma, 

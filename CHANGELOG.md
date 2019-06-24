@@ -1,5 +1,9 @@
 # Change Log
 
+## Version 0.2.2
+
+- Bugfix for RBF kernel
+
 ## Version 0.2.1
 
 - Add support for prediction after grid search
