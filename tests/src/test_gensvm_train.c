@@ -125,7 +125,7 @@ char *test_gensvm_train_seed_linear()
 	mu_assert(model->m == data->m, "Incorrect model m");
 	mu_assert(model->K == data->K, "Incorrect model K");
 
-	double eps = 1e-13;
+	double eps = 1e-7;
 	mu_assert(fabs(matrix_get(model->V, model->K-1, 0, 0) -
 				-1.1907736868272805) < eps,
 			"Incorrect model->V at 0, 0");
