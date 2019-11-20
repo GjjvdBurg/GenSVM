@@ -22,7 +22,7 @@ OBJ=$(patsubst %.c,%.o,$(SRC))
 all: lib/libgensvm.a $(EXECS)
 
 ifdef NOATLAS
-override LDFLAGS+=-lcblas -llapack -lm
+override LDFLAGS+=-lcblas -llapack -lm -lopenblas
 else
 override LDFLAGS+=-lcblas -llapack -lm -latlas
 endif
