@@ -59,13 +59,10 @@ lib/libgensvm.a: $(OBJ)
 	@echo libgensvm.a...
 
 gensvm: src/GenSVMtraintest.c lib/libgensvm.a
-	@$(CC) -o $@ $< $(CFLAGS) $(INCLUDE) $(LIB) -lgensvm $(LDFLAGS)
-	@echo gensvm ...
+	$(CC) -o $@ $< $(CFLAGS) $(INCLUDE) $(LIB) -lgensvm $(LDFLAGS)
 
 gensvm_grid: src/GenSVMgrid.c lib/libgensvm.a
-	@$(CC) -o $@ $< $(CFLAGS) $(INCLUDE) $(LIB) -lgensvm $(LDFLAGS)
-	@echo gensvm_grid ...
+	$(CC) -o $@ $< $(CFLAGS) $(INCLUDE) $(LIB) -lgensvm $(LDFLAGS)
 
 src/%.o: src/%.c
-	@$(CC) $(CFLAGS) $(INCLUDE) $(LDFLAGS) -c $< -o $@
-	@echo $< ...
+	$(CC) $(CFLAGS) $(INCLUDE) $(LDFLAGS) -c $< -o $@
