@@ -299,8 +299,8 @@ void gensvm_predict_kernels(char *X_test, char *X_train, char *V, long V_row,
 	gensvm_kernel_preprocess(model, traindata);
 	gensvm_reallocate_model(model, traindata->n, traindata->r);
 
-	for (i=0; i<model->m+1; i++) {
-		for (j=0; j<model->K; j++) {
+	for (i=0; i<V_row; i++) {
+		for (j=0; j<V_col; j++) {
 			value = matrix_get(Vd, V_row, V_col, i, j);
 			matrix_set(model->V, model->m+1, model->K-1, i, j, value);
 		}
