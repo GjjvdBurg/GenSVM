@@ -44,8 +44,7 @@
 void gensvm_set_time(GenTime *t)
 {
 	#ifdef ON_WINDOWS
-	if (!QueryPerformanceCounter(t))
-		FatalError("QueryPerformanceCounter failed.");
+	QueryPerformanceCounter(t);
 	#else
 	gettimeofday(t, 0);
 	#endif
@@ -81,8 +80,7 @@ double gensvm_elapsed_time(GenTime *start, GenTime *stop)
 	#ifdef ON_WINDOWS
 	static LARGE_INTEGER freq;
 	if (!freq.QuadPart) {
-		if (!QueryPerformanceFrequency(&freq))
-			FatalError("QueryPerformanceFrequency failed.");
+		QueryPerformanceFrequency(&freq);
 	}
 	return (double)(stop->QuadPart - start->QuadPart) / freq.QuadPart;
 	#else
