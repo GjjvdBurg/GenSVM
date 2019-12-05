@@ -131,13 +131,14 @@ char **str_split(char *original, const char *delims, int *len_ret)
 {
 	char *copy = NULL,
 	     *token = NULL,
+	     *all_delim = NULL,
 	     **result = NULL;
 	size_t i, count;
 	size_t len = strlen(original);
 	size_t n_delim = strlen(delims);
 
 	// add the null terminator to the delimiters
-	char all_delim[1 + n_delim];
+	all_delim = Calloc(char, n_delim + 1);
 	for (i=0; i<n_delim; i++)
 		all_delim[i] = delims[i];
 	all_delim[n_delim] = '\0';
@@ -167,6 +168,7 @@ char **str_split(char *original, const char *delims, int *len_ret)
 		token = strtok(NULL, all_delim);
 	}
 	free(copy);
+	free(all_delim);
 
 	*len_ret = i;
 
