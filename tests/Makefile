@@ -2,11 +2,14 @@ CC=gcc
 CFLAGS=-Wall -Wno-unused-result -Wsign-compare -g -rdynamic -DNDEBUG $(OPTFLAGS)
 INCLUDE=-I../include/ -I./include
 LIB=-L../lib
+LDFLAGS+=-lcblas -llapack -lm -lgensvm
 
-ifdef NOATLAS
-override LDFLAGS+=-lm -lcblas -llapack -lgensvm
+ifneq ($(strip $(shell ldconfig -p | grep libopenblas)),)
+override LDFLAGS+=-lopenblas
+else ifneq ($(shell ldconfig -p | grep libatlas),)
+override LDFLAGS+=-latlas
 else
-override LDFLAGS+=-lm -lcblas -llapack -latlas -lgensvm
+$(error No OpenBLAS or ATLAS found, please install either or alter this Makefile)
 endif
 
 TEST_SRC=$(wildcard src/test_*.c)

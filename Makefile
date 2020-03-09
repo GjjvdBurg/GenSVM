@@ -1,3 +1,14 @@
+# Makefile for GenSVM
+#
+# Author: G.J.J. van den Burg
+# Copyright (c) 2016 G.J.J. van den Burg
+# License: GPLv2
+#
+
+SHELL := bash
+.SHELLFLAGS := -eu -o pipefail -c
+MAKEFLAGS += --warn-undefined-variables --no-builtin-rules
+
 VERSION=0.2.2
 CC=gcc
 CFLAGS=-Wall -Wno-unused-result -Wsign-compare -Wstrict-prototypes \
@@ -9,6 +20,7 @@ DOCDIR=doc
 DOXYFILE=$(DOCDIR)/Doxyfile
 LCOV=lcov
 GENHTML=genhtml
+LDFLAGS+=-lcblas -llapack -lm
 
 EXECS=gensvm gensvm_grid
 
@@ -21,10 +33,12 @@ OBJ=$(patsubst %.c,%.o,$(SRC))
 
 all: lib/libgensvm.a $(EXECS)
 
-ifdef NOATLAS
-override LDFLAGS+=-lcblas -llapack -lm -lopenblas
+ifneq ($(strip $(shell ldconfig -p | grep libopenblas)),)
+override LDFLAGS+=-lopenblas
+else ifneq ($(shell ldconfig -p | grep libatlas),)
+override LDFLAGS+=-latlas
 else
-override LDFLAGS+=-lcblas -llapack -lm -latlas
+$(error No OpenBLAS or ATLAS found, please install either or alter this Makefile. If you believe this is a bug please open an issue at https://www.github.com/GjjvdBurg/GenSVM)
 endif
 
 debug: CFLAGS += -DDEBUG
