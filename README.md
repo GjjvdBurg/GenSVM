@@ -1,19 +1,22 @@
-GenSVM C Package
-================
+GenSVM
+======
 
-Paper: [GenSVM: A Generalized Multiclass Support Vector 
-Machine](http://jmlr.org/papers/v17/14-526.html) by G.J.J. van den Burg and 
-P.J.F. Groenen (*Journal of Machine Learning Research*, 2016).
+This is the repository for the C implementation of *GenSVM*, a generalized 
+multiclass support vector machine proposed in:
 
-GitHub: 
-[https://github.com/GjjvdBurg/GenSVM](https://github.com/GjjvdBurg/GenSVM)
+> [GenSVM: A Generalized Multiclass Support Vector 
+> Machine](http://jmlr.org/papers/v17/14-526.html)<br>
+> G.J.J. van den Burg and P.J.F. Groenen<br>
+> *Journal of Machine Learning Research*, 2016.
 
-GenSVM is also available in these languages:
+GenSVM is available in these languages:
 
 Language | URL
 :-------:|:-------:
 <a href="https://github.com/GjjvdBurg/PyGenSVM"><img src="https://www.python.org/static/community_logos/python-logo-master-v3-TM.png" height="75"/></a> | [https://github.com/GjjvdBurg/PyGenSVM](https://github.com/GjjvdBurg/PyGenSVM)
 <a href="https://github.com/GjjvdBurg/RGenSVM"><img src="https://www.r-project.org/Rlogo.png" height="75"/></a> | [https://github.com/GjjvdBurg/RGenSVM](https://github.com/GjjvdBurg/RGenSVM)
+<a href="https://github.com/GjjvdBurg/GenSVM"><img src="https://upload.wikimedia.org/wikipedia/commons/3/35/The_C_Programming_Language_logo.svg" height="75"/></a> | [https://github.com/GjjvdBurg/GenSVM](https://github.com/GjjvdBurg/GenSVM)
+
 
 Introduction
 ------------
@@ -55,14 +58,18 @@ in the Makefile.
 
 Then, compile the library with a simple:
 
-    make
+```
+$ make
+```
 
 If you like to run the tests, use ``make test`` on the command line. 
 
 After successful compilation, you will have two executables ``gensvm`` and 
 ``gensvm_grid``. Type:
 
-    ./gensvm
+```
+$ ./gensvm
+```
 
 To get an overview of the command line options to the executable (similar for 
 ``gensvm_grid``).
@@ -74,7 +81,9 @@ executable can be used to run a grid search on a dataset.
 Here's an example of using the ``gensvm`` executable on a single dataset, with 
 some custom parameters:
 
-    ./gensvm -l 1e-5 -k 1.0 -p 1.5 data/iris.train
+```
+$ ./gensvm -l 1e-5 -k 1.0 -p 1.5 data/iris.train
+```
 
 This fits the model with regularization parameter ``1e-5``, Huber hinge 
 parameter ``1.0`` and lp norm parameter ``1.5``, and default settings 
@@ -99,12 +108,16 @@ independent measurements of training time.
 Here's an example of running ``gensvm_grid`` without repeats on the iris 
 dataset:
 
-    ./gensvm_grid training/iris_norepeats.training
+```
+$ ./gensvm_grid training/iris_norepeats.training
+```
 
 On my computer this runs in about 8 seconds with 342 hyperparameter 
 configurations. Alternatively, if consistency checks are desired we can run:
 
-    ./gensvm_grid training/iris.training
+```
+$ ./gensvm_grid training/iris.training
+```
 
 which runs the same grid search but also does 5 consistency repeats for each 
 of the configurations with the 5% best performance. Note that the performance 
@@ -119,16 +132,18 @@ available at
 [http://jmlr.org/papers/v17/14-526.html](http://jmlr.org/papers/v17/14-526.html). 
 You can use the following BibTeX code:
 
-    @article{JMLR:v17:14-526,
-      author  = {Gerrit J.J. van den Burg and Patrick J.F. Groenen},
-      title   = {{GenSVM}: A Generalized Multiclass Support Vector Machine},
-      journal = {Journal of Machine Learning Research},
-      year    = {2016},
-      volume  = {17},
-      number  = {225},
-      pages   = {1-42},
-      url     = {http://jmlr.org/papers/v17/14-526.html}
-    }
+```bib
+@article{JMLR:v17:14-526,
+        author  = {Gerrit J.J. van den Burg and Patrick J.F. Groenen},
+        title   = {{GenSVM}: A Generalized Multiclass Support Vector Machine},
+        journal = {Journal of Machine Learning Research},
+        year    = {2016},
+        volume  = {17},
+        number  = {225},
+        pages   = {1-42},
+        url     = {http://jmlr.org/papers/v17/14-526.html}
+}
+```
 
 License
 -------
