@@ -33,6 +33,7 @@
 
 #include "gensvm_sv.h"
 #include "gensvm_simplex.h"
+#include "gensvm_predict.h"
 #include "gensvm_update.h"
 #include "gensvm_zv.h"
 

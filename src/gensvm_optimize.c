@@ -56,7 +56,7 @@
 void gensvm_optimize(struct GenModel *model, struct GenData *data)
 {
 	long it = 0;
-	double L, Lbar;
+	double L, Lbar, acc;
 
 	long n = model->n;
 	long m = model->m;
@@ -98,9 +98,14 @@ void gensvm_optimize(struct GenModel *model, struct GenData *data)
 		Lbar = L;
 		L = gensvm_get_loss(model, data, work);
 
-		if (it % GENSVM_PRINT_ITER == 0)
+		if (it % GENSVM_PRINT_ITER == 0) {
+			gensvm_predict_labels(data, model, work->yhat);
+			acc = gensvm_prediction_perf(data, work->yhat);
 			note("iter = %li, L = %15.16f, Lbar = %15.16f, "
-			     "reldiff = %15.16f\n", it, L, Lbar, (Lbar - L)/L);
+			     "reldiff = %15.16f, acc = %.2f\n", it, L, Lbar,
+			     (Lbar - L)/L, acc);
+		}
+
 		it++;
 	}
 
@@ -120,10 +125,14 @@ void gensvm_optimize(struct GenModel *model, struct GenData *data)
 		model->status = 2;
 	}
 
+	// compute final training accuracy
+	gensvm_predict_labels(data, model, work->yhat);
+	acc = gensvm_prediction_perf(data, work->yhat);
+
 	// print final iteration count and loss
 	note("Optimization finished, iter = %li, loss = %15.16f, "
-			"rel. diff. = %15.16f\n", it-1, L,
-			(Lbar - L)/L);
+			"rel. diff. = %15.16f, acc = %.2f\n", it-1, L,
+			(Lbar - L)/L, acc);
 
 	// compute and print the number of SVs in the model
 	note("Number of support vectors: %li\n", gensvm_num_sv(model));

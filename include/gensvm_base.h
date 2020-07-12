@@ -172,6 +172,8 @@ struct GenWork {
 	///< n x (K-1) working matrix for the Z * V calculation
 	double *beta;
 	///< K-1 working vector for a row of the B matrix
+	long *yhat;
+	///< n vector of predicted classes
 };
 
 // function declarations
