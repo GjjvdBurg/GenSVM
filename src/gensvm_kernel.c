@@ -227,10 +227,12 @@ long gensvm_kernel_eigendecomp(double *K, long n, double cutoff, double **P_ret,
 {
 	int M, status, LWORK, in = n,
 	    minus_one = -1,
+	    izero = 0,
 	    *IWORK = NULL,
 	    *IFAIL = NULL;
 	long i, j, num_eigen, cutoff_idx;
-	double max_eigen, abstol, *WORK = NULL,
+	double max_eigen, abstol, dzero = 0.0,
+	       *WORK = NULL,
 	       *Sigma = NULL,
 	       *P = NULL;
 
@@ -245,22 +247,23 @@ long gensvm_kernel_eigendecomp(double *K, long n, double cutoff, double **P_ret,
 	abstol = 2.0 * F77_CALL(dlamch)(&cmach);
 
 	// first perform a workspace query to determine optimal size of the
-	// WORK array.
+	// WORK array. Remember that all inputs must be pointers.
 	WORK = Malloc(double, 1);
-	F77_CALL(dsyevx)("v", "a", "u", &in, K, &in, 0, 0, 0, 0, &abstol, &M,
-			tempSigma, tempP, &in, WORK, &minus_one, IWORK, IFAIL, 
-			&status);
+	F77_CALL(dsyevx)("V", "A", "U", &in, K, &in, &dzero, &dzero, &izero, 
+			&izero, &abstol, &M, tempSigma, tempP, &in, WORK, 
+			&minus_one, IWORK, IFAIL, &status);
+	if (status != 0) {
+		error("[GenSVM Error]: Nonzero exit status from dsyevx.\n");
+	}
 	LWORK = WORK[0];
 
 	// allocate the requested memory for the eigendecomposition
-	WORK = (double *)realloc(WORK, LWORK*sizeof(double));
-	F77_CALL(dsyevx)("v", "a", "u", &in, K, &in, 0, 0, 0, 0, &abstol, &M, 
-			tempSigma, tempP, &in, WORK, &LWORK, IWORK, IFAIL, 
-			&status);
-
+	WORK = Realloc(WORK, double, LWORK);
+	F77_CALL(dsyevx)("V", "A", "U", &in, K, &in, &dzero, &dzero, &izero, 
+			&izero, &abstol, &M, tempSigma, tempP, &in, WORK, 
+			&LWORK, IWORK, IFAIL, &status);
 	if (status != 0) {
-		error("[GenSVM Error]: Nonzero exit status from "
-				"dsyevx.\n");
+		error("[GenSVM Error]: Nonzero exit status from dsyevx.\n");
 	}
 
 	// Select the desired number of eigenvalues, depending on their size.
