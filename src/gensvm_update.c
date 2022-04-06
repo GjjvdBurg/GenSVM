@@ -24,7 +24,13 @@
 
  */
 
+#define USE_FC_LEN_T
+
 #include "gensvm_update.h"
+
+#ifndef FCONE
+# define FCONE
+#endif
 
 /**
  * Number of rows in a single block for the ZAZ calculation in 
@@ -344,7 +350,7 @@ void gensvm_get_update(struct GenModel *model, struct GenData *data,
 	// dsymm performs ZB := 1.0 * (ZAZ) * Vbar + 1.0 * ZB
 	// the right-hand side is thus stored in ZB after this call
 	F77_CALL(dsymm)("l", "u", &imp, &iKm, &one, work->ZAZ, &imp, model->V, 
-			&imp, &one, work->ZB, &imp);
+			&imp, &one, work->ZB, &imp FCONE FCONE);
 
 	// Calculate left-hand side of system we want to solve
 	// Add lambda to all diagonal elements except the first one. Recall
@@ -361,8 +367,8 @@ void gensvm_get_update(struct GenModel *model, struct GenData *data,
 	#endif
 
 	// Solve the system using dposv.
-	F77_CALL(dposv)("u", &imp, &iKm, work->ZAZ, &imp, work->ZB, &imp, 
-			&status);
+	F77_CALL(dposv)("u", &imp, &iKm, work->ZAZ, &imp, work->ZB, &imp,
+			&status FCONE);
 
 	// Use dsysv as fallback, for when the ZAZ matrix is not positive
 	// semi-definite for some reason (perhaps due to rounding errors).
@@ -374,12 +380,13 @@ void gensvm_get_update(struct GenModel *model, struct GenData *data,
 		double *WORK = Malloc(double, 1);
 		int iminus_one = -1;
 		F77_CALL(dsysv)("u", &imp, &iKm, work->ZAZ, &imp, IPIV,
-				work->ZB, &imp, WORK, &iminus_one, &status);
+				work->ZB, &imp, WORK, &iminus_one,
+				&status FCONE);
 
 		int LWORK = WORK[0];
 		WORK = Realloc(WORK, double, LWORK);
 		F77_CALL(dsysv)("u", &imp, &iKm, work->ZAZ, &imp, IPIV,
-				work->ZB, &imp, WORK, &LWORK, &status);
+				work->ZB, &imp, WORK, &LWORK, &status FCONE);
 
 		if (status != 0)
 			gensvm_error("[GenSVM Warning]: Received nonzero "
@@ -468,7 +475,7 @@ void gensvm_get_ZAZ_ZB_dense(struct GenModel *model, struct GenData *data,
 	// calculate Z'*A*Z by symmetric multiplication of LZ with itself
 	// (ZAZ = (LZ)' * (LZ)
 	F77_CALL(dsyrk)("u", "t", &imp, &in, &one, work->LZ, &in, &zero, 
-			work->ZAZ, &imp);
+			work->ZAZ, &imp FCONE FCONE);
 }
 
 void gensvm_get_ZAZ_ZB_sparse(struct GenModel *model, struct GenData *data,
