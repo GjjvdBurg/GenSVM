@@ -244,14 +244,14 @@ long gensvm_kernel_eigendecomp(double *K, long n, double cutoff, double **P_ret,
 
 	// highest precision eigenvalues, may reduce for speed
 	const char cmach = 'S';
-	abstol = 2.0 * F77_CALL(dlamch)(&cmach);
+	abstol = 2.0 * F77_CALL(dlamch)(&cmach FCONE);
 
 	// first perform a workspace query to determine optimal size of the
 	// WORK array. Remember that all inputs must be pointers.
 	WORK = Malloc(double, 1);
 	F77_CALL(dsyevx)("V", "A", "U", &in, K, &in, &dzero, &dzero, &izero, 
 			&izero, &abstol, &M, tempSigma, tempP, &in, WORK, 
-			&minus_one, IWORK, IFAIL, &status);
+			&minus_one, IWORK, IFAIL, &status FCONE FCONE);
 	if (status != 0) {
 		error("[GenSVM Error]: Nonzero exit status from dsyevx.\n");
 	}
@@ -475,7 +475,7 @@ void gensvm_kernel_testfactor(struct GenData *testdata,
 
 	// Multiply K2 with M and store in N
 	F77_CALL(dgemm)("n", "n", &in2, &ir, &in1, &one, K2, &in2, M, &in1, 
-			&zero, N, &in2);
+			&zero, N, &in2 FCONE FCONE);
 
 	// Multiply N with Sigma^{-2}
 	for (j=0; j<r; j++) {
