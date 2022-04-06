@@ -30,7 +30,13 @@
 
  */
 
+#define USE_FC_LEN_T
+
 #include "gensvm_zv.h"
+
+#ifndef FCONE
+# define FCONE
+#endif
 
 /**
  * @brief Wrapper around sparse/dense versions of this function
@@ -141,5 +147,5 @@ void gensvm_calculate_ZV_dense(struct GenModel *model,
 	double one = 1.0,
 	       zero = 0.0;
 	F77_CALL(dgemm)("n", "n", &in, &iKm, &imp, &one, data->Z, &in, model->V, &imp,
-			&zero, ZV, &in);
+			&zero, ZV, &in FCONE FCONE);
 }
