@@ -29,8 +29,14 @@
 
 */
 
+#define USE_FC_LEN_T
+
 #include "gensvm_kernel.h"
 #include "gensvm_print.h"
+
+#ifndef FCONE
+# define FCONE
+#endif
 
 /**
  * @brief Copy the kernelparameters from GenModel to GenData
@@ -251,7 +257,7 @@ long gensvm_kernel_eigendecomp(double *K, long n, double cutoff, double **P_ret,
 	WORK = Malloc(double, 1);
 	F77_CALL(dsyevx)("V", "A", "U", &in, K, &in, &dzero, &dzero, &izero, 
 			&izero, &abstol, &M, tempSigma, tempP, &in, WORK, 
-			&minus_one, IWORK, IFAIL, &status FCONE FCONE);
+			&minus_one, IWORK, IFAIL, &status FCONE FCONE FCONE);
 	if (status != 0) {
 		error("[GenSVM Error]: Nonzero exit status from dsyevx.\n");
 	}
@@ -261,7 +267,7 @@ long gensvm_kernel_eigendecomp(double *K, long n, double cutoff, double **P_ret,
 	WORK = Realloc(WORK, double, LWORK);
 	F77_CALL(dsyevx)("V", "A", "U", &in, K, &in, &dzero, &dzero, &izero, 
 			&izero, &abstol, &M, tempSigma, tempP, &in, WORK, 
-			&LWORK, IWORK, IFAIL, &status);
+			&LWORK, IWORK, IFAIL, &status FCONE FCONE FCONE);
 	if (status != 0) {
 		error("[GenSVM Error]: Nonzero exit status from dsyevx.\n");
 	}
