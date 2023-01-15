@@ -41,7 +41,7 @@ struct gensvm_random_data
 };
 
 // forward declarations
-int gensvm_rand();
+int gensvm_rand(void);
 void gensvm_srand(unsigned int x);
 
 #endif
