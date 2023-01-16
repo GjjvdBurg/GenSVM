@@ -417,6 +417,11 @@ void gensvm_gridsearch_progress(struct GenTask *task, long N, double perf,
 				"l = %11g\tp = %2.2f\t", task->ID+1, N,
 				task->gamma, task->epsilon, task->weight_idx,
 				task->kappa, task->lambda, task->p);
+	} else {
+		note("(%03li/%03li)\teps = %g\tw = %i\tk = %2.2f\t"
+				"l = %11g\tp = %2.2f\t", task->ID+1, N,
+				task->epsilon, task->weight_idx,
+				task->kappa, task->lambda, task->p);
 	}
 	if (show_perf) {
 		note("%3.3f%% (%3.3fs)\t(best = %3.3f%%)\n", perf, duration,
