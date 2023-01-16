@@ -93,7 +93,7 @@ typedef enum {
  * Maximum line length of files that are read into GenSVM.
  */
 #ifndef GENSVM_MAX_LINE_LENGTH
-  #define GENSVM_MAX_LINE_LENGTH 1024
+  #define GENSVM_MAX_LINE_LENGTH 8192
 #endif
 
 // ###################### Min/Max Utility Functions ####################### //
