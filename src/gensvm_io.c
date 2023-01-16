@@ -500,7 +500,7 @@ void gensvm_write_model(struct GenModel *model, char *output_filename)
 		error("[GenSVM Error]: Error opening output file %s\n",
 				output_filename);
 	}
-	gensvm_time_string(timestr);
+	gensvm_time_string(timestr, GENSVM_MAX_LINE_LENGTH);
 
 	// Write output to file
 	fprintf(fid, "Output file for GenSVM (version %s)\n", VERSION_STRING);
@@ -580,13 +580,14 @@ void gensvm_write_predictions(struct GenData *data, long *predy,
  * consistency. The format of the generated string is "DDD MMM D HH:MM:SS
  * YYYY (UTC +HH:MM)", e.g. "Fri Aug 9, 12:34:56 2013 (UTC +02:00)".
  *
- * @param[in,out] 	buffer 	allocated string buffer, on exit contains
- * 				formatted string
+ * @param[in,out] 	buffer 		allocated string buffer, on exit
+ * 					contains formatted string
+ * @param[in] 		max_size 	maximum length of the buffer
  *
  */
-void gensvm_time_string(char *buffer)
+void gensvm_time_string(char *buffer, size_t max_size)
 {
-	int diff, hours, minutes;
+	int diff, hours, minutes, ret;
 	char timestr[GENSVM_MAX_LINE_LENGTH];
 	time_t current_time, lt, gt;
 	struct tm *lclt = NULL;
@@ -613,5 +614,9 @@ void gensvm_time_string(char *buffer)
 	if (lclt->tm_isdst == 1)
 		hours++;
 
-	sprintf(buffer, "%s (UTC %+03i:%02i)", timestr, hours, minutes);
+	ret = snprintf(buffer, max_size, "%s (UTC %+03i:%02i)", timestr, hours,
+			minutes);
+	if (ret < 0 || ret >= ((int) max_size)) {
+		error("[GenSVM Error]: Failed to format time string.\n");
+	}
 }

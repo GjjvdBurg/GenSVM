@@ -42,6 +42,7 @@
 #include <R.h>
 #include <R_ext/BLAS.h>
 #include <R_ext/Lapack.h>
+#include <R_ext/Print.h>
 #include <R_ext/Utils.h>
 
 // all system libraries are included here

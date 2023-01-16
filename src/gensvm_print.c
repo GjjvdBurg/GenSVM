@@ -109,12 +109,12 @@ void (*gensvm_print_err) (const char *, ...) = &gensvm_print_error_fpt;
  */
 void note(const char *fmt,...)
 {
-	char buf[BUFSIZ];
-	va_list ap;
-	va_start(ap,fmt);
-	vsprintf(buf,fmt,ap);
-	va_end(ap);
-	(*gensvm_print_out)(buf);
+	if (GENSVM_OUTPUT_FILE == NULL)
+		return;
+	va_list args;
+	va_start(args, fmt);
+	Rvprintf(fmt, args);
+	va_end(args);
 }
 
 /**
@@ -128,10 +128,10 @@ void note(const char *fmt,...)
  */
 void gensvm_error(const char *fmt, ...)
 {
-	char buf[BUFSIZ];
-	va_list ap;
-	va_start(ap, fmt);
-	vsprintf(buf, fmt, ap);
-	va_end(ap);
-	(*gensvm_print_err)(buf);
+	if (GENSVM_ERROR_FILE == NULL)
+		return;
+	va_list args;
+	va_start(args, fmt);
+	REvprintf(fmt, args);
+	va_end(args);
 }

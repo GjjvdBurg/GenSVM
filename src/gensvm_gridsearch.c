@@ -399,22 +399,29 @@ double gensvm_train_queue(struct GenQueue *q, long *cv_idx,
 void gensvm_gridsearch_progress(struct GenTask *task, long N, double perf,
 		double duration, double current_max, bool show_perf)
 {
-	char buffer[GENSVM_MAX_LINE_LENGTH];
-	sprintf(buffer, "(%03li/%03li)\t", task->ID+1, N);
-	if (task->kerneltype == K_POLY)
-		sprintf(buffer + strlen(buffer), "d = %2.2f\t", task->degree);
-	if (task->kerneltype == K_POLY || task->kerneltype == K_SIGMOID)
-		sprintf(buffer + strlen(buffer), "c = %2.2f\t", task->coef);
-	if (task->kerneltype == K_POLY || task->kerneltype == K_SIGMOID ||
-			task->kerneltype == K_RBF)
-		sprintf(buffer + strlen(buffer), "g = %3.3f\t", task->gamma);
-	sprintf(buffer + strlen(buffer), "eps = %g\tw = %i\tk = %2.2f\t"
-			"l = %11g\tp = %2.2f\t", task->epsilon,
-			task->weight_idx, task->kappa, task->lambda, task->p);
-	note(buffer);
-	if (show_perf)
+	if (task->kerneltype == K_POLY) {
+		note("(%03li/%03li)\td = %2.2f\tc = %2.2f\tg = %3.3f\t"
+				"eps = %g\tw = %i\tk = %2.2f\tl = %11g\t"
+				"p = %2.2f\t", task->ID+1, N, task->degree,
+				task->coef, task->gamma, task->epsilon,
+				task->weight_idx, task->kappa, task->lambda,
+				task->p);
+	} else if (task->kerneltype == K_SIGMOID) {
+		note("(%03li/%03li)\tc = %2.2f\tg = %3.3f\teps = %g\t"
+				"w = %i\tk = %2.2f\tl = %11g\tp = %2.2f\t",
+				task->ID+1, N, task->coef, task->gamma,
+				task->epsilon, task->weight_idx, task->kappa,
+				task->lambda, task->p);
+	} else if (task->kerneltype == K_RBF) {
+		note("(%03li/%03li)\tg = %3.3f\teps = %g\tw = %i\tk = %2.2f\t"
+				"l = %11g\tp = %2.2f\t", task->ID+1, N,
+				task->gamma, task->epsilon, task->weight_idx,
+				task->kappa, task->lambda, task->p);
+	}
+	if (show_perf) {
 		note("%3.3f%% (%3.3fs)\t(best = %3.3f%%)\n", perf, duration,
 			current_max);
-	else
+	} else {
 		note("(%3.3fs)\n", duration);
+	}
 }

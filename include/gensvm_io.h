@@ -44,6 +44,6 @@ void gensvm_write_model(struct GenModel *model, char *output_filename);
 
 void gensvm_write_predictions(struct GenData *data, long *predy,
 		char *output_filename);
-void gensvm_time_string(char *buffer);
+void gensvm_time_string(char *buffer, size_t max_size);
 
 #endif
