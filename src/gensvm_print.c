@@ -109,12 +109,16 @@ void (*gensvm_print_err) (const char *, ...) = &gensvm_print_error_fpt;
  */
 void note(const char *fmt,...)
 {
-	if (GENSVM_OUTPUT_FILE == NULL)
-		return;
-	va_list args;
-	va_start(args, fmt);
-	Rvprintf(fmt, args);
-	va_end(args);
+	int ret = -1;
+	char buf[GENSVM_MAX_LINE_LENGTH];
+	va_list ap;
+	va_start(ap, fmt);
+	ret = vsnprintf(buf, GENSVM_MAX_LINE_LENGTH, fmt, ap);
+	va_end(ap);
+	if (ret < 0 || ret >= GENSVM_MAX_LINE_LENGTH) {
+		strcpy(buf, "[GenSVM Error]: Failed to format string");
+	}
+	(*gensvm_print_out)(buf);
 }
 
 /**
@@ -128,10 +132,14 @@ void note(const char *fmt,...)
  */
 void gensvm_error(const char *fmt, ...)
 {
-	if (GENSVM_ERROR_FILE == NULL)
-		return;
-	va_list args;
-	va_start(args, fmt);
-	REvprintf(fmt, args);
-	va_end(args);
+	int ret = -1;
+	char buf[GENSVM_MAX_LINE_LENGTH];
+	va_list ap;
+	va_start(ap, fmt);
+	ret = vsnprintf(buf, GENSVM_MAX_LINE_LENGTH, fmt, ap);
+	va_end(ap);
+	if (ret < 0 || ret >= GENSVM_MAX_LINE_LENGTH) {
+		strcpy(buf, "[GenSVM Error]: Failed to format string");
+	}
+	(*gensvm_print_err)(buf);
 }
