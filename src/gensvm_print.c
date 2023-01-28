@@ -47,6 +47,7 @@ FILE *GENSVM_ERROR_FILE = NULL; 	///< The #GENSVM_ERROR_FILE specifies the
 				///< redirect this to check if the correct
 				///< output is written.
 
+bool R_GENSVM_VERBOSE = true; 		///< Whether verbosity is enabled in R
 
 /**
  * @brief Default print function that prints to the output FILE pointer
@@ -109,6 +110,9 @@ void (*gensvm_print_err) (const char *, ...) = &gensvm_print_error_fpt;
  */
 void note(const char *fmt,...)
 {
+	if (!R_GENSVM_VERBOSE)
+		return;
+
 	int ret = -1;
 	char buf[GENSVM_MAX_LINE_LENGTH];
 	va_list ap;
@@ -132,6 +136,9 @@ void note(const char *fmt,...)
  */
 void gensvm_error(const char *fmt, ...)
 {
+	if (!R_GENSVM_VERBOSE)
+		return;
+
 	int ret = -1;
 	char buf[GENSVM_MAX_LINE_LENGTH];
 	va_list ap;
